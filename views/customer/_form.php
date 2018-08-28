@@ -3,9 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
-use app\models\Supplier;
 /* @var $this yii\web\View */
-/* @var $model app\models\Stock */
+/* @var $model app\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -15,15 +14,19 @@ use app\models\Supplier;
 
     <div class="box-body">
 
-    <?= $form->field($model, 'good_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>
+    <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'company_telephone')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'position')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'company_fax')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'number')->textInput() ?>
+    <?= $form->field($model, 'company_address')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'company_email')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'company_contacts')->textInput(['maxlength' => true]) ?>
 
     </div>
 
