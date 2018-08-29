@@ -8,14 +8,13 @@ use app\models\Inquiry;
 use app\models\OrderQuote;
 use app\models\OrderQuoteSearch;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * OrderQuoteController implements the CRUD actions for OrderQuote model.
  */
-class OrderQuoteController extends Controller
+class OrderQuoteController extends BaseController
 {
     /**
      * {@inheritdoc}
