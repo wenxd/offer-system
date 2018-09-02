@@ -307,9 +307,8 @@ INSERT INTO `cart` VALUES ('17', '6', '0', '1', '2018-08-26 21:58:17', '2018-08-
 DROP TABLE IF EXISTS `inquiry`;
 CREATE TABLE `inquiry` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `good_id` varchar(255) NOT NULL DEFAULT '' COMMENT '零件编号',
+  `good_id` varchar(255) NOT NULL DEFAULT '' COMMENT '零件ID',
   `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID',
-  `supplier_name` varchar(255) NOT NULL DEFAULT '0' COMMENT '供应商名称',
   `inquiry_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '咨询价格',
   `inquiry_datetime` varchar(255) NOT NULL DEFAULT '' COMMENT '咨询时间',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
@@ -420,9 +419,8 @@ INSERT INTO `order_quote` VALUES ('6', '010231', '撒的发', '800.00', '哥们'
 DROP TABLE IF EXISTS `stock`;
 CREATE TABLE `stock` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `good_id` varchar(255) NOT NULL DEFAULT '' COMMENT '零件编号',
+  `good_id` varchar(255) NOT NULL DEFAULT '' COMMENT '零件ID',
   `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID',
-  `supplier_name` varchar(255) NOT NULL DEFAULT '0' COMMENT '供应商名称',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '价格',
   `position` varchar(255) NOT NULL DEFAULT '' COMMENT '库存位置',
   `number` int(11) NOT NULL DEFAULT '0' COMMENT '库存数量',

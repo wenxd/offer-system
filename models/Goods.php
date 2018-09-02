@@ -11,7 +11,7 @@ use yii\web\UploadedFile;
  * This is the model class for table "goods".
  *
  * @property int $id 自增id
- * @property string $goods_number 零件编号
+ * @property string $goods_number 零件号
  * @property string $description 描述
  * @property string $original_company 原厂家
  * @property string $original_company_remark 原厂家备注
@@ -91,7 +91,7 @@ class Goods extends ActiveRecord
     {
         return [
             'id'                      => '序号',
-            'goods_number'            => '零件编号',
+            'goods_number'            => '零件号',
             'description'             => '描述',
             'original_company'        => '原厂家',
             'original_company_remark' => '原厂家备注',

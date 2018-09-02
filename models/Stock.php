@@ -10,7 +10,7 @@ use yii\behaviors\TimestampBehavior;
  * This is the model class for table "{{%stock}}".
  *
  * @property int $id 自增id
- * @property string $good_id 零件编号
+ * @property string $good_id 零件号
  * @property int $supplier_id 供应商ID
  * @property string $supplier_name 供应商名称
  * @property string $price 价格
@@ -79,7 +79,7 @@ class Stock extends ActiveRecord
         return [
             'id'            => '自增id',
             'good_id'       => '零件ID',
-            'goods_number'  => '零件编号',
+            'goods_number'  => '零件号',
             'supplier_id'   => '供应商ID',
             'supplier_name' => '供应商名称',
             'price'         => '价格',
