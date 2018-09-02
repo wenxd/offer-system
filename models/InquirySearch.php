@@ -12,6 +12,8 @@ use app\models\Inquiry;
  */
 class InquirySearch extends Inquiry
 {
+    public $goods_number;
+    public $supplier_name;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +21,7 @@ class InquirySearch extends Inquiry
     {
         return [
             [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted'], 'integer'],
-            [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at'], 'safe'],
+            [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number'], 'safe'],
             [['inquiry_price'], 'number', 'min' => 0],
             [['id', 'good_id', 'supplier_id', 'supplier_name', 'inquiry_price'], 'trim']
         ];
@@ -64,7 +66,14 @@ class InquirySearch extends Inquiry
             // $query->where('0=1');
             return $dataProvider;
         }
-
+        if ($this->goods_number) {
+            $query->leftJoin('goods as a', 'a.id = stock.good_id');
+            $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+        }
+        if ($this->supplier_name) {
+            $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
+            $query->andFilterWhere(['like', 's.name', $this->supplier_name]);
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
@@ -76,8 +85,7 @@ class InquirySearch extends Inquiry
             'is_deleted' => $this->is_deleted,
         ]);
 
-        $query->andFilterWhere(['like', 'good_id', $this->good_id])
-            ->andFilterWhere(['like', 'supplier_name', $this->supplier_name]);
+        $query->andFilterWhere(['like', 'good_id', $this->good_id]);
 
         if ($this->inquiry_datetime && strpos($this->inquiry_datetime, ' - ')) {
             list($inquiry_at_start, $inquiry_at_end) = explode(' - ', $this->inquiry_datetime);

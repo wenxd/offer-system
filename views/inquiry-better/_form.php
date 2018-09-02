@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use kartik\datetime\DateTimePicker;
 use app\models\Supplier;
 use app\models\Inquiry;
+use app\models\Goods;
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
@@ -17,9 +18,12 @@ use app\models\Inquiry;
 
     <div class="box-body">
 
-    <?= $form->field($model, 'good_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'good_id')
+        ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
+        ->label('零件编号') ?>
 
-    <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>
+    <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())
+        ->label('供应商名称') ?>
 
     <?= $form->field($model, 'inquiry_price')->textInput(['maxlength' => true]) ?>
 

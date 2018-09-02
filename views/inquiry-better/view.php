@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\InquiryBetter;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
@@ -17,13 +18,44 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'good_id',
+            [
+                'attribute' => 'goods_number',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    if ($model->goods) {
+                        return $model->goods->goods_number;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'supplier_id',
-            'supplier_name',
+            [
+                'attribute' => 'supplier_name',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'inquiry_price',
             'inquiry_datetime',
             'sort',
-            'is_better',
-            'is_newest',
+            [
+                'attribute' => 'is_better',
+                'value'     => function ($model) {
+                    return InquiryBetter::$better[$model->is_better];
+                }
+            ],
+            [
+                'attribute' => 'is_newest',
+                'value'     => function ($model) {
+                    return InquiryBetter::$newest[$model->is_newest];
+                }
+            ],
             'updated_at',
             'created_at',
         ],

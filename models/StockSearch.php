@@ -69,7 +69,7 @@ class StockSearch extends Stock
             $query->leftJoin('goods as a', 'a.id = stock.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
         }
-        if ($this->goods_number) {
+        if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
             $query->andFilterWhere(['like', 's.name', $this->supplier_name]);
         }

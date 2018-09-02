@@ -17,8 +17,29 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'good_id',
+            [
+                'attribute' => 'goods_number',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    if ($model->goods) {
+                        return $model->goods->goods_number;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'supplier_id',
-            'supplier_name',
+            [
+                'attribute' => 'supplier_name',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'price',
             'position',
             'number',

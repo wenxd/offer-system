@@ -30,14 +30,51 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             'good_id',
+            [
+                'attribute' => 'goods_number',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->goods_number;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'supplier_id',
-            'supplier_name',
+            [
+                'attribute' => 'supplier_name',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'supplier_name',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'inquiry_price',
             [
                 'attribute' => 'inquiry_datetime',
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[inquiry_datetime]',
                     'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'],
+                ])
+            ],
+            [
+                'attribute' => 'updated_at',
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'InquirySearch[updated_at]',
+                    'value' => Yii::$app->request->get('InquirySearch')['updated_at'],
+                ])
+            ],
+            [
+                'attribute' => 'created_at',
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'InquirySearch[created_at]',
+                    'value' => Yii::$app->request->get('InquirySearch')['created_at'],
                 ])
             ],
             [
@@ -53,20 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'     => function ($model, $key, $index, $column) {
                     return Inquiry::$newest[$model->is_newest];
                 }
-            ],
-            [
-                'attribute' => 'updated_at',
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'InquirySearch[updated_at]',
-                    'value' => Yii::$app->request->get('InquirySearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'InquirySearch[created_at]',
-                    'value' => Yii::$app->request->get('InquirySearch')['created_at'],
-                ])
             ],
             [
                 'class' => ActionColumn::className(),

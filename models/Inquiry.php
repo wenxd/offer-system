@@ -11,7 +11,6 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id 自增id
  * @property string $good_id 零件编号
  * @property int $supplier_id 供应商ID
- * @property string $supplier_name 供应商名称
  * @property string $inquiry_price 咨询价格
  * @property string $inquiry_datetime 咨询时间
  * @property int $sort 排序
@@ -81,7 +80,7 @@ class Inquiry extends ActiveRecord
             [['supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority'], 'integer'],
             [['inquiry_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['good_id', 'supplier_name', 'inquiry_datetime'], 'string', 'max' => 255],
+            [['good_id', 'inquiry_datetime'], 'string', 'max' => 255],
             [
                 ['good_id', 'supplier_id', 'inquiry_datetime'],
                 'required',
@@ -98,7 +97,8 @@ class Inquiry extends ActiveRecord
     {
         return [
             'id'               => '自增id',
-            'good_id'          => '零件编号',
+            'good_id'          => '零件ID',
+            'goods_number'     => '零件编号',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'inquiry_price'    => '咨询价格',
@@ -115,10 +115,6 @@ class Inquiry extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($this->supplier_id) {
-            $this->supplier_name = Supplier::getCreateDropDown()[$this->supplier_id];
-        }
-
         $date = $this->inquiry_datetime;
         $isHasNew = self::find()->where(['good_id' => $this->good_id])->andWhere(" inquiry_datetime >= '$date' ")->one();
 
@@ -128,5 +124,15 @@ class Inquiry extends ActiveRecord
         }
 
         return parent::beforeSave($insert);
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'good_id']);
+    }
+
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
 }
