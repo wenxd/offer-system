@@ -90,7 +90,7 @@ class Goods extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                      => '自增id',
+            'id'                      => '序号',
             'goods_number'            => '零件编号',
             'description'             => '描述',
             'original_company'        => '原厂家',
@@ -143,5 +143,31 @@ class Goods extends ActiveRecord
         }
         unset($this->img_url);
         return parent::beforeSave($insert);
+    }
+
+    public static function getCreateDropDown()
+    {
+        $goodList = self::find()->where(['is_deleted' => self::IS_DELETED_NO])->all();
+
+        $list = [];
+
+        foreach ($goodList as $key => $value) {
+            $list[$value->id] = $value['goods_number'];
+        }
+
+        return $list;
+    }
+
+    public static function getAllDropDown()
+    {
+        $goodList = self::find()->all();
+
+        $list = [];
+
+        foreach ($goodList as $key => $value) {
+            $list[$value->id] = $value['goods_number'];
+        }
+
+        return $list;
     }
 }

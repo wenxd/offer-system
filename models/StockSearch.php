@@ -12,6 +12,8 @@ use app\models\Stock;
  */
 class StockSearch extends Stock
 {
+    public $goods_number;
+    public $supplier_name;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +21,7 @@ class StockSearch extends Stock
     {
         return [
             [['id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
-            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at'], 'safe'],
+            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -63,33 +65,40 @@ class StockSearch extends Stock
             // $query->where('0=1');
             return $dataProvider;
         }
-
+        if ($this->goods_number) {
+            $query->leftJoin('goods as a', 'a.id = stock.good_id');
+            $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+        }
+        if ($this->goods_number) {
+            $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
+            $query->andFilterWhere(['like', 's.name', $this->supplier_name]);
+        }
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'supplier_id' => $this->supplier_id,
-            'price' => $this->price,
-            'number' => $this->number,
-            'sort' => $this->sort,
-            'is_deleted' => self::IS_DELETED_NO,
+            'stock.id' => $this->id,
+            'stock.supplier_id' => $this->supplier_id,
+            'stock.price' => $this->price,
+            'stock.number' => $this->number,
+            'stock.sort' => $this->sort,
+            'stock.is_deleted' => self::IS_DELETED_NO,
         ]);
 
-        $query->andFilterWhere(['like', 'good_id', $this->good_id])
-            ->andFilterWhere(['like', 'supplier_name', $this->supplier_name])
-            ->andFilterWhere(['like', 'position', $this->position]);
+        $query->andFilterWhere(['like', 'stock.good_id', $this->good_id])
+//            ->andFilterWhere(['like', 'supplier_name', $this->supplier_name])
+            ->andFilterWhere(['like', 'stock.position', $this->position]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'stock.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'stock.created_at', $created_at_start, $created_at_end]);
         }
 
         return $dataProvider;

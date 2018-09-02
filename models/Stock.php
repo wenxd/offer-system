@@ -60,7 +60,7 @@ class Stock extends ActiveRecord
             [['supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
             [['price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['good_id', 'supplier_name', 'position'], 'string', 'max' => 255],
+            [['good_id', 'position'], 'string', 'max' => 255],
             [
                 ['good_id', 'price', 'position', 'number'],
                 'required',
@@ -78,7 +78,8 @@ class Stock extends ActiveRecord
     {
         return [
             'id'            => '自增id',
-            'good_id'       => '零件编号',
+            'good_id'       => '零件ID',
+            'goods_number'  => '零件编号',
             'supplier_id'   => '供应商ID',
             'supplier_name' => '供应商名称',
             'price'         => '价格',
@@ -93,14 +94,19 @@ class Stock extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($this->supplier_id) {
-            $this->supplier_name = Supplier::getCreateDropDown()[$this->supplier_id];
-        }
+//        if ($this->supplier_id) {
+//            $this->supplier_name = Supplier::getCreateDropDown()[$this->supplier_id];
+//        }
         return parent::beforeSave($insert);
     }
 
     public function getSupplier()
     {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'good_id']);
     }
 }

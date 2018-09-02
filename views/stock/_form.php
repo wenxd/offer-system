@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use app\models\Supplier;
+use app\models\Goods;
 /* @var $this yii\web\View */
 /* @var $model app\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
@@ -15,9 +16,12 @@ use app\models\Supplier;
 
     <div class="box-body">
 
-    <?= $form->field($model, 'good_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'good_id')
+        ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
+        ->label('零件编号') ?>
 
-    <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>
+    <?= $form->field($model, 'supplier_id')
+        ->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 

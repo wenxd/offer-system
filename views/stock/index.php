@@ -35,15 +35,35 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             'good_id',
+            [
+                'attribute' => 'goods_number',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->goods_number;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'supplier_id',
-            'supplier_name',
-            'price',
-            'position',
-            'number',
+            [
+                'attribute' => 'supplier_name',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'supplier_name',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'updated_at',
                 'filter'    => DateRangePicker::widget([
-                    'name'  => 'StockSearch[updated_at]',
+                    'name' => 'StockSearch[updated_at]',
                     'value' => Yii::$app->request->get('StockSearch')['updated_at'],
                 ])
             ],
@@ -54,6 +74,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('StockSearch')['created_at'],
                 ])
             ],
+            'price',
+            'position',
+            'number',
             [
                 'class' => ActionColumn::className(),
                 'headerOptions' => ['style' => 'width:17%'],
