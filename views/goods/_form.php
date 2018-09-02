@@ -73,3 +73,22 @@ use app\models\Goods;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript">
+    //实现商品编号唯一的验证跳转
+    $('#goods-goods_number').blur(function () {
+        var goods_number = $('#goods-goods_number').val();
+        $.ajax({
+            type:"GET",
+            url:"?r=goods/get-number",
+            data:{goods_number:goods_number},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    window.location.href = '?r=goods/update&id=' + res.data;
+                }
+            }
+        })
+    });
+</script>

@@ -54,4 +54,22 @@ class GoodsController extends BaseController
             ],
         ];
     }
+
+    /**获取商品编号
+     * @return string
+     */
+    public function actionGetNumber()
+    {
+        $goods_number = Yii::$app->request->get('goods_number');
+
+        $goods = Goods::findOne(['goods_number' => $goods_number]);
+
+        if ($goods) {
+            return json_encode(['code' => 200, 'data' => $goods->id]);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '没有数据']);
+        }
+    }
+
+
 }

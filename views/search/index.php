@@ -57,8 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript">
     $("#good_id").bind('input propertychange', function (e) {
-        var good_id = $('#good_id').val();
-        if (good_id === '') {
+        var good_number = $('#good_id').val();
+        if (good_number === '') {
             $('.box-search').addClass('cancel');
             return;
         }
@@ -66,8 +66,8 @@ $this->params['breadcrumbs'][] = $this->title;
         $('.box-search').removeClass('cancel');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-good-id",
-            data:{good_id:good_id},
+            url:"?r=search/get-good-number",
+            data:{good_number:good_number},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

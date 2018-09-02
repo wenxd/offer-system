@@ -8,6 +8,7 @@
 namespace app\controllers;
 
 
+use app\models\Goods;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -31,26 +32,14 @@ class SearchController extends BaseController
     /**获取零件ID
      * @return string
      */
-    public function actionGetGoodId()
+    public function actionGetGoodNumber()
     {
-        $good_id = (string)Yii::$app->request->get('good_id');
+        $good_number = (string)Yii::$app->request->get('good_number');
 
-        $good_id_list = [];
-        $inquiryList = Inquiry::find()->filterWhere(['like', 'good_id', $good_id])->all();
-        if ($inquiryList) {
-            $inquiry_goodIds = ArrayHelper::getColumn($inquiryList, 'good_id');
-            $good_id_list = array_merge($good_id_list, $inquiry_goodIds);
-        }
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])->all();
+        $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number');
 
-        $stockList = Stock::find()->filterWhere(['like', 'good_id', $good_id])->all();
-        if ($stockList) {
-            $stock_goodIds = ArrayHelper::getColumn($stockList, 'good_id');
-            $good_id_list = array_merge($good_id_list, $stock_goodIds);
-        }
-
-        $good_id_list = array_unique($good_id_list);
-
-        return json_encode(['code' => 200, 'data' => $good_id_list]);
+        return json_encode(['code' => 200, 'data' => $good_number_list]);
     }
 
     /*
