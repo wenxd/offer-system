@@ -41,7 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'inquiry_price',
+            'tax_rate',
+            'price',
+            'tax_price',
             'inquiry_datetime',
             'sort',
             [

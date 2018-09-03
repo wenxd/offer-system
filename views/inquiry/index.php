@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\extend\widgets\Bar;
 use app\models\Inquiry;
+use app\models\Goods;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
 use kartik\daterange\DateRangePicker;
@@ -42,6 +43,79 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
+            [
+                'attribute' => 'original_company',
+                'label'     => '原厂家',
+                'filter'    => Html::activeTextInput($searchModel, 'original_company',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->original_company;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'original_company_remark',
+                'label'     => '原厂家备注',
+                'filter'    => Html::activeTextInput($searchModel, 'original_company_remark',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->original_company_remark;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'unit',
+                'label'     => '单位',
+                'contentOptions'=>['style'=>'min-width: 70px;'],
+                'filter'    => Html::activeTextInput($searchModel, 'unit',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->unit;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'technique_remark',
+                'label'     => '技术备注',
+                'filter'    => Html::activeTextInput($searchModel, 'technique_remark',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->technique_remark;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'is_process',
+                'label'     => '是否加工',
+                'filter'    => Goods::$process,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return Goods::$process[$model->goods->is_process];
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'img_id',
+                'label'     => '图纸',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return HTML::img($model->goods->img_url, ['width' => '100px']);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'supplier_id',
             [
                 'attribute' => 'supplier_name',
@@ -55,16 +129,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'inquiry_price',
+            'price',
+            'tax_price',
+            'tax_rate',
             [
                 'attribute' => 'inquiry_datetime',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[inquiry_datetime]',
                     'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'],
                 ])
             ],
             [
+                'attribute' => 'offer_date',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'InquirySearch[offer_date]',
+                    'value' => Yii::$app->request->get('InquirySearch')['offer_date'],
+                ])
+            ],
+            'remark',
+            [
                 'attribute' => 'updated_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[updated_at]',
                     'value' => Yii::$app->request->get('InquirySearch')['updated_at'],
@@ -72,6 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'created_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[created_at]',
                     'value' => Yii::$app->request->get('InquirySearch')['created_at'],
@@ -93,7 +181,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::className(),
-                'headerOptions' => ['style' => 'width:17%'],
+                'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header' => '操作',
                 'template' => '{view} {update} {delete}',
             ],

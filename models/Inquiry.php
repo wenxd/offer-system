@@ -11,7 +11,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id 自增id
  * @property string $good_id 零件号
  * @property int $supplier_id 供应商ID
- * @property string $inquiry_price 咨询价格
+ * @property string $price 咨询价格
  * @property string $inquiry_datetime 咨询时间
  * @property int $sort 排序
  * @property int $is_better 是否优选：0否 1是
@@ -78,15 +78,15 @@ class Inquiry extends ActiveRecord
     {
         return [
             [['supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority'], 'integer'],
-            [['inquiry_price'], 'number'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['good_id', 'inquiry_datetime'], 'string', 'max' => 255],
+            [['price', 'tax_rate', 'tax_price'], 'number'],
+            [['updated_at', 'created_at', 'offer_date'], 'safe'],
+            [['good_id', 'inquiry_datetime', 'remark'], 'string', 'max' => 255],
             [
                 ['good_id', 'supplier_id', 'inquiry_datetime'],
                 'required',
                 'on' => 'inquiry'
             ],
-            [['inquiry_price'], 'double', 'min' => 0],
+            [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
         ];
     }
 
@@ -101,8 +101,12 @@ class Inquiry extends ActiveRecord
             'goods_number'     => '零件号',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
-            'inquiry_price'    => '咨询价格',
+            'price'            => '未税价格',
+            'tax_price'        => '含税价格',
+            'tax_rate'         => '税率',
             'inquiry_datetime' => '咨询时间',
+            'offer_date'       => '交货日期',
+            'remark'           => '询价备注',
             'sort'             => '排序',
             'is_better'        => '是否优选',
             'is_newest'        => '是否最新询价',
