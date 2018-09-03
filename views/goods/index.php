@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'offer_date',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'GoodsSearch[offer_date]',
                     'value' => Yii::$app->request->get('GoodsSearch')['offer_date'],
@@ -57,6 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'updated_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'GoodsSearch[updated_at]',
                     'value' => Yii::$app->request->get('GoodsSearch')['updated_at'],
@@ -64,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'created_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'GoodsSearch[created_at]',
                     'value' => Yii::$app->request->get('GoodsSearch')['created_at'],
@@ -74,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'competitor_offer',
             [
                 'class'         => ActionColumn::className(),
-                'headerOptions' => ['style' => 'width:17%'],
+                'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header'        => '操作',
                 'template'      => '{view} {update} {delete}',
             ],
