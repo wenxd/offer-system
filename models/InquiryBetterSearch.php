@@ -13,6 +13,13 @@ use app\models\Inquiry;
 class InquiryBetterSearch extends InquiryBetter
 {
     public $goods_number;
+    public $original_company;
+    public $original_company_remark;
+    public $unit;
+    public $technique_remark;
+    public $is_process;
+    public $img_id;
+
     public $supplier_name;
     /**
      * {@inheritdoc}
@@ -20,10 +27,12 @@ class InquiryBetterSearch extends InquiryBetter
     public function rules()
     {
         return [
-            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority'], 'integer'],
-            [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number'], 'safe'],
-            [['inquiry_price'], 'number', 'min' => 0],
-            [['id', 'good_id', 'supplier_id', 'supplier_name', 'inquiry_price'], 'trim']
+            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted'], 'integer'],
+            [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
+                'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
+                'is_process'], 'safe'],
+            [['price', 'tax_price'], 'number', 'min' => 0],
+            [['id', 'good_id', 'supplier_id', 'supplier_name', 'price', 'tax_price', 'remark'], 'trim']
         ];
     }
 
@@ -55,7 +64,7 @@ class InquiryBetterSearch extends InquiryBetter
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'inquiry_price', 'inquiry_datetime', 'updated_at', 'created_at']
+                'attributes' => ['id', 'price', 'tax_price', 'inquiry_datetime', 'updated_at', 'created_at']
             ]
         ]);
 
@@ -66,9 +75,15 @@ class InquiryBetterSearch extends InquiryBetter
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->goods_number) {
-            $query->leftJoin('goods as a', 'a.id = stock.good_id');
+        if ($this->goods_number || $this->original_company || $this->original_company_remark || $this->unit
+            || $this->technique_remark || $this->is_process) {
+            $query->leftJoin('goods as a', 'a.id = inquiry.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+            $query->andFilterWhere(['like', 'a.original_company', $this->original_company]);
+            $query->andFilterWhere(['like', 'a.original_company_remark', $this->original_company_remark]);
+            $query->andFilterWhere(['like', 'a.unit', $this->unit]);
+            $query->andFilterWhere(['like', 'a.is_process', $this->is_process]);
+            $query->andFilterWhere(['like', 'a.technique_remark', $this->technique_remark]);
         }
         if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
@@ -78,7 +93,9 @@ class InquiryBetterSearch extends InquiryBetter
         $query->andFilterWhere([
             'id'            => $this->id,
             'supplier_id'   => $this->supplier_id,
-            'inquiry_price' => $this->inquiry_price,
+            'price'         => $this->price,
+            'tax_price'     => $this->tax_price,
+            'remark'        => $this->remark,
             'sort'          => $this->sort,
             'is_better'     => $this->is_better,
             'is_newest'     => $this->is_newest,
@@ -94,7 +111,12 @@ class InquiryBetterSearch extends InquiryBetter
             $inquiry_at_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'inquiry_datetime', $inquiry_at_start, $inquiry_at_end]);
         }
-
+        if ($this->offer_date && strpos($this->offer_date, ' - ')) {
+            list($offer_date_start, $offer_date_end) = explode(' - ', $this->offer_date);
+            $offer_date_start .= ' 00:00:00';
+            $offer_date_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'offer_date', $offer_date_start, $offer_date_end]);
+        }
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';

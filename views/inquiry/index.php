@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\extend\widgets\Bar;
@@ -37,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
-                        return $model->goods->goods_number;
+                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
                     } else {
                         return '';
                     }

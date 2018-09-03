@@ -91,13 +91,15 @@ class InquirySearch extends Inquiry
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'          => $this->id,
-            'supplier_id' => $this->supplier_id,
-            'price'       => $this->price,
-            'sort'        => $this->sort,
-            'is_better'   => $this->is_better,
-            'is_newest'   => $this->is_newest,
-            'is_deleted'  => $this->is_deleted,
+            'id'            => $this->id,
+            'supplier_id'   => $this->supplier_id,
+            'price'         => $this->price,
+            'tax_price'     => $this->tax_price,
+            'remark'        => $this->remark,
+            'sort'          => $this->sort,
+            'is_better'     => $this->is_better,
+            'is_newest'     => $this->is_newest,
+            'is_deleted'    => $this->is_deleted,
         ]);
 
         $query->andFilterWhere(['like', 'good_id', $this->good_id]);
