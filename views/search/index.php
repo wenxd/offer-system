@@ -34,9 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-header">
                     <form class="form-inline" method="get" action="" id="form">
                         <div class="form-group">
-                            <label for="good_id">零件号</label>
-                            <input type="text" class="form-control" id="good_id"
-                                   placeholder="请输入零件号，如：1001" name="good_id" autocomplete="off">
+                            <label for="good_number">零件号</label>
+                            <input type="text" class="form-control" id="good_number"
+                                   placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off">
                         </div>
                         <button type="submit" class="btn btn-primary" style="float: right">查询</button>
                     </form>
@@ -56,8 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
 </section>
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript">
-    $("#good_id").bind('input propertychange', function (e) {
-        var good_number = $('#good_id').val();
+    $("#good_number").bind('input propertychange', function (e) {
+        var good_number = $('#good_number').val();
         if (good_number === '') {
             $('.box-search').addClass('cancel');
             return;
@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
     });
 
     function select(obj){
-        $("#good_id").val(obj.html());
+        $("#good_number").val(obj.html());
         $('.box-search').addClass('cancel');
     }
 </script>
