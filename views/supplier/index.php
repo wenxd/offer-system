@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'email',
             [
                 'attribute' => 'updated_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'SupplierSearch[updated_at]',
                     'value' => Yii::$app->request->get('SupplierSearch')['updated_at'],
@@ -47,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'created_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'SupplierSearch[created_at]',
                     'value' => Yii::$app->request->get('SupplierSearch')['created_at'],
@@ -54,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::className(),
-                'headerOptions' => ['style' => 'width:17%'],
+                'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header' => '操作',
                 'template' => '{view} {update} {delete}',
             ],
