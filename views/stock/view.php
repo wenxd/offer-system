@@ -40,7 +40,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
+            'tax_rate',
             'price',
+            'tax_price',
             'position',
             'number',
             'updated_at',
