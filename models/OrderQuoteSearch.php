@@ -19,7 +19,7 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['order_id', 'description', 'remark', 'inquirys', 'stocks', 'provide_date', 'updated_at', 'created_at'], 'safe'],
+            [['order_id', 'description', 'remark', 'record_ids', 'stocks', 'provide_date', 'updated_at', 'created_at'], 'safe'],
             [['quote_price'], 'number'],
             [['id', 'order_id', 'description', 'quote_price', 'remark'], 'trim'],
         ];
@@ -75,7 +75,7 @@ class OrderQuoteSearch extends OrderQuote
         $query->andFilterWhere(['like', 'order_id', $this->order_id])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'remark', $this->remark])
-            ->andFilterWhere(['like', 'inquirys', $this->inquirys])
+            ->andFilterWhere(['like', 'record_ids', $this->record_ids])
             ->andFilterWhere(['like', 'stocks', $this->stocks]);
 
         if ($this->provide_date && strpos($this->provide_date, ' - ')) {

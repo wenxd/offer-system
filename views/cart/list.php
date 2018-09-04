@@ -70,12 +70,12 @@ if (!$model->id) {
                                 }
                             ?>
                         </td>
-                        <td><?=$value->type == 2 ? '库存商品' : '询价商品'?></td>
+                        <td><?=$value->type == 3 ? '库存商品' : '询价商品'?></td>
                         <td class="price" data-cart_id="<?=$value->id?>"><?=$value['quotation_price']?><a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="<?=$value['quotation_price']?>"></i></a></td>
-                        <td><?=$value->type == 2 ? $value->stock->number : '无限多'?></td>
-                        <td><?=$value->type == 2 ? '无' : $value->inquiry->inquiry_datetime?></td>
-                        <td><?=$value->type == 2 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
-                        <td><?=$value->type == 2 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
+                        <td><?=$value->type == 3 ? $value->stock->number : '无限多'?></td>
+                        <td><?=$value->type == 3 ? '无' : $value->inquiry->inquiry_datetime?></td>
+                        <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
+                        <td><?=$value->type == 3 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
                         <td><?=$value['number']?></td>
                         <td class="money">
                             <?=number_format($value['quotation_price'] * $value['number'], 2, '.', '')?>

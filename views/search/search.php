@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                            data-inquiry-id="<?=$value['id']?>" data-type="0" data-goods_id="<?=$value['good_id']?>"
+                            data-inquiry-id="<?=$value['id']?>" data-type="1" data-goods_id="<?=$value['good_id']?>"
                                data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                               data-inquiry-id="<?=$value['id']?>" data-type="1" data-goods_id="<?=$value['good_id']?>"
+                               data-inquiry-id="<?=$value['id']?>" data-type="2" data-goods_id="<?=$value['good_id']?>"
                                data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                               data-inquiry-id="<?=$value['id']?>" data-type="2" data-goods_id="<?=$value['good_id']?>"
+                               data-inquiry-id="<?=$value['id']?>" data-type="3" data-goods_id="<?=$value['good_id']?>"
                                data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>

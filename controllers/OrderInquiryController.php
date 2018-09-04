@@ -7,6 +7,7 @@
  */
 namespace app\controllers;
 
+use app\models\QuoteRecord;
 use Yii;
 use app\actions;
 use app\models\Cart;
@@ -46,58 +47,43 @@ class OrderInquiryController extends BaseController
         $params = Yii::$app->request->get('OrderInquiry');
         $type   = Yii::$app->request->get('type');
 
+        $orderType = 1;
         if ($type == 1) {
-            $order = new OrderInquiry();
-        } else {
             $order = new OrderQuote();
+        } else {
+            $order = new OrderInquiry();
+            $orderType = 2;
         }
 
+        $order->customer_id  = $params['customer_id'];
         $order->order_id     = $params['order_id'];
         $order->description  = $params['description'];
         $order->provide_date = $params['provide_date'];
         $order->quote_price  = $params['quote_price'];
         $order->remark       = $params['remark'];
 
-        $cartList = Cart::find()->all();
-        $ids_new    = [];
-        $ids_better = [];
-        $ids_stock  = [];
-        foreach ($cartList as $key => $cart) {
-            if ($cart->type == Cart::TYPE_NEW) {
-                $row = [];
-                $row['id']     = $cart->inquiry_id;
-                $row['number'] = $cart->number;
-                $ids_new[]     = $row;
-            }
-            if ($cart->type == Cart::TYPE_BETTER) {
-                $row = [];
-                $row['id']     = $cart->inquiry_id;
-                $row['number'] = $cart->number;
-                $ids_better[]  = $row;
-            }
-            if ($cart->type == Cart::TYPE_STOCK) {
-                $row = [];
-                $row['id']     = $cart->inquiry_id;
-                $row['number'] = $cart->number;
-                $ids_stock[]   = $row;
-            }
-        }
-        $new = [
-            'type' => Cart::TYPE_NEW,
-            'list' => $ids_new,
-        ];
-        $better = [
-            'type' => Cart::TYPE_BETTER,
-            'list' => $ids_better,
-        ];
-        $stock = [
-            'type' => Cart::TYPE_STOCK,
-            'list' => $ids_stock,
-        ];
-        $json = [$new, $better, $stock];
-        $order->inquirys = json_encode($json, JSON_UNESCAPED_UNICODE);
+        $order->record_ids = json_encode([], JSON_UNESCAPED_UNICODE);
         if ($order->save()) {
-            Cart::deleteAll();
+            $cartList = Cart::find()->all();
+            $data = [];
+            foreach ($cartList as $key => $cart) {
+                $row = [];
+
+                $row[] = $cart->type;
+                $row[] = $cart->inquiry_id;
+                $row[] = $cart->goods_id;
+                $row[] = $cart->quotation_price;
+                $row[] = $cart->number;
+                $row[] = $order->primaryKey;
+                $row[] = $orderType;
+
+                $data[] = $row;
+            }
+            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_quote_id', 'order_type'];
+            $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+            if ($num) {
+                Cart::deleteAll();
+            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $order->getErrors()]);

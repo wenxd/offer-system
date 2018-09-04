@@ -61,14 +61,30 @@ class QuoteRecord extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '自增id',
-            'type' => '报价类型 1:最新询价  2:优选  3:本地库存',
-            'good_id' => '零件ID',
-            'quote_price' => '报价价格',
-            'number' => '购买数量',
+            'id'             => '自增id',
+            'type'           => '报价类型 1:最新询价  2:优选  3:本地库存',
+            'good_id'        => '零件ID',
+            'quote_price'    => '报价价格',
+            'number'         => '购买数量',
             'order_quote_id' => '报价订单ID',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'order_type'     => '订单类型 1:报价单  2询价单',
+            'updated_at'     => '更新时间',
+            'created_at'     => '创建时间',
         ];
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
+
+    public function getInquiry()
+    {
+        return $this->hasOne(Inquiry::className(), ['id' => 'inquiry_id']);
+    }
+
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['id' => 'inquiry_id']);
     }
 }

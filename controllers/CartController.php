@@ -29,7 +29,7 @@ class CartController extends BaseController
         $quotation_price = Yii::$app->request->post('quotation_price');
 
         if ($inquiryId) {
-            if ($type == 2) {
+            if ($type == 3) {
                 $stock = Stock::findOne($inquiryId);
                 if ($stock->number < $number){
                     return json_encode(['code' => 500, 'msg' => '本地库存不足']);
