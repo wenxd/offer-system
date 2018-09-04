@@ -115,4 +115,15 @@ class Supplier extends ActiveRecord
         }
         return $return;
     }
+
+    public static function getAllDropDown()
+    {
+        $list = self::find()->all();
+
+        $return = [];
+        foreach ($list as $row) {
+            $return[$row->id] = $row->name;
+        }
+        return $return;
+    }
 }

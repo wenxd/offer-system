@@ -283,18 +283,17 @@ CREATE TABLE `auth_rule` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for cart
--- ----------------------------
-DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `inquiry_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价id',
   `type` int(11) NOT NULL DEFAULT '0' COMMENT '类型：0最新 1优选 2库存',
   `number` int(11) NOT NULL DEFAULT '0' COMMENT '购买数量',
+  `quotation_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价价格',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='购物车';
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='购物车';
 
 
 -- ----------------------------

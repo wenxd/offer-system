@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\Inquiry;
+use app\models\Supplier;
 
 $this->title = '搜索结果列表';
 $this->params['breadcrumbs'][] = $this->title;
@@ -25,7 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>是否最新</th>
                         <th>是否优选</th>
                         <th>商品类型</th>
-                        <th>价格</th>
+                        <th>税率</th>
+                        <th>未税价格</th>
+                        <th>含税价格</th>
                         <th>库存数量</th>
                         <th>询价时间</th>
                         <th>供应商ID</th>
@@ -40,19 +43,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <?php foreach ($inquiryNewest as $key => $value):?>
                     <tr>
-                        <td><?=$value['good_id']?></td>
+                        <td><?=$value->goods->goods_number?></td>
                         <td><?=Inquiry::$newest[$value['is_newest']]?></td>
                         <td><?=Inquiry::$better[$value['is_better']]?></td>
                         <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
+                        <td><?=$value['tax_rate']?></td>
+                        <td><?=$value['price']?></td>
+                        <td><?=$value['tax_price']?></td>
                         <td>无限多</td>
                         <td><?=$value['inquiry_datetime']?></td>
                         <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
+                        <td><?=Supplier::getAllDropDown()[$value['supplier_id']]?></td>
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                            data-inquiry-id="<?=$value['id']?>" data-type="0"><i class="fa fa-inbox"></i> 加入报价单</a>
+                            data-inquiry-id="<?=$value['id']?>" data-type="0" data-goods_id="<?=$value['good_id']?>"
+                               data-quotation_price="<?=$value['good_id']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
                 <?php endforeach;?>
@@ -61,15 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <?php foreach ($inquiryBetter as $key => $value):?>
                     <tr>
-                        <td><?=$value['good_id']?></td>
+                        <td><?=$value->goods->goods_number?></td>
                         <td><?=Inquiry::$newest[$value['is_newest']]?></td>
                         <td><?=Inquiry::$better[$value['is_better']]?></td>
                         <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
+                        <td><?=$value['tax_rate']?></td>
+                        <td><?=$value['price']?></td>
+                        <td><?=$value['tax_price']?></td>
                         <td>无限多</td>
                         <td><?=$value['inquiry_datetime']?></td>
                         <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
+                        <td><?=Supplier::getAllDropDown()[$value['supplier_id']]?></td>
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
@@ -82,15 +90,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <?php foreach ($stockList as $key => $value):?>
                     <tr>
-                        <td><?=$value['good_id']?></td>
+                        <td><?=$value->goods->goods_number?></td>
                         <td>无</td>
                         <td>无</td>
                         <td>库存商品</td>
+                        <td><?=$value['tax_rate']?></td>
                         <td><?=$value['price']?></td>
+                        <td><?=$value['tax_price']?></td>
                         <td><?=$value['number']?></td>
                         <td>无</td>
                         <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
+                        <td><?=Supplier::getAllDropDown()[$value['supplier_id']]?></td>
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
@@ -119,15 +129,21 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     function addList(obj){
+        var goods_id        = obj.data("goods_id");
+        var quotation_price = obj.data("quotation_price");
+        console.log(goods_id);
+        console.log(quotation_price);
+return ;
         var inquiryId = obj.data("inquiry-id");
         var number    = obj.parent().parent().find('.number').val();
-        var reg = /^[0-9]*$/;
+        var type      = obj.data("type");
 
+        var reg = /^[0-9]*$/;
         if (!reg.test(number) || number <= 0) {
             layer.msg('数量请输入正整数', {time:2000});
             return false;
         }
-        var type      = obj.data("type");
+
         $.ajax({
             type:"post",
             url:"?r=cart/add-list",
