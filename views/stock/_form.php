@@ -8,6 +8,7 @@ use app\models\Goods;
 /* @var $this yii\web\View */
 /* @var $model app\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
+$model->tax_rate='10';
 ?>
 
 <div class="box">
@@ -23,7 +24,9 @@ use app\models\Goods;
     <?= $form->field($model, 'supplier_id')
         ->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>
 
+    <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'position')->textInput(['maxlength' => true]) ?>
 
@@ -44,3 +47,22 @@ use app\models\Goods;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript">
+    //实现税率自动转换
+    var tax = $('#stock-tax_rate').val();
+
+    $('#stock-price').blur(function () {
+        var price = $('#stock-price').val();
+        var tax_price = price * (1 + tax/100);
+        $("#stock-tax_price").attr("value",tax_price.toFixed(2));
+        $("#stock-tax_price").val(tax_price.toFixed(2));
+    });
+
+    $('#stock-tax_price').blur(function () {
+        var tax_price = $('#stock-tax_price').val();
+        var price = tax_price / (1 + tax/100);
+        $("#stock-price").attr("value",price.toFixed(2));
+        $("#stock-price").val(price.toFixed(2));
+    });
+</script>
