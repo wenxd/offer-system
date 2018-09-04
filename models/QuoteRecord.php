@@ -19,6 +19,9 @@ use yii\behaviors\TimestampBehavior;
  */
 class QuoteRecord extends ActiveRecord
 {
+    const TYPE_QUOTE    = '1';
+    const TYPE_INQUIRY  = '2';
+
     public function behaviors()
     {
         return [

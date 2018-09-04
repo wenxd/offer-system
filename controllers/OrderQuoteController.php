@@ -68,7 +68,7 @@ class OrderQuoteController extends BaseController
         if (!$model){
             echo '查不到此报价单信息';die;
         }
-        $list = QuoteRecord::findAll(['order_quote_id' => $id]);
+        $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_QUOTE]);
 
         $model->loadDefaultValues();
         $data['model']     = $model;

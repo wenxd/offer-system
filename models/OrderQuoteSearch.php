@@ -12,6 +12,7 @@ use app\models\OrderQuote;
  */
 class OrderQuoteSearch extends OrderQuote
 {
+    public $customer_name;
     /**
      * {@inheritdoc}
      */
@@ -19,9 +20,9 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['order_id', 'description', 'remark', 'record_ids', 'stocks', 'provide_date', 'updated_at', 'created_at'], 'safe'],
+            [['order_id', 'description', 'remark', 'record_ids', 'stocks', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
             [['quote_price'], 'number'],
-            [['id', 'order_id', 'description', 'quote_price', 'remark'], 'trim'],
+            [['id', 'order_id', 'description', 'quote_price', 'remark', 'customer_name'], 'trim'],
         ];
     }
 
@@ -67,11 +68,15 @@ class OrderQuoteSearch extends OrderQuote
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'quote_price' => $this->quote_price,
-            'is_deleted' => $this->is_deleted,
+            'order_quote.id' => $this->id,
+            'order_quote.quote_price' => $this->quote_price,
+            'order_quote.is_deleted' => $this->is_deleted,
         ]);
 
+        if ($this->customer_name) {
+            $query->leftJoin('customer as a', 'a.id = order_quote.customer_id');
+            $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
+        }
         $query->andFilterWhere(['like', 'order_id', $this->order_id])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'remark', $this->remark])

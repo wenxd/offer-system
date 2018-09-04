@@ -20,6 +20,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'customer_name',
+                'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->customer) {
+                        return $model->customer->name;
+                    }
+                }
+            ],
             'order_id',
             'description',
             [

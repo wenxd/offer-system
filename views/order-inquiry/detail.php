@@ -1,8 +1,9 @@
 <?php
 use app\models\Inquiry;
+use app\models\Supplier;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
-$this->title = '报价单详情';
+$this->title = '询价单详情';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
@@ -38,69 +39,43 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td colspan="11" style="text-align: center;">最新询价记录</td>
-                </tr>
-                <?php foreach ($inquiryNewest as $key => $value):?>
+                <?php foreach ($quoteList as $key => $value):?>
                     <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td><?=Inquiry::$newest[$value['is_newest']]?></td>
-                        <td><?=Inquiry::$better[$value['is_better']]?></td>
-                        <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
-                        <td>无限多</td>
-                        <td><?=$value['inquiry_datetime']?></td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
-                        <td><?=$value['number']?></td>
-                        <td class="money">
-                            <?=number_format($value['inquiry_price'] * $value['number'], 2, '.', '')?>
+                        <td><?=$value->goods->goods_number?></td>
+                        <td>
+                            <?php
+                            if ($value->type == 0 || $value->type == 1) {
+                                echo Inquiry::$newest[$value->inquiry->is_newest];
+                            } else {
+                                echo '否';
+                            }
+                            ?>
                         </td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan="11" style="text-align: center;">优选记录</td>
-                </tr>
-                <?php foreach ($inquiryBetter as $key => $value):?>
-                    <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td><?=Inquiry::$newest[$value['is_newest']]?></td>
-                        <td><?=Inquiry::$better[$value['is_better']]?></td>
-                        <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
-                        <td>无限多</td>
-                        <td><?=$value['inquiry_datetime']?></td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
-                        <td><?=$value['number']?></td>
-                        <td class="money">
-                            <?=number_format($value['inquiry_price'] * $value['number'], 2, '.', '')?>
+                        <td>
+                            <?php
+                            if ($value->type == 0 || $value->type == 1) {
+                                echo Inquiry::$newest[$value->inquiry->is_better];
+                            } else {
+                                echo '否';
+                            }
+                            ?>
                         </td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan="11" style="text-align: center;">本地库存零件记录</td>
-                </tr>
-                <?php foreach ($stockList as $key => $value):?>
-                    <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>库存商品</td>
-                        <td><?=$value['price']?></td>
-                        <td><?=$value['number']?></td>
-                        <td>无</td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
+                        <td><?=$value->type == 3 ? '库存商品' : '询价商品'?></td>
+                        <td class="price" data-cart_id="<?=$value->id?>"><?=$value['quote_price']?></td>
+                        <td><?=$value->type == 3 ? $value->stock->number : '无限多'?></td>
+                        <td><?=$value->type == 3 ? '无' : $value->inquiry->inquiry_datetime?></td>
+                        <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
+                        <td><?=$value->type == 3 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
                         <td><?=$value['number']?></td>
                         <td class="money">
-                            <?=number_format($value['price'] * $value['number'], 2, '.', '')?>
+                            <?=number_format($value['quote_price'] * $value['number'], 2, '.', '')?>
                         </td>
                     </tr>
                 <?php endforeach;?>
                 <tr>
                     <td colspan="10" style="text-align: right;"><b>金额合计</b></td>
                     <td class="all_money"></td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>

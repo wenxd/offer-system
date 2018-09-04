@@ -67,18 +67,24 @@ class OrderQuote extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'           => '自增id',
-            'customer_id'  => '客户名称',
-            'order_id'     => '订单编号',
-            'description'  => '描述',
-            'quote_price'  => '咨询价格',
-            'remark'       => '备注',
-            'record_ids'   => '询价id列表 json',
-            'stocks'       => '库存id列表 json',
-            'is_deleted'   => '是否删除：0未删除 1已删除',
-            'provide_date' => '供货日期',
-            'updated_at'   => '更新时间',
-            'created_at'   => '创建时间',
+            'id'              => '自增id',
+            'customer_id'     => '客户名称',
+            'customer_name'   => '客户名称',
+            'order_id'        => '订单编号',
+            'description'     => '描述',
+            'quote_price'     => '咨询价格',
+            'remark'          => '备注',
+            'record_ids'      => '询价id列表 json',
+            'stocks'          => '库存id列表 json',
+            'is_deleted'      => '是否删除：0未删除 1已删除',
+            'provide_date'    => '供货日期',
+            'updated_at'      => '更新时间',
+            'created_at'      => '创建时间',
         ];
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }

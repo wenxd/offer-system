@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
+use app\models\Customer;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderQuoteSearch */
@@ -20,6 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'customer_name',
+                'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->customer) {
+                        return $model->customer->name;
+                    }
+                }
+            ],
             'order_id',
             'description',
             [
