@@ -76,7 +76,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('StockSearch')['created_at'],
                 ])
             ],
+            'tax_rate',
             'price',
+            'tax_price',
             'position',
             'number',
             [
