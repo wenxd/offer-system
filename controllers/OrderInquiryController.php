@@ -101,8 +101,8 @@ class OrderInquiryController extends BaseController
         $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_INQUIRY]);
 
         $model->loadDefaultValues();
-        $data['model']     = $model;
-        $data['quoteList'] = $list;
+        $data['model']       = $model;
+        $data['inquiryList'] = $list;
 
         return $this->render('detail', $data);
     }

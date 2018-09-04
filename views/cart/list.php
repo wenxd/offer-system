@@ -54,7 +54,7 @@ if (!$model->id) {
                         <td><?=$value->goods->goods_number?></td>
                         <td>
                             <?php
-                                if ($value->type == 0 || $value->type == 1) {
+                                if ($value->type == 1 || $value->type == 2) {
                                     echo Inquiry::$newest[$value->inquiry->is_newest];
                                 } else {
                                     echo '否';
@@ -63,7 +63,7 @@ if (!$model->id) {
                         </td>
                         <td>
                             <?php
-                                if ($value->type == 0 || $value->type == 1) {
+                                if ($value->type == 1 || $value->type == 2) {
                                     echo Inquiry::$newest[$value->inquiry->is_better];
                                 } else {
                                     echo '否';
