@@ -58,7 +58,7 @@ class Stock extends ActiveRecord
     {
         return [
             [['supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
-            [['price'], 'number'],
+            [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['good_id', 'position'], 'string', 'max' => 255],
             [
@@ -66,7 +66,7 @@ class Stock extends ActiveRecord
                 'required',
                 'on' => 'stock'
             ],
-            [['price'], 'double', 'min' => 0],
+            [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
             [['number'], 'integer', 'min' => 0],
         ];
     }
@@ -77,27 +77,21 @@ class Stock extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'            => '自增id',
-            'good_id'       => '零件ID',
-            'goods_number'  => '零件号',
-            'supplier_id'   => '供应商ID',
-            'supplier_name' => '供应商名称',
-            'price'         => '价格',
-            'position'      => '库存位置',
-            'number'        => '库存数量',
-            'sort'          => '排序',
-            'is_deleted'    => '是否删除：0未删除 1已删除',
-            'updated_at'    => '更新时间',
-            'created_at'    => '创建时间',
+            'id'               => '自增id',
+            'good_id'          => '零件ID',
+            'goods_number'     => '零件号',
+            'supplier_id'      => '供应商ID',
+            'supplier_name'    => '供应商名称',
+            'price'            => '未税价格',
+            'tax_price'        => '含税价格',
+            'tax_rate'         => '税率',
+            'position'         => '库存位置',
+            'number'           => '库存数量',
+            'sort'             => '排序',
+            'is_deleted'       => '是否删除：0未删除 1已删除',
+            'updated_at'       => '更新时间',
+            'created_at'       => '创建时间',
         ];
-    }
-
-    public function beforeSave($insert)
-    {
-//        if ($this->supplier_id) {
-//            $this->supplier_name = Supplier::getCreateDropDown()[$this->supplier_id];
-//        }
-        return parent::beforeSave($insert);
     }
 
     public function getSupplier()
