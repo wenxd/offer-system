@@ -87,4 +87,15 @@ class Customer extends ActiveRecord
             'created_at'        => '创建时间',
         ];
     }
+
+    public static function getCreateDropDown()
+    {
+        $list = self::find()->where(['is_deleted' => static::IS_DELETED_NO])->all();
+
+        $return = [];
+        foreach ($list as $row) {
+            $return[$row->id] = $row->name;
+        }
+        return $return;
+    }
 }

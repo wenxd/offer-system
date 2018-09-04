@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
                             data-inquiry-id="<?=$value['id']?>" data-type="0" data-goods_id="<?=$value['good_id']?>"
-                               data-quotation_price="<?=$value['good_id']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
+                               data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
                 <?php endforeach;?>
@@ -81,7 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                               data-inquiry-id="<?=$value['id']?>" data-type="1"><i class="fa fa-inbox"></i> 加入报价单</a>
+                               data-inquiry-id="<?=$value['id']?>" data-type="1" data-goods_id="<?=$value['good_id']?>"
+                               data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
                 <?php endforeach;?>
@@ -104,7 +105,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
-                               data-inquiry-id="<?=$value['id']?>" data-type="2"><i class="fa fa-inbox"></i> 加入报价单</a>
+                               data-inquiry-id="<?=$value['id']?>" data-type="2" data-goods_id="<?=$value['good_id']?>"
+                               data-quotation_price="<?=$value['tax_price']?>"><i class="fa fa-inbox"></i> 加入报价单</a>
                         </td>
                     </tr>
                 <?php endforeach;?>
@@ -131,12 +133,9 @@ $this->params['breadcrumbs'][] = $this->title;
     function addList(obj){
         var goods_id        = obj.data("goods_id");
         var quotation_price = obj.data("quotation_price");
-        console.log(goods_id);
-        console.log(quotation_price);
-return ;
-        var inquiryId = obj.data("inquiry-id");
-        var number    = obj.parent().parent().find('.number').val();
-        var type      = obj.data("type");
+        var inquiryId       = obj.data("inquiry-id");
+        var number          = obj.parent().parent().find('.number').val();
+        var type            = obj.data("type");
 
         var reg = /^[0-9]*$/;
         if (!reg.test(number) || number <= 0) {
@@ -147,7 +146,7 @@ return ;
         $.ajax({
             type:"post",
             url:"?r=cart/add-list",
-            data:{inquiryId:inquiryId, type:type, number:number},
+            data:{inquiryId:inquiryId, type:type, number:number,goods_id:goods_id,quotation_price:quotation_price},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

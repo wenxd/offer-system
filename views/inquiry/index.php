@@ -16,6 +16,7 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '询价管理列表';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="box table-responsive">
     <div class="box-header">
@@ -138,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[inquiry_datetime]',
-                    'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'],
+                    'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'] ?? '',
                 ])
             ],
             [
@@ -146,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[offer_date]',
-                    'value' => Yii::$app->request->get('InquirySearch')['offer_date'],
+                    'value' => Yii::$app->request->get('InquirySearch')['offer_date'] ?? '',
                 ])
             ],
             'remark',
@@ -155,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[updated_at]',
-                    'value' => Yii::$app->request->get('InquirySearch')['updated_at'],
+                    'value' => Yii::$app->request->get('InquirySearch')['updated_at'] ?? '',
                 ])
             ],
             [
@@ -163,7 +164,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[created_at]',
-                    'value' => Yii::$app->request->get('InquirySearch')['created_at'],
+                    'value' => Yii::$app->request->get('InquirySearch')['created_at'] ?? '',
                 ])
             ],
             [

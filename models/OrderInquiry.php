@@ -53,7 +53,7 @@ class OrderInquiry extends ActiveRecord
     {
         return [
             [['quote_price'], 'number'],
-            [['inquirys'], 'required'],
+            [['inquirys', 'customer_id'], 'required'],
             [['inquirys'], 'string'],
             [['is_deleted'], 'integer'],
             [['provide_date', 'updated_at', 'created_at'], 'safe'],
@@ -67,17 +67,23 @@ class OrderInquiry extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '自增id',
-            'order_id' => '订单编号',
-            'description' => '描述',
-            'quote_price' => '咨询价格',
-            'remark' => '备注',
-            'inquirys' => '询价id列表 json',
-            'stocks' => '库存id列表 json',
-            'is_deleted' => '是否删除：0未删除 1已删除',
+            'id'           => '自增id',
+            'customer_id'  => '客户名称',
+            'order_id'     => '订单编号',
+            'description'  => '描述',
+            'quote_price'  => '咨询价格',
+            'remark'       => '备注',
+            'inquirys'     => '询价id列表 json',
+            'stocks'       => '库存id列表 json',
+            'is_deleted'   => '是否删除：0未删除 1已删除',
             'provide_date' => '供货日期',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'updated_at'   => '更新时间',
+            'created_at'   => '创建时间',
         ];
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }

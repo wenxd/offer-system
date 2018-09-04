@@ -3,6 +3,8 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use app\models\Inquiry;
+use app\models\Supplier;
+use app\models\Customer;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 
@@ -36,83 +38,52 @@ if (!$model->id) {
                         <th>是否最新</th>
                         <th>是否优选</th>
                         <th>商品类型</th>
-                        <th>价格</th>
+                        <th style="width: 150px;">报价金额</th>
                         <th>库存数量</th>
-                        <th>询价时间</th>
+                        <th style="width: 150px;">询价时间</th>
                         <th>供应商ID</th>
                         <th>供应商名称</th>
                         <th>购买数量</th>
                         <th>金额</th>
-                        <th>操作</th>
+                        <th style="width: 230px;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td colspan="11" style="text-align: center;">最新询价记录</td>
-                </tr>
-                <?php foreach ($inquiryNewest as $key => $value):?>
+                <?php foreach ($cartList as $key => $value):?>
                     <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td><?=Inquiry::$newest[$value['is_newest']]?></td>
-                        <td><?=Inquiry::$better[$value['is_better']]?></td>
-                        <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
-                        <td>无限多</td>
-                        <td><?=$value['inquiry_datetime']?></td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
-                        <td><?=$value['number']?></td>
-                        <td class="money">
-                            <?=number_format($value['inquiry_price'] * $value['number'], 2, '.', '')?>
+                        <td><?=$value->goods->goods_number?></td>
+                        <td>
+                            <?php
+                                if ($value->type == 0 || $value->type == 1) {
+                                    echo Inquiry::$newest[$value->inquiry->is_newest];
+                                } else {
+                                    echo '否';
+                                }
+                            ?>
                         </td>
                         <td>
-                            <a class="btn btn-danger btn-xs btn-flat delete" href="javascript:void(0);" data-cart-id="<?=$value['cart_id']?>" ><i class="fa fa-trash"></i> 删除</a>
+                            <?php
+                                if ($value->type == 0 || $value->type == 1) {
+                                    echo Inquiry::$newest[$value->inquiry->is_better];
+                                } else {
+                                    echo '否';
+                                }
+                            ?>
                         </td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan="11" style="text-align: center;">优选记录</td>
-                </tr>
-                <?php foreach ($inquiryBetter as $key => $value):?>
-                    <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td><?=Inquiry::$newest[$value['is_newest']]?></td>
-                        <td><?=Inquiry::$better[$value['is_better']]?></td>
-                        <td>询价商品</td>
-                        <td><?=$value['inquiry_price']?></td>
-                        <td>无限多</td>
-                        <td><?=$value['inquiry_datetime']?></td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
+                        <td><?=$value->type == 2 ? '库存商品' : '询价商品'?></td>
+                        <td class="price" data-cart_id="<?=$value->id?>"><?=$value['quotation_price']?><a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="<?=$value['quotation_price']?>"></i></a></td>
+                        <td><?=$value->type == 2 ? $value->stock->number : '无限多'?></td>
+                        <td><?=$value->type == 2 ? '无' : $value->inquiry->inquiry_datetime?></td>
+                        <td><?=$value->type == 2 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
+                        <td><?=$value->type == 2 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
                         <td><?=$value['number']?></td>
                         <td class="money">
-                            <?=number_format($value['inquiry_price'] * $value['number'], 2, '.', '')?>
+                            <?=number_format($value['quotation_price'] * $value['number'], 2, '.', '')?>
                         </td>
                         <td>
-                            <a class="btn btn-danger btn-xs btn-flat delete" href="javascript:void(0);" data-cart-id="<?=$value['cart_id']?>" ><i class="fa fa-trash"></i> 删除</a>
-                        </td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan="11" style="text-align: center;">本地库存零件记录</td>
-                </tr>
-                <?php foreach ($stockList as $key => $value):?>
-                    <tr>
-                        <td><?=$value['good_id']?></td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>库存商品</td>
-                        <td><?=$value['price']?></td>
-                        <td><?=$value['number']?></td>
-                        <td>无</td>
-                        <td><?=$value['supplier_id']?></td>
-                        <td><?=$value['supplier_name']?></td>
-                        <td><?=$value['number']?></td>
-                        <td class="money">
-                            <?=number_format($value['price'] * $value['number'], 2, '.', '')?>
-                        </td>
-                        <td>
-                            <a class="btn btn-danger btn-xs btn-flat delete" href="javascript:void(0);" data-cart-id="<?=$value['cart_id']?>" ><i class="fa fa-trash"></i> 删除</a>
+                            <a class="btn btn-danger btn-xs btn-flat delete" href="javascript:void(0);" data-cart-id="<?=$value['id']?>" ><i class="fa fa-trash"></i> 删除</a>
+                            <a class="btn btn-success btn-xs btn-flat" href="<?=Url::to(['goods/view', 'id' => $value->goods->id])?>"><i class="fa fa-product-hunt"></i> 零件详情</a>
+                            <a class="btn btn-info btn-xs btn-flat" href="<?=Url::to(['inquiry/index', 'InquirySearch[good_id]' => $value->goods->id])?>"><i class="fa fa-list"></i> 询价记录</a>
                         </td>
                     </tr>
                 <?php endforeach;?>
@@ -123,6 +94,8 @@ if (!$model->id) {
                 </tr>
                 </tbody>
             </table>
+
+            <?= $form->field($model, 'customer_id')->dropDownList(Customer::getCreateDropDown())?>
 
             <?= $form->field($model, 'order_id')->textInput(['maxlength' => true]) ?>
 
@@ -162,12 +135,53 @@ if (!$model->id) {
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
-    window.onload = function() {
+    function totalMoney() {
         var allMoney = 0;
         $('.money').each(function (index, element){
             allMoney += parseFloat(element.innerText)
         });
         $('.all_money').html(allMoney);
+    }
+    function editPrice(obj) {
+        var price = $(obj).data('price');
+        var html = '<input type="text" style="width:100px"><a style="margin-left: 10px;"><i class="fa fa-save" onclick="savePrice(this)" data-price="' + price + '"></i></a>';
+        $(obj).parent().parent().html(html);
+    }
+
+    function savePrice(obj) {
+        var number      = $(obj).parent().parent().parent().find('td').eq(9).html();
+        var beforePrice = $(obj).data('price');
+        var beforeHtml  = beforePrice + '<a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="' + beforePrice + '"></i></a>';
+        var price       = $(obj).parent().parent().find('input').val();
+        var cart_id     = $(obj).parent().parent().data('cart_id');
+        if (!price) {
+            $(obj).parent().parent().html(beforeHtml);
+            return;
+        }
+        var reg = /^[0-9]*$/;
+        if (!reg.test(price) || price <= 0) {
+            layer.msg('数量请输入正整数', {time:2000});
+            return false;
+        }
+        var saveHtml = price + '<a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="' + price + '"></i></a>';
+        $.ajax({
+            type:"post",
+            url:"?r=cart/edit-price",
+            data:{price:price, cart_id:cart_id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200) {
+                    $(obj).parent().parent().html(saveHtml);
+                    layer.msg(res.msg, {time:500}, function(){
+                        window.location.reload();
+                    });
+                }
+            }
+        });
+    }
+    window.onload = function() {
+
+        totalMoney();
 
         function submit(type) {
             $('form').submit(function(e){
@@ -196,25 +210,24 @@ if (!$model->id) {
                         if (res && res.code == 200) {
                             layer.msg(res.msg, {time:1500}, function(){
                                 if (type == 1) {
-                                    location.replace("?r=order-inquiry/index");
-                                } else {
                                     location.replace("?r=order-quote/index");
+                                } else {
+                                    location.replace("?r=order-inquiry/index");
                                 }
                             });
                         }
                     }
-                })
+                });
             });
         }
-
-        $('.inquiry_save').click(function () {
+        //报价
+        $('.quote_save').click(function () {
             submit(1);
         });
-
-        $('.quote_save').click(function () {
+        //询价
+        $('.inquiry_save').click(function () {
             submit(2);
         });
-
         $('.delete').click(function () {
             var cart_id = $(this).data('cart-id');
             $.ajax({
@@ -232,6 +245,5 @@ if (!$model->id) {
                 }
             })
         });
-
     }
 </script>
