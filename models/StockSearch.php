@@ -22,7 +22,7 @@ class StockSearch extends Stock
         return [
             [['id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
             [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number'], 'safe'],
-            [['price'], 'number'],
+            [['price', 'tax_price'], 'number'],
         ];
     }
 
@@ -54,7 +54,7 @@ class StockSearch extends Stock
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'price', 'number', 'updated_at', 'created_at']
+                'attributes' => ['id', 'price', 'tax_price', 'number', 'updated_at', 'created_at']
             ],
         ]);
 
@@ -75,16 +75,16 @@ class StockSearch extends Stock
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'stock.id' => $this->id,
+            'stock.id'          => $this->id,
             'stock.supplier_id' => $this->supplier_id,
-            'stock.price' => $this->price,
-            'stock.number' => $this->number,
-            'stock.sort' => $this->sort,
-            'stock.is_deleted' => self::IS_DELETED_NO,
+            'stock.price'       => $this->price,
+            'stock.tax_price'   => $this->tax_price,
+            'stock.number'      => $this->number,
+            'stock.sort'        => $this->sort,
+            'stock.is_deleted'  => self::IS_DELETED_NO,
         ]);
 
         $query->andFilterWhere(['like', 'stock.good_id', $this->good_id])
-//            ->andFilterWhere(['like', 'supplier_name', $this->supplier_name])
             ->andFilterWhere(['like', 'stock.position', $this->position]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
