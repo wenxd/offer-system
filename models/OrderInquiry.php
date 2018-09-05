@@ -92,6 +92,15 @@ class OrderInquiry extends ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        $record = QuoteRecord::find()->where(['order_quote_id' => $this->id, 'status' => QuoteRecord::STATUS_NO])->one();
+        if (!$record) {
+            $this->status = self::STATUS_YES;
+        }
+        return parent::beforeSave($insert);
+    }
+
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);

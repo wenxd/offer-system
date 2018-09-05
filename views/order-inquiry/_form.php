@@ -1,5 +1,5 @@
 <?php
-
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -8,9 +8,11 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="order-inquiry-form">
+<div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
+
+    <div class="box-body">
 
     <?= $form->field($model, 'order_id')->textInput(['maxlength' => true]) ?>
 
@@ -20,20 +22,20 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'inquirys')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'stocks')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'is_deleted')->textInput() ?>
 
     <?= $form->field($model, 'provide_date')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <div class="box-body">
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <div class="box-footer">
+        <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
+                'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
+                'name'  => 'submit-button']
+        )?>
+        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
+            'class' => 'btn btn-default btn-flat',
+        ])?>
     </div>
 
     <?php ActiveForm::end(); ?>

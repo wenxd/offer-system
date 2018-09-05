@@ -17,6 +17,7 @@ use app\models\OrderInquiry;
 use app\models\OrderInquirySearch;
 use app\models\OrderQuote;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 
 class OrderInquiryController extends BaseController
 {
@@ -99,6 +100,7 @@ class OrderInquiryController extends BaseController
         if (!$model){
             echo '查不到此报价单信息';die;
         }
+        Yii::$app->session->set('order_inquiry_id', $id);
         $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_INQUIRY]);
 
         $model->loadDefaultValues();
@@ -106,5 +108,30 @@ class OrderInquiryController extends BaseController
         $data['inquiryList'] = $list;
 
         return $this->render('detail', $data);
+    }
+
+    public function actionUpdate($id)
+    {
+        if (! $id) throw new BadRequestHttpException(yii::t('app', "Id doesn't exit"));
+
+        $model = OrderInquiry::findOne($id);
+        if (! $model) throw new BadRequestHttpException(yii::t('app', "Cannot find model by $id"));
+
+        if (yii::$app->getRequest()->getIsPost()) {
+            if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->save()) {
+                yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+                return $this->controller->redirect(['update', 'id' => $model->getPrimaryKey()]);
+            } else {
+                $errors = $model->getErrors();
+                $err = '';
+                foreach ($errors as $v) {
+                    $err .= $v[0] . '<br>';
+                }
+                yii::$app->getSession()->setFlash('error', $err);
+            }
+        }
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 }

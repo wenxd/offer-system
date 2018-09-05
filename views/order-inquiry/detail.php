@@ -1,6 +1,8 @@
 <?php
+use yii\helpers\Url;
 use app\models\Inquiry;
 use app\models\Supplier;
+use app\models\QuoteRecord;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 $this->title = '询价单详情';
@@ -39,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>交货期</th>
                         <th>询价备注</th>
                         <th>金额</th>
+                        <th>是否询价</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -72,19 +75,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?=$value->type == 3 ? $value->stock->tax_rate : $value->inquiry->tax_rate?></td>
                         <td class="price"><?=$value->type == 3 ? $value->stock->price : $value->inquiry->price?></td>
                         <td><?=$value->type == 3 ? $value->stock->tax_price : $value->inquiry->tax_price?></td>
-                        <td><?=$model->provide_date?></td>
-                        <td><?=$model->remark?></td>
+                        <td><?=$value->offer_date?></td>
+                        <td><?=$value->remark?></td>
                         <td class="money">
                             <?=number_format($value['quote_price'] * $value['number'], 2, '.', '')?>
                         </td>
+                        <td><?=QuoteRecord::$status[$value->status]?></td>
                         <td>
-                            <a class="btn btn-primary btn-xs btn-flat" href=""><i class="fa fa-inbox"></i> 询价</a>
+                            <?php if (!$value->status):?>
+                            <a class="btn btn-primary btn-xs btn-flat" href="<?=Url::to(['quote-record/update', 'id' => $value->id])?>"><i class="fa fa-inbox"></i> 询价</a>
+                            <?php endif;?>
                         </td>
                     </tr>
                 <?php endforeach;?>
                 <tr>
                     <td colspan="13" style="text-align: right;"><b>金额合计</b></td>
                     <td class="all_money"></td>
+                    <td></td>
                     <td></td>
                 </tr>
                 </tbody>

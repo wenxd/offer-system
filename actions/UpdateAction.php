@@ -1,7 +1,6 @@
 <?php
 namespace app\actions;
 
-use backend\models\PrizeSetting;
 use yii;
 use yii\web\BadRequestHttpException;
 
