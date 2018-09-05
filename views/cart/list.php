@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->id) {
     $model->provide_date = date('Y-m-d H:i:00');
+    $model->order_id     = date('YmdHis');
 }
 ?>
 <style>
