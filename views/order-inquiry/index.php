@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
+use app\models\OrderInquiry;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderInquirySearch */
@@ -54,6 +55,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'quote_price',
             'remark',
+            [
+                'attribute' => 'status',
+                'format'    => 'raw',
+                'filter'    => OrderInquiry::$status,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderInquiry::$status[$model->status];
+                }
+            ],
             [
                 'attribute' => '操作',
                 'format'    => 'raw',

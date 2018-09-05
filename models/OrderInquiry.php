@@ -22,6 +22,14 @@ use yii\behaviors\TimestampBehavior;
  */
 class OrderInquiry extends ActiveRecord
 {
+    const STATUS_NO   = '0';
+    const STATUS_YES  = '1';
+
+    public static $status = [
+        self::STATUS_NO     => '未询价',
+        self::STATUS_YES => '已询价',
+    ];
+
     public function behaviors()
     {
         return [
@@ -77,6 +85,7 @@ class OrderInquiry extends ActiveRecord
             'record_ids'      => '询价id列表 json',
             'stocks'          => '库存id列表 json',
             'is_deleted'      => '是否删除：0未删除 1已删除',
+            'status'          => '是否询价',
             'provide_date'    => '供货日期',
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',

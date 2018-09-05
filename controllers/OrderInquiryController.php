@@ -76,10 +76,11 @@ class OrderInquiryController extends BaseController
                 $row[] = $cart->number;
                 $row[] = $order->primaryKey;
                 $row[] = $orderType;
+                $row[] = $params['remark'];
 
                 $data[] = $row;
             }
-            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_quote_id', 'order_type'];
+            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_quote_id', 'order_type', 'remark'];
             $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
             if ($num) {
                 Cart::deleteAll();

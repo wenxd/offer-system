@@ -25,24 +25,27 @@ $this->params['breadcrumbs'][] = $this->title;
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
+                        <th>零件ID</th>
                         <th>零件号</th>
                         <th>是否最新</th>
                         <th>是否优选</th>
                         <th>供应商ID</th>
                         <th>供应商名称</th>
+                        <th>商品类型</th>
                         <th>询价时间</th>
                         <th>税率</th>
                         <th>未税价格</th>
                         <th>含税价格</th>
-                        <th>商品类型</th>
                         <th>交货期</th>
                         <th>询价备注</th>
                         <th>金额</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($inquiryList as $key => $value):?>
                     <tr>
+                        <td><?=$value->goods_id?></td>
                         <td><?=$value->goods->goods_number?></td>
                         <td>
                             <?php
@@ -64,20 +67,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         </td>
                         <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
                         <td><?=$value->type == 3 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
+                        <td><?=$value->type == 3 ? '库存商品' : '询价商品'?></td>
                         <td><?=$value->type == 3 ? '无' : $value->inquiry->inquiry_datetime?></td>
                         <td><?=$value->type == 3 ? $value->stock->tax_rate : $value->inquiry->tax_rate?></td>
                         <td class="price"><?=$value->type == 3 ? $value->stock->price : $value->inquiry->price?></td>
                         <td><?=$value->type == 3 ? $value->stock->tax_price : $value->inquiry->tax_price?></td>
-                        <td><?=$value->type == 3 ? '库存商品' : '询价商品'?></td>
                         <td><?=$model->provide_date?></td>
                         <td><?=$model->remark?></td>
                         <td class="money">
                             <?=number_format($value['quote_price'] * $value['number'], 2, '.', '')?>
                         </td>
+                        <td>
+                            <a class="btn btn-primary btn-xs btn-flat" href=""><i class="fa fa-inbox"></i> 询价</a>
+                        </td>
                     </tr>
                 <?php endforeach;?>
                 <tr>
-                    <td colspan="10" style="text-align: right;"><b>金额合计</b></td>
+                    <td colspan="13" style="text-align: right;"><b>金额合计</b></td>
                     <td class="all_money"></td>
                     <td></td>
                 </tr>
