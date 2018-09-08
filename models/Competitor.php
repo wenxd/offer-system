@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "competitor".
@@ -16,8 +18,27 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */
-class Competitor extends \yii\db\ActiveRecord
+class Competitor extends ActiveRecord
 {
+    const IS_DELETED_NO    = '0';
+    const IS_DELETED_YES   = '1';
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    # 创建之前
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    # 修改之前
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at']
+                ],
+                #设置默认值
+                'value' => date('Y-m-d H:i:s', time())
+            ]
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -35,6 +56,11 @@ class Competitor extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['name', 'mobile', 'telephone', 'email'], 'string', 'max' => 255],
+            [
+                ['name'],
+                'required',
+                'on' => 'competitor',
+            ],
         ];
     }
 
