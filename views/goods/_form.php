@@ -41,22 +41,7 @@ use app\models\Goods;
             'dropZoneTitle'        => '请选择图片'
         ]
     ]); ?>
-
-    <?= $form->field($model, 'competitor')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'competitor_offer')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'offer_date')->widget(DateTimePicker::className(), [
-        'removeButton'  => false,
-        'pluginOptions' => [
-            'autoclose' => true,
-            'format'    => 'yyyy-mm-dd hh:ii:00',
-            'startView' =>2,  //其实范围（0：日  1：天 2：年）
-            'maxView'   =>2,  //最大选择范围（年）
-            'minView'   =>0,  //最小选择范围（年）
-        ]
-    ]);?>
-
+    
     <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
 
     </div>

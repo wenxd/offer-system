@@ -18,8 +18,6 @@ use yii\web\UploadedFile;
  * @property string $unit 单位
  * @property string $technique_remark 技术备注
  * @property string $img_id 图纸
- * @property string $competitor 竞争对手名称
- * @property string $competitor_offer 对手报价
  * @property int $is_process 是否加工
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $offer_date 报价时间
@@ -73,14 +71,13 @@ class Goods extends ActiveRecord
         return [
             [['is_process', 'is_deleted'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url'], 'safe'],
-            [['goods_number', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'competitor'], 'string', 'max' => 255],
+            [['goods_number', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 512],
             [
                 ['goods_number','description'],
                 'required',
                 'on' => 'goods',
             ],
-            [['competitor_offer'], 'number', 'min' => 0],
         ];
     }
 
@@ -98,11 +95,8 @@ class Goods extends ActiveRecord
             'unit'                    => '单位',
             'technique_remark'        => '技术备注',
             'img_id'                  => '图纸',
-            'competitor'              => '竞争对手名称',
-            'competitor_offer'        => '对手报价',
             'is_process'              => '是否加工',
             'is_deleted'              => '是否删除：0未删除 1已删除',
-            'offer_date'              => '报价时间',
             'updated_at'              => '更新时间',
             'created_at'              => '创建时间',
             'img_url'                 => '图片地址',

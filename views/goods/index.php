@@ -49,14 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'offer_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'GoodsSearch[offer_date]',
-                    'value' => Yii::$app->request->get('GoodsSearch')['offer_date'],
-                ])
-            ],
-            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
@@ -73,8 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])
             ],
             'technique_remark',
-            'competitor',
-            'competitor_offer',
             [
                 'class'         => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],

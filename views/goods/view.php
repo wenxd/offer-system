@@ -30,15 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($model->img_url, ['width' => 300]);
                 }
             ],
-            'competitor',
-            'competitor_offer',
             [
                 'attribute' => 'is_process',
                 'value'     => function ($model) {
                     return Goods::$process[$model->is_process];
                 }
             ],
-            'offer_date',
             'updated_at',
             'created_at',
         ],

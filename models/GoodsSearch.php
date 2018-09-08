@@ -19,7 +19,7 @@ class GoodsSearch extends Goods
     {
         return [
             [['id', 'is_process', 'is_deleted'], 'integer'],
-            [['goods_number', 'description', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'competitor', 'competitor_offer', 'offer_date', 'updated_at', 'created_at'], 'safe'],
+            [['goods_number', 'description', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -51,7 +51,7 @@ class GoodsSearch extends Goods
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'competitor_offer', 'offer_date', 'updated_at', 'created_at']
+                'attributes' => ['id', 'updated_at', 'created_at']
             ],
         ]);
 
@@ -76,16 +76,7 @@ class GoodsSearch extends Goods
             ->andFilterWhere(['like', 'original_company_remark', $this->original_company_remark])
             ->andFilterWhere(['like', 'unit', $this->unit])
             ->andFilterWhere(['like', 'technique_remark', $this->technique_remark])
-            ->andFilterWhere(['like', 'img_id', $this->img_id])
-            ->andFilterWhere(['like', 'competitor', $this->competitor])
-            ->andFilterWhere(['like', 'competitor_offer', $this->competitor_offer]);
-
-        if ($this->offer_date && strpos($this->offer_date, ' - ')) {
-            list($offer_at_start, $offer_at_end) = explode(' - ', $this->offer_date);
-            $offer_at_start .= ' 00:00:00';
-            $offer_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $offer_at_start, $offer_at_end]);
-        }
+            ->andFilterWhere(['like', 'img_id', $this->img_id]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
