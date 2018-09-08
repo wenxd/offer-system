@@ -132,11 +132,6 @@ class Goods extends ActiveRecord
             $this->img_id = $this->getOldAttribute('img_id');
         }
 
-        if (!$this->img_id) {
-            $this->addError('img_id', '请上传图纸');
-            return false;
-        }
-
         // 删除零件时，如果存在则不能删除
         if ($this->is_deleted == static::IS_DELETED_YES ) { // 删除操作
 

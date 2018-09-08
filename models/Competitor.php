@@ -80,4 +80,30 @@ class Competitor extends ActiveRecord
             'created_at' => '创建时间',
         ];
     }
+
+    public static function getCreateDropDown()
+    {
+        $competitorList = self::find()->where(['is_deleted' => self::IS_DELETED_NO])->all();
+
+        $list = [];
+
+        foreach ($competitorList as $key => $value) {
+            $list[$value->id] = $value['name'];
+        }
+
+        return $list;
+    }
+
+    public static function getAllDropDown()
+    {
+        $competitorList = self::find()->all();
+
+        $list = [];
+
+        foreach ($competitorList as $key => $value) {
+            $list[$value->id] = $value['name'];
+        }
+
+        return $list;
+    }
 }

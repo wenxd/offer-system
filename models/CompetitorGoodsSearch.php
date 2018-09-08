@@ -5,21 +5,25 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Goods;
+use app\models\CompetitorGoods;
 
 /**
- * GoodsSearch represents the model behind the search form of `app\models\Goods`.
+ * CompetitorGoodsSearch represents the model behind the search form of `app\models\CompetitorGoods`.
  */
-class GoodsSearch extends Goods
+class CompetitorGoodsSearch extends CompetitorGoods
 {
+    public $goods_number;
+    public $competitor_name;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'is_process', 'is_deleted'], 'integer'],
-            [['goods_number', 'description', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'competitor', 'competitor_offer', 'offer_date', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'goods_id', 'competitor_id', 'is_deleted'], 'integer'],
+            [['competitor_price'], 'number'],
+            [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name'], 'safe'],
+            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'competitor_price'], 'trim'],
         ];
     }
 
@@ -41,18 +45,18 @@ class GoodsSearch extends Goods
      */
     public function search($params)
     {
-        $query = Goods::find();
+        $query = CompetitorGoods::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'id' => SORT_DESC
                 ],
-                'attributes' => ['id', 'competitor_offer', 'offer_date', 'updated_at', 'created_at']
-            ],
+                'attributes' => ['id', 'competitor_price', 'offer_date', 'updated_at', 'created_at']
+            ]
         ]);
 
         $this->load($params);
@@ -62,43 +66,43 @@ class GoodsSearch extends Goods
             // $query->where('0=1');
             return $dataProvider;
         }
+        if ($this->goods_number) {
+            $query->leftJoin('goods as a', 'a.id = competitor_goods.goods_id');
+            $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+        }
+        if ($this->competitor_name) {
+            $query->leftJoin('competitor as c', 'c.id = competitor_goods.competitor_id');
+            $query->andFilterWhere(['like', 'c.name', $this->competitor_name]);
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'is_process' => $this->is_process,
-            'is_deleted' => self::IS_DELETED_NO,
+            'competitor_goods.id'               => $this->id,
+            'competitor_goods.goods_id'         => $this->goods_id,
+            'competitor_goods.competitor_id'    => $this->competitor_id,
+            'competitor_goods.competitor_price' => $this->competitor_price,
+            'competitor_goods.is_deleted'       => self::IS_DELETED_NO,
         ]);
-
-        $query->andFilterWhere(['like', 'goods_number', $this->goods_number])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'original_company', $this->original_company])
-            ->andFilterWhere(['like', 'original_company_remark', $this->original_company_remark])
-            ->andFilterWhere(['like', 'unit', $this->unit])
-            ->andFilterWhere(['like', 'technique_remark', $this->technique_remark])
-            ->andFilterWhere(['like', 'img_id', $this->img_id])
-            ->andFilterWhere(['like', 'competitor', $this->competitor])
-            ->andFilterWhere(['like', 'competitor_offer', $this->competitor_offer]);
 
         if ($this->offer_date && strpos($this->offer_date, ' - ')) {
             list($offer_at_start, $offer_at_end) = explode(' - ', $this->offer_date);
             $offer_at_start .= ' 00:00:00';
             $offer_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $offer_at_start, $offer_at_end]);
+            $query->andFilterWhere(['between', 'competitor_goods.updated_at', $offer_at_start, $offer_at_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'competitor_goods.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'competitor_goods.created_at', $created_at_start, $created_at_end]);
         }
 
         return $dataProvider;
