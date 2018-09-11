@@ -217,8 +217,8 @@ if (!$model->id) {
                 layer.msg('请填写供货日期', {time:1000}, function(){});
                 return false;
             }
-            var quote_price  = $('#order-quote_price').val();
-            if (!quote_price) {
+            var order_price  = $('#order-order_price').val();
+            if (!order_price) {
                 layer.msg('请填写报价金额', {time:1000}, function(){});
                 return false;
             }
@@ -232,7 +232,7 @@ if (!$model->id) {
                 type:"get",
                 url:"?r=order/submit",
                 data:{ids:ids, type:type, customer_id:customer_id, order_id:order_id, description:description,
-                    provide_date:provide_date, quote_price:quote_price, remark:remark},
+                    provide_date:provide_date, order_price:order_price, remark:remark},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200) {
