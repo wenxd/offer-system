@@ -168,4 +168,21 @@ class OrderController extends BaseController
             return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
         }
     }
+
+    public function actionDetail($id)
+    {
+        $data = [];
+
+        $model = Order::findOne($id);
+        if (!$model){
+            echo '查不到此报价单信息';die;
+        }
+        $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_QUOTE]);
+
+        $model->loadDefaultValues();
+        $data['model']     = $model;
+        $data['quoteList'] = $list;
+
+        return $this->render('detail', $data);
+    }
 }
