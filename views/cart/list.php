@@ -114,7 +114,7 @@ if (!$model->id) {
                 ]
             ]);?>
 
-            <?= $form->field($model, 'quote_price')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'order_price')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
         </div>
@@ -123,7 +123,7 @@ if (!$model->id) {
                     'class' => 'btn btn-info quote_save',
                     'name'  => 'submit-button']
             )?>
-            <?= Html::submitButton('保存询价单', [
+            <?= Html::button('保存询价单', [
                     'class' => 'btn btn-success inquiry_save',
                     'name'  => 'submit-button']
             )?>
@@ -197,32 +197,32 @@ if (!$model->id) {
                     ids.push($(element).val());
                 }
             });
-            var customer_id  = $('#orderinquiry-customer_id').val();
+            var customer_id  = $('#order-customer_id').val();
             if (!customer_id) {
                 layer.msg('请选择客户信息', {time:1000}, function(){});
                 return false;
             }
-            var order_id     = $('#orderinquiry-order_id').val();
+            var order_id     = $('#order-order_id').val();
             if (!order_id) {
                 layer.msg('请填写订单编号', {time:1000}, function(){});
                 return false;
             }
-            var description  = $('#orderinquiry-description').val();
+            var description  = $('#order-description').val();
             if (!description) {
                 layer.msg('请填写订单描述', {time:1000}, function(){});
                 return false;
             }
-            var provide_date = $('#orderinquiry-provide_date').val();
+            var provide_date = $('#order-provide_date').val();
             if (!provide_date) {
                 layer.msg('请填写供货日期', {time:1000}, function(){});
                 return false;
             }
-            var quote_price  = $('#orderinquiry-quote_price').val();
+            var quote_price  = $('#order-quote_price').val();
             if (!quote_price) {
                 layer.msg('请填写报价金额', {time:1000}, function(){});
                 return false;
             }
-            var remark       = $('#orderinquiry-remark').val();
+            var remark       = $('#order-remark').val();
             if (!remark) {
                 layer.msg('请填写备注', {time:1000}, function(){});
                 return false;

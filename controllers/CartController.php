@@ -10,10 +10,9 @@ namespace app\controllers;
 use Yii;
 use app\models\Cart;
 use app\models\Stock;
-use app\models\Inquiry;
+use app\models\Order;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
-use app\models\OrderInquiry;
 
 /*
  * 购物车（询价单确认页）
@@ -63,7 +62,7 @@ class CartController extends BaseController
 
         $cartList = Cart::find()->all();
 
-        $model = new OrderInquiry();
+        $model = new Order();
         $model->loadDefaultValues();
         $data['model']    = $model;
         $data['cartList'] = $cartList;
