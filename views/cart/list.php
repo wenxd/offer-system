@@ -218,8 +218,8 @@ if (!$model->id) {
                 return false;
             }
             var order_price  = $('#order-order_price').val();
-            if (!order_price) {
-                layer.msg('请填写报价金额', {time:1000}, function(){});
+            if (!order_price || order_price <= 0) {
+                layer.msg('报价金额不能为零', {time:1000}, function(){});
                 return false;
             }
             var remark       = $('#order-remark').val();
