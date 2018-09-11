@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\Inquiry;
 use app\models\Supplier;
+use app\models\Goods;
 
 $this->title = '搜索结果列表';
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,6 +20,38 @@ $this->params['breadcrumbs'][] = $this->title;
 <section class="content">
     <div class="box table-responsive">
         <div class="box-body">
+            <span style="text-align: center; display: block;"><b>零件基础信息</b></span>
+            <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>零件号</th>
+                    <th>描述</th>
+                    <th>原厂家</th>
+                    <th>原厂家备注</th>
+                    <th>单位</th>
+                    <th>技术备注</th>
+                    <th>是否加工</th>
+                    <th>更新时间</th>
+                    <th>创建时间</th>
+                </tr>
+                </thead>
+                <?php if ($goods):?>
+                <tbody>
+                    <tr>
+                        <td><?=$goods->goods_number?></td>
+                        <td><?=$goods->description?></td>
+                        <td><?=$goods->original_company?></td>
+                        <td><?=$goods->original_company_remark?></td>
+                        <td><?=$goods->unit?></td>
+                        <td><?=$goods->technique_remark?></td>
+                        <td><?=Goods::$process[$goods->is_process]?></td>
+                        <td><?=$goods->updated_at?></td>
+                        <td><?=$goods->created_at?></td>
+                    </tr>
+                </tbody>
+                <?php endif; ?>
+            </table>
+            <br>
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
