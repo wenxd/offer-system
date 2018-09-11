@@ -345,22 +345,23 @@ INSERT INTO `menu` VALUES ('7', '报价单查询', null, '/order-quote/index', '
 
 -- ----------------------------
 -- Table structure for order_inquiry
--- ----------------------------
 DROP TABLE IF EXISTS `order_inquiry`;
 CREATE TABLE `order_inquiry` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID',
   `order_id` varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '咨询价格',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-  `inquirys` text NOT NULL COMMENT '询价id列表 json',
+  `record_ids` text NOT NULL COMMENT '询价id列表 json',
   `stocks` varchar(255) NOT NULL DEFAULT '' COMMENT '库存id列表 json',
+  `status` int(11) NOT NULL COMMENT '是否询价：0未询价 1已询价',
   `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
   `provide_date` datetime DEFAULT NULL COMMENT '供货日期',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='询价单';
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='询价单';
 
 -- ----------------------------
 -- Table structure for order_quote
@@ -368,18 +369,19 @@ CREATE TABLE `order_inquiry` (
 DROP TABLE IF EXISTS `order_quote`;
 CREATE TABLE `order_quote` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID',
   `order_id` varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '咨询价格',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-  `inquirys` text NOT NULL COMMENT '询价id列表 json',
+  `record_ids` text NOT NULL COMMENT '报价id列表 json',
   `stocks` varchar(255) NOT NULL DEFAULT '' COMMENT '库存id列表 json',
   `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
   `provide_date` datetime DEFAULT NULL COMMENT '供货日期',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='报价单';
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='报价单';
 
 -- ----------------------------
 -- Table structure for stock
