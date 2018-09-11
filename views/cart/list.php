@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->id) {
     $model->provide_date = date('Y-m-d H:i:00');
-    $model->order_id     = date('YmdHis');
 }
 ?>
 <style>
@@ -35,7 +34,7 @@ if (!$model->id) {
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>选择</th>
+                        <th><input type="checkbox" name="select_all" class="select_all"></th>
                         <th>零件号</th>
                         <th>是否最新</th>
                         <th>是否优选</th>
@@ -53,7 +52,7 @@ if (!$model->id) {
                 <tbody>
                 <?php foreach ($cartList as $key => $value):?>
                     <tr>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" name="select_id" value="<?=$value->id?>" class="select_id"></td>
                         <td><?=$value->goods->goods_number?></td>
                         <td>
                             <?php
@@ -91,7 +90,7 @@ if (!$model->id) {
                     </tr>
                 <?php endforeach;?>
                 <tr>
-                    <td colspan="10" style="text-align: right;"><b>金额合计</b></td>
+                    <td colspan="11" style="text-align: right;"><b>金额合计</b></td>
                     <td class="all_money"></td>
                     <td></td>
                 </tr>
@@ -120,7 +119,7 @@ if (!$model->id) {
             <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="box-footer">
-            <?= Html::submitButton('保存报价单', [
+            <?= Html::button('保存报价单', [
                     'class' => 'btn btn-info quote_save',
                     'name'  => 'submit-button']
             )?>
@@ -187,40 +186,65 @@ if (!$model->id) {
         totalMoney();
 
         function submit(type) {
-            $('form').submit(function(e){
-                e.preventDefault();
-                var form = $(this).serializeArray();
-
-                var parameter = '';
-                var is_go = false;
-                console.log(form);
-                $.each(form, function() {
-                    if (!this.value) {
-                        is_go = true;
-                    }
-                    parameter += this.name + '=' + this.value + '&';
-                });
-                parameter += 'type=' + type;
-                if (is_go) {
-                    return false;
+            var number = getSelectNumber();
+            if (!number) {
+                layer.msg('请选择几个选项', {time:1000}, function(){});
+                return false;
+            }
+            var ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    ids.push($(element).val());
                 }
-                $.ajax({
-                    type:"get",
-                    url:"?r=order-inquiry/submit&" + parameter,
-                    data:{},
-                    dataType:'JSON',
-                    success:function(res){
-                        if (res && res.code == 200) {
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if (type == 1) {
-                                    location.replace("?r=order-quote/index");
-                                } else {
-                                    location.replace("?r=order-inquiry/index");
-                                }
-                            });
-                        }
+            });
+            var customer_id  = $('#orderinquiry-customer_id').val();
+            if (!customer_id) {
+                layer.msg('请选择客户信息', {time:1000}, function(){});
+                return false;
+            }
+            var order_id     = $('#orderinquiry-order_id').val();
+            if (!order_id) {
+                layer.msg('请填写订单编号', {time:1000}, function(){});
+                return false;
+            }
+            var description  = $('#orderinquiry-description').val();
+            if (!description) {
+                layer.msg('请填写订单描述', {time:1000}, function(){});
+                return false;
+            }
+            var provide_date = $('#orderinquiry-provide_date').val();
+            if (!provide_date) {
+                layer.msg('请填写供货日期', {time:1000}, function(){});
+                return false;
+            }
+            var quote_price  = $('#orderinquiry-quote_price').val();
+            if (!quote_price) {
+                layer.msg('请填写报价金额', {time:1000}, function(){});
+                return false;
+            }
+            var remark       = $('#orderinquiry-remark').val();
+            if (!remark) {
+                layer.msg('请填写备注', {time:1000}, function(){});
+                return false;
+            }
+
+            $.ajax({
+                type:"get",
+                url:"?r=order/submit",
+                data:{ids:ids, type:type, customer_id:customer_id, order_id:order_id, description:description,
+                    provide_date:provide_date, quote_price:quote_price, remark:remark},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200) {
+                        layer.msg(res.msg, {time:1500}, function(){
+                            if (type == 1) {
+                                location.replace("?r=order-quote/index");
+                            } else {
+                                location.replace("?r=order-inquiry/index");
+                            }
+                        });
                     }
-                });
+                }
             });
         }
         //报价
@@ -231,6 +255,7 @@ if (!$model->id) {
         $('.inquiry_save').click(function () {
             submit(2);
         });
+
         $('.delete').click(function () {
             var cart_id = $(this).data('cart-id');
             $.ajax({
@@ -248,5 +273,42 @@ if (!$model->id) {
                 }
             })
         });
+
+        //全选
+        $('.select_all').click(function (e) {
+            if ($(this).prop("checked")) {
+                $('.select_id').prop("checked",true);
+            } else {
+                $('.select_id').prop("checked",false);
+            }
+        });
+
+        //子选择
+        var select_num = $('.select_id').length;
+        $('.select_id').click(function (e) {
+            if ($(this).prop("checked")) {
+                var n = 0;
+                $('.select_id').each(function (index, element) {
+                    if ($(element).prop("checked")) {
+                        n++;
+                    }
+                });
+                if (n == select_num) {
+                    $('.select_all').prop("checked",true);
+                }
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+        });
+
+        function getSelectNumber() {
+            var n = 0;
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    n++;
+                }
+            });
+            return n;
+        }
     }
 </script>
