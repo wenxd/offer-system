@@ -35,6 +35,7 @@ if (!$model->id) {
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
+                        <th>选择</th>
                         <th>零件号</th>
                         <th>是否最新</th>
                         <th>是否优选</th>
@@ -52,6 +53,7 @@ if (!$model->id) {
                 <tbody>
                 <?php foreach ($cartList as $key => $value):?>
                     <tr>
+                        <td><input type="checkbox"></td>
                         <td><?=$value->goods->goods_number?></td>
                         <td>
                             <?php
