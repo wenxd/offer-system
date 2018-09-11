@@ -50,29 +50,34 @@ class SearchController extends BaseController
         $data = [];
         $good_number = (string)Yii::$app->request->get('good_number');
 
-        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])->all();
-        $good_ids = ArrayHelper::getColumn($goodsList, 'id');
-        //最新
-        $inquiryNewQuery = Inquiry::find()->where(['is_newest' => Inquiry::IS_NEWEST_YES])
-            ->andWhere(['good_id' => $good_ids]);
-        //最优
-        $inquiryBetterQuery = Inquiry::find()->where(['is_better' => Inquiry::IS_BETTER_YES])
-            ->andWhere(['good_id' => $good_ids]);
-        //库存记录
-        $stockQuery = Stock::find()->andWhere(['good_id' => $good_ids]);
+        $goods = Goods::find()->where(['goods_number' => $good_number])->one();
 
-        $newCount    = $inquiryNewQuery->count();
-        $betterCount = $inquiryBetterQuery->count();
-        $stockCount  = $stockQuery->count();
+        $data['inquiryNewest'] = [];
+        $data['inquiryBetter'] = [];
+        $data['stockList']     = [];
+        $data['pages']         = $pages = new Pagination(['totalCount' => 0, 'pageSize' => 10]);
+        $data['goods']         = $goods ? $goods : [];
+        if ($goods) {
+            //最新
+            $inquiryNewQuery = Inquiry::find()->where(['is_newest' => Inquiry::IS_NEWEST_YES])
+                ->andWhere(['good_id' => $goods->id]);
+            //最优
+            $inquiryBetterQuery = Inquiry::find()->where(['is_better' => Inquiry::IS_BETTER_YES])
+                ->andWhere(['good_id' => $goods->id]);
+            //库存记录
+            $stockQuery = Stock::find()->andWhere(['good_id' => $goods->id]);
+            $newCount    = $inquiryNewQuery->count();
+            $betterCount = $inquiryBetterQuery->count();
+            $stockCount  = $stockQuery->count();
+            $count = $newCount > $betterCount ? ($newCount > $stockCount ? $newCount : $stockCount) : $betterCount;
 
-        $count = $newCount > $betterCount ? ($newCount > $stockCount ? $newCount : $stockCount) : $betterCount;
+            $pages = new Pagination(['totalCount' => $count, 'pageSize' => 10]);
 
-        $pages = new Pagination(['totalCount' => $count, 'pageSize' => 10]);
-
-        $data['inquiryNewest'] = $inquiryNewQuery->offset($pages->offset)->limit($pages->limit)->all();
-        $data['inquiryBetter'] = $inquiryBetterQuery->offset($pages->offset)->limit($pages->limit)->all();
-        $data['stockList']     = $stockQuery->offset($pages->offset)->limit($pages->limit)->all();
-        $data['pages']         = $pages;
+            $data['inquiryNewest'] = $inquiryNewQuery->offset($pages->offset)->limit($pages->limit)->all();
+            $data['inquiryBetter'] = $inquiryBetterQuery->offset($pages->offset)->limit($pages->limit)->all();
+            $data['stockList']     = $stockQuery->offset($pages->offset)->limit($pages->limit)->all();
+            $data['pages']         = $pages;
+        }
 
         return $this->render('search', $data);
     }
