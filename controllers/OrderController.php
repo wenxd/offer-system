@@ -5,14 +5,15 @@ namespace app\controllers;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
-use yii\web\Controller;
+use app\models\Cart;
+use app\models\QuoteRecord;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * OrderController implements the CRUD actions for Order model.
  */
-class OrderController extends Controller
+class OrderController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -123,5 +124,48 @@ class OrderController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionSubmit()
+    {
+        $params = Yii::$app->request->get();
+        $ids    = Yii::$app->request->get('ids');
+
+        $order = new Order();
+        $order->customer_id  = $params['customer_id'];
+        $order->order_id     = $params['order_id'];
+        $order->description  = $params['description'];
+        $order->provide_date = $params['provide_date'];
+        $order->order_price  = $params['quote_price'];
+        $order->remark       = $params['remark'];
+        $order->type         = $params['type'];
+        $order->status       = Order::STATUS_NO;
+        if ($order->save()) {
+            $cartList = Cart::find()->where(['id' => $ids])->all();
+            $data = [];
+            foreach ($cartList as $key => $cart) {
+                $row = [];
+
+                $row[] = $cart->type;
+                $row[] = $cart->inquiry_id;
+                $row[] = $cart->goods_id;
+                $row[] = $cart->quotation_price;
+                $row[] = $cart->number;
+                $row[] = $order->primaryKey;
+                $row[] = $params['type'];
+                $row[] = $params['remark'];
+                $row[] = $params['provide_date'];
+
+                $data[] = $row;
+            }
+            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_quote_id', 'order_type', 'remark', 'offer_date'];
+            $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+            if ($num) {
+                Cart::deleteAll(['id' => $ids]);
+            }
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
+        }
     }
 }
