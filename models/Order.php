@@ -30,10 +30,14 @@ class Order extends ActiveRecord
     const STATUS_YES  = '1';
 
     public static $status = [
-        self::STATUS_NO     => '未询价',
+        self::STATUS_NO  => '未询价',
         self::STATUS_YES => '已询价',
     ];
 
+    public static $type = [
+        self::TYPE_QUOTE   => '报价单',
+        self::TYPE_INQUIRY => '询价单',
+    ];
     public function behaviors()
     {
         return [
@@ -85,7 +89,7 @@ class Order extends ActiveRecord
             'description'     => '描述',
             'order_price'     => '订单总金额',
             'remark'          => '备注',
-            'type'            => '订单类型 0报价单 1询价单 10最终询价单',
+            'type'            => '订单类型',
             'status'          => '是否询价',
             'is_deleted'      => '是否删除：0未删除 1已删除',
             'provide_date'    => '供货日期',

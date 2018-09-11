@@ -64,13 +64,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
+                    'attribute' => 'type',
+                    'format'    => 'raw',
+                    'filter'    => Order::$type,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Order::$type[$model->type];
+                    }
+                ],
+                [
                     'attribute' => '操作',
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column){
-                        return Html::a('<i class="fa fa-eye"></i> 查看',Url::to(['detail', 'id'=> $model['id']]), [
-                            'data-pjax' => '0',
-                            'class'     => 'btn btn-info btn-xs btn-flat',
-                        ]);
+                        if ($model->type == Order::TYPE_QUOTE) {
+                            return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
+                            ]);
+                        } else {
+                            return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['order-inquiry/detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
+                            ]);
+                        }
                     }
                 ],
             ],
