@@ -2,13 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\QuoteRecord;
+
 use Yii;
 use app\models\Stock;
 use app\models\OrderInquiry;
 use app\models\OrderQuote;
+use app\models\Order;
 use app\models\OrderQuoteSearch;
-use yii\helpers\ArrayHelper;
+use app\models\QuoteRecord;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -64,7 +65,7 @@ class OrderQuoteController extends BaseController
     {
         $data = [];
 
-        $model = OrderQuote::findOne($id);
+        $model = Order::findOne($id);
         if (!$model){
             echo '查不到此报价单信息';die;
         }

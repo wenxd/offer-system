@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\OrderQuote;
+use app\models\Order;
 
 /**
  * OrderQuoteSearch represents the model behind the search form of `backend\models\OrderQuote`.
  */
-class OrderQuoteSearch extends OrderQuote
+class OrderQuoteSearch extends Order
 {
     public $customer_name;
     /**
@@ -20,9 +20,9 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['order_id', 'description', 'remark', 'record_ids', 'stocks', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
-            [['quote_price'], 'number'],
-            [['id', 'order_id', 'description', 'quote_price', 'remark', 'customer_name'], 'trim'],
+            [['order_id', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
+            [['order_price'], 'number'],
+            [['id', 'order_id', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
         ];
     }
 
@@ -44,7 +44,7 @@ class OrderQuoteSearch extends OrderQuote
      */
     public function search($params)
     {
-        $query = OrderQuote::find();
+        $query = Order::find()->where(['type' => Order::TYPE_QUOTE]);
 
         // add conditions that should always apply here
 
@@ -54,7 +54,7 @@ class OrderQuoteSearch extends OrderQuote
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'quote_price', 'provide_date', 'updated_at', 'created_at']
+                'attributes' => ['id', 'order_price', 'provide_date', 'updated_at', 'created_at']
             ],
         ]);
 
@@ -69,7 +69,7 @@ class OrderQuoteSearch extends OrderQuote
         // grid filtering conditions
         $query->andFilterWhere([
             'order_quote.id' => $this->id,
-            'order_quote.quote_price' => $this->quote_price,
+            'order_quote.order_price' => $this->order_price,
             'order_quote.is_deleted' => $this->is_deleted,
         ]);
 
@@ -79,9 +79,7 @@ class OrderQuoteSearch extends OrderQuote
         }
         $query->andFilterWhere(['like', 'order_id', $this->order_id])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'remark', $this->remark])
-            ->andFilterWhere(['like', 'record_ids', $this->record_ids])
-            ->andFilterWhere(['like', 'stocks', $this->stocks]);
+            ->andFilterWhere(['like', 'remark', $this->remark]);
 
         if ($this->provide_date && strpos($this->provide_date, ' - ')) {
             list($provide_at_start, $provide_at_end) = explode(' - ', $this->provide_date);

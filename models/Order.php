@@ -23,6 +23,9 @@ use yii\behaviors\TimestampBehavior;
  */
 class Order extends ActiveRecord
 {
+    const TYPE_QUOTE   = '1';
+    const TYPE_INQUIRY = '2';
+
     const STATUS_NO   = '0';
     const STATUS_YES  = '1';
 
@@ -89,5 +92,10 @@ class Order extends ActiveRecord
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',
         ];
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }

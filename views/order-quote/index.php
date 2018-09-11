@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('OrderQuoteSearch')['created_at'],
                 ])
             ],
-            'quote_price',
+            'order_price',
             'remark',
             [
                 'attribute' => '操作',
