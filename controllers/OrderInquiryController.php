@@ -11,7 +11,7 @@ use app\models\QuoteRecord;
 use Yii;
 use app\actions;
 use app\models\Cart;
-use app\models\Stock;
+use app\models\Order;
 use app\models\Inquiry;
 use app\models\OrderInquiry;
 use app\models\OrderInquirySearch;
@@ -96,7 +96,7 @@ class OrderInquiryController extends BaseController
     {
         $data = [];
 
-        $model = OrderInquiry::findOne($id);
+        $model = Order::findOne($id);
         if (!$model){
             echo '查不到此报价单信息';die;
         }
@@ -114,7 +114,7 @@ class OrderInquiryController extends BaseController
     {
         if (! $id) throw new BadRequestHttpException(yii::t('app', "Id doesn't exit"));
 
-        $model = OrderInquiry::findOne($id);
+        $model = Order::findOne($id);
         if (! $model) throw new BadRequestHttpException(yii::t('app', "Cannot find model by $id"));
 
         if (yii::$app->getRequest()->getIsPost()) {

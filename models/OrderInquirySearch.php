@@ -9,7 +9,7 @@ use yii\data\ActiveDataProvider;
 /**
  * OrderInquirySearch represents the model behind the search form of `backend\models\OrderInquiry`.
  */
-class OrderInquirySearch extends OrderInquiry
+class OrderInquirySearch extends Order
 {
     public $customer_name;
     /**
@@ -19,9 +19,9 @@ class OrderInquirySearch extends OrderInquiry
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['order_id', 'description', 'remark', 'record_ids', 'stocks', 'provide_date', 'updated_at', 'created_at', 'customer_name', 'status'], 'safe'],
-            [['quote_price'], 'number'],
-            [['id', 'order_id', 'description', 'quote_price', 'remark', 'customer_name'], 'trim'],
+            [['order_id', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name', 'status'], 'safe'],
+            [['order_price'], 'number'],
+            [['id', 'order_id', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
         ];
     }
 
@@ -43,7 +43,7 @@ class OrderInquirySearch extends OrderInquiry
      */
     public function search($params)
     {
-        $query = OrderInquiry::find();
+        $query = Order::find()->where(['type' => Order::TYPE_INQUIRY]);
 
         // add conditions that should always apply here
 
@@ -53,7 +53,7 @@ class OrderInquirySearch extends OrderInquiry
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'quote_price', 'provide_date', 'updated_at', 'created_at']
+                'attributes' => ['id', 'order_price', 'provide_date', 'updated_at', 'created_at']
             ],
         ]);
 
@@ -67,10 +67,10 @@ class OrderInquirySearch extends OrderInquiry
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_inquiry.id' => $this->id,
-            'order_inquiry.quote_price' => $this->quote_price,
-            'order_inquiry.is_deleted' => $this->is_deleted,
-            'order_inquiry.status' => $this->status,
+            'order.id' => $this->id,
+            'order.order_price' => $this->order_price,
+            'order.is_deleted' => $this->is_deleted,
+            'order.status' => $this->status,
         ]);
         if ($this->customer_name) {
             $query->leftJoin('customer as a', 'a.id = order_inquiry.customer_id');
@@ -78,9 +78,7 @@ class OrderInquirySearch extends OrderInquiry
         }
         $query->andFilterWhere(['like', 'order_id', $this->order_id])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'remark', $this->remark])
-            ->andFilterWhere(['like', 'record_ids', $this->record_ids])
-            ->andFilterWhere(['like', 'stocks', $this->stocks]);
+            ->andFilterWhere(['like', 'remark', $this->remark]);
 
         if ($this->provide_date && strpos($this->provide_date, ' - ')) {
             list($provide_at_start, $provide_at_end) = explode(' - ', $this->provide_date);

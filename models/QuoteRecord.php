@@ -130,8 +130,8 @@ class QuoteRecord extends ActiveRecord
         //对询价订单做状态改变
         $record = QuoteRecord::find()->where(['order_quote_id' => $this->order_quote_id, 'status' => QuoteRecord::STATUS_NO])->one();
         if (!$record) {
-            $order = OrderInquiry::findOne($this->order_quote_id);
-            $order->status = OrderInquiry::STATUS_YES;
+            $order = Order::findOne($this->order_quote_id);
+            $order->status = Order::STATUS_YES;
             $order->save();
         }
         parent::afterSave($insert, $changedAttributes);

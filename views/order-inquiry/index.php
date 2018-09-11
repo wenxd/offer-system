@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
-use app\models\OrderInquiry;
+use app\models\Order;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderInquirySearch */
@@ -53,14 +53,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('OrderInquirySearch')['created_at'],
                 ])
             ],
-            'quote_price',
+            'order_price',
             'remark',
             [
                 'attribute' => 'status',
                 'format'    => 'raw',
-                'filter'    => OrderInquiry::$status,
+                'filter'    => Order::$status,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderInquiry::$status[$model->status];
+                    return Order::$status[$model->status];
                 }
             ],
             [
