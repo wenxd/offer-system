@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($inquiryList as $key => $value):?>
+                <?php foreach ($list as $key => $value):?>
                     <tr>
                         <td><?=$value->goods_id?></td>
                         <td><?=$value->goods->goods_number?></td>
