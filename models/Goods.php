@@ -123,7 +123,7 @@ class Goods extends ActiveRecord
 //            $this->img_id = 'images/' . $key . '.png';
         }
         else {
-            $this->img_id = $this->getOldAttribute('img_id');
+            $this->img_id = $this->getOldAttribute('img_id') ? $this->getOldAttribute('img_id') : '';
         }
 
         // 删除零件时，如果存在则不能删除
