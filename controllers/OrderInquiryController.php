@@ -35,11 +35,7 @@ class OrderInquiryController extends BaseController
                         'searchModel'  => $searchModel,
                     ];
                 }
-            ],
-            'sort' => [
-                'class'      => actions\SortAction::className(),
-                'modelClass' => OrderInquiry::className(),
-            ],
+            ]
         ];
     }
 
@@ -104,8 +100,8 @@ class OrderInquiryController extends BaseController
         $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_INQUIRY]);
 
         $model->loadDefaultValues();
-        $data['model']       = $model;
-        $data['inquiryList'] = $list;
+        $data['model'] = $model;
+        $data['list']  = $list;
 
         return $this->render('detail', $data);
     }
