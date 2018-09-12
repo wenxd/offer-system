@@ -68,13 +68,13 @@ class OrderQuoteSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_quote.id' => $this->id,
-            'order_quote.order_price' => $this->order_price,
-            'order_quote.is_deleted' => $this->is_deleted,
+            'order.id' => $this->id,
+            'order.order_price' => $this->order_price,
+            'order.is_deleted' => $this->is_deleted,
         ]);
 
         if ($this->customer_name) {
-            $query->leftJoin('customer as a', 'a.id = order_quote.customer_id');
+            $query->leftJoin('customer as a', 'a.id = order.customer_id');
             $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
         }
         $query->andFilterWhere(['like', 'order_id', $this->order_id])

@@ -158,7 +158,7 @@ class OrderController extends BaseController
 
                 $data[] = $row;
             }
-            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_quote_id', 'order_type', 'remark', 'offer_date'];
+            $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_id', 'order_type', 'remark', 'offer_date'];
             $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
             if ($num) {
                 Cart::deleteAll(['id' => $ids]);
@@ -177,7 +177,7 @@ class OrderController extends BaseController
         if (!$model){
             echo '查不到此报价单信息';die;
         }
-        $list = QuoteRecord::findAll(['order_quote_id' => $id, 'order_type' => QuoteRecord::TYPE_QUOTE]);
+        $list = QuoteRecord::findAll(['order_id' => $id, 'order_type' => QuoteRecord::TYPE_QUOTE]);
 
         $model->loadDefaultValues();
         $data['model']     = $model;

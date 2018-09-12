@@ -27,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" name="select_all"></th>
                         <th>零件ID</th>
                         <th>零件号</th>
                         <th>是否最新</th>
@@ -48,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <?php foreach ($list as $key => $value):?>
                     <tr>
+                        <td><input type="checkbox" name="select_id" value="<?=?>"></td>
                         <td><?=$value->goods_id?></td>
                         <td><?=$value->goods->goods_number?></td>
                         <td>
@@ -107,5 +109,10 @@ $this->params['breadcrumbs'][] = $this->title;
             allMoney += parseFloat(element.innerText)
         });
         $('.all_money').html(allMoney);
+
+
+
+
+
     }
 </script>

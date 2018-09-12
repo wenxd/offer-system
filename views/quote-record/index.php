@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'goods_id',
             'quote_price',
             //'number',
-            //'order_quote_id',
+            //'order_id',
             //'order_type',
             //'remark',
             //'status',

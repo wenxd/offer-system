@@ -18,7 +18,7 @@ class QuoteRecordSearch extends QuoteRecord
     public function rules()
     {
         return [
-            [['id', 'type', 'inquiry_id', 'goods_id', 'number', 'order_quote_id', 'order_type', 'status'], 'integer'],
+            [['id', 'type', 'inquiry_id', 'goods_id', 'number', 'order_id', 'order_type', 'status'], 'integer'],
             [['quote_price'], 'number'],
             [['remark', 'updated_at', 'created_at'], 'safe'],
         ];
@@ -60,17 +60,17 @@ class QuoteRecordSearch extends QuoteRecord
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'type' => $this->type,
-            'inquiry_id' => $this->inquiry_id,
-            'goods_id' => $this->goods_id,
+            'id'          => $this->id,
+            'type'        => $this->type,
+            'inquiry_id'  => $this->inquiry_id,
+            'goods_id'    => $this->goods_id,
             'quote_price' => $this->quote_price,
-            'number' => $this->number,
-            'order_quote_id' => $this->order_quote_id,
-            'order_type' => $this->order_type,
-            'status' => $this->status,
-            'updated_at' => $this->updated_at,
-            'created_at' => $this->created_at,
+            'number'      => $this->number,
+            'order_id'    => $this->order_id,
+            'order_type'  => $this->order_type,
+            'status'      => $this->status,
+            'updated_at'  => $this->updated_at,
+            'created_at'  => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'remark', $this->remark]);

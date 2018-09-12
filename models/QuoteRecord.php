@@ -14,7 +14,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $goods_id 零件ID
  * @property string $quote_price 报价价格
  * @property int $number 购买数量
- * @property int $order_quote_id 报价订单ID
+ * @property int $order_id 报价订单ID
  * @property int $order_type 订单类型 1:报价单  2询价单
  * @property string $remark 询价备注
  * @property int $status 是否询价  0未询价  1已询价
@@ -72,7 +72,7 @@ class QuoteRecord extends ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'inquiry_id', 'goods_id', 'number', 'order_quote_id', 'order_type', 'status'], 'integer'],
+            [['type', 'inquiry_id', 'goods_id', 'number', 'order_id', 'order_type', 'status'], 'integer'],
             [['quote_price', 'tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at', 'supplier_id', 'supplier_name', 'goods_number'], 'safe'],
             [['remark'], 'string', 'max' => 255],
@@ -92,7 +92,7 @@ class QuoteRecord extends ActiveRecord
             'goods_id'         => '零件ID',
             'quote_price'      => '报价价格',
             'number'           => '购买数量',
-            'order_quote_id'   => '报价订单ID',
+            'order_id'         => '订单ID',
             'order_type'       => '订单类型 1:报价单  2询价单',
             'remark'           => '询价备注',
             'status'           => '是否询价',
@@ -109,28 +109,30 @@ class QuoteRecord extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        $inquiry = new Inquiry();
-        $inquiry->good_id     = $this->goods_id;
-        $inquiry->supplier_id = $this->supplier_id;
-        $inquiry->price       = $this->price;
-        $inquiry->tax_price   = $this->tax_price;
-        $inquiry->tax_rate    = $this->tax_rate;
+        $inquiry                   = new Inquiry();
+        $inquiry->good_id          = $this->goods_id;
+        $inquiry->supplier_id      = $this->supplier_id;
+        $inquiry->price            = $this->price;
+        $inquiry->tax_price        = $this->tax_price;
+        $inquiry->tax_rate         = $this->tax_rate;
         $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
-        $inquiry->offer_date  = $this->offer_date;
-        $inquiry->remark      = $this->remark;
+        $inquiry->offer_date       = $this->offer_date;
+        $inquiry->remark           = $this->remark;
         $inquiry->save();
-        $this->type = 1;
+
+        $this->type       = 1;
         $this->inquiry_id = $inquiry->primaryKey;
-        $this->status = self::STATUS_YES;
+        $this->status     = self::STATUS_YES;
+
         return parent::beforeSave($insert);
     }
     
     public function afterSave($insert, $changedAttributes)
     {
         //对询价订单做状态改变
-        $record = QuoteRecord::find()->where(['order_quote_id' => $this->order_quote_id, 'status' => QuoteRecord::STATUS_NO])->one();
+        $record = QuoteRecord::find()->where(['order_id' => $this->order_id, 'status' => QuoteRecord::STATUS_NO])->one();
         if (!$record) {
-            $order = Order::findOne($this->order_quote_id);
+            $order = Order::findOne($this->order_id);
             $order->status = Order::STATUS_YES;
             $order->save();
         }
