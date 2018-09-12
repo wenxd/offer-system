@@ -1,12 +1,14 @@
 <?php
+
 use yii\helpers\Url;
+use yii\helpers\Html;
 use app\models\Inquiry;
 use app\models\Supplier;
 use app\models\QuoteRecord;
 use yii\widgets\ActiveForm;
-use kartik\datetime\DateTimePicker;
 $this->title = '询价单详情';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <style>
     .but button{
@@ -22,12 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
 </style>
 <section class="content">
     <div class="box table-responsive">
-        <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" name="select_all"></th>
+                        <th><input type="checkbox" class="select_all"></th>
                         <th>零件ID</th>
                         <th>零件号</th>
                         <th>是否最新</th>
@@ -49,25 +50,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <?php foreach ($list as $key => $value):?>
                     <tr>
-                        <td><input type="checkbox" name="select_id" value="<?=?>"></td>
+                        <td><input type="checkbox" class="select_id" value="<?=$value->id?>"></td>
                         <td><?=$value->goods_id?></td>
                         <td><?=$value->goods->goods_number?></td>
                         <td>
                             <?php
-                            if ($value->type == 1 || $value->type == 2) {
-                                echo Inquiry::$newest[$value->inquiry->is_newest];
-                            } else {
-                                echo '否';
-                            }
+                                if ($value->type == 1 || $value->type == 2) {
+                                    echo Inquiry::$newest[$value->inquiry->is_newest];
+                                } else {
+                                    echo '否';
+                                }
                             ?>
                         </td>
                         <td>
                             <?php
-                            if ($value->type == 1 || $value->type == 2) {
-                                echo Inquiry::$newest[$value->inquiry->is_better];
-                            } else {
-                                echo '否';
-                            }
+                                if ($value->type == 1 || $value->type == 2) {
+                                    echo Inquiry::$newest[$value->inquiry->is_better];
+                                } else {
+                                    echo '否';
+                                }
                             ?>
                         </td>
                         <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
@@ -91,7 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 <?php endforeach;?>
                 <tr>
-                    <td colspan="13" style="text-align: right;"><b>金额合计</b></td>
+                    <td colspan="14" style="text-align: right;"><b>金额合计</b></td>
                     <td class="all_money"></td>
                     <td></td>
                     <td></td>
@@ -99,9 +100,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tbody>
             </table>
         </div>
-        <?php ActiveForm::end(); ?>
+        <div class="box-footer">
+            <?= Html::button('保存最终报价单', [
+                    'class' => 'btn btn-info quote_save',
+                    'name'  => 'submit-button']
+            )?>
+            <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['order/index']), [
+                'class' => 'btn btn-default btn-flat',
+            ])?>
+        </div>
     </div>
 </section>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     window.onload = function() {
         var allMoney = 0;
@@ -110,8 +121,70 @@ $this->params['breadcrumbs'][] = $this->title;
         });
         $('.all_money').html(allMoney);
 
+        //全选
+        $('.select_all').click(function (e) {
+            if ($(this).prop("checked")) {
+                $('.select_id').prop("checked",true);
+            } else {
+                $('.select_id').prop("checked",false);
+            }
+        });
 
+        //子选择
+        var select_num = $('.select_id').length;
+        $('.select_id').click(function (e) {
+            if ($(this).prop("checked")) {
+                var n = 0;
+                $('.select_id').each(function (index, element) {
+                    if ($(element).prop("checked")) {
+                        n++;
+                    }
+                });
+                if (n == select_num) {
+                    $('.select_all').prop("checked",true);
+                }
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+        });
 
+        function getSelectNumber() {
+            var n = 0;
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    n++;
+                }
+            });
+            return n;
+        }
+
+        //生成最终报价单
+        $('.quote_save').click(function () {
+            var number = getSelectNumber();
+            if (!number) {
+                layer.msg('请选择几个选项', {time:1000}, function(){});
+                return false;
+            }
+            var ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    ids.push($(element).val());
+                }
+            });
+            $.ajax({
+                type:"post",
+                url:"?r=order/final-quote",
+                data:{ids:ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200) {
+                        layer.msg(res.msg, {time:1500}, function(){
+                            location.replace("?r=order/quote-list");
+                        });
+                    }
+                }
+            });
+        });
 
 
     }

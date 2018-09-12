@@ -18,6 +18,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $order_type 订单类型 1:报价单  2询价单
  * @property string $remark 询价备注
  * @property int $status 是否询价  0未询价  1已询价
+ * @property string $offer_date 供货时间
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */

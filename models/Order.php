@@ -10,7 +10,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id 自增id
  * @property int $customer_id 客户ID
- * @property string $order_id 订单编号
+ * @property string $order_sn 订单编号
  * @property string $description 描述
  * @property string $order_price 订单价格  报价金额
  * @property string $remark 备注
@@ -25,6 +25,7 @@ class Order extends ActiveRecord
 {
     const TYPE_QUOTE   = '1';
     const TYPE_INQUIRY = '2';
+    const TYPE_FINAL   = '10';
 
     const STATUS_NO   = '0';
     const STATUS_YES  = '1';
@@ -37,6 +38,7 @@ class Order extends ActiveRecord
     public static $type = [
         self::TYPE_QUOTE   => '报价单',
         self::TYPE_INQUIRY => '询价单',
+        self::TYPE_FINAL   => '最终报价单',
     ];
     public function behaviors()
     {
@@ -70,9 +72,8 @@ class Order extends ActiveRecord
         return [
             [['customer_id', 'type', 'status', 'is_deleted'], 'integer'],
             [['order_price'], 'number'],
-            [['status'], 'required'],
             [['provide_date', 'updated_at', 'created_at'], 'safe'],
-            [['order_id', 'description', 'remark'], 'string', 'max' => 255],
+            [['order_sn', 'description', 'remark'], 'string', 'max' => 255],
         ];
     }
 
@@ -85,7 +86,7 @@ class Order extends ActiveRecord
             'id'              => '自增id',
             'customer_id'     => '客户ID',
             'customer_name'   => '客户名称',
-            'order_id'        => '订单编号',
+            'order_sn'        => '订单编号',
             'description'     => '描述',
             'order_price'     => '订单总金额',
             'remark'          => '备注',

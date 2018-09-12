@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use app\models\OrderFinalQuoteSearch;
 use app\models\Cart;
 use app\models\QuoteRecord;
 use yii\web\NotFoundHttpException;
@@ -184,5 +185,63 @@ class OrderController extends BaseController
         $data['quoteList'] = $list;
 
         return $this->render('detail', $data);
+    }
+
+    //生成最终报价单
+    public function actionFinalQuote()
+    {
+        $ids = Yii::$app->request->post('ids');
+
+        $orderRecord = QuoteRecord::findAll(['id' => $ids]);
+
+        $oldOrder = Order::findOne($orderRecord['0']->order_id);
+        $order = new Order();
+        $order->customer_id   = $oldOrder->customer_id ;
+        $order->order_sn      = $oldOrder->order_sn    ;
+        $order->description   = $oldOrder->description ;
+        $order->order_price   = $oldOrder->order_price ;
+        $order->remark        = $oldOrder->remark      ;
+        $order->type          = Order::TYPE_FINAL      ;
+        $order->status        = $oldOrder->status      ;
+        $order->provide_date  = $oldOrder->provide_date;
+        $order->save();
+
+        $data = [];
+        foreach ($orderRecord as $key => $value) {
+            $row = [];
+
+            $row[] = $value->type       ;
+            $row[] = $value->inquiry_id ;
+            $row[] = $value->goods_id   ;
+            $row[] = $value->quote_price;
+            $row[] = $value->number     ;
+            $row[] = $order->id;
+            $row[] = Order::TYPE_FINAL;
+            $row[] = $value->status     ;
+            $row[] = $value->remark     ;
+            $row[] = $value->offer_date ;
+
+            $data[] = $row;
+        }
+
+        $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_id', 'order_type', 'status', 'remark', 'offer_date'];
+        $num   = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '保存失败']);
+        }
+    }
+
+    //最终询价单列表
+    public function actionQuoteList()
+    {
+        $searchModel = new OrderFinalQuoteSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('final-quote-index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }
