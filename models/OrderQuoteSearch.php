@@ -44,7 +44,7 @@ class OrderQuoteSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find()->where(['type' => Order::TYPE_QUOTE]);
+        $query = Order::find();
 
         // add conditions that should always apply here
 
@@ -70,7 +70,8 @@ class OrderQuoteSearch extends Order
         $query->andFilterWhere([
             'order.id' => $this->id,
             'order.order_price' => $this->order_price,
-            'order.is_deleted' => $this->is_deleted,
+            'order.is_deleted'  => $this->is_deleted,
+            'order.type'        => Order::TYPE_QUOTE,
         ]);
 
         if ($this->customer_name) {

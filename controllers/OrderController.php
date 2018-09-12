@@ -6,6 +6,7 @@ use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
 use app\models\OrderFinalQuoteSearch;
+use app\models\OrderPurchaseSearch;
 use app\models\Cart;
 use app\models\QuoteRecord;
 use yii\web\NotFoundHttpException;
@@ -243,5 +244,101 @@ class OrderController extends BaseController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    //最终询价单详情
+    public function actionFinalQuoteDetail($id)
+    {
+        $data = [];
+
+        $model = Order::findOne($id);
+        if (!$model){
+            echo '查不到此报价单信息';die;
+        }
+        Yii::$app->session->set('order_inquiry_id', $id);
+        $list = QuoteRecord::findAll(['order_id' => $id]);
+
+        $model->loadDefaultValues();
+        $data['model'] = $model;
+        $data['list']  = $list;
+
+        return $this->render('final-quote-detail', $data);
+    }
+
+    //保存为采购单
+    public function actionSubmitPurchase()
+    {
+        $ids = Yii::$app->request->post('ids');
+
+        $orderRecord = QuoteRecord::findAll(['id' => $ids]);
+
+        $oldOrder = Order::findOne($orderRecord['0']->order_id);
+        $order = new Order();
+        $order->customer_id   = $oldOrder->customer_id ;
+        $order->order_sn      = $oldOrder->order_sn    ;
+        $order->description   = $oldOrder->description ;
+        $order->order_price   = $oldOrder->order_price ;
+        $order->remark        = $oldOrder->remark      ;
+        $order->type          = Order::TYPE_PURCHASE      ;
+        $order->status        = $oldOrder->status      ;
+        $order->provide_date  = $oldOrder->provide_date;
+        $order->save();
+
+        $data = [];
+        foreach ($orderRecord as $key => $value) {
+            $row = [];
+
+            $row[] = $value->type       ;
+            $row[] = $value->inquiry_id ;
+            $row[] = $value->goods_id   ;
+            $row[] = $value->quote_price;
+            $row[] = $value->number     ;
+            $row[] = $order->id;
+            $row[] = Order::TYPE_PURCHASE;
+            $row[] = $value->status     ;
+            $row[] = $value->remark     ;
+            $row[] = $value->offer_date ;
+
+            $data[] = $row;
+        }
+
+        $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_id', 'order_type', 'status', 'remark', 'offer_date'];
+        $num   = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '保存失败']);
+        }
+    }
+
+    //最采购单列表
+    public function actionPurchaseList()
+    {
+        $searchModel = new OrderPurchaseSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('purchase-index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    //最终询价单详情
+    public function actionPurchaseDetail($id)
+    {
+        $data = [];
+
+        $model = Order::findOne($id);
+        if (!$model){
+            echo '查不到此报价单信息';die;
+        }
+        Yii::$app->session->set('order_inquiry_id', $id);
+        $list = QuoteRecord::findAll(['order_id' => $id]);
+
+        $model->loadDefaultValues();
+        $data['model'] = $model;
+        $data['list']  = $list;
+
+        return $this->render('purchase-detail', $data);
     }
 }

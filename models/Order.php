@@ -23,9 +23,10 @@ use yii\behaviors\TimestampBehavior;
  */
 class Order extends ActiveRecord
 {
-    const TYPE_QUOTE   = '1';
-    const TYPE_INQUIRY = '2';
-    const TYPE_FINAL   = '10';
+    const TYPE_QUOTE    = '1';
+    const TYPE_INQUIRY  = '2';
+    const TYPE_FINAL    = '10';
+    const TYPE_PURCHASE = '11';
 
     const STATUS_NO   = '0';
     const STATUS_YES  = '1';
@@ -36,9 +37,10 @@ class Order extends ActiveRecord
     ];
 
     public static $type = [
-        self::TYPE_QUOTE   => '报价单',
-        self::TYPE_INQUIRY => '询价单',
-        self::TYPE_FINAL   => '最终报价单',
+        self::TYPE_QUOTE      => '报价单',
+        self::TYPE_INQUIRY    => '询价单',
+        self::TYPE_FINAL      => '最终报价单',
+        self::TYPE_PURCHASE   => '采购单',
     ];
     public function behaviors()
     {

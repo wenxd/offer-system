@@ -43,7 +43,7 @@ class OrderInquirySearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find()->where(['type' => Order::TYPE_INQUIRY]);
+        $query = Order::find();
 
         // add conditions that should always apply here
 
@@ -67,10 +67,11 @@ class OrderInquirySearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order.id' => $this->id,
+            'order.id'          => $this->id,
             'order.order_price' => $this->order_price,
-            'order.is_deleted' => $this->is_deleted,
-            'order.status' => $this->status,
+            'order.is_deleted'  => $this->is_deleted,
+            'order.status'      => $this->status,
+            'order.type'        => Order::TYPE_INQUIRY,
         ]);
         if ($this->customer_name) {
             $query->leftJoin('customer as a', 'a.id = order_inquiry.customer_id');

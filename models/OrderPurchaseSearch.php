@@ -10,7 +10,7 @@ use app\models\Order;
 /**
  * OrderSearch represents the model behind the search form of `app\models\Order`.
  */
-class OrderSearch extends Order
+class OrderPurchaseSearch extends Order
 {
     public $customer_name;
     /**
@@ -71,7 +71,7 @@ class OrderSearch extends Order
             'id' => $this->id,
             'customer_id' => $this->customer_id,
             'order_price' => $this->order_price,
-            'type'        => [Order::TYPE_QUOTE, Order::TYPE_INQUIRY],
+            'type'        => Order::TYPE_PURCHASE,
             'status'      => $this->status,
             'is_deleted'  => $this->is_deleted,
         ]);
