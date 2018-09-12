@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'order_id',
+            'order_sn',
             'description',
             [
                 'attribute' => 'provide_date',

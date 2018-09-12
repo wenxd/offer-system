@@ -134,7 +134,7 @@ class OrderController extends BaseController
 
         $order = new Order();
         $order->customer_id  = $params['customer_id'];
-        $order->order_id     = $params['order_id'];
+        $order->order_sn     = $params['order_id'];
         $order->description  = $params['description'];
         $order->provide_date = $params['provide_date'];
         $order->order_price  = $params['order_price'];

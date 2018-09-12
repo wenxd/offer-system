@@ -99,7 +99,7 @@ if (!$model->id) {
 
             <?= $form->field($model, 'customer_id')->dropDownList(Customer::getCreateDropDown())?>
 
-            <?= $form->field($model, 'order_id')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
@@ -202,8 +202,8 @@ if (!$model->id) {
                 layer.msg('请选择客户信息', {time:1000}, function(){});
                 return false;
             }
-            var order_id     = $('#order-order_id').val();
-            if (!order_id) {
+            var order_sn     = $('#order-order_sn').val();
+            if (!order_sn) {
                 layer.msg('请填写订单编号', {time:1000}, function(){});
                 return false;
             }
@@ -231,7 +231,7 @@ if (!$model->id) {
             $.ajax({
                 type:"get",
                 url:"?r=order/submit",
-                data:{ids:ids, type:type, customer_id:customer_id, order_id:order_id, description:description,
+                data:{ids:ids, type:type, customer_id:customer_id, order_sn:order_sn, description:description,
                     provide_date:provide_date, order_price:order_price, remark:remark},
                 dataType:'JSON',
                 success:function(res){

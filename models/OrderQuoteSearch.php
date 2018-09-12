@@ -20,9 +20,9 @@ class OrderQuoteSearch extends Order
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['order_id', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
+            [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
             [['order_price'], 'number'],
-            [['id', 'order_id', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
+            [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
         ];
     }
 
@@ -77,7 +77,7 @@ class OrderQuoteSearch extends Order
             $query->leftJoin('customer as a', 'a.id = order.customer_id');
             $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
         }
-        $query->andFilterWhere(['like', 'order_id', $this->order_id])
+        $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'remark', $this->remark]);
 

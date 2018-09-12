@@ -91,7 +91,7 @@ if (!$model->id) {
 
             <?= $form->field($model, 'customer_id')->dropDownList(Customer::getCreateDropDown())->textInput(['readonly' => true])?>
 
-            <?= $form->field($model, 'order_id')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'order_sn')->textInput(['readonly' => true]) ?>
 
             <?= $form->field($model, 'description')->textInput(['readonly' => true]) ?>
 
