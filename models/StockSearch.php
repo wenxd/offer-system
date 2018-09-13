@@ -20,7 +20,7 @@ class StockSearch extends Stock
     public function rules()
     {
         return [
-            [['id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
+            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
             [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number'], 'safe'],
             [['price', 'tax_price'], 'number'],
         ];
