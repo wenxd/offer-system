@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->id) {
     $model->provide_date = date('Y-m-d H:i:00');
+    $model->order_sn = date('Ymd') . rand(100, 999);
 }
 ?>
 <style>
@@ -77,7 +78,7 @@ if (!$model->id) {
                         <td><?=$value->type == 3 ? $value->stock->number : '无限多'?></td>
                         <td><?=$value->type == 3 ? '无' : $value->inquiry->inquiry_datetime?></td>
                         <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
-                        <td><?=$value->type == 3 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
+                        <td><?=$value->type == 3 ? ($value->stock->supplier_id ? Supplier::getAllDropDown()[$value->stock->supplier_id] : '') : ($value->inquiry->supplier_id ? Supplier::getAllDropDown()[$value->inquiry->supplier_id] : '') ?></td>
                         <td><?=$value['number']?></td>
                         <td class="money">
                             <?=number_format($value['quotation_price'] * $value['number'], 2, '.', '')?>
@@ -237,11 +238,7 @@ if (!$model->id) {
                 success:function(res){
                     if (res && res.code == 200) {
                         layer.msg(res.msg, {time:1500}, function(){
-                            if (type == 1) {
-                                location.replace("?r=order-quote/index");
-                            } else {
-                                location.replace("?r=order-inquiry/index");
-                            }
+                            location.reload();
                         });
                     }
                 }

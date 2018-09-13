@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td>无限多</td>
                         <td><?=$value['inquiry_datetime']?></td>
                         <td><?=$value['supplier_id']?></td>
-                        <td><?=Supplier::getAllDropDown()[$value['supplier_id']]?></td>
+                        <td><?=$value['supplier_id'] ? Supplier::getAllDropDown()[$value['supplier_id']] : ''?></td>
                         <td><input type="text" class="number"></td>
                         <td>
                             <a class="btn btn-primary btn-xs btn-flat" href="javascript:void(0);" onclick="addList($(this))"
