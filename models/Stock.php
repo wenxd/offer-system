@@ -57,10 +57,10 @@ class Stock extends ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
+            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['good_id', 'position'], 'string', 'max' => 255],
+            [['position'], 'string', 'max' => 255],
             [
                 ['good_id', 'price', 'position', 'number'],
                 'required',
