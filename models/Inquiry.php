@@ -77,10 +77,10 @@ class Inquiry extends ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority'], 'integer'],
+            [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at', 'offer_date'], 'safe'],
-            [['good_id', 'inquiry_datetime', 'remark'], 'string', 'max' => 255],
+            [['inquiry_datetime', 'remark'], 'string', 'max' => 255],
             [
                 ['good_id', 'supplier_id', 'inquiry_datetime'],
                 'required',
