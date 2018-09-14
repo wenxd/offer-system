@@ -59,10 +59,13 @@ class CartController extends BaseController
     public function actionList()
     {
         $data = [];
-
+        $is_order = Yii::$app->request->get('is_order');
+        if ($is_order) {
+            $model = Order::find()->orderBy('id Desc')->one();
+        } else {
+            $model = new Order();
+        }
         $cartList = Cart::find()->all();
-
-        $model = new Order();
         $model->loadDefaultValues();
         $data['model']    = $model;
         $data['cartList'] = $cartList;
