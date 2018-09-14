@@ -238,7 +238,7 @@ if (!$model->id) {
                 success:function(res){
                     if (res && res.code == 200) {
                         layer.msg(res.msg, {time:1500}, function(){
-                            location.reload();
+                            location.replace("?r=cart/list&is_order=true");
                         });
                     }
                 }
