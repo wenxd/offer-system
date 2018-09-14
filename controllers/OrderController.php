@@ -9,6 +9,7 @@ use app\models\OrderFinalQuoteSearch;
 use app\models\OrderPurchaseSearch;
 use app\models\Cart;
 use app\models\QuoteRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -171,21 +172,26 @@ class OrderController extends BaseController
         }
     }
 
-    public function actionDetail($id)
+    public function actionDetail($order_sn)
     {
         $data = [];
 
-        $model = Order::findOne($id);
-        if (!$model){
-            echo '查不到此报价单信息';die;
+        $orders = Order::find()->where(['order_sn' => $order_sn])->orderBy('id Desc')->all();
+        if (!$orders){
+            echo '查不到此订单信息';die;
         }
-        $list = QuoteRecord::findAll(['order_id' => $id, 'order_type' => QuoteRecord::TYPE_QUOTE]);
+        $orderIds = ArrayHelper::getColumn($orders, 'id');
 
+        foreach ($orders as $order) {
+
+        }
+        $list = QuoteRecord::findAll(['order_id' => $orderIds, 'order_type' => [Order::TYPE_QUOTE, Order::TYPE_INQUIRY]]);
+        $model = $orders[0];
         $model->loadDefaultValues();
-        $data['model']     = $model;
-        $data['quoteList'] = $list;
+        $data['model'] = $model;
+        $data['list']  = $list;
 
-        return $this->render('detail', $data);
+        return $this->render('order_detail', $data);
     }
 
     //生成最终报价单

@@ -75,17 +75,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => '操作',
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column){
-                        if ($model->type == Order::TYPE_QUOTE) {
-                            return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-info btn-xs btn-flat',
-                            ]);
-                        } else {
-                            return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['order-inquiry/detail', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-info btn-xs btn-flat',
-                            ]);
-                        }
+                        return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-info btn-xs btn-flat',
+                        ]);
                     }
                 ],
             ],
