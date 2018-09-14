@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </thead>
                 <tbody>
                 <tr>
-                    <td colspan="11" style="text-align: center;">最新询价记录</td>
+                    <td colspan="13" style="text-align: center;">最新询价记录</td>
                 </tr>
                 <?php foreach ($inquiryNewest as $key => $value):?>
                     <tr>
@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 <?php endforeach;?>
                 <tr>
-                    <td colspan="11" style="text-align: center;">优选记录</td>
+                    <td colspan="13" style="text-align: center;">优选记录</td>
                 </tr>
                 <?php foreach ($inquiryBetter as $key => $value):?>
                     <tr>
@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 <?php endforeach;?>
                 <tr>
-                    <td colspan="11" style="text-align: center;">本地库存零件记录</td>
+                    <td colspan="13" style="text-align: center;">本地库存零件记录</td>
                 </tr>
                 <?php foreach ($stockList as $key => $value):?>
                     <tr>
