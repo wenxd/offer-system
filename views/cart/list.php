@@ -2,9 +2,12 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use app\models\Admin;
 use app\models\Inquiry;
 use app\models\Supplier;
 use app\models\Customer;
+use app\models\AuthAssignment;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 
@@ -14,6 +17,14 @@ $this->params['breadcrumbs'][] = $this->title;
 if (!$model->id) {
     $model->provide_date = date('Y-m-d H:i:00');
     $model->order_sn = date('Ymd') . rand(100, 999);
+}
+
+$use_admin = AuthAssignment::find()->where("item_name != '系统管理员'")->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
 }
 ?>
 <style>
@@ -118,6 +129,9 @@ if (!$model->id) {
             <?= $form->field($model, 'order_price')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+
+            <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择员工') ?>
+
         </div>
         <div class="box-footer">
             <?= Html::button('保存报价单', [
@@ -185,8 +199,37 @@ if (!$model->id) {
     window.onload = function() {
 
         totalMoney();
+        //报价
+        $('.quote_save').click(function () {
+            submit(1);
+        });
+        //询价
+        $('.inquiry_save').click(function () {
+            var admin_id = $("#order-admin_id").val();
+            checkRole(admin_id, '询价员');
+        });
 
-        function submit(type) {
+        function checkRole(admin_id, role_name) {
+            var msg = '';
+            $.ajax({
+                type:"post",
+                url:"?r=admin-user/check-role",
+                data:{admin_id:admin_id, role_name:role_name},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200) {
+                        submit(2, admin_id);
+                    } else {
+                        layer.msg(res.msg, {time:1000}, function(){});
+                    }
+                }
+            });
+            return msg;
+        }
+        function submit(type, admin_id) {
+            if (!admin_id) {
+                admin_id = 0;
+            }
             var number = getSelectNumber();
             if (!number) {
                 layer.msg('请选择几个选项', {time:1000}, function(){});
@@ -233,7 +276,7 @@ if (!$model->id) {
                 type:"get",
                 url:"?r=order/submit",
                 data:{ids:ids, type:type, customer_id:customer_id, order_sn:order_sn, description:description,
-                    provide_date:provide_date, order_price:order_price, remark:remark},
+                    provide_date:provide_date, order_price:order_price, remark:remark, admin_id:admin_id},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200) {
@@ -244,14 +287,7 @@ if (!$model->id) {
                 }
             });
         }
-        //报价
-        $('.quote_save').click(function () {
-            submit(1);
-        });
-        //询价
-        $('.inquiry_save').click(function () {
-            submit(2);
-        });
+
 
         $('.delete').click(function () {
             var cart_id = $(this).data('cart-id');
