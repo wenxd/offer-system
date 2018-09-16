@@ -19,7 +19,7 @@ if (!$model->id) {
     $model->order_sn = date('Ymd') . rand(100, 999);
 }
 
-$use_admin = AuthAssignment::find()->where("item_name != '系统管理员'")->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -130,7 +130,7 @@ foreach ($adminList as $key => $admin) {
 
             <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择员工') ?>
+            <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
         </div>
         <div class="box-footer">

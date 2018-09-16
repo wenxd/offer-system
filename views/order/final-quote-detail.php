@@ -2,12 +2,19 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use app\models\Inquiry;
 use app\models\Supplier;
 use app\models\QuoteRecord;
+use app\models\AuthAssignment;
+use app\models\Admin;
 use yii\widgets\ActiveForm;
 $this->title = '最终询价单详情';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
 
 ?>
 <style>
@@ -99,6 +106,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 </tbody>
             </table>
+            <div class="form-group field-order-admin_id">
+                <label class="control-label" for="order-admin_id">选择采购员</label>
+                <select id="order-admin_id" class="form-control" name="Order[admin_id]">
+                    <?php foreach ($adminList as $admin):?>
+                    <option value="<?=$admin['id']?>"><?=$admin['username']?></option>
+                    <?php endforeach;?>
+                </select>
+                <div class="help-block"></div>
+            </div>
         </div>
         <div class="box-footer">
             <?= Html::button('保存采购单', [
@@ -171,10 +187,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     ids.push($(element).val());
                 }
             });
+
+            var admin_id = $("#order-admin_id").val();
+
             $.ajax({
                 type:"post",
                 url:"?r=order/submit-purchase",
-                data:{ids:ids},
+                data:{ids:ids, admin_id:admin_id},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200) {

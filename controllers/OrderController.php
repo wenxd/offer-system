@@ -275,7 +275,8 @@ class OrderController extends BaseController
     //保存为采购单
     public function actionSubmitPurchase()
     {
-        $ids = Yii::$app->request->post('ids');
+        $ids      = Yii::$app->request->post('ids');
+        $admin_id = Yii::$app->request->post('admin_id');
 
         $orderRecord = QuoteRecord::findAll(['id' => $ids]);
 
@@ -283,10 +284,11 @@ class OrderController extends BaseController
         $order = new Order();
         $order->customer_id   = $oldOrder->customer_id ;
         $order->order_sn      = $oldOrder->order_sn    ;
+        $order->admin_id      = $admin_id;
         $order->description   = $oldOrder->description ;
         $order->order_price   = $oldOrder->order_price ;
         $order->remark        = $oldOrder->remark      ;
-        $order->type          = Order::TYPE_PURCHASE      ;
+        $order->type          = Order::TYPE_PURCHASE   ;
         $order->status        = $oldOrder->status      ;
         $order->provide_date  = $oldOrder->provide_date;
         $order->save();
