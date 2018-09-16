@@ -44,7 +44,12 @@ class OrderPurchaseSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find();
+        $admin = Yii::$app->user->identity;
+        if ($admin->id == 1) {
+            $query = Order::find();
+        } else {
+            $query = Order::find()->where(['admin_id' => $admin->id]);
+        }
 
         // add conditions that should always apply here
 
