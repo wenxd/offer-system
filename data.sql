@@ -416,4 +416,22 @@ CREATE TABLE `supplier` (
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='供应商';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='供应商';
+
+
+CREATE TABLE `goods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `goods_number` varchar(255) NOT NULL DEFAULT '' COMMENT '零件编号',
+  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '中文描述',
+  `description_en` varchar(255) NOT NULL DEFAULT '' COMMENT '英文描述',
+  `original_company` varchar(255) NOT NULL DEFAULT '' COMMENT '原厂家',
+  `original_company_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '原厂家备注',
+  `unit` varchar(255) NOT NULL DEFAULT '' COMMENT '单位',
+  `technique_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '技术备注',
+  `img_id` varchar(255) NOT NULL DEFAULT '' COMMENT '图纸',
+  `is_process` int(11) NOT NULL DEFAULT '0' COMMENT '是否加工',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='零件表';
