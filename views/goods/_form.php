@@ -25,9 +25,7 @@ use app\models\Goods;
 
     <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
 
     <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [
         'options' => [
@@ -41,8 +39,25 @@ use app\models\Goods;
             'dropZoneTitle'        => '请选择图片'
         ]
     ]); ?>
-    
-    <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
+
+    <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
+
+    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
+
+    <?= $form->field($model, 'nameplate_img_id')->widget(FileInput::classname(), [
+        'options' => [
+            'accept' => 'image/*'
+        ],
+        'pluginOptions' => [
+            'initialPreviewAsData' => true,
+            'initialPreview'       => $model->nameplate_img_url ? [$model->nameplate_img_url] : [],
+            'showUpload'           => false,
+            'overwriteInitial'     => true,
+            'dropZoneTitle'        => '请选择图片'
+        ]
+    ]); ?>
+
+    <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
 
     </div>
     <div class="box-footer">

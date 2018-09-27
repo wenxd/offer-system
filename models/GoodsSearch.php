@@ -18,8 +18,9 @@ class GoodsSearch extends Goods
     public function rules()
     {
         return [
-            [['id', 'is_process', 'is_deleted'], 'integer'],
-            [['goods_number', 'description', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate'], 'integer'],
+            [['goods_number', 'description', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
+                'img_id', 'nameplate_img_id', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -66,8 +67,10 @@ class GoodsSearch extends Goods
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'is_process' => $this->is_process,
-            'is_deleted' => self::IS_DELETED_NO,
+            'is_process'   => $this->is_process,
+            'is_special'   => $this->is_special,
+            'is_nameplate' => $this->is_nameplate,
+            'is_deleted'   => self::IS_DELETED_NO,
         ]);
 
         $query->andFilterWhere(['like', 'goods_number', $this->goods_number])

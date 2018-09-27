@@ -57,6 +57,7 @@ class Goods extends ActiveRecord
     ];
     
     public $img_url = '';
+    public $nameplate_img_url = '';
 
     public function behaviors()
     {
@@ -89,7 +90,7 @@ class Goods extends ActiveRecord
     {
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate'], 'integer'],
-            [['offer_date', 'updated_at', 'created_at', 'img_url'], 'safe'],
+            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
             [['goods_number', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 512],
             [
@@ -122,6 +123,7 @@ class Goods extends ActiveRecord
             'updated_at'              => '更新时间',
             'created_at'              => '创建时间',
             'img_url'                 => '图片地址',
+            'nameplate_img_url'       => '图片地址',
         ];
     }
 

@@ -39,13 +39,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'original_company',
             'original_company_remark',
-            'unit',
-
             [
                 'attribute' => 'is_process',
                 'filter'    => Goods::$process,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$process[$model->is_process];
+                }
+            ],
+            [
+                'attribute' => 'is_special',
+                'filter'    => Goods::$special,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$special[$model->is_special];
+                }
+            ],
+            [
+                'attribute' => 'is_nameplate',
+                'filter'    => Goods::$nameplate,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$nameplate[$model->is_nameplate];
                 }
             ],
             [

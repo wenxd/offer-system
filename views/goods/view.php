@@ -21,21 +21,39 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'original_company',
             'original_company_remark',
-            'unit',
-            'technique_remark',
-            [
-                'attribute' => 'img_url',
-                'format'    => 'raw',
-                'value'     => function ($model) {
-                    return Html::img($model->img_url, ['width' => 300]);
-                }
-            ],
             [
                 'attribute' => 'is_process',
                 'value'     => function ($model) {
                     return Goods::$process[$model->is_process];
                 }
             ],
+            [
+                'attribute' => 'img_id',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    return Html::img($model->img_url, ['width' => 300]);
+                }
+            ],
+            [
+                'attribute' => 'is_special',
+                'value'     => function ($model) {
+                    return Goods::$special[$model->is_special];
+                }
+            ],
+            [
+                'attribute' => 'is_nameplate',
+                'value'     => function ($model) {
+                    return Goods::$nameplate[$model->is_nameplate];
+                }
+            ],
+            [
+                'attribute' => 'nameplate_img_id',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    return Html::img($model->nameplate_img_url, ['width' => 300]);
+                }
+            ],
+            'technique_remark',
             'updated_at',
             'created_at',
         ],
