@@ -418,7 +418,6 @@ CREATE TABLE `supplier` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='供应商';
 
-
 CREATE TABLE `goods` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `goods_number` varchar(255) NOT NULL DEFAULT '' COMMENT '零件编号',
@@ -428,8 +427,11 @@ CREATE TABLE `goods` (
   `original_company_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '原厂家备注',
   `unit` varchar(255) NOT NULL DEFAULT '' COMMENT '单位',
   `technique_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '技术备注',
-  `img_id` varchar(255) NOT NULL DEFAULT '' COMMENT '图纸',
   `is_process` int(11) NOT NULL DEFAULT '0' COMMENT '是否加工',
+  `img_id` varchar(255) NOT NULL DEFAULT '' COMMENT '图纸',
+  `is_special` int(11) NOT NULL DEFAULT '0' COMMENT '是否特制 0不是 1是',
+  `is_nameplate` int(11) NOT NULL DEFAULT '0' COMMENT '是否铭牌 0不是  1是',
+  `nameplate_img_id` varchar(255) NOT NULL DEFAULT '' COMMENT '铭牌照片',
   `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
