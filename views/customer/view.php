@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
+            'short_name',
             'mobile',
             'company_telephone',
             'company_fax',

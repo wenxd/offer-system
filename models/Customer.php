@@ -11,6 +11,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id 自增id
  * @property string $name 客户名称
+ * @property string $short_name 客户简称
  * @property string $mobile 客户电话
  * @property string $company_telephone 公司电话
  * @property string $company_fax 公司传真
@@ -58,7 +59,7 @@ class Customer extends ActiveRecord
         return [
             [['is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'string', 'max' => 255],
+            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'string', 'max' => 255],
             ['company_email', 'email'],
             [
                 ['name', 'mobile'],
@@ -76,6 +77,7 @@ class Customer extends ActiveRecord
         return [
             'id'                => '自增id',
             'name'              => '客户名称',
+            'short_name'        => '客户简称',
             'mobile'            => '客户电话',
             'company_telephone' => '公司电话',
             'company_fax'       => '公司传真',

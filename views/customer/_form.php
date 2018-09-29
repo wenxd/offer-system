@@ -16,6 +16,8 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'short_name')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'company_telephone')->textInput(['maxlength' => true]) ?>

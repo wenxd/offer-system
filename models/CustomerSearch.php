@@ -19,7 +19,7 @@ class CustomerSearch extends Customer
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts', 'updated_at', 'created_at'], 'safe'],
+            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts', 'updated_at', 'created_at'], 'safe'],
             [['id', 'name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'trim'],
         ];
     }
@@ -71,6 +71,7 @@ class CustomerSearch extends Customer
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'short_name', $this->short_name])
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'company_telephone', $this->company_telephone])
             ->andFilterWhere(['like', 'company_fax', $this->company_fax])
