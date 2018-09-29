@@ -6,6 +6,7 @@ use Yii;
 use app\actions;
 use app\models\Goods;
 use app\models\GoodsSearch;
+use app\models\Inquiry;
 
 /**
  * GoodsController implements the CRUD actions for Goods model.
@@ -71,5 +72,46 @@ class GoodsController extends BaseController
         }
     }
 
+    public function actionManage()
+    {
+        $data = [];
+        return $this->render('manage', $data);
+    }
 
+    public function actionSearchResult()
+    {
+        $data = [];
+        $good_number = (string)Yii::$app->request->get('good_number');
+
+        $goods = Goods::find()->where(['goods_number' => $good_number])->one();
+
+        $data['inquiryNewest'] = [];
+        $data['inquiryBetter'] = [];
+        $data['stockList']     = [];
+        $data['goods']         = $goods ? $goods : [];
+        if ($goods) {
+            //价格最优
+            $inquiryBetterQuery = Inquiry::find()->where(['is_better' => Inquiry::IS_BETTER_YES, 'good_id' => $goods->id])
+                ->orderBy('updated_at Desc')->one();
+//            $inquiryNewQuery = Inquiry::find()->where(['is_newest' => Inquiry::IS_NEWEST_YES])
+//                ->andWhere(['good_id' => $goods->id]);
+
+
+//            //库存记录
+//            $stockQuery = Stock::find()->andWhere(['good_id' => $goods->id]);
+//            $newCount    = $inquiryNewQuery->count();
+//            $betterCount = $inquiryBetterQuery->count();
+//            $stockCount  = $stockQuery->count();
+//            $count = $newCount > $betterCount ? ($newCount > $stockCount ? $newCount : $stockCount) : $betterCount;
+//
+//            $pages = new Pagination(['totalCount' => $count, 'pageSize' => 10]);
+//
+//            $data['inquiryNewest'] = $inquiryNewQuery->offset($pages->offset)->limit($pages->limit)->all();
+            $data['inquiryBetter'] = $inquiryBetterQuery;
+//            $data['stockList']     = $stockQuery->offset($pages->offset)->limit($pages->limit)->all();
+//            $data['pages']         = $pages;
+        }
+
+        return $this->render('search-result', $data);
+    }
 }
