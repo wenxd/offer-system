@@ -437,3 +437,19 @@ CREATE TABLE `goods` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='零件表';
+
+CREATE TABLE `customer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '客户名称',
+  `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '客户名称简写',
+  `mobile` varchar(255) NOT NULL DEFAULT '' COMMENT '客户电话',
+  `company_telephone` varchar(255) NOT NULL DEFAULT '' COMMENT '公司电话',
+  `company_fax` varchar(255) NOT NULL DEFAULT '' COMMENT '公司传真',
+  `company_address` varchar(255) NOT NULL DEFAULT '' COMMENT '公司地址',
+  `company_email` varchar(255) NOT NULL DEFAULT '' COMMENT '公司邮箱',
+  `company_contacts` varchar(255) NOT NULL DEFAULT '' COMMENT '公司联系人',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='客户表';
