@@ -23,7 +23,7 @@
         "kartik-v/yii2-widget-datetimepicker": "~1.4",
         "kartik-v/yii2-date-range": "~1.6",
         "kartik-v/yii2-widget-fileinput": "@dev",
-        "qiniu/php-sdk": "^7.2"
+        "qcloud/cos-sdk-v5": "1.*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
