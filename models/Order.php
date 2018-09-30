@@ -42,6 +42,10 @@ class Order extends ActiveRecord
         self::TYPE_FINAL      => '最终报价单',
         self::TYPE_PURCHASE   => '采购单',
     ];
+
+    public $customer_short_name = '';
+    public $order_type = 0;
+
     public function behaviors()
     {
         return [
@@ -72,10 +76,10 @@ class Order extends ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'type', 'status', 'is_deleted'], 'integer'],
+            [['customer_id', 'type', 'status', 'is_deleted', 'order_type'], 'integer'],
             [['order_price'], 'number'],
             [['provide_date', 'updated_at', 'created_at'], 'safe'],
-            [['order_sn', 'description', 'remark'], 'string', 'max' => 255],
+            [['order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
         ];
     }
 
@@ -88,6 +92,7 @@ class Order extends ActiveRecord
             'id'              => '自增id',
             'customer_id'     => '客户ID',
             'customer_name'   => '客户名称',
+            'manage_name'     => '订单管理员名称',
             'order_sn'        => '订单编号',
             'description'     => '描述',
             'order_price'     => '订单总金额',
@@ -98,11 +103,20 @@ class Order extends ActiveRecord
             'provide_date'    => '供货日期',
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',
+            'order_type'      => '订单来源',
         ];
     }
 
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    public static function getType()
+    {
+        return [
+            '1' => '项目订单',
+            '2' => '非项目订单',
+        ];
     }
 }

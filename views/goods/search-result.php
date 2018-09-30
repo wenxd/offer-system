@@ -84,11 +84,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->offer_date : 0 ?></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>张三张三</td>
+                    <td><?= $inquiryBetter ? $inquiryBetter->inquiry_datetime : '' ?></td>
+                    <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
+                    <td><?= $inquiryBetter ? $inquiryBetter->better_reason : ''?></td>
+                    <td><?= $inquiryBetter ? $inquiryBetter->remark : ''?></td>
                     <td></td>
                     <td></td>
                     <td></td>

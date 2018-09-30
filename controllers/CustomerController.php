@@ -54,4 +54,14 @@ class CustomerController extends BaseController
             ],
         ];
     }
+
+    public function actionInfo($id)
+    {
+        $customer = Customer::find()->where(['id' => $id])->asArray()->one();
+        if ($customer) {
+            return json_encode(['code' => 200, 'data' => $customer]);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '']);
+        }
+    }
 }

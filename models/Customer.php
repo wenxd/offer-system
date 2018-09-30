@@ -109,7 +109,7 @@ class Customer extends ActiveRecord
         foreach ($list as $row) {
             $return[$row->id] = $row->name;
         }
-        return $return;
+        return ['0' => '请选择'] + $return;
     }
 
 }

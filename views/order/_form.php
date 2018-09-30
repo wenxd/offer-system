@@ -3,10 +3,18 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-
+use app\models\Order;
+use app\models\Customer;
+use kartik\datetime\DateTimePicker;
 /* @var $this yii\web\View */
 /* @var $model app\models\Order */
 /* @var $form yii\widgets\ActiveForm */
+
+if ($model->isNewRecord) {
+    $model->created_at = date('Y-m-d H:i:s');
+}
+
+
 ?>
 
 <div class="box">
@@ -14,24 +22,28 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-body">
+        <?= $form->field($model, 'order_type')->radioList(Order::getType(), ['class' => 'radio']) ?>
 
-    <?= $form->field($model, 'customer_id')->textInput() ?>
+        <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'customer_id')->dropDownList(Customer::getAllDropDown())->label('客户名称') ?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'customer_short_name')->textInput(['readonly' => true])->label('客户缩写') ?>
 
-    <?= $form->field($model, 'order_price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'manage_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'provide_date')->widget(DateTimePicker::className(), [
+        'removeButton'  => false,
+        'pluginOptions' => [
+            'autoclose' => true,
+            'format'    => 'yyyy-mm-dd hh:ii:00',
+            'startView' =>2,  //其实范围（0：日  1：天 2：年）
+            'maxView'   =>2,  //最大选择范围（年）
+            'minView'   =>2,  //最小选择范围（年）
+        ]
+    ]);?>
 
-    <?= $form->field($model, 'type')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'is_deleted')->textInput() ?>
-
-    <?= $form->field($model, 'provide_date')->textInput() ?>
+    <?= $form->field($model, 'created_at')->textInput(['readonly' => true]) ?>
 
     </div>
 
@@ -48,3 +60,25 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript">
+    $(document).ready(function () {
+       $('#order-customer_id').change(function () {
+           var id = $(this).val();
+           $.ajax({
+               type:"get",
+               url:"?r=customer/info",
+               data:{id:id},
+               dataType:'JSON',
+               success:function(res){
+                   if (res && res.code == 200) {
+                       $('#order-customer_short_name').val(res.data.short_name);
+                   } else {
+                       $('#order-customer_short_name').val('');
+                   }
+               }
+           });
+       })
+    });
+</script>
