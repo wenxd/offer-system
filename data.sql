@@ -453,3 +453,14 @@ CREATE TABLE `customer` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='客户表';
+
+CREATE TABLE `md5_file` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bucket` varchar(255) NOT NULL DEFAULT '' COMMENT '资源bucket',
+  `file_value` varchar(255) NOT NULL DEFAULT '' COMMENT '文件md5_file值',
+  `file_path` varchar(255) NOT NULL DEFAULT '' COMMENT '文件的存储名称及路径',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `bucket` (`bucket`,`file_value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图片md5验证表';
