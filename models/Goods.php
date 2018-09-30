@@ -6,6 +6,7 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\web\UploadedFile;
+use app\extend\tencent\Cos;
 
 /**
  * This is the model class for table "goods".
@@ -145,9 +146,10 @@ class Goods extends ActiveRecord
             return false;
         }
         $img = UploadedFile::getInstance($this, 'img_id');
+        $cos = new Cos();
         if ($img) {
             //用云
-            $this->img_id = Util::upload($img->tempName);
+            $this->img_id = $cos->uploadImage($img->tempName);
             //用本地
 //            $key = time() . rand(1000, 9999);
 //            move_uploaded_file($img->tempName, 'images/' . $key . '.png');
@@ -160,7 +162,7 @@ class Goods extends ActiveRecord
         $nameplate_img = UploadedFile::getInstance($this, 'nameplate_img_id');
         if ($nameplate_img) {
             //用云
-            $this->nameplate_img_id = Util::upload($nameplate_img->tempName);
+            $this->nameplate_img_id = $cos->uploadImage($nameplate_img->tempName);
         }
         else {
             $this->nameplate_img_id = $this->getOldAttribute('nameplate_img_id') ? $this->getOldAttribute('nameplate_img_id') : '';
