@@ -464,3 +464,16 @@ CREATE TABLE `md5_file` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `bucket` (`bucket`,`file_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图片md5验证表';
+
+CREATE TABLE `order_inquiry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inquiry_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '询价单号',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `end_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '询价截止时间',
+  `is_inquiry` int(11) NOT NULL DEFAULT '0' COMMENT '是否询价：0未询价 1已询价',
+  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='询价单';
