@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Order;
+use app\extend\widgets\Bar;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
@@ -14,6 +15,9 @@ $this->title = '订单管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget()?>
+    </div>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([

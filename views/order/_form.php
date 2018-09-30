@@ -48,8 +48,8 @@ if ($model->isNewRecord) {
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
-                'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
+        <?= Html::Button($model->isNewRecord ? '创建' :  '更新', [
+                'class' => 'btn btn-success created',
                 'name'  => 'submit-button']
         )?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
@@ -79,6 +79,36 @@ if ($model->isNewRecord) {
                    }
                }
            });
-       })
+       });
+
+       $('.created').on('click', function () {
+           
+       });
+       (function(e){
+           e.preventDefault();
+           var form = $(this).serializeArray();
+           console.log(form);
+           $(".created").removeAttr("disabled").removeClass("disabled");
+           return ;
+           var parameter = '';
+           $.each(form, function() {
+               parameter += this.name + '=' + this.value + '&';
+           });
+
+           var type = $('.on').data('type');
+           parameter += 'type=' + type;
+
+           $.ajax({
+               type:"GET",
+               url:"?r=paper/index",
+               data:{},
+               dataType:'JSON',
+               success:function(res){
+                   // console.log(location.href.split("?")[0] + "?r=paper/index&" + parameter);
+                   location.replace(location.href.split("?")[0] + "?r=paper/index&" + parameter);
+               }
+           })
+       });
+
     });
 </script>
