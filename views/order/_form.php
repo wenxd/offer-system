@@ -22,7 +22,7 @@ if ($model->isNewRecord) {
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-body">
-        <?= $form->field($model, 'order_type')->radioList(Order::getType(), ['class' => 'radio']) ?>
+        <?= $form->field($model, 'order_type')->radioList(Order::$orderType, ['class' => 'radio']) ?>
 
         <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
 

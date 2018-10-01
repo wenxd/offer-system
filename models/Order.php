@@ -15,6 +15,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $order_price 订单价格  报价金额
  * @property string $remark 备注
  * @property int $type 订单类型 0报价单 1询价单 10最终询价单
+ * @property int $order_type 是否项目订单 0否 1是
  * @property int $status 是否询价：0未询价 1已询价
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $provide_date 供货日期
@@ -31,6 +32,9 @@ class Order extends ActiveRecord
     const STATUS_NO   = '0';
     const STATUS_YES  = '1';
 
+    const ORDER_TYPE_PROJECT_NO  = 0;
+    const ORDER_TYPE_PROJECT_YES = 1;
+
     public static $status = [
         self::STATUS_NO  => '未询价',
         self::STATUS_YES => '已询价',
@@ -43,8 +47,11 @@ class Order extends ActiveRecord
         self::TYPE_PURCHASE   => '采购单',
     ];
 
+    public static $orderType = [
+        self::ORDER_TYPE_PROJECT_YES => '项目订单',
+        self::ORDER_TYPE_PROJECT_NO  => '非项目订单',
+    ];
     public $customer_short_name = '';
-    public $order_type = 0;
 
     public function behaviors()
     {
@@ -110,13 +117,5 @@ class Order extends ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
-    }
-
-    public static function getType()
-    {
-        return [
-            '1' => '项目订单',
-            '2' => '非项目订单',
-        ];
     }
 }
