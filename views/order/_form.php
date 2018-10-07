@@ -112,9 +112,7 @@ if ($model->isNewRecord) {
            }
            var created_at = $('#order-created_at').val();
            parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
-           console.log(parameter);
            location.replace("?r=order/generate&" + parameter);
-
        });
 
     });

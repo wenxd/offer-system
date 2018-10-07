@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Goods;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -351,10 +352,24 @@ class OrderController extends BaseController
         return $this->render('purchase-detail', $data);
     }
 
+    //创建订单第二步 添加零件页面
     public function actionGenerate()
     {
         $params = Yii::$app->request->get();
 
-        return $this->render('purchase-detail', $params);
+        return $this->render('add-goods', $params);
     }
+
+    //创建订单  添加动作
+    public function actionAddGoods()
+    {
+        $goods_id = Yii::$app->request->post('goods_id');
+        $goods = Goods::find()->where(['id' => $goods_id])->one();
+        if ($goods) {
+            return json_encode(['code' => 200, 'data' => $goods]);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '没有此零件']);
+        }
+    }
+
 }
