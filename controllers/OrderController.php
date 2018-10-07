@@ -350,4 +350,11 @@ class OrderController extends BaseController
 
         return $this->render('purchase-detail', $data);
     }
+
+    public function actionGenerate()
+    {
+        $params = Yii::$app->request->get();
+
+        return $this->render('purchase-detail', $params);
+    }
 }

@@ -12,8 +12,8 @@ use kartik\datetime\DateTimePicker;
 
 if ($model->isNewRecord) {
     $model->created_at = date('Y-m-d H:i:s');
+    $model->order_type = 1;
 }
-
 
 ?>
 
@@ -36,7 +36,7 @@ if ($model->isNewRecord) {
         'removeButton'  => false,
         'pluginOptions' => [
             'autoclose' => true,
-            'format'    => 'yyyy-mm-dd hh:ii:00',
+            'format'    => 'yyyy-mm-dd',
             'startView' =>2,  //其实范围（0：日  1：天 2：年）
             'maxView'   =>2,  //最大选择范围（年）
             'minView'   =>2,  //最小选择范围（年）
@@ -62,6 +62,8 @@ if ($model->isNewRecord) {
 </div>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
        $('#order-customer_id').change(function () {
@@ -82,32 +84,37 @@ if ($model->isNewRecord) {
        });
 
        $('.created').on('click', function () {
-           
-       });
-       (function(e){
-           e.preventDefault();
-           var form = $(this).serializeArray();
-           console.log(form);
-           $(".created").removeAttr("disabled").removeClass("disabled");
-           return ;
+
            var parameter = '';
-           $.each(form, function() {
-               parameter += this.name + '=' + this.value + '&';
-           });
 
-           var type = $('.on').data('type');
-           parameter += 'type=' + type;
+           var order_sn = $('#order-order_sn').val();
+           if (order_sn === ''){
+               layer.msg('请输入订单编号', {time:2000});
+               return false;
+           }
+           parameter += 'order_sn=' + order_sn + '&';
+           var customer_id = $('#order-customer_id').val();
+           if (customer_id == 0){
+               layer.msg('请选择客户名称', {time:2000});
+               return false;
+           }
+           parameter += 'customer_id=' + customer_id + '&';
+           var manage_name = $('#order-manage_name').val();
+           if (manage_name === ''){
+               layer.msg('请输入订单管理员名称', {time:2000});
+               return false;
+           }
+           parameter += 'manage_name=' + manage_name + '&';
+           var provide_date = $('#order-provide_date').val();
+           if (provide_date === ''){
+               layer.msg('请输入报价截止日期', {time:2000});
+               return false;
+           }
+           var created_at = $('#order-created_at').val();
+           parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
+           console.log(parameter);
+           location.replace("?r=order/generate&" + parameter);
 
-           $.ajax({
-               type:"GET",
-               url:"?r=paper/index",
-               data:{},
-               dataType:'JSON',
-               success:function(res){
-                   // console.log(location.href.split("?")[0] + "?r=paper/index&" + parameter);
-                   location.replace(location.href.split("?")[0] + "?r=paper/index&" + parameter);
-               }
-           })
        });
 
     });

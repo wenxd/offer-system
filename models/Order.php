@@ -107,7 +107,7 @@ class Order extends ActiveRecord
             'type'            => '订单类型',
             'status'          => '是否询价',
             'is_deleted'      => '是否删除：0未删除 1已删除',
-            'provide_date'    => '供货日期',
+            'provide_date'    => '报价截止日期',
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',
             'order_type'      => '订单来源',
