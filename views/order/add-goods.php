@@ -197,7 +197,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 goodsIds.push(goods[i].value);
             }
         }
-console.log(goodsIds);return false;
+
         var url = location.search;
         url = url.substr(17);
         $.ajax({
