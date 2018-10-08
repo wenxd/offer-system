@@ -364,7 +364,7 @@ class OrderController extends BaseController
     public function actionAddGoods()
     {
         $goods_id = Yii::$app->request->post('goods_id');
-        $goods = Goods::find()->where(['id' => $goods_id])->one();
+        $goods = Goods::find()->where(['id' => $goods_id])->asArray()->one();
         if ($goods) {
             return json_encode(['code' => 200, 'data' => $goods]);
         } else {
