@@ -54,18 +54,26 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <th><input type="checkbox" name="select_all" class="select_all"></th>
                             <th>零件号</th>
-                            <th>是否最新</th>
-                            <th>是否优选</th>
-                            <th>商品类型</th>
-                            <th style="width: 150px;">报价金额</th>
-                            <th>库存数量</th>
-                            <th style="width: 150px;">询价时间</th>
-                            <th>供应商ID</th>
-                            <th>供应商名称</th>
-                            <th>购买数量</th>
-                            <th>金额</th>
+                            <th>原厂家</th>
+                            <th>单位</th>
+                            <th>数量</th>
+                            <th>供应商</th>
+                            <th>税率</th>
+                            <th>未税单价</th>
+                            <th>含税单价</th>
+                            <th>货期</th>
+                            <th>询价状态</th>
+                            <th>询价员/采购员</th>
+                            <th>未税总价</th>
+                            <th>含税总价</th>
+                            <th>是否加工</th>
+                            <th>是否特制</th>
+                            <th>图片</th>
                         </tr>
                         </thead>
+                        <tbody class="goods_list">
+
+                        </tbody>
                     </table>
                 </div>
                 <div class="box-footer">
@@ -128,20 +136,36 @@ $this->params['breadcrumbs'][] = $this->title;
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
-
-
-                    var table = '';
-                    table += '<table id="example2" class="table table-bordered table-hover">';
-
-                    for (var i in res.data) {
-                        li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                    //判断是否存在此零件
+                    var goodsIds = $('.goods_list').find('tr').children(':first-child').children();
+                    var length = goodsIds.length;
+                    for(var i = 0; i < length; i++) {
+                        var goods = goodsIds[i];
+                        if (res.data.id == goods.value) {
+                            return false;
+                        }
                     }
-
-                    if (li) {
-                        $('.box-search-ul').append(li);
-                    } else {
-                        $('.box-search').addClass('cancel');
-                    }
+                    //添加此零件
+                    var tr = '<tr>';
+                    tr += '<td><input type="checkbox" name="select_id" value="' + res.data.id + '" class="select_id"></td>';
+                    tr += '<td>' + res.data.goods_number + '</td>';
+                    tr += '<td>' + res.data.original_company + '</td>';
+                    tr += '<td>' + res.data.unit + '</td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td>16%</td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td></td>';
+                    tr += '<td>' + (res.data.is_process == 0 ? '否' : '是') + '</td>';
+                    tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
+                    tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
+                    tr += '</tr>';
+                    $('.goods_list').append(tr);
                 } else {
                     layer.msg(res.msg, {time:2000});
                 }
@@ -153,4 +177,29 @@ $this->params['breadcrumbs'][] = $this->title;
         $("#good_number").val(obj.html());
         $('.box-search').addClass('cancel');
     }
+
+    $('.order_save').click(function (e) {
+        var goods = $('.goods_list').find('tr').children(':first-child').children();
+        var length = goods.length;
+        var goodsIds = [];
+        for(var i = 0; i < length; i++) {
+            goodsIds.push(goods[i].value);
+        }
+        console.log(goodsIds);
+        var url = location.search;
+        url = url.substr(17);
+        $.ajax({
+            type:"post",
+            url:'?r=order/save-order' + url,
+            data:{goodsIds:goodsIds},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+
+                }
+            }
+        });
+    });
+
+
 </script>

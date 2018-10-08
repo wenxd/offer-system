@@ -84,9 +84,10 @@ if ($model->isNewRecord) {
        });
 
        $('.created').on('click', function () {
-
            var parameter = '';
 
+           var order_type = $('#order-order_type').find('input:checked').val();
+           parameter += 'order_type=' + order_type + '&';
            var order_sn = $('#order-order_sn').val();
            if (order_sn === ''){
                layer.msg('请输入订单编号', {time:2000});
@@ -112,7 +113,7 @@ if ($model->isNewRecord) {
            }
            var created_at = $('#order-created_at').val();
            parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
-           location.replace("?r=order/generate&" + parameter);
+           location.replace("?r=order/generate&" + encodeURI(parameter));
        });
 
     });

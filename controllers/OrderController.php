@@ -372,4 +372,25 @@ class OrderController extends BaseController
         }
     }
 
+    //保存订单
+    public function actionSaveOrder()
+    {
+        $params = Yii::$app->request->get();
+        $goodsIds = Yii::$app->request->post();
+
+        $order = new Order();
+        $order->customer_id = $params['customer_id'];
+        $order->order_sn = $params['order_sn'];
+        $order->manage_name = $params['manage_name'];
+        $order->goods_ids = json_encode($goodsIds['goodsIds']);
+        $order->order_type = $params['order_type'];
+        $order->provide_date = $params['provide_date'];
+        $order->created_at = $params['created_at'];
+
+        if ($order->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
+        }
+    }
 }
