@@ -37,7 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="form-group">
                             <label for="good_number">零件号</label>
                             <input type="text" class="form-control" id="good_number"
-                                   placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off">
+                                   placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off"
+                                   onkeydown="if(event.keyCode == 13){return false;}">
                         </div>
                         <button type="button" class="btn btn-primary add_goods" style="float: right">添加</button>
                     </form>
@@ -79,9 +80,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-footer">
                     <?= Html::button('保存订单', [
                             'class' => 'btn btn-success order_save',
-                            'name'  => 'submit-button']
+                            'name'  => 'button']
                     )?>
-                    <?= Html::a('<i class="fa fa-reply"></i> 返回上一页', Url::to(['search/index']), [
+                    <?= Html::a('<i class="fa fa-reply"></i> 返回上一页', Url::to(['order/create']), [
                         'class' => 'btn btn-default btn-flat',
                     ])?>
                 </div>
@@ -166,6 +167,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
                     tr += '</tr>';
                     $('.goods_list').append(tr);
+                    if ($('.select_all').prop('checked')) {
+                        $('.select_id').prop("checked",$('.select_all').prop('checked'));
+                    }
                 } else {
                     layer.msg(res.msg, {time:2000});
                 }
@@ -179,13 +183,21 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('.order_save').click(function (e) {
+        var select_length = $('.select_id:checked').length;
+        if (!select_length) {
+            layer.msg('请最少选择一个零件', {time:2000});
+            return false;
+        }
+
         var goods = $('.goods_list').find('tr').children(':first-child').children();
         var length = goods.length;
         var goodsIds = [];
         for(var i = 0; i < length; i++) {
-            goodsIds.push(goods[i].value);
+            if (goods[i].checked) {
+                goodsIds.push(goods[i].value);
+            }
         }
-        console.log(goodsIds);
+console.log(goodsIds);return false;
         var url = location.search;
         url = url.substr(17);
         $.ajax({
@@ -201,5 +213,18 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     });
 
+    //全选
+    $('.select_all').click(function (e) {
+        $('.select_id').prop("checked",$(this).prop("checked"));
+    });
+
+    //子选择
+    $('.goods_list').on('click', '.select_id', function (e) {
+        if ($('.select_id').length == $('.select_id:checked').length) {
+            $('.select_all').prop("checked",true);
+        } else {
+            $('.select_all').prop("checked",false);
+        }
+    });
 
 </script>
