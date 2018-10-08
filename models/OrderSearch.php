@@ -44,7 +44,7 @@ class OrderSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find()->groupBy('order_sn');
+        $query = Order::find();
 
         // add conditions that should always apply here
 
@@ -71,7 +71,7 @@ class OrderSearch extends Order
             'id' => $this->id,
             'customer_id' => $this->customer_id,
             'order_price' => $this->order_price,
-            'type'        => [Order::TYPE_QUOTE, Order::TYPE_INQUIRY],
+            'order_type'  => $this->order_type,
             'status'      => $this->status,
             'is_deleted'  => $this->is_deleted,
         ]);
