@@ -35,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 'order_sn',
-                'description',
                 [
                     'attribute' => 'provide_date',
                     'filter'    => DateRangePicker::widget([
@@ -57,22 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => Yii::$app->request->get('OrderSearch')['created_at'],
                     ])
                 ],
-                'order_price',
-                'remark',
                 [
                     'attribute' => 'status',
                     'format'    => 'raw',
                     'filter'    => Order::$status,
                     'value'     => function ($model, $key, $index, $column) {
                         return Order::$status[$model->status];
-                    }
-                ],
-                [
-                    'attribute' => 'type',
-                    'format'    => 'raw',
-                    'filter'    => Order::$type,
-                    'value'     => function ($model, $key, $index, $column) {
-                        return Order::$type[$model->type];
                     }
                 ],
                 [
