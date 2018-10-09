@@ -65,6 +65,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
+                    'attribute' => 'order_type',
+                    'format'    => 'raw',
+                    'filter'    => Order::$orderType,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Order::$orderType[$model->order_type];
+                    }
+                ],
+                [
                     'attribute' => '操作',
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column){
