@@ -393,4 +393,11 @@ class OrderController extends BaseController
             return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
         }
     }
+
+    public function actionCreateInquiry()
+    {
+        $data = [];
+
+        return $this->render('create-inquiry', $data);
+    }
 }
