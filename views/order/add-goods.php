@@ -207,7 +207,7 @@ $this->params['breadcrumbs'][] = $this->title;
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
-
+                    location.replace("?r=order/index");
                 }
             }
         });
