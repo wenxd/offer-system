@@ -19,7 +19,7 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'type', 'status', 'is_deleted'], 'integer'],
+            [['id', 'customer_id', 'type', 'status', 'is_deleted', 'order_type'], 'integer'],
             [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
             [['order_price'], 'number'],
             [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
