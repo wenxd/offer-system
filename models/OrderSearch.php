@@ -76,9 +76,34 @@ class OrderSearch extends Order
             'is_deleted'  => $this->is_deleted,
         ]);
 
+        if ($this->customer_name) {
+            $query->leftJoin('customer as a', 'a.id = order.customer_id');
+            $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
+        }
+
+
         $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'remark', $this->remark]);
+
+        if ($this->provide_date && strpos($this->provide_date, ' - ')) {
+            list($provide_date_start, $provide_date_end) = explode(' - ', $this->provide_date);
+            $query->andFilterWhere(['between', 'provide_date', $provide_date_start, $provide_date_end]);
+        }
+
+        if ($this->updated_at && strpos($this->updated_at, ' - ')) {
+            list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
+            $updated_at_start .= ' 00:00:00';
+            $updated_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+        }
+
+        if ($this->created_at && strpos($this->created_at, ' - ')) {
+            list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
+            $created_at_start .= ' 00:00:00';
+            $created_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+        }
 
         return $dataProvider;
     }
