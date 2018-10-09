@@ -79,6 +79,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
+                        ]) . Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
                         ]);
                     }
                 ],
