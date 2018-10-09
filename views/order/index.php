@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'updated_at',
+                    'contentOptions' =>['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
                         'name'  => 'OrderSearch[updated_at]',
                         'value' => Yii::$app->request->get('OrderSearch')['updated_at'],
@@ -51,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'created_at',
+                    'contentOptions' =>['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
                         'name'  => 'OrderSearch[created_at]',
                         'value' => Yii::$app->request->get('OrderSearch')['created_at'],
@@ -73,15 +75,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
-                    'attribute' => '操作',
-                    'format'    => 'raw',
-                    'value'     => function ($model, $key, $index, $column){
+                    'attribute'      => '操作',
+                    'format'         => 'raw',
+                    'contentOptions' =>['style'=>'min-width: 260px;'],
+                    'value'          => function ($model, $key, $index, $column){
                         return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
-                        ]) . Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
+                        ]) . Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
                                 'data-pjax' => '0',
-                                'class' => 'btn btn-info btn-xs btn-flat',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                        ]) . Html::a('<i class="fa fa-heart"></i> 生成最终订单', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-success btn-xs btn-flat',
                         ]);
                     }
                 ],
