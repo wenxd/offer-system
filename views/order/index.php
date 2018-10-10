@@ -23,6 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
+            'pager'        => [
+                'firstPageLabel' => '首页',
+                'prevPageLabel'  => '上一页',
+                'nextPageLabel'  => '下一页',
+                'lastPageLabel'  => '尾页',
+            ],
             'columns' => [
                 'id',
                 [

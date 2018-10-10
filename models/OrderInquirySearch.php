@@ -5,23 +5,23 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use app\models\OrderInquiry;
 
 /**
- * OrderInquirySearch represents the model behind the search form of `backend\models\OrderInquiry`.
+ * OrderInquirySearch represents the model behind the search form of `app\models\OrderInquiry`.
  */
-class OrderInquirySearch extends Order
+class OrderInquirySearch extends OrderInquiry
 {
-    public $customer_name;
+    public $order_sn;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'is_deleted'], 'integer'],
-            [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name', 'status'], 'safe'],
-            [['order_price'], 'number'],
-            [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
+            [['id', 'order_id', 'is_inquiry', 'admin_id', 'is_deleted'], 'integer'],
+            [['inquiry_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
+            [['inquiry_sn', 'order_sn'], 'trim'],
         ];
     }
 
@@ -43,12 +43,8 @@ class OrderInquirySearch extends Order
      */
     public function search($params)
     {
-        $admin = Yii::$app->user->identity;
-        if ($admin->id == 1) {
-            $query = Order::find();
-        } else {
-            $query = Order::find()->where(['admin_id' => $admin->id]);
-        }
+        $query = OrderInquiry::find();
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -57,7 +53,7 @@ class OrderInquirySearch extends Order
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'order_price', 'provide_date', 'updated_at', 'created_at']
+                'attributes' => ['id', 'end_date', 'updated_at', 'created_at']
             ],
         ]);
 
@@ -71,41 +67,38 @@ class OrderInquirySearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order.id'          => $this->id,
-            'order.order_price' => $this->order_price,
-            'order.is_deleted'  => $this->is_deleted,
-            'order.status'      => $this->status,
-            'order.type'        => Order::TYPE_INQUIRY,
+            'id'         => $this->id,
+            'order_id'   => $this->order_id,
+            'is_inquiry' => $this->is_inquiry,
+            'admin_id'   => $this->admin_id,
+            'is_deleted' => $this->is_deleted,
         ]);
-        if ($this->customer_name) {
-            $query->leftJoin('customer as a', 'a.id = order_inquiry.customer_id');
-            $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
-        }
-        $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'remark', $this->remark]);
 
-        if ($this->provide_date && strpos($this->provide_date, ' - ')) {
-            list($provide_at_start, $provide_at_end) = explode(' - ', $this->provide_date);
-            $provide_at_start .= ' 00:00:00';
-            $provide_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'provide_date', $provide_at_start, $provide_at_end]);
+        if ($this->order_sn) {
+            $query->leftJoin('order as a', 'a.id = order_inquiry.order_id');
+            $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+        }
+        $query->andFilterWhere(['like', 'inquiry_sn', $this->inquiry_sn])
+            ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
+
+        if ($this->end_date && strpos($this->end_date, ' - ')) {
+            list($end_date_start, $end_date_end) = explode(' - ', $this->end_date);
+            $query->andFilterWhere(['between', 'end_date', $end_date_start, $end_date_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'stock.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'stock.created_at', $created_at_start, $created_at_end]);
         }
-
         return $dataProvider;
     }
 }

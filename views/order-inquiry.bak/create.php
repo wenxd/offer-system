@@ -2,15 +2,15 @@
 
 use yii\helpers\Html;
 
+
 /* @var $this yii\web\View */
 /* @var $model app\models\OrderInquiry */
 
-$this->title = 'Update Order Inquiry: ' . $model->id;
+$this->title = 'Create Order Inquiry';
 $this->params['breadcrumbs'][] = ['label' => 'Order Inquiries', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="order-inquiry-update">
+<div class="order-inquiry-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

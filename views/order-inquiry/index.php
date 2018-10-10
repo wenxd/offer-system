@@ -1,10 +1,12 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\widgets\Pjax;
 use yii\helpers\Url;
-use app\models\Order;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\grid\GridView;
+use app\models\OrderInquiry;
+use app\models\Admin;
+use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderInquirySearch */
@@ -12,69 +14,96 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '询价单列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+
 ?>
 <div class="box table-responsive">
     <div class="box-body">
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pager'        => [
+            'firstPageLabel' => '首页',
+            'prevPageLabel'  => '上一页',
+            'nextPageLabel'  => '下一页',
+            'lastPageLabel'  => '尾页',
+        ],
         'columns' => [
             'id',
             [
-                'attribute' => 'customer_name',
-                'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class'=>'form-control']),
+                'attribute' => 'order_sn',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->customer) {
-                        return $model->customer->name;
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/view', 'id' => $model->order_id]));
+                    } else {
+                        return '';
                     }
                 }
             ],
-            'order_sn',
-            'description',
+            'inquiry_sn',
             [
-                'attribute' => 'provide_date',
+                'attribute' => 'end_date',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderInquirySearch[provide_date]',
-                    'value' => Yii::$app->request->get('OrderInquirySearch')['provide_date'],
+                    'name' => 'OrderInquirySearch[end_date]',
+                    'value' => Yii::$app->request->get('OrderInquirySearch')['end_date'],
                 ])
             ],
             [
                 'attribute' => 'updated_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderInquirySearch[updated_at]',
+                    'name' => 'OrderInquirySearch[updated_at]',
                     'value' => Yii::$app->request->get('OrderInquirySearch')['updated_at'],
                 ])
             ],
             [
                 'attribute' => 'created_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'OrderInquirySearch[created_at]',
                     'value' => Yii::$app->request->get('OrderInquirySearch')['created_at'],
                 ])
             ],
-            'order_price',
-            'remark',
             [
-                'attribute' => 'status',
+                'attribute' => 'is_inquiry',
                 'format'    => 'raw',
-                'filter'    => Order::$status,
+                'filter'    => OrderInquiry::$Inquiry,
                 'value'     => function ($model, $key, $index, $column) {
-                    return Order::$status[$model->status];
+                    return OrderInquiry::$Inquiry[$model->is_inquiry];
                 }
             ],
             [
-                'attribute' => '操作',
-                'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看',Url::to(['detail', 'id'=> $model['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-info btn-xs btn-flat',
-                    ]);
+                'attribute' => 'admin_id',
+                'label'     => '询价员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
+            [
+                'attribute'      => '操作',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'value'          => function ($model, $key, $index, $column){
+                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-info btn-xs btn-flat',
+                        ]);
                 }
             ],
         ],
     ]); ?>
-    <?php Pjax::end(); ?>
     </div>
 </div>

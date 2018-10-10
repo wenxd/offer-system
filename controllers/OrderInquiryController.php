@@ -16,16 +16,11 @@ use app\models\Order;
 use app\models\Inquiry;
 use app\models\OrderInquiry;
 use app\models\OrderInquirySearch;
-use app\models\OrderQuote;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 
 class OrderInquiryController extends BaseController
 {
-
-    /*
-     * 已废弃
-     */
     public function actions()
     {
         return [
