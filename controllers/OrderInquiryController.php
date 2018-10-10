@@ -7,6 +7,7 @@
  */
 namespace app\controllers;
 
+use app\models\InquiryGoods;
 use app\models\QuoteRecord;
 use Yii;
 use app\actions;
@@ -22,6 +23,9 @@ use yii\web\BadRequestHttpException;
 class OrderInquiryController extends BaseController
 {
 
+    /*
+     * 已废弃
+     */
     public function actions()
     {
         return [
@@ -39,6 +43,9 @@ class OrderInquiryController extends BaseController
         ];
     }
 
+    /*
+     * 已废弃
+     */
     public function actionSubmit()
     {
         $params = Yii::$app->request->get('OrderInquiry');
@@ -88,6 +95,9 @@ class OrderInquiryController extends BaseController
         }
     }
 
+    /*
+     * 已废弃
+     */
     public function actionDetail($id)
     {
         $data = [];
@@ -106,6 +116,9 @@ class OrderInquiryController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /*
+     * 已废弃
+     */
     public function actionUpdate($id)
     {
         if (! $id) throw new BadRequestHttpException(yii::t('app', "Id doesn't exit"));
@@ -130,4 +143,45 @@ class OrderInquiryController extends BaseController
             'model' => $model,
         ]);
     }
+
+    public function actionSaveOrder()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderInquiry = new OrderInquiry();
+        $orderInquiry->inquiry_sn = $params['inquiry_sn'];
+        $orderInquiry->order_id   = $params['order_id'];
+        $orderInquiry->end_date   = $params['end_date'];
+        $orderInquiry->admin_id   = $params['admin_id'];
+
+        $json = [];
+        $data = [];
+        foreach ($params['goods_ids'] as $goods_id) {
+            $item = [];
+            $item['goods_id']   = $goods_id;
+            $item['is_inquiry'] = 0;
+            $json[] = $item;
+            $row = [];
+            //批量数据
+            $row[] = $params['inquiry_sn'];
+            $row[] = $goods_id;
+            $data[] = $row;
+        }
+
+        $orderInquiry->goods_info = json_encode($json, JSON_UNESCAPED_UNICODE);
+        if ($orderInquiry->save()) {
+            self::insertInquiryGoods($data);
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderInquiry->getErrors()]);
+        }
+    }
+
+    //批量插入
+    public static function insertInquiryGoods($data)
+    {
+        $feild = ['inquiry_sn', 'goods_id'];
+        $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
+    }
+
 }

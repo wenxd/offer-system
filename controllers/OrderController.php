@@ -409,7 +409,8 @@ class OrderController extends BaseController
 
         $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;
-
+        $data['model']        = new OrderInquiry();
+        $data['order']        = $order;
         return $this->render('create-inquiry', $data);
     }
 }

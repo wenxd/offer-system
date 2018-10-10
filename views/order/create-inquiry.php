@@ -1,14 +1,13 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\grid\GridView;
-use yii\widgets\Pjax;
-use app\extend\widgets\Bar;
-use yii\grid\CheckboxColumn;
-use app\extend\grid\ActionColumn;
-use kartik\daterange\DateRangePicker;
+use yii\widgets\ActiveForm;
+use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use app\models\Admin;
+use app\models\AuthAssignment;
 
 $this->title = '生成询价单';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,16 +17,26 @@ if ($orderInquiry) {
     foreach ($orderInquiry as $k => $item) {
         $goods_info = json_decode($item['goods_info'], true);
         foreach ($goods_info as $g) {
-            if ($g['is_inquiry']) {
-                $inquiryYes[] = $g['goods_id'];
-            }
+            $inquiryYes[] = $g['goods_id'];
         }
     }
 }
 
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+
+$model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
+$model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
+
 ?>
 <section class="content">
     <div class="box table-responsive">
+        <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
@@ -64,11 +73,96 @@ if ($orderInquiry) {
                         <td><?= $good->updated_at?></td>
                         <td><?= $good->created_at?></td>
                         <td><?= $good->technique_remark?></td>
-                        <td><?= in_array($good->id, $inquiryYes) ? $good->inquirySn->inquiry_sn : ''?></td></td>
+                        <td><?= in_array($good->id, $inquiryYes) ? $good->inquirySn->inquiry_sn : '否'?></td></td>
                     </tr>
                     <?php endforeach;?>
                 </tbody>
             </table>
+
+            <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
+
+            <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+                'removeButton'  => false,
+                'pluginOptions' => [
+                    'autoclose' => true,
+                    'format'    => 'yyyy-mm-dd',
+                    'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                    'maxView'   =>2,  //最大选择范围（年）
+                    'minView'   =>2,  //最小选择范围（年）
+                ]
+            ]);?>
+
+            <?= $form->field($model, 'order_id')->hiddenInput(['value' => $order->id])->label(false) ?>
+            <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
         </div>
+        <div class="box-footer">
+            <?= Html::button('保存询价单', [
+                    'class' => 'btn btn-success inquiry_save',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
+        <?php ActiveForm::end(); ?>
     </div>
 </section>
+
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        init();
+        //全选
+        $('.select_all').click(function (e) {
+            $('.select_id').prop("checked",$(this).prop("checked"));
+        });
+
+        //子选择
+        $('.select_id').on('click',function (e) {
+            if ($('.select_id').length == $('.select_id:checked').length) {
+                $('.select_all').prop("checked",true);
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+        });
+        //保存询价单
+        $('.inquiry_save').click(function (e) {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+            var goods_ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    goods_ids.push($(element).val());
+                }
+            });
+
+            var admin_id = $('#orderinquiry-admin_id').val();
+            var end_date = $('#orderinquiry-end_date').val();
+            var order_id = $('#orderinquiry-order_id').val();
+            var inquiry_sn = $('#orderinquiry-inquiry_sn').val();
+
+            $.ajax({
+                type:"post",
+                url:'?r=order-inquiry/save-order',
+                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_ids:goods_ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=order-inquiry/index");
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+        function init(){
+            if (!$('.select_id').length) {
+                $('.select_all').hide();
+                $('.inquiry_save').hide();
+            }
+        }
+    });
+</script>
