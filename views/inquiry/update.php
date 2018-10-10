@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\Inquiry */
 
 $this->title = '更新';
-$this->params['breadcrumbs'][] = ['label' => '询价列表', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '询价记录列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="inquiry-update">

@@ -124,7 +124,7 @@ class OrderInquiryController extends BaseController
         if (yii::$app->getRequest()->getIsPost()) {
             if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->save()) {
                 yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
-                return $this->controller->redirect(['update', 'id' => $model->getPrimaryKey()]);
+                return $this->redirect(['update', 'id' => $model->getPrimaryKey()]);
             } else {
                 $errors = $model->getErrors();
                 $err = '';
@@ -179,4 +179,34 @@ class OrderInquiryController extends BaseController
         $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
     }
 
+    //询价单详情
+    public function actionView($id)
+    {
+        $orderInquiry = OrderInquiry::findOne($id);
+        if (!$orderInquiry) {
+            yii::$app->getSession()->setFlash('error', '没有此询价单');
+            return $this->redirect(['index']);
+        }
+
+        $data = [];
+        $data['orderInquiry'] = $orderInquiry;
+        $inquiryGoods = InquiryGoods::find()->where(['inquiry_sn' => $orderInquiry->inquiry_sn,
+            'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
+        $data['inquiryGoods'] = $inquiryGoods;
+
+        return $this->render('view', $data);
+    }
+
+    //询价确认接口
+    public function actionConfirm($id)
+    {
+        $info = InquiryGoods::findOne($id);
+        $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
+        if ($info->save()) {
+            yii::$app->getSession()->setFlash('success', '确认成功');
+        } else {
+            yii::$app->getSession()->setFlash('error', $info->getErrors());
+        }
+        return $this->redirect(Yii::$app->request->headers['referer']);
+    }
 }
