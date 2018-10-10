@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Goods;
+use app\models\OrderInquiry;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -394,9 +395,20 @@ class OrderController extends BaseController
         }
     }
 
-    public function actionCreateInquiry()
+    public function actionCreateInquiry($id)
     {
-        $data = [];
+        $data      = [];
+        $order     = Order::findOne($id);
+        if (!$order) {
+            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
+        }
+        $goods_ids     = json_decode($order->goods_ids, true);
+        $goods         = Goods::find()->where(['id' => $goods_ids])->all();
+
+        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+
+        $data['orderInquiry'] = $orderInquiry;
+        $data['goods']        = $goods;
 
         return $this->render('create-inquiry', $data);
     }

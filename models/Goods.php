@@ -201,4 +201,9 @@ class Goods extends ActiveRecord
 
         return $list;
     }
+
+    public function getInquirySn()
+    {
+        return $this->hasOne(InquiryGoods::className(), ['goods_id' => 'id']);
+    }
 }
