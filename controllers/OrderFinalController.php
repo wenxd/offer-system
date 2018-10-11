@@ -151,4 +151,20 @@ class OrderFinalController extends Controller
             return json_encode(['code' => 500, 'msg' => $finalGoods->getErrors()]);
         }
     }
+
+    public function actionSaveOrder()
+    {
+        $params = Yii::$app->request->post();
+        $orderFinal = new OrderFinal();
+        $orderFinal->final_sn = 'zzdd' . date('YmdHis') . rand(10, 99);
+        $orderFinal->order_id = $params['order_id'];
+        $orderFinal->goods_info = json_encode($params['goods_ids']);
+        if ($orderFinal->save()) {
+            $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],
+                ['order_id' => $params['order_id']]);
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderFinal->getErrors()]);
+        }
+    }
 }

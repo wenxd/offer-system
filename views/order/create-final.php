@@ -14,6 +14,7 @@ $model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
 $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
 
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
+$goods_id = ArrayHelper::getColumn($goods, 'id');
 
 ?>
 <section class="content">
@@ -22,7 +23,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
         <div class="box-body">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
-                    <tr>
+                    <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>">
                         <th>零件号</th>
                         <th>中文描述</th>
                         <th>英文描述</th>
@@ -54,7 +55,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
                         <td><?= $good->updated_at?></td>
                         <td><?= $good->created_at?></td>
                         <td><?= $good->technique_remark?></td>
-                        <td><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
+                        <td class="relevance"><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$good->id]) ? Html::a($finalGoods[$good->id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$good->id]['relevance_id']])) : ''?></td>
                     </tr>
                     <?php endforeach;?>
@@ -63,7 +64,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
         </div>
         <div class="box-footer">
             <?= Html::button('保存最终订单', [
-                    'class' => 'btn btn-success inquiry_save',
+                    'class' => 'btn btn-success final_save',
                     'name'  => 'submit-button']
             )?>
         </div>
@@ -75,47 +76,31 @@ $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        //全选
-        $('.select_all').click(function (e) {
-            $('.select_id').prop("checked",$(this).prop("checked"));
-        });
-
-        //子选择
-        $('.select_id').on('click',function (e) {
-            if ($('.select_id').length == $('.select_id:checked').length) {
-                $('.select_all').prop("checked",true);
-            } else {
-                $('.select_all').prop("checked",false);
-            }
-        });
-        //保存询价单
-        $('.inquiry_save').click(function (e) {
-            var select_length = $('.select_id:checked').length;
-            if (!select_length) {
-                layer.msg('请最少选择一个零件', {time:2000});
-                return false;
-            }
-            var goods_ids = [];
-            $('.select_id').each(function (index, element) {
-                if ($(element).prop("checked")) {
-                    goods_ids.push($(element).val());
+        //保存最终订单
+        $('.final_save').click(function (e) {
+            var flag = false;
+            $('.relevance').each(function (i, element) {
+                if ($(element).text() == '否') {
+                    flag = true;
                 }
             });
+            if (flag) {
+                layer.msg('所有的零件需关联询价', {time:2000});
+                return false;
+            }
 
-            var admin_id = $('#orderinquiry-admin_id').val();
-            var end_date = $('#orderinquiry-end_date').val();
-            var order_id = $('#orderinquiry-order_id').val();
-            var inquiry_sn = $('#orderinquiry-inquiry_sn').val();
+            var goods_ids = $('.goods').data('goods_ids');
+            var order_id = $('.goods').data('order_id');
 
             $.ajax({
                 type:"post",
-                url:'?r=order-inquiry/save-order',
-                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_ids:goods_ids},
+                url:'?r=order-final/save-order',
+                data:{order_id:order_id, goods_ids:goods_ids},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-inquiry/index");
+                        location.replace("?r=order-final/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
