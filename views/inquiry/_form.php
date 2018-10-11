@@ -11,8 +11,12 @@ use app\models\Goods;
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
 
-$model->tax_rate='10';
-
+$model->tax_rate='16';
+if ($model->isNewRecord) {
+    if (isset($_GET['goods_id']) && $_GET['goods_id']) {
+        $model->good_id = $_GET['goods_id'];
+    }
+}
 ?>
 
 <div class="box">
@@ -42,13 +46,7 @@ $model->tax_rate='10';
         ]
     ]);?>
 
-    <?= $form->field($model, 'offer_date')->widget(DateTimePicker::className(), [
-        'removeButton'  => false,
-        'pluginOptions' => [
-            'autoclose' => true,
-            'format'    => 'yyyy-mm-dd hh:ii:00'
-        ]
-    ]);?>
+    <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(天)');?>
 
     <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 

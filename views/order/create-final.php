@@ -42,7 +42,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($inquiry, 'good_id');
                 <tbody>
                     <?php foreach ($goods as $key => $good):?>
                     <tr>
-                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/index', 'InquirySearch[goods_number]' => $good->goods_number ]));?></td>
+                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id ]));?></td>
                         <td><?= $good->description?></td>
                         <td><?= $good->description_en?></td>
                         <td><?= $good->original_company?></td>

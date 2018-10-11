@@ -87,6 +87,7 @@ class Inquiry extends ActiveRecord
                 'on' => 'inquiry'
             ],
             [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
+            [['delivery_time'], 'integer', 'min' => 0]
         ];
     }
 
@@ -106,6 +107,7 @@ class Inquiry extends ActiveRecord
             'tax_rate'         => '税率',
             'inquiry_datetime' => '咨询时间',
             'offer_date'       => '交货日期',
+            'delivery_time'    => '货期',
             'remark'           => '询价备注',
             'sort'             => '排序',
             'is_better'        => '是否优选',
