@@ -203,10 +203,21 @@ class OrderInquiryController extends BaseController
         $info = InquiryGoods::findOne($id);
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
         if ($info->save()) {
-            yii::$app->getSession()->setFlash('success', '确认成功');
+            //如果都询价了，本订单和询价单就是已询价
+            $res = InquiryGoods::find()->where(['inquiry_sn' => $info->inquiry_sn, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
+            if (!$res) {
+                //询价单改状态
+                $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => $info->inquiry_sn])->one();
+                $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
+                $orderInquiry->save();
+                //订单改状态
+                $order = Order::findOne($orderInquiry->order_id);
+                $order->status = Order::STATUS_YES;
+                $order->save();
+            }
+            return json_encode(['code' => 200, 'msg' => '确认成功']);
         } else {
-            yii::$app->getSession()->setFlash('error', $info->getErrors());
+            return json_encode(['code' => 500, 'msg' => $info->getErrors()]);
         }
-        return $this->redirect(Yii::$app->request->headers['referer']);
     }
 }
