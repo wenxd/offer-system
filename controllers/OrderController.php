@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Goods;
+use app\models\Inquiry;
 use app\models\OrderInquiry;
 use Yii;
 use app\models\Order;
@@ -412,5 +413,28 @@ class OrderController extends BaseController
         $data['model']        = new OrderInquiry();
         $data['order']        = $order;
         return $this->render('create-inquiry', $data);
+    }
+
+    public function actionCreateFinal($id)
+    {
+        $data      = [];
+        $order     = Order::findOne($id);
+        if (!$order) {
+            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
+        }
+        $goods_ids     = json_decode($order->goods_ids, true);
+        $goods         = Goods::find()->where(['id' => $goods_ids])->all();
+
+        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+        $inquiry              = Inquiry::find()->where(['is_deleted' => Inquiry::IS_DELETED_NO])
+            ->orderBy('updated_at Desc')->groupBy('good_id')->indexBy('good_id')->asArray()->all();
+
+        $data['orderInquiry'] = $orderInquiry;
+        $data['goods']        = $goods;
+        $data['model']        = new OrderInquiry();
+        $data['order']        = $order;
+        $data['inquiry']      = $inquiry;
+
+        return $this->render('create-final', $data);
     }
 }
