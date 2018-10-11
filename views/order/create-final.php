@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
 $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
 
-$inquiry_goods_ids = ArrayHelper::getColumn($inquiry, 'good_id');
+$inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 
 ?>
 <section class="content">
@@ -42,7 +42,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($inquiry, 'good_id');
                 <tbody>
                     <?php foreach ($goods as $key => $good):?>
                     <tr>
-                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id ]));?></td>
+                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? '')]));?></td>
                         <td><?= $good->description?></td>
                         <td><?= $good->description_en?></td>
                         <td><?= $good->original_company?></td>
@@ -55,7 +55,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($inquiry, 'good_id');
                         <td><?= $good->created_at?></td>
                         <td><?= $good->technique_remark?></td>
                         <td><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
-                        <td><?= isset($inquiry[$good->id]) ? Html::a($inquiry[$good->id]['id'], Url::to(['inquiry/view', 'id' => $inquiry[$good->id]['id']])) : ''?></td>
+                        <td><?= isset($finalGoods[$good->id]) ? Html::a($finalGoods[$good->id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$good->id]['relevance_id']])) : ''?></td>
                     </tr>
                     <?php endforeach;?>
                 </tbody>

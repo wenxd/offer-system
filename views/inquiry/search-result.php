@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>创建时间</th>
                 </tr>
                 <tr>
-                    <td><?=$goods ? $goods->goods_number : ''?></td>
+                    <td class="data" data-goods_id="<?=$goods ? $goods->id : ''?>" data-order_id="<?=$_GET['order_id'] ?? ''?>"><?=$goods ? $goods->goods_number : ''?></td>
                     <td><?=$goods ? $goods->description : ''?></td>
                     <td><?=$goods ? $goods->description_en : ''?></td>
                     <td><?=$goods ? $goods->original_company : ''?></td>
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>操作</th>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="inquiry" data-select_id="<?=$inquiryPrice ? $inquiryPrice->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryPrice ? $inquiryPrice->id : ''?>"></td>
                     <td>价格最优</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="inquiry" data-select_id="<?=$inquiryTime ? $inquiryTime->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryTime ? $inquiryTime->id : ''?>"></td>
                     <td>同期最短</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="inquiry" data-select_id="<?=$inquiryNew ? $inquiryNew->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryNew ? $inquiryNew->id : ''?>"></td>
                     <td>最新报价</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="inquiry" data-select_id="<?=$inquiryBetter ? $inquiryBetter->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryBetter ? $inquiryBetter->id : ''?>"></td>
                     <td>优选记录</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -197,7 +197,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>操作</th>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="stock" data-select_id="<?=$stock ? $stock->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="1" data-select_id="<?=$stock ? $stock->id : ''?>"></td>
                     <td>库存记录</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -256,6 +256,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             });
 
+            var goods_id = $('.data').data('goods_id');
+            var order_id = $('.data').data('order_id');
+
+            $.ajax({
+                type:"post",
+                url:'?r=order-final/relevance',
+                data:{type:type, select_id:select_id, goods_id:goods_id, order_id:order_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=order/create-final&id=" + order_id);
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
         });
 
     });
