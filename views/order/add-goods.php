@@ -53,20 +53,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table id="example2" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th><input type="checkbox" name="select_all" class="select_all"></th>
                             <th>零件号</th>
                             <th>原厂家</th>
                             <th>单位</th>
-                            <th>数量</th>
-                            <th>供应商</th>
                             <th>税率</th>
-                            <th>未税单价</th>
-                            <th>含税单价</th>
-                            <th>货期</th>
-                            <th>询价状态</th>
-                            <th>询价员/采购员</th>
-                            <th>未税总价</th>
-                            <th>含税总价</th>
                             <th>是否加工</th>
                             <th>是否特制</th>
                             <th>图片</th>
@@ -147,21 +137,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                     //添加此零件
-                    var tr = '<tr>';
-                    tr += '<td><input type="checkbox" name="select_id" value="' + res.data.id + '" class="select_id"></td>';
+                    var tr = '<tr class="goods_id" data-id="' + res.data.id +'">';
                     tr += '<td>' + res.data.goods_number + '</td>';
                     tr += '<td>' + res.data.original_company + '</td>';
                     tr += '<td>' + res.data.unit + '</td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
                     tr += '<td>16%</td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
-                    tr += '<td></td>';
                     tr += '<td>' + (res.data.is_process == 0 ? '否' : '是') + '</td>';
                     tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
@@ -183,20 +163,11 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('.order_save').click(function (e) {
-        var select_length = $('.select_id:checked').length;
-        if (!select_length) {
-            layer.msg('请最少选择一个零件', {time:2000});
-            return false;
-        }
-
-        var goods = $('.goods_list').find('tr').children(':first-child').children();
-        var length = goods.length;
+        var goods  = $('.goods_id');
         var goodsIds = [];
-        for(var i = 0; i < length; i++) {
-            if (goods[i].checked) {
-                goodsIds.push(goods[i].value);
-            }
-        }
+        goods.each(function (i, e) {
+            goodsIds.push($(e).data('id'));
+        });
 
         var url = location.search;
         url = url.substr(17);
