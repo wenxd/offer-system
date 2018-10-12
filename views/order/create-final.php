@@ -10,9 +10,6 @@ use app\models\Goods;
 $this->title = '生成最终订单';
 $this->params['breadcrumbs'][] = $this->title;
 
-$model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
-$model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
-
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
 
@@ -38,6 +35,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                         <th>技术备注</th>
                         <th>是否关联询价记录</th>
                         <th>询价ID</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +55,10 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                         <td><?= $good->technique_remark?></td>
                         <td class="relevance"><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$good->id]) ? Html::a($finalGoods[$good->id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$good->id]['relevance_id']])) : ''?></td>
+                        <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
+                                Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? '')]),
+                                ['class' => 'btn btn-primary btn-xs btn-flat']
+                            );?></td>
                     </tr>
                     <?php endforeach;?>
                 </tbody>

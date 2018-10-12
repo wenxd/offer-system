@@ -20,9 +20,10 @@ class StockSearch extends Stock
     public function rules()
     {
         return [
-            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
+            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg'], 'integer'],
             [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number'], 'safe'],
             [['price', 'tax_price'], 'number'],
+            [['number', 'suggest_number', 'high_number', 'low_number'], 'integer', 'min' => 0],
         ];
     }
 
@@ -75,13 +76,17 @@ class StockSearch extends Stock
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'stock.id'          => $this->id,
-            'stock.supplier_id' => $this->supplier_id,
-            'stock.price'       => $this->price,
-            'stock.tax_price'   => $this->tax_price,
-            'stock.number'      => $this->number,
-            'stock.sort'        => $this->sort,
-            'stock.is_deleted'  => self::IS_DELETED_NO,
+            'stock.id'                  => $this->id,
+            'stock.supplier_id'         => $this->supplier_id,
+            'stock.price'               => $this->price,
+            'stock.tax_price'           => $this->tax_price,
+            'stock.number'              => $this->number,
+            'stock.suggest_number'      => $this->suggest_number,
+            'stock.high_number'         => $this->high_number,
+            'stock.low_number'          => $this->low_number,
+            'stock.is_emerg'            => $this->is_emerg,
+            'stock.sort'                => $this->sort,
+            'stock.is_deleted'          => self::IS_DELETED_NO,
         ]);
 
         $query->andFilterWhere(['like', 'stock.good_id', $this->good_id])

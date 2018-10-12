@@ -425,18 +425,10 @@ class OrderController extends BaseController
         }
         $goods_ids     = json_decode($order->goods_ids, true);
         $goods         = Goods::find()->where(['id' => $goods_ids])->all();
+        $finalGoods    = FinalGoods::find()->where(['order_id' => $id])->indexBy('goods_id')->all();
 
-        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
-        $inquiry              = Inquiry::find()->where(['is_deleted' => Inquiry::IS_DELETED_NO])
-            ->orderBy('updated_at Desc')->groupBy('good_id')->indexBy('good_id')->asArray()->all();
-
-        $finalGoods = FinalGoods::find()->where(['order_id' => $id])->indexBy('goods_id')->all();
-
-        $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;
-        $data['model']        = new OrderInquiry();
         $data['order']        = $order;
-        $data['inquiry']      = $inquiry;
         $data['finalGoods']   = $finalGoods;
 
         return $this->render('create-final', $data);

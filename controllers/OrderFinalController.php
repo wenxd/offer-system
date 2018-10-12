@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\FinalGoods;
+use app\models\OrderFinalQuoteSearch;
 use Yii;
 use app\models\OrderFinal;
 use app\models\OrderFinalSearch;
@@ -130,20 +131,20 @@ class OrderFinalController extends Controller
     public function actionRelevance()
     {
         $params = Yii::$app->request->post();
+
         $finalGoods = FinalGoods::find()->where([
             'order_id'     => $params['order_id'],
             'goods_id'     => $params['goods_id'],
-            'type'         => $params['type'],
-            'relevance_id' => $params['select_id'],
         ])->one();
 
         if (!$finalGoods) {
             $finalGoods = new FinalGoods();
             $finalGoods->order_id     = $params['order_id'];
             $finalGoods->goods_id     = $params['goods_id'];
-            $finalGoods->type         = $params['type'];
-            $finalGoods->relevance_id = $params['select_id'];
         }
+        //更新最新为准
+        $finalGoods->type         = $params['type'];
+        $finalGoods->relevance_id = $params['select_id'];
 
         if ($finalGoods->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
@@ -155,6 +156,7 @@ class OrderFinalController extends Controller
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();
+
         $orderFinal = new OrderFinal();
         $orderFinal->final_sn = 'zzdd' . date('YmdHis') . rand(10, 99);
         $orderFinal->order_id = $params['order_id'];

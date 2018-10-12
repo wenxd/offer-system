@@ -3,6 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\models\Stock;
 use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
@@ -81,6 +82,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_price',
             'position',
             'number',
+            'suggest_number',
+            'high_number',
+            'low_number',
+            [
+                'attribute' => 'is_emerg',
+                'filter'    => Stock::$emerg,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Stock::$emerg[$model->is_emerg];
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],

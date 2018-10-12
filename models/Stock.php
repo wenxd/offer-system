@@ -26,6 +26,14 @@ class Stock extends ActiveRecord
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
 
+    const IS_EMERG_NO    = '0';
+    const IS_EMERG_YES   = '1';
+
+    public static $emerg = [
+        self::IS_EMERG_NO  => '否',
+        self::IS_EMERG_YES => '是',
+    ];
+
     public function behaviors()
     {
         return [
@@ -57,7 +65,7 @@ class Stock extends ActiveRecord
     public function rules()
     {
         return [
-            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted'], 'integer'],
+            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['position'], 'string', 'max' => 255],
@@ -67,7 +75,7 @@ class Stock extends ActiveRecord
                 'on' => 'stock'
             ],
             [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
-            [['number'], 'integer', 'min' => 0],
+            [['number', 'suggest_number', 'high_number', 'low_number'], 'integer', 'min' => 0],
         ];
     }
 
@@ -87,7 +95,11 @@ class Stock extends ActiveRecord
             'tax_rate'         => '税率',
             'position'         => '库存位置',
             'number'           => '库存数量',
+            'suggest_number'   => '建议库存',
+            'high_number'      => '高储',
+            'low_number'       => '低储',
             'sort'             => '排序',
+            'is_emerg'         => '是否紧急',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',

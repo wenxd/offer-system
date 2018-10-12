@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use app\models\Supplier;
 use app\models\Goods;
+use app\models\Stock;
 /* @var $this yii\web\View */
 /* @var $model app\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
@@ -31,6 +32,10 @@ $model->tax_rate='10';
     <?= $form->field($model, 'position')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'number')->textInput() ?>
+    <?= $form->field($model, 'suggest_number')->textInput() ?>
+    <?= $form->field($model, 'high_number')->textInput() ?>
+    <?= $form->field($model, 'low_number')->textInput() ?>
+    <?= $form->field($model, 'is_emerg')->radioList(Stock::$emerg, ['class' => 'radio'])->label('是否紧急')?>
 
     </div>
 
