@@ -20,7 +20,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
         <div class="box-body">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
-                    <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>">
+                    <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>" data-key="<?=$_GET['key']?>">
                         <th>零件号</th>
                         <th>中文描述</th>
                         <th>英文描述</th>
@@ -41,7 +41,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                 <tbody>
                     <?php foreach ($goods as $key => $good):?>
                     <tr>
-                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? '')]));?></td>
+                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
                         <td><?= $good->description?></td>
                         <td><?= $good->description_en?></td>
                         <td><?= $good->original_company?></td>
@@ -56,7 +56,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                         <td class="relevance"><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$good->id]) ? Html::a($finalGoods[$good->id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$good->id]['relevance_id']])) : ''?></td>
                         <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
-                                Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? '')]),
+                                Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]),
                                 ['class' => 'btn btn-primary btn-xs btn-flat']
                             );?></td>
                     </tr>
@@ -92,12 +92,13 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
             }
 
             var goods_ids = $('.goods').data('goods_ids');
-            var order_id = $('.goods').data('order_id');
+            var order_id  = $('.goods').data('order_id');
+            var key       = $('.goods').data('key');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-final/save-order',
-                data:{order_id:order_id, goods_ids:goods_ids},
+                data:{order_id:order_id, goods_ids:goods_ids, key:key},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

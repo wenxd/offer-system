@@ -135,12 +135,14 @@ class OrderFinalController extends Controller
         $finalGoods = FinalGoods::find()->where([
             'order_id'     => $params['order_id'],
             'goods_id'     => $params['goods_id'],
+            'key'          => $params['key']
         ])->one();
 
         if (!$finalGoods) {
             $finalGoods = new FinalGoods();
             $finalGoods->order_id     = $params['order_id'];
             $finalGoods->goods_id     = $params['goods_id'];
+            $finalGoods->key          = $params['key'];
         }
         //更新最新为准
         $finalGoods->type         = $params['type'];
@@ -163,7 +165,7 @@ class OrderFinalController extends Controller
         $orderFinal->goods_info = json_encode($params['goods_ids']);
         if ($orderFinal->save()) {
             $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],
-                ['order_id' => $params['order_id']]);
+                ['order_id' => $params['order_id'], 'key' => $params['key']]);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderFinal->getErrors()]);

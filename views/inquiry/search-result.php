@@ -38,7 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>创建时间</th>
                 </tr>
                 <tr>
-                    <td class="data" data-goods_id="<?=$goods ? $goods->id : ''?>" data-order_id="<?=$_GET['order_id'] ?? ''?>"><?=$goods ? $goods->goods_number : ''?></td>
+                    <td class="data" data-goods_id="<?=$goods ? $goods->id : ''?>" data-order_id="<?=$_GET['order_id'] ?? ''?>" data-key="<?=$_GET['key'] ?? ''?>">
+                        <?=$goods ? $goods->goods_number : ''?>
+                    </td>
                     <td><?=$goods ? $goods->description : ''?></td>
                     <td><?=$goods ? $goods->description_en : ''?></td>
                     <td><?=$goods ? $goods->original_company : ''?></td>
@@ -259,16 +261,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
             var goods_id = $('.data').data('goods_id');
             var order_id = $('.data').data('order_id');
+            var key      = $('.data').data('key');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-final/relevance',
-                data:{type:type, select_id:select_id, goods_id:goods_id, order_id:order_id},
+                data:{type:type, select_id:select_id, goods_id:goods_id, order_id:order_id, key:key},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order/create-final&id=" + order_id);
+                        location.replace("?r=order/create-final&id=" + order_id + '&key=' + key);
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
