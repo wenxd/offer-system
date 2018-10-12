@@ -416,7 +416,7 @@ class OrderController extends BaseController
         return $this->render('create-inquiry', $data);
     }
 
-    public function actionCreateFinal($id)
+    public function actionCreateFinal($id, $key = 0)
     {
         $data      = [];
         $order     = Order::findOne($id);
@@ -425,7 +425,7 @@ class OrderController extends BaseController
         }
         $goods_ids     = json_decode($order->goods_ids, true);
         $goods         = Goods::find()->where(['id' => $goods_ids])->all();
-        $finalGoods    = FinalGoods::find()->where(['order_id' => $id])->indexBy('goods_id')->all();
+        $finalGoods    = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
 
         $data['goods']        = $goods;
         $data['order']        = $order;
