@@ -12,6 +12,11 @@ use app\models\OrderFinal;
  */
 class OrderFinalSearch extends OrderFinal
 {
+    public $order_sn;
+    public $customer;
+    public $short_name;
+    public $manage_name;
+    public $provide_date;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +24,7 @@ class OrderFinalSearch extends OrderFinal
     {
         return [
             [['id', 'order_id', 'is_deleted'], 'integer'],
-            [['final_sn', 'goods_info', 'updated_at', 'created_at'], 'safe'],
+            [['final_sn', 'goods_info', 'updated_at', 'created_at', 'order_sn', 'customer', 'short_name', 'manage_name', 'provide_date'], 'safe'],
         ];
     }
 
@@ -47,6 +52,12 @@ class OrderFinalSearch extends OrderFinal
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+                'attributes' => ['id', 'updated_at', 'created_at']
+            ],
         ]);
 
         $this->load($params);
@@ -62,12 +73,45 @@ class OrderFinalSearch extends OrderFinal
             'id' => $this->id,
             'order_id' => $this->order_id,
             'is_deleted' => $this->is_deleted,
-            'updated_at' => $this->updated_at,
-            'created_at' => $this->created_at,
         ]);
+
+        if ($this->order_sn || $this->customer || $this->short_name || $this->manage_name || $this->provide_date) {
+            $query->leftJoin('order as a', 'a.id = order_final.order_id');
+            $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+            if ($this->customer) {
+                $customer_ids = Customer::find()->where(['like', 'name', $this->customer])->column();
+                $query->andWhere(['a.customer_id' => $customer_ids]);
+            }
+            if ($this->short_name) {
+                $customer_ids = Customer::find()->where(['like', 'short_name', $this->short_name])->column();
+                $query->andWhere(['a.customer_id' => $customer_ids]);
+            }
+            $query->andFilterWhere(['like', 'a.manage_name', $this->manage_name]);
+
+            if ($this->provide_date && strpos($this->provide_date, ' - ')) {
+                list($provide_date_start, $provide_date_end) = explode(' - ', $this->provide_date);
+                $query->andFilterWhere(['between', 'a.provide_date', $provide_date_start, $provide_date_end]);
+            }
+        }
+
+
 
         $query->andFilterWhere(['like', 'final_sn', $this->final_sn])
             ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
+
+        if ($this->updated_at && strpos($this->updated_at, ' - ')) {
+            list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
+            $updated_at_start .= ' 00:00:00';
+            $updated_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_final.updated_at', $updated_at_start, $updated_at_end]);
+        }
+
+        if ($this->created_at && strpos($this->created_at, ' - ')) {
+            list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
+            $created_at_start .= ' 00:00:00';
+            $created_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_final.created_at', $created_at_start, $created_at_end]);
+        }
 
         return $dataProvider;
     }
