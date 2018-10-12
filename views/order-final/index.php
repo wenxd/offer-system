@@ -20,9 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            [
-                'class' => CheckboxColumn::className(),
-            ],
             'id',
             [
                 'attribute' => 'order_sn',
