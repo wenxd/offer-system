@@ -6,6 +6,8 @@ use app\models\FinalGoods;
 use app\models\InquiryGoods;
 use app\models\Order;
 use app\models\OrderFinalQuoteSearch;
+use app\models\OrderPurchase;
+use app\models\PurchaseGoods;
 use Yii;
 use app\models\OrderFinal;
 use app\models\OrderFinalSearch;
@@ -180,12 +182,15 @@ class OrderFinalController extends Controller
         $order = Order::findOne($orderFinal->order_id);
         $finalGoods = FinalGoods::findAll(['order_final_id' => $id]);
         $inquiryGoods = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+        $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $order->id, 'order_final_id' => $id])->indexBy('goods_id')->all();
 
         $data = [];
-        $data['order']        = $order;
-        $data['orderFinal']   = $orderFinal;
-        $data['finalGoods']   = $finalGoods;
-        $data['inquiryGoods'] = $inquiryGoods;
+        $data['order']         = $order;
+        $data['orderFinal']    = $orderFinal;
+        $data['finalGoods']    = $finalGoods;
+        $data['inquiryGoods']  = $inquiryGoods;
+        $data['purchaseGoods'] = $purchaseGoods;
+        $data['model']         = new OrderPurchase();
 
         return $this->render('detail', $data);
     }

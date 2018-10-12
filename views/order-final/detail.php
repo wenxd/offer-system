@@ -15,6 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
 //同一个订单询价商品的IDs
 $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
 
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
 
 ?>
 <div class="box table-responsive">
@@ -51,7 +58,7 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
             <tbody>
             <?php foreach ($finalGoods as $item):?>
             <tr>
-                <td><input type="checkbox" name="select_id" class="select_id"></td>
+                <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>"?></td>
                 <td><?=$item->goods->goods_number?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
@@ -71,13 +78,24 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
                 <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
-                <td></td>
-                <td></td>
+                <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
+                <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td><input type="number" size="4" class="number"></td>
             </tr>
             <?php endforeach;?>
             </tbody>
         </table>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
+        <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   =>2,  //最大选择范围（年）
+                'minView'   =>2,  //最小选择范围（年）
+            ]
+        ]);?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存采购单', [
@@ -107,6 +125,7 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
             }
         });
 
+        //输入数量
         $(".number").bind('input propertychange', function (e) {
 
             var number = $(this).val();
@@ -116,8 +135,53 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
             var price = $(this).parent().parent().find('.price').text();
             var tax_price = $(this).parent().parent().find('.tax_price').text();
 
-            $(this).parent().parent().find('.all_price').text(price * number);
-            $(this).parent().parent().find('.all_tax_price').text(tax_price * number);
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+        });
+
+        //保存
+        $('.purchase_save').click(function (e) {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+
+            var goods_info = [];
+            var number_flag = false;
+            $('.select_id').each(function (index, element) {
+                var item = {};
+                if ($(element).prop("checked")) {
+                    item.goods_id = $(element).val();
+                    if (!$(element).parent().parent().find('.number').val()){
+                        number_flag = true;
+                    }
+                    item.number   = $(element).parent().parent().find('.number').val();
+                    goods_info.push(item);
+                }
+            });
+
+            if (number_flag) {
+                layer.msg('请给选中的行输入数量', {time:2000});
+                return false;
+            }
+            console.log(goods_info);
+
+            $.ajax({
+                type:"post",
+                url:'?r=order-purchase/save-order',
+                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_ids:goods_ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=order-inquiry/index");
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
         });
     });
 </script>
