@@ -208,7 +208,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $stock ? $stock->price : 0 ?></td>
                     <td class="tax_price"><?= $stock ? $stock->tax_price : 0 ?></td>
                     <td><?= $stock ? $stock->position : 0 ?></td>
-                    <td><?= $stock ? Stock::$emerg[$stock->position] : '' ?></td>
+                    <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
                     <td><?= $stock ? $stock->suggest_number : 0 ?></td>
                     <td><?= $stock ? $stock->high_number : 0 ?></td>
                     <td><?= $stock ? $stock->low_number : 0 ?></td>
