@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]) . Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
-                        ]) . Html::a('<i class="fa fa-heart"></i> 生成最终订单', Url::to(['create-final', 'id' => $model['id']]), [
+                        ]) . Html::a('<i class="fa fa-heart"></i> 生成最终订单', Url::to(['create-final', 'id' => $model['id'], 'key' => date('YmdHis') . rand(10, 99)]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-success btn-xs btn-flat',
                         ]);
