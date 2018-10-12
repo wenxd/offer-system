@@ -141,4 +141,19 @@ class Inquiry extends ActiveRecord
     {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getOrderInquiry()
+    {
+        return $this->hasOne(OrderInquiry::className(), ['id' => 'order_inquiry_id']);
+    }
 }

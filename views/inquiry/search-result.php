@@ -88,13 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></td>
-                    <td>张三张三</td>
+                    <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->inquiry_datetime : '' ?></td>
                     <td><?= $inquiryPrice ? Inquiry::$better[$inquiryPrice->is_better] : ''?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->better_reason : ''?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->remark : ''?></td>
-                    <td></td>
-                    <td></td>
+                    <td><?= $inquiryPrice ? ($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryPrice ? ($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -112,13 +112,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $inquiryTime ? $inquiryTime->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
                     <td><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></td>
-                    <td>张三张三</td>
+                    <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
                     <td><?= $inquiryTime ? $inquiryTime->inquiry_datetime : '' ?></td>
                     <td><?= $inquiryTime ? Inquiry::$better[$inquiryTime->is_better] : ''?></td>
                     <td><?= $inquiryTime ? $inquiryTime->better_reason : ''?></td>
                     <td><?= $inquiryTime ? $inquiryTime->remark : ''?></td>
-                    <td></td>
-                    <td></td>
+                    <td><?= $inquiryTime ? ($inquiryTime->order_id ? $inquiryTime->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryTime ? ($inquiryTime->order_id ? $inquiryTime->order->order_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -136,13 +136,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $inquiryNew ? $inquiryNew->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
                     <td><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></td>
-                    <td>张三张三</td>
+                    <td><?= $inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
                     <td><?= $inquiryNew ? $inquiryNew->inquiry_datetime : '' ?></td>
                     <td><?= $inquiryNew ? Inquiry::$better[$inquiryNew->is_better] : ''?></td>
                     <td><?= $inquiryNew ? $inquiryNew->better_reason : ''?></td>
                     <td><?= $inquiryNew ? $inquiryNew->remark : ''?></td>
-                    <td></td>
-                    <td></td>
+                    <td><?= $inquiryNew ? ($inquiryNew->order_id ? $inquiryNew->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryNew ? ($inquiryNew->order_id ? $inquiryNew->order->order_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -160,13 +160,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></td>
-                    <td>张三张三</td>
+                    <td><?= $inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->inquiry_datetime : '' ?></td>
                     <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->better_reason : ''?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->remark : ''?></td>
-                    <td></td>
-                    <td></td>
+                    <td><?= $inquiryBetter ? ($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryBetter ? ($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
