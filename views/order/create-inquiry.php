@@ -32,78 +32,75 @@ foreach ($adminList as $key => $admin) {
 
 $model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
 $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
-
 ?>
-<section class="content">
-    <div class="box table-responsive">
-        <?php $form = ActiveForm::begin(); ?>
-        <div class="box-body">
-            <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" name="select_all" class="select_all"></th>
-                        <th>零件号</th>
-                        <th>中文描述</th>
-                        <th>英文描述</th>
-                        <th>原厂家</th>
-                        <th>原厂家备注</th>
-                        <th>单位</th>
-                        <th>是否加工</th>
-                        <th>是否特制</th>
-                        <th>是否铭牌</th>
-                        <th>更新时间</th>
-                        <th>创建时间</th>
-                        <th>技术备注</th>
-                        <th>是否有询价单</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($goods as $key => $good):?>
-                    <tr>
-                        <td><?= in_array($good->id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$good->id} class='select_id'>" ?></td>
-                        <td><?= $good->goods_number?></td>
-                        <td><?= $good->description?></td>
-                        <td><?= $good->description_en?></td>
-                        <td><?= $good->original_company?></td>
-                        <td><?= $good->original_company_remark?></td>
-                        <td><?= $good->unit?></td>
-                        <td><?= Goods::$process[$good->is_process]?></td>
-                        <td><?= Goods::$special[$good->is_special]?></td>
-                        <td><?= Goods::$nameplate[$good->is_nameplate]?></td>
-                        <td><?= $good->updated_at?></td>
-                        <td><?= $good->created_at?></td>
-                        <td><?= $good->technique_remark?></td>
-                        <td><?= in_array($good->id, $inquiryYes) ? $good->inquirySn->inquiry_sn : '否'?></td></td>
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-            </table>
+<div class="box table-responsive">
+    <?php $form = ActiveForm::begin(); ?>
+    <div class="box-body">
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <th>零件号</th>
+                    <th>中文描述</th>
+                    <th>英文描述</th>
+                    <th>原厂家</th>
+                    <th>原厂家备注</th>
+                    <th>单位</th>
+                    <th>是否加工</th>
+                    <th>是否特制</th>
+                    <th>是否铭牌</th>
+                    <th>更新时间</th>
+                    <th>创建时间</th>
+                    <th>技术备注</th>
+                    <th>是否有询价单</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($goods as $key => $good):?>
+                <tr>
+                    <td><?= in_array($good->id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$good->id} class='select_id'>" ?></td>
+                    <td><?= $good->goods_number?></td>
+                    <td><?= $good->description?></td>
+                    <td><?= $good->description_en?></td>
+                    <td><?= $good->original_company?></td>
+                    <td><?= $good->original_company_remark?></td>
+                    <td><?= $good->unit?></td>
+                    <td><?= Goods::$process[$good->is_process]?></td>
+                    <td><?= Goods::$special[$good->is_special]?></td>
+                    <td><?= Goods::$nameplate[$good->is_nameplate]?></td>
+                    <td><?= $good->updated_at?></td>
+                    <td><?= $good->created_at?></td>
+                    <td><?= $good->technique_remark?></td>
+                    <td><?= in_array($good->id, $inquiryYes) ? $good->inquirySn->inquiry_sn : '否'?></td></td>
+                </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
 
-            <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
-            <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
-                'removeButton'  => false,
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format'    => 'yyyy-mm-dd',
-                    'startView' =>2,  //其实范围（0：日  1：天 2：年）
-                    'maxView'   =>2,  //最大选择范围（年）
-                    'minView'   =>2,  //最小选择范围（年）
-                ]
-            ]);?>
+        <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   =>2,  //最大选择范围（年）
+                'minView'   =>2,  //最小选择范围（年）
+            ]
+        ]);?>
 
-            <?= $form->field($model, 'order_id')->hiddenInput(['value' => $order->id])->label(false) ?>
-            <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
-        </div>
-        <div class="box-footer">
-            <?= Html::button('保存询价单', [
-                    'class' => 'btn btn-success inquiry_save',
-                    'name'  => 'submit-button']
-            )?>
-        </div>
-        <?php ActiveForm::end(); ?>
+        <?= $form->field($model, 'order_id')->hiddenInput(['value' => $order->id])->label(false) ?>
+        <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
     </div>
-</section>
+    <div class="box-footer">
+        <?= Html::button('保存询价单', [
+                'class' => 'btn btn-success inquiry_save',
+                'name'  => 'submit-button']
+        )?>
+    </div>
+    <?php ActiveForm::end(); ?>
+</div>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
