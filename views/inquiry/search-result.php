@@ -4,6 +4,7 @@ use yii\widgets\LinkPager;
 use app\models\Inquiry;
 use app\models\Supplier;
 use app\models\Goods;
+use app\models\Stock;
 
 $this->title = '零件询价记录';
 $this->params['breadcrumbs'][] = $this->title;
@@ -207,10 +208,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $stock ? $stock->price : 0 ?></td>
                     <td class="tax_price"><?= $stock ? $stock->tax_price : 0 ?></td>
                     <td><?= $stock ? $stock->position : 0 ?></td>
-                    <td>是</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
+                    <td><?= $stock ? Stock::$emerg[$stock->position] : '' ?></td>
+                    <td><?= $stock ? $stock->suggest_number : 0 ?></td>
+                    <td><?= $stock ? $stock->high_number : 0 ?></td>
+                    <td><?= $stock ? $stock->low_number : 0 ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
