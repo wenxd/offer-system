@@ -5,24 +5,21 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Order;
+use app\models\OrderPurchase;
 
 /**
- * OrderSearch represents the model behind the search form of `app\models\Order`.
+ * OrderPurchaseSearch represents the model behind the search form of `app\models\OrderPurchase`.
  */
-class OrderPurchaseSearch extends Order
+class OrderPurchaseSearch extends OrderPurchase
 {
-    public $customer_name;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'type', 'status', 'is_deleted'], 'integer'],
-            [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
-            [['order_price'], 'number'],
-            [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
+            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_deleted'], 'integer'],
+            [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -44,23 +41,12 @@ class OrderPurchaseSearch extends Order
      */
     public function search($params)
     {
-        $admin = Yii::$app->user->identity;
-        if ($admin->id == 1) {
-            $query = Order::find();
-        } else {
-            $query = Order::find()->where(['admin_id' => $admin->id]);
-        }
+        $query = OrderPurchase::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ],
-                'attributes' => ['id', 'provide_date', 'order_price', 'updated_at', 'created_at']
-            ],
         ]);
 
         $this->load($params);
@@ -74,16 +60,18 @@ class OrderPurchaseSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'order_price' => $this->order_price,
-            'type'        => Order::TYPE_PURCHASE,
-            'status'      => $this->status,
-            'is_deleted'  => $this->is_deleted,
+            'order_id' => $this->order_id,
+            'order_final_id' => $this->order_final_id,
+            'end_date' => $this->end_date,
+            'admin_id' => $this->admin_id,
+            'is_purchase' => $this->is_purchase,
+            'is_deleted' => $this->is_deleted,
+            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'remark', $this->remark]);
+        $query->andFilterWhere(['like', 'purchase_sn', $this->purchase_sn])
+            ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
 
         return $dataProvider;
     }

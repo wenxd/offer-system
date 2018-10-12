@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\FinalGoods;
+use app\models\InquiryGoods;
+use app\models\Order;
 use app\models\OrderFinalQuoteSearch;
 use Yii;
 use app\models\OrderFinal;
@@ -170,5 +172,21 @@ class OrderFinalController extends Controller
         } else {
             return json_encode(['code' => 500, 'msg' => $orderFinal->getErrors()]);
         }
+    }
+
+    public function actionDetail($id)
+    {
+        $orderFinal = OrderFinal::findOne($id);
+        $order = Order::findOne($orderFinal->order_id);
+        $finalGoods = FinalGoods::findAll(['order_final_id' => $id]);
+        $inquiryGoods = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+
+        $data = [];
+        $data['order']        = $order;
+        $data['orderFinal']   = $orderFinal;
+        $data['finalGoods']   = $finalGoods;
+        $data['inquiryGoods'] = $inquiryGoods;
+
+        return $this->render('detail', $data);
     }
 }

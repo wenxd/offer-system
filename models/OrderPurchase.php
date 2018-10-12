@@ -1,0 +1,65 @@
+<?php
+
+namespace app\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "order_purchase".
+ *
+ * @property int $id
+ * @property string $purchase_sn 采购单号
+ * @property int $order_id 订单ID
+ * @property int $order_final_id 最终订单ID
+ * @property string $goods_info 零件信息 json，包括ID
+ * @property string $end_date 采购截止时间
+ * @property int $admin_id 采购员ID
+ * @property int $is_purchase 是否询价：0未询价 1已询价
+ * @property int $is_deleted 是否删除：0未删除 1已删除
+ * @property string $updated_at 更新时间
+ * @property string $created_at 创建时间
+ */
+class OrderPurchase extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return 'order_purchase';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_deleted'], 'integer'],
+            [['end_date'], 'required'],
+            [['end_date', 'updated_at', 'created_at'], 'safe'],
+            [['purchase_sn'], 'string', 'max' => 255],
+            [['goods_info'], 'string', 'max' => 512],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'purchase_sn' => '采购单号',
+            'order_id' => '订单ID',
+            'order_final_id' => '最终订单ID',
+            'goods_info' => '零件信息 json，包括ID',
+            'end_date' => '采购截止时间',
+            'admin_id' => '采购员ID',
+            'is_purchase' => '是否询价：0未询价 1已询价',
+            'is_deleted' => '是否删除：0未删除 1已删除',
+            'updated_at' => '更新时间',
+            'created_at' => '创建时间',
+        ];
+    }
+}
