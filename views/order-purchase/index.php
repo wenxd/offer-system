@@ -7,19 +7,12 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\OrderPurchaseSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Order Purchases';
+$this->title = '采购单列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="order-purchase-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="box table-responsive">
+    <div class="box-body">
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Order Purchase', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -42,4 +35,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
     <?php Pjax::end(); ?>
+    </div>
 </div>
