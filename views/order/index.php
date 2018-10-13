@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format'         => 'raw',
                     'contentOptions' =>['style'=>'min-width: 260px;'],
                     'value'          => function ($model, $key, $index, $column){
-                        return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'order_sn' => $model['order_sn']]), [
+                        return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]) . Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [

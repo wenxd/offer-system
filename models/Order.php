@@ -96,7 +96,7 @@ class Order extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'              => '自增id',
+            'id'              => 'ID',
             'customer_id'     => '客户ID',
             'customer_name'   => '客户名称',
             'manage_name'     => '订单管理员名称',

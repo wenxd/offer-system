@@ -5,7 +5,9 @@ namespace app\controllers;
 use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
+use app\models\OrderFinal;
 use app\models\OrderInquiry;
+use app\models\OrderPurchase;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -177,26 +179,26 @@ class OrderController extends BaseController
         }
     }
 
-    public function actionDetail($order_sn)
+    public function actionDetail($id)
     {
         $data = [];
 
-        $orders = Order::find()->where(['order_sn' => $order_sn])->orderBy('id Desc')->all();
-        if (!$orders){
-            echo '查不到此订单信息';die;
+        $order = Order::findOne($id);
+        if (!$order){
+            yii::$app->getSession()->setFlash('error', '查不到此订单信息');
+            return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $orderIds = ArrayHelper::getColumn($orders, 'id');
 
-        foreach ($orders as $order) {
+        $orderInquiry = OrderInquiry::findAll(['order_id' => $id]);
+        $orderFinal = OrderFinal::findAll(['order_id' => $id]);
+        $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
 
-        }
-        $list = QuoteRecord::findAll(['order_id' => $orderIds, 'order_type' => [Order::TYPE_QUOTE, Order::TYPE_INQUIRY]]);
-        $model = $orders[0];
-        $model->loadDefaultValues();
-        $data['model'] = $model;
-        $data['list']  = $list;
+        $data['model']         = $order;
+        $data['orderInquiry']  = $orderInquiry;
+        $data['orderFinal']    = $orderFinal;
+        $data['orderPurchase'] = $orderPurchase;
 
-        return $this->render('order_detail', $data);
+        return $this->render('detail', $data);
     }
 
     //生成最终报价单
