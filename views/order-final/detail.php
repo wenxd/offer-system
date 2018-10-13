@@ -28,7 +28,7 @@ foreach ($adminList as $key => $admin) {
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
-            <thead>
+            <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>零件号</th>
@@ -58,7 +58,8 @@ foreach ($adminList as $key => $admin) {
             <tbody>
             <?php foreach ($finalGoods as $item):?>
             <tr>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>"?></td>
+                <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
+data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
                 <td><?=$item->goods->goods_number?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
@@ -80,7 +81,7 @@ foreach ($adminList as $key => $admin) {
                 <td class="all_tax_price"></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
-                <td><input type="number" size="4" class="number"></td>
+                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : '<input type="number" size="4" class="number" min="1">'?></td>
             </tr>
             <?php endforeach;?>
             </tbody>
@@ -129,6 +130,10 @@ foreach ($adminList as $key => $admin) {
         $(".number").bind('input propertychange', function (e) {
 
             var number = $(this).val();
+            if (number == 0) {
+                layer.msg('数量最少为1', {time:2000});
+                return false;
+            }
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
@@ -152,11 +157,13 @@ foreach ($adminList as $key => $admin) {
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
-                    item.goods_id = $(element).val();
+                    item.goods_id    = $(element).val();
                     if (!$(element).parent().parent().find('.number').val()){
-                        number_flag = true;
+                        number_flag  = true;
                     }
-                    item.number   = $(element).parent().parent().find('.number').val();
+                    item.number        = $(element).parent().parent().find('.number').val();
+                    item.type          = $(element).data('type');
+                    item.relevance_id  = $(element).data('relevance_id');
                     goods_info.push(item);
                 }
             });
@@ -165,17 +172,30 @@ foreach ($adminList as $key => $admin) {
                 layer.msg('请给选中的行输入数量', {time:2000});
                 return false;
             }
-            console.log(goods_info);
+
+            var admin_id = $('#orderpurchase-admin_id').val();
+            if (!admin_id) {
+                layer.msg('请选择采购员', {time:2000});
+                return false;
+            }
+
+            var end_date = $('#orderpurchase-end_date').val();
+            if (!end_date) {
+                layer.msg('请输入采购截止时间', {time:2000});
+                return false;
+            }
+
+            var order_final_id = $('.data').data('order_final_id');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase/save-order',
-                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_ids:goods_ids},
+                data:{order_final_id:order_final_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-inquiry/index");
+                        location.replace("?r=order-purchase/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;

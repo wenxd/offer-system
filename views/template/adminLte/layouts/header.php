@@ -5,7 +5,11 @@ use yii\helpers\Html;
 /* @var $content string */
 $identity = Yii::$app->user->getIdentity();
 ?>
-
+<style>
+    .treeview-menu {
+        padding-left: 20px;
+    }
+</style>
 <header class="main-header">
 
     <?= Html::a('<span class="logo-mini">询价</span><span class="logo-lg">' . Yii::$app->name . '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
