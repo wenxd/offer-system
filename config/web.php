@@ -55,6 +55,17 @@ $config = [
             'class' => 'yii\rbac\DbManager', // 使用数据库管理配置文件
             "defaultRoles" => ["guest"],
         ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class'   => 'yii\log\FileTarget',
+                    'levels'  => ['trace', 'error', 'warning', 'info'],
+                    'logFile' => '@app/runtime/logs/'.date('Y-m-d').'.log',
+                    'logVars' => ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'],
+                ],
+            ],
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

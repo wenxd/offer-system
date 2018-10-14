@@ -23,6 +23,9 @@ use Yii;
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
+    const IS_PURCHASE_NO  = '0';
+    const IS_PURCHASE_YES = '1';
+
     /**
      * {@inheritdoc}
      */
@@ -63,5 +66,19 @@ class PurchaseGoods extends \yii\db\ActiveRecord
             'updated_at' => '更新时间',
             'created_at' => '创建时间',
         ];
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
+
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
+    }
+    public function getInquiry()
+    {
+        return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
     }
 }

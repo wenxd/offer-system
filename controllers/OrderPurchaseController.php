@@ -170,4 +170,42 @@ class OrderPurchaseController extends Controller
         $feild = ['order_id', 'order_final_id', 'order_purchase_id', 'order_purchase_sn', 'goods_id', 'type', 'relevance_id','number'];
         $num = Yii::$app->db->createCommand()->batchInsert(PurchaseGoods::tableName(), $feild, $data)->execute();
     }
+
+    public function actionDetail($id)
+    {
+        $orderPurchase = OrderPurchase::findOne($id);
+        $purchaseGoods = PurchaseGoods::findAll(['order_purchase_id' => $id]);
+
+        $data = [];
+        $data['orderPurchase'] = $orderPurchase;
+        $data['purchaseGoods'] = $purchaseGoods;
+
+        return $this->render('detail', $data);
+    }
+
+    public function actionComplete()
+    {
+        $id = Yii::$app->request->post('id');
+
+        $purchaseGoods = PurchaseGoods::findOne($id);
+        if (!$purchaseGoods) {
+            return json_encode(['code' => 500, 'msg' => '不存在此条数据']);
+        }
+
+        $purchaseGoods->is_purchase = PurchaseGoods::IS_PURCHASE_YES;
+        if ($purchaseGoods->save()){
+            $isHavePurchase = PurchaseGoods::find()->where([
+                'order_purchase_id' => $purchaseGoods->order_purchase_id,
+                'is_purchase'       => PurchaseGoods::IS_PURCHASE_NO
+            ])->one();
+            if (!$isHavePurchase) {
+                $orderPurchase = OrderPurchase::findOne($purchaseGoods->order_purchase_id);
+                $orderPurchase->is_purchase = OrderPurchase::IS_PURCHASE_YES;
+                $orderPurchase->save();
+            }
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $purchaseGoods->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+    }
 }

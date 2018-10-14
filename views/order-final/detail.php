@@ -57,7 +57,7 @@ foreach ($adminList as $key => $admin) {
             </thead>
             <tbody>
             <?php foreach ($finalGoods as $item):?>
-            <tr>
+            <tr class="order_final_list">
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
 data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
                 <td><?=$item->goods->goods_number?></td>
@@ -211,6 +211,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
+            $('.order_final_list').each(function (i, e) {
+                if (!$(e).find('.afterNumber').find('.number').length) {
+                    var price     = $(e).find('.price').text();
+                    var tax_price = $(e).find('.tax_price').text();
+                    var number    = $(e).find('.afterNumber').text();
+                    $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
+                    $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                }
+            });
         }
     });
 </script>
