@@ -111,7 +111,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
+        init();
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked",$(this).prop("checked"));
@@ -203,5 +203,14 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 }
             });
         });
+
+        function init(){
+            if (!$('.select_id').length) {
+                $('.select_all').hide();
+                $('.purchase_save').hide();
+                $('.field-orderpurchase-admin_id').hide();
+                $('.field-orderpurchase-end_date').hide();
+            }
+        }
     });
 </script>

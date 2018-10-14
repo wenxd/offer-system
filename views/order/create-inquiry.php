@@ -159,6 +159,8 @@ $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
             if (!$('.select_id').length) {
                 $('.select_all').hide();
                 $('.inquiry_save').hide();
+                document.getElementById("orderinquiry-admin_id").disabled = true;
+                document.getElementById("orderinquiry-end_date").disabled = true;
             }
         }
     });
