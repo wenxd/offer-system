@@ -1,12 +1,15 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Supplier;
 use app\models\Inquiry;
 use app\models\Goods;
+use app\models\Admin;
+use app\models\AuthAssignment;
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
@@ -17,6 +20,15 @@ if ($model->isNewRecord) {
         $model->good_id = $_GET['goods_id'];
     }
 }
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+
 ?>
 
 <div class="box">
@@ -53,6 +65,12 @@ if ($model->isNewRecord) {
     <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
 
     <?= $form->field($model, 'is_priority')->dropDownList(Inquiry::$priority) ?>
+
+    <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
+
+    <?= $form->field($model, 'order_id')->textInput(['maxlength' => true])->label('订单号') ?>
+
+    <?= $form->field($model, 'order_inquiry_id')->textInput(['maxlength' => true])->label('询价单号') ?>
 
     </div>
 
