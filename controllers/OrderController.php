@@ -189,8 +189,8 @@ class OrderController extends BaseController
             return $this->redirect(yii::$app->request->headers['referer']);
         }
 
-        $orderInquiry = OrderInquiry::findAll(['order_id' => $id]);
-        $orderFinal = OrderFinal::findAll(['order_id' => $id]);
+        $orderInquiry  = OrderInquiry::findAll(['order_id' => $id]);
+        $orderFinal    = OrderFinal::findAll(['order_id' => $id]);
         $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
 
         $data['model']         = $order;

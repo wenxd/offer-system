@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ])?>
+    
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
             <thead>
@@ -82,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php foreach ($orderPurchase as $purchse):?>
                 <tr>
                     <td><?=$purchse->order_id?></td>
-                    <td><?=Html::a($purchse->purchse_sn, Url::to(['order-purchse/detail', 'id' => $purchse->id]))?></td>
+                    <td><?=Html::a($purchse->purchase_sn, Url::to(['order-purchse/detail', 'id' => $purchse->id]))?></td>
                 </tr>
             <?php endforeach;?>
             </thead>
