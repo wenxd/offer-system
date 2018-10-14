@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $inquiryPrice ? $inquiryPrice->better_reason : ''?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->remark : ''?></td>
                     <td><?= $inquiryPrice ? ($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '') : '' ?></td>
-                    <td><?= $inquiryPrice ? ($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryPrice ? ($inquiryPrice->order_inquiry_id ? $inquiryPrice->orderInquiry->inquiry_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $inquiryTime ? $inquiryTime->better_reason : ''?></td>
                     <td><?= $inquiryTime ? $inquiryTime->remark : ''?></td>
                     <td><?= $inquiryTime ? ($inquiryTime->order_id ? $inquiryTime->order->order_sn : '') : '' ?></td>
-                    <td><?= $inquiryTime ? ($inquiryTime->order_id ? $inquiryTime->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryTime ? ($inquiryTime->order_inquiry_id ? $inquiryTime->orderInquiry->inquiry_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $inquiryNew ? $inquiryNew->better_reason : ''?></td>
                     <td><?= $inquiryNew ? $inquiryNew->remark : ''?></td>
                     <td><?= $inquiryNew ? ($inquiryNew->order_id ? $inquiryNew->order->order_sn : '') : '' ?></td>
-                    <td><?= $inquiryNew ? ($inquiryNew->order_id ? $inquiryNew->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryNew ? ($inquiryNew->order_inquiry_id ? $inquiryNew->orderInquiry->inquiry_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
@@ -168,7 +168,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $inquiryBetter ? $inquiryBetter->better_reason : ''?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->remark : ''?></td>
                     <td><?= $inquiryBetter ? ($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '') : '' ?></td>
-                    <td><?= $inquiryBetter ? ($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '') : '' ?></td>
+                    <td><?= $inquiryBetter ? ($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '') : '' ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>

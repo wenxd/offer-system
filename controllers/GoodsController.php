@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
+use app\models\Stock;
 use app\models\Goods;
 use app\models\GoodsSearch;
 use app\models\Inquiry;
@@ -80,37 +81,32 @@ class GoodsController extends BaseController
 
     public function actionSearchResult()
     {
-        $data = [];
         $good_number = (string)Yii::$app->request->get('good_number');
-
         $goods = Goods::find()->where(['goods_number' => $good_number])->one();
-
-        $data['inquiryNewest'] = [];
-        $data['inquiryBetter'] = [];
-        $data['stockList']     = [];
-        $data['goods']         = $goods ? $goods : [];
-        if ($goods) {
-            //价格最优
-            $inquiryBetterQuery = Inquiry::find()->where(['is_better' => Inquiry::IS_BETTER_YES, 'good_id' => $goods->id])
-                ->orderBy('updated_at Desc')->one();
-//            $inquiryNewQuery = Inquiry::find()->where(['is_newest' => Inquiry::IS_NEWEST_YES])
-//                ->andWhere(['good_id' => $goods->id]);
-
-
-//            //库存记录
-//            $stockQuery = Stock::find()->andWhere(['good_id' => $goods->id]);
-//            $newCount    = $inquiryNewQuery->count();
-//            $betterCount = $inquiryBetterQuery->count();
-//            $stockCount  = $stockQuery->count();
-//            $count = $newCount > $betterCount ? ($newCount > $stockCount ? $newCount : $stockCount) : $betterCount;
-//
-//            $pages = new Pagination(['totalCount' => $count, 'pageSize' => 10]);
-//
-//            $data['inquiryNewest'] = $inquiryNewQuery->offset($pages->offset)->limit($pages->limit)->all();
-            $data['inquiryBetter'] = $inquiryBetterQuery;
-//            $data['stockList']     = $stockQuery->offset($pages->offset)->limit($pages->limit)->all();
-//            $data['pages']         = $pages;
+        if (!$goods) {
+            yii::$app->getSession()->setFlash('error', '没有此零件');
+            return $this->redirect(yii::$app->request->headers['referer']);
         }
+        $goods_id = $goods;
+        //价格最优
+        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
+        //同期最短
+        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
+        //最新报价
+        $inquiryNewQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_newest' => Inquiry::IS_NEWEST_YES])->orderBy('updated_at Desc')->one();
+        //优选记录
+        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES])->orderBy('updated_at Desc')->one();
+
+        //库存记录
+        $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
+
+        $data = [];
+        $data['goods']         = $goods ? $goods : [];
+        $data['inquiryPrice']  = $inquiryPriceQuery;
+        $data['inquiryTime']   = $inquiryTimeQuery;
+        $data['inquiryNew']    = $inquiryNewQuery;
+        $data['inquiryBetter'] = $inquiryBetterQuery;
+        $data['stock']         = $stockQuery;
 
         return $this->render('search-result', $data);
     }
