@@ -21,6 +21,14 @@ use Yii;
  */
 class OrderPurchase extends \yii\db\ActiveRecord
 {
+    const IS_PURCHASE_NO  = '0';
+    const IS_PURCHASE_YES = '1';
+
+    public static $purchase = [
+        self::IS_PURCHASE_NO   => '否',
+        self::IS_PURCHASE_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -49,17 +57,34 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'purchase_sn' => '采购单号',
-            'order_id' => '订单ID',
+            'id'             => 'ID',
+            'purchase_sn'    => '采购单号',
+            'order_id'       => '订单ID',
+            'order_sn'       => '订单编号',
             'order_final_id' => '最终订单ID',
-            'goods_info' => '零件信息 json，包括ID',
-            'end_date' => '采购截止时间',
-            'admin_id' => '采购员ID',
-            'is_purchase' => '是否询价：0未询价 1已询价',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'order_final_sn' => '最终订单号',
+            'goods_info'     => '零件信息 json，包括ID',
+            'end_date'       => '采购截止时间',
+            'admin_id'       => '采购员ID',
+            'is_purchase'    => '是否完成采购',
+            'is_deleted'     => '是否删除：0未删除 1已删除',
+            'updated_at'     => '更新时间',
+            'created_at'     => '创建时间',
         ];
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getOrderFinal()
+    {
+        return $this->hasOne(OrderFinal::className(), ['id' => 'order_final_id']);
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
 }

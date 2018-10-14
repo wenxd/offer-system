@@ -68,13 +68,6 @@ class OrderFinalSearch extends OrderFinal
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'order_id' => $this->order_id,
-            'is_deleted' => $this->is_deleted,
-        ]);
-
         if ($this->order_sn || $this->customer || $this->short_name || $this->manage_name || $this->provide_date) {
             $query->leftJoin('order as a', 'a.id = order_final.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
@@ -94,7 +87,12 @@ class OrderFinalSearch extends OrderFinal
             }
         }
 
-
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'order_final.id' => $this->id,
+            'order_final.order_id' => $this->order_id,
+            'order_final.is_deleted' => $this->is_deleted,
+        ]);
 
         $query->andFilterWhere(['like', 'final_sn', $this->final_sn])
             ->andFilterWhere(['like', 'goods_info', $this->goods_info]);

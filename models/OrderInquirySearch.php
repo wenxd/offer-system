@@ -67,11 +67,11 @@ class OrderInquirySearch extends OrderInquiry
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'         => $this->id,
-            'order_id'   => $this->order_id,
-            'is_inquiry' => $this->is_inquiry,
-            'admin_id'   => $this->admin_id,
-            'is_deleted' => $this->is_deleted,
+            'order_inquiry.id'         => $this->id,
+            'order_inquiry.order_id'   => $this->order_id,
+            'order_inquiry.is_inquiry' => $this->is_inquiry,
+            'order_inquiry.admin_id'   => $this->admin_id,
+            'order_inquiry.is_deleted' => $this->is_deleted,
         ]);
 
         if ($this->order_sn) {
@@ -83,21 +83,21 @@ class OrderInquirySearch extends OrderInquiry
 
         if ($this->end_date && strpos($this->end_date, ' - ')) {
             list($end_date_start, $end_date_end) = explode(' - ', $this->end_date);
-            $query->andFilterWhere(['between', 'end_date', $end_date_start, $end_date_end]);
+            $query->andFilterWhere(['between', 'order_inquiry.end_date', $end_date_start, $end_date_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'stock.updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'order_inquiry.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'stock.created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'order_inquiry.created_at', $created_at_start, $created_at_end]);
         }
         return $dataProvider;
     }

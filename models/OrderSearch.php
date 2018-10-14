@@ -68,12 +68,12 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'order_price' => $this->order_price,
-            'order_type'  => $this->order_type,
-            'status'      => $this->status,
-            'is_deleted'  => $this->is_deleted,
+            'order.id' => $this->id,
+            'order.customer_id' => $this->customer_id,
+            'order.order_price' => $this->order_price,
+            'order.order_type'  => $this->order_type,
+            'order.status'      => $this->status,
+            'order.is_deleted'  => $this->is_deleted,
         ]);
 
         if ($this->customer_name) {
@@ -88,21 +88,21 @@ class OrderSearch extends Order
 
         if ($this->provide_date && strpos($this->provide_date, ' - ')) {
             list($provide_date_start, $provide_date_end) = explode(' - ', $this->provide_date);
-            $query->andFilterWhere(['between', 'provide_date', $provide_date_start, $provide_date_end]);
+            $query->andFilterWhere(['between', 'order.provide_date', $provide_date_start, $provide_date_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'order.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'order.created_at', $created_at_start, $created_at_end]);
         }
 
         return $dataProvider;
