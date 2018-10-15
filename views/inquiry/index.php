@@ -142,14 +142,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'] ?? '',
                 ])
             ],
-            [
-                'attribute' => 'offer_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'InquirySearch[offer_date]',
-                    'value' => Yii::$app->request->get('InquirySearch')['offer_date'] ?? '',
-                ])
-            ],
             'remark',
             [
                 'attribute' => 'updated_at',

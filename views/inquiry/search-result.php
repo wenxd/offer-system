@@ -258,7 +258,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     select_id = $(element).data("select_id");
                 }
             });
-
+            if (!select_id) {
+                layer.msg('请先添加记录', {time:2000});
+                return false;
+            }
             var goods_id = $('.data').data('goods_id');
             var order_id = $('.data').data('order_id');
             var key      = $('.data').data('key');
