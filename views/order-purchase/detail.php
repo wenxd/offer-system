@@ -11,8 +11,12 @@ use app\models\AuthAssignment;
 
 $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
-$model->agreement_sn = 'HT' . date('YmdHis') . rand(10, 99);
-$model->agreement_date = '';
+if (!$model->agreement_sn) {
+    $model->agreement_sn = 'HT' . date('YmdHis') . rand(10, 99);
+}
+if (!$model->agreement_date) {
+    $model->agreement_date = '';
+}
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
@@ -125,6 +129,19 @@ foreach ($adminList as $key => $admin) {
                 $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
                 $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             });
+            var open = true;
+            $('.order_final_list').each(function (i, item) {
+                if ($(item).children().last().prev().text() == '未完成') {
+                    open = false;
+                }
+            });
+            if (open) {
+                $('.purchase_complete').hide();
+                var sn = '<?=$model->agreement_sn?>';
+                $('#orderpurchase-agreement_sn').val(sn);
+                var date = '<?=$model->agreement_date?>';
+                $('#orderpurchase-agreement_date').val(date);
+            }
         }
 
         $('.complete').click(function (e) {
