@@ -92,9 +92,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             'pluginOptions' => [
                 'autoclose' => true,
                 'format'    => 'yyyy-mm-dd',
-                'startView' =>2,  //其实范围（0：日  1：天 2：年）
-                'maxView'   =>2,  //最大选择范围（年）
-                'minView'   =>2,  //最小选择范围（年）
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
             ]
         ]);?>
     </div>
