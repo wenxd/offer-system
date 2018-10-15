@@ -45,7 +45,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_deleted'], 'integer'],
             [['end_date'], 'required'],
-            [['end_date', 'updated_at', 'created_at'], 'safe'],
+            [['end_date', 'updated_at', 'created_at', 'agreement_date'], 'safe'],
             [['purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];

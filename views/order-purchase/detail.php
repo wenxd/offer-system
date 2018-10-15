@@ -11,6 +11,16 @@ use app\models\AuthAssignment;
 
 $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
+$model->agreement_sn = 'HT' . date('YmdHis') . rand(10, 99);
+$model->agreement_date = '';
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
 
 ?>
 
@@ -18,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
-            <thead class="data" data-order_final_id="<?=$_GET['id']?>">
+            <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
             <tr>
                 <th>零件号</th>
                 <th>中文描述</th>
@@ -75,6 +85,29 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endforeach;?>
             </tbody>
         </table>
+
+        <?= $form->field($model, 'agreement_sn')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
+
+        <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
+
+        <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
+    </div>
+    <div class="box-footer">
+        <?= Html::button('完成采购', [
+                'class' => 'btn btn-success purchase_complete',
+                'name'  => 'submit-button']
+        )?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -105,6 +138,48 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
                         location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        $('.purchase_complete').click(function (e) {
+            var flag = false;
+            $('.order_final_list').each(function (i, item) {
+                if ($(item).children().last().prev().text() == '未完成') {
+                    flag = true;
+                }
+            });
+            if (flag) {
+                layer.msg('请完成每条零件的采购', {time:2000});
+                return false;
+            }
+
+            var agreement_sn = $('#orderpurchase-agreement_sn').val();
+            if (!agreement_sn) {
+                layer.msg('请输入合同号', {time:2000});
+                return false;
+            }
+
+            var agreement_date = $('#orderpurchase-agreement_date').val();
+            if (!agreement_date) {
+                layer.msg('请输入合同日期', {time:2000});
+                return false;
+            }
+
+            var id = $('.data').data('order_purchase_id');
+            $.ajax({
+                type:"post",
+                url:'?r=order-purchase/complete-all',
+                data:{id:id, agreement_sn:agreement_sn, agreement_date:agreement_date},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=order-purchase/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;

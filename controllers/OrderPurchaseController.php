@@ -177,7 +177,7 @@ class OrderPurchaseController extends Controller
         $purchaseGoods = PurchaseGoods::findAll(['order_purchase_id' => $id]);
 
         $data = [];
-        $data['orderPurchase'] = $orderPurchase;
+        $data['orderPurchase'] = $data['model'] = $orderPurchase;
         $data['purchaseGoods'] = $purchaseGoods;
 
         return $this->render('detail', $data);
@@ -194,18 +194,25 @@ class OrderPurchaseController extends Controller
 
         $purchaseGoods->is_purchase = PurchaseGoods::IS_PURCHASE_YES;
         if ($purchaseGoods->save()){
-            $isHavePurchase = PurchaseGoods::find()->where([
-                'order_purchase_id' => $purchaseGoods->order_purchase_id,
-                'is_purchase'       => PurchaseGoods::IS_PURCHASE_NO
-            ])->one();
-            if (!$isHavePurchase) {
-                $orderPurchase = OrderPurchase::findOne($purchaseGoods->order_purchase_id);
-                $orderPurchase->is_purchase = OrderPurchase::IS_PURCHASE_YES;
-                $orderPurchase->save();
-            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $purchaseGoods->getErrors()], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    public function actionCompleteAll()
+    {
+        $params = Yii::$app->request->post();
+        $orderPurchase = OrderPurchase::findOne($params['id']);
+        $orderPurchase->agreement_sn   = $params['agreement_sn'];
+        $orderPurchase->agreement_date = $params['agreement_date'];
+        $orderPurchase->agreement_time = date('Y-m-d H:i:s');
+        $orderPurchase->is_purchase    = OrderPurchase::IS_PURCHASE_YES;
+        if ($orderPurchase->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+
     }
 }
