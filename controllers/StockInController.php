@@ -56,6 +56,7 @@ class StockInController extends BaseController
         $stockLog                    = new StockLog();
         $stockLog->order_id          = $orderPurchase['order_id'];
         $stockLog->order_purchase_id = $params['order_purchase_id'];
+        $stockLog->purchase_sn       = $orderPurchase['purchase_sn'];
         $stockLog->goods_id          = $params['goods_id'];
         $stockLog->number            = $params['number'];
         $stockLog->type              = StockLog::TYPE_IN;
