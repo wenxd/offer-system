@@ -107,12 +107,14 @@ foreach ($adminList as $key => $admin) {
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
     </div>
+    <?php if (!$orderPurchase->is_purchase):?>
     <div class="box-footer">
         <?= Html::button('完成采购', [
                 'class' => 'btn btn-success purchase_complete',
                 'name'  => 'submit-button']
         )?>
     </div>
+    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 
@@ -136,7 +138,6 @@ foreach ($adminList as $key => $admin) {
                 }
             });
             if (open) {
-                $('.purchase_complete').hide();
                 var sn = '<?=$model->agreement_sn?>';
                 $('#orderpurchase-agreement_sn').val(sn);
                 var date = '<?=$model->agreement_date?>';

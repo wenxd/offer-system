@@ -26,6 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
     .cancel {
         display: none;
     }
+    .number {
+        margin-left: 10px;
+    }
 </style>
 <!-- Main content -->
 <section class="content">
@@ -38,6 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label for="good_number">零件号</label>
                             <input type="text" class="form-control" id="good_number"
                                    placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off"
+                                   onkeydown="if(event.keyCode == 13){return false;}">
+
+                        </div>
+                        <div class="form-group number">
+                            <label for="number">数量</label>
+                            <input type="text" class="form-control" id="number"
+                                   placeholder="请输入零件数量" autocomplete="off"
                                    onkeydown="if(event.keyCode == 13){return false;}">
                         </div>
                         <button type="button" class="btn btn-primary add_goods" style="float: right">添加</button>
@@ -60,6 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th>是否加工</th>
                             <th>是否特制</th>
                             <th>图片</th>
+                            <th>数量</th>
                         </tr>
                         </thead>
                         <tbody class="goods_list">
@@ -120,6 +131,13 @@ $this->params['breadcrumbs'][] = $this->title;
             layer.msg('零件号不能为空', {time:2000});
             return false;
         }
+
+        var number = $('#number').val();
+        var reg = /^[0-9]*$/;
+        if (!reg.test(number) || number <= 0) {
+            layer.msg('数量请输入正整数', {time:2000});
+            return false;
+        }
         $.ajax({
             type:"post",
             url:"?r=order/add-goods",
@@ -145,11 +163,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     tr += '<td>' + (res.data.is_process == 0 ? '否' : '是') + '</td>';
                     tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
+                    tr += '<td class="goodsNumber">' + number + '</td>';
                     tr += '</tr>';
                     $('.goods_list').append(tr);
                     if ($('.select_all').prop('checked')) {
                         $('.select_id').prop("checked",$('.select_all').prop('checked'));
                     }
+                    $('#good_number').val('');
+                    $('#number').val('');
                 } else {
                     layer.msg(res.msg, {time:2000});
                 }
@@ -165,8 +186,13 @@ $this->params['breadcrumbs'][] = $this->title;
     $('.order_save').click(function (e) {
         var goods  = $('.goods_id');
         var goodsIds = [];
+        var goodsInfo = [];
         goods.each(function (i, e) {
+            var item = {};
             goodsIds.push($(e).data('id'));
+            item.goods_id = $(e).data('id');
+            item.number   = $(e).find('.goodsNumber').text();
+            goodsInfo.push(item);
         });
 
         var url = location.search;
@@ -174,7 +200,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $.ajax({
             type:"post",
             url:'?r=order/save-order' + url,
-            data:{goodsIds:goodsIds},
+            data:{goodsIds:goodsIds, goodsInfo:goodsInfo},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

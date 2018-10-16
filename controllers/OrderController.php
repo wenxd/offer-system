@@ -6,6 +6,7 @@ use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
 use app\models\OrderFinal;
+use app\models\OrderGoods;
 use app\models\OrderInquiry;
 use app\models\OrderPurchase;
 use Yii;
@@ -381,18 +382,28 @@ class OrderController extends BaseController
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->get();
-        $goodsIds = Yii::$app->request->post();
+        $goods = Yii::$app->request->post();
 
-        $order = new Order();
-        $order->customer_id = $params['customer_id'];
-        $order->order_sn = $params['order_sn'];
-        $order->manage_name = $params['manage_name'];
-        $order->goods_ids = json_encode($goodsIds['goodsIds']);
-        $order->order_type = $params['order_type'];
+        $order               = new Order();
+        $order->customer_id  = $params['customer_id'];
+        $order->order_sn     = $params['order_sn'];
+        $order->manage_name  = $params['manage_name'];
+        $order->goods_ids    = json_encode($goods['goodsIds']);
+        $order->order_type   = $params['order_type'];
         $order->provide_date = $params['provide_date'];
-        $order->created_at = $params['created_at'];
+        $order->created_at   = $params['created_at'];
 
         if ($order->save()) {
+            $data = [];
+            foreach ($goods['goodsInfo'] as $item) {
+                $row = [];
+                $row[] = $order->primaryKey;
+                $row[] = $item['goods_id'];
+                $row[] = $item['number'];
+                $data[] = $row;
+            }
+            $feild = ['order_id', 'goods_id', 'number'];
+            $num = Yii::$app->db->createCommand()->batchInsert(OrderGoods::tableName(), $feild, $data)->execute();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $order->getErrors()]);

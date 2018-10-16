@@ -15,7 +15,7 @@ use app\models\AuthAssignment;
 /* @var $searchModel app\models\OrderPurchaseSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '采购单列表';
+$this->title = '入库管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
