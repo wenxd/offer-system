@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for table "stock_log".
@@ -18,7 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */
-class StockLog extends \yii\db\ActiveRecord
+class StockLog extends ActiveRecord
 {
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
