@@ -2,23 +2,22 @@
 
 namespace app\controllers;
 
+use Yii;
+use app\models\OrderFinal;
+use app\models\OrderFinalSearch;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 use app\models\FinalGoods;
 use app\models\InquiryGoods;
 use app\models\Order;
 use app\models\OrderFinalQuoteSearch;
 use app\models\OrderPurchase;
 use app\models\PurchaseGoods;
-use Yii;
-use app\models\OrderFinal;
-use app\models\OrderFinalSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * OrderFinalController implements the CRUD actions for OrderFinal model.
  */
-class OrderFinalController extends Controller
+class OrderFinalController extends BaseController
 {
     /**
      * {@inheritdoc}
