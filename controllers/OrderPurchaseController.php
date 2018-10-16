@@ -2,19 +2,18 @@
 
 namespace app\controllers;
 
-use app\models\OrderFinal;
-use app\models\PurchaseGoods;
 use Yii;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\OrderFinal;
+use app\models\PurchaseGoods;
 
 /**
  * OrderPurchaseController implements the CRUD actions for OrderPurchase model.
  */
-class OrderPurchaseController extends Controller
+class OrderPurchaseController extends BaseController
 {
     /**
      * {@inheritdoc}
