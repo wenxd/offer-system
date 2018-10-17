@@ -9,6 +9,7 @@ use app\models\Competitor;
 /* @var $this yii\web\View */
 /* @var $model app\models\CompetitorGoods */
 /* @var $form yii\widgets\ActiveForm */
+$model->tax_rate='16';
 ?>
 
 <div class="box">
@@ -21,7 +22,9 @@ use app\models\Competitor;
 
     <?= $form->field($model, 'competitor_id')->dropDownList(Competitor::getAllDropDown())->label('竞争对手') ?>
 
-    <?= $form->field($model, 'competitor_price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+    <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'offer_date')->widget(DateTimePicker::className(), [
         'removeButton'  => false,
@@ -33,6 +36,8 @@ use app\models\Competitor;
             'minView'   =>0,  //最小选择范围（年）
         ]
     ]);?>
+
+    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
     </div>
 
@@ -49,3 +54,22 @@ use app\models\Competitor;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript">
+    //实现税率自动转换
+    var tax = $('#competitorgoods-tax_rate').val();
+
+    $('#competitorgoods-price').blur(function () {
+        var price = $('#competitorgoods-price').val();
+        var tax_price = price * (1 + tax/100);
+        $("#competitorgoods-tax_price").attr("value",tax_price.toFixed(2));
+        $("#competitorgoods-tax_price").val(tax_price.toFixed(2));
+    });
+
+    $('#competitorgoods-tax_price').blur(function () {
+        var tax_price = $('#competitorgoods-tax_price').val();
+        var price = tax_price / (1 + tax/100);
+        $("#competitorgoods-price").attr("value",price.toFixed(2));
+        $("#competitorgoods-price").val(price.toFixed(2));
+    });
+</script>
