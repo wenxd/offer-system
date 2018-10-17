@@ -19,6 +19,9 @@ use Yii;
  */
 class OrderGoods extends \yii\db\ActiveRecord
 {
+    const IS_OUT_NO  = '0';
+    const IS_OUT_YES = '1';
+
     /**
      * {@inheritdoc}
      */
@@ -54,5 +57,10 @@ class OrderGoods extends \yii\db\ActiveRecord
             'updated_at' => '更新时间',
             'created_at' => '创建时间',
         ];
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
 }

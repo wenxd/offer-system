@@ -38,7 +38,11 @@ class StockInController extends BaseController
     {
         $orderPurchase = OrderPurchase::findOne($id);
         $purchaseGoods = PurchaseGoods::findAll(['order_purchase_id' => $id]);
-        $stockLog = StockLog::find()->where(['order_id' => $orderPurchase->order_id, 'order_purchase_id' => $id])->all();
+        $stockLog = StockLog::find()->where([
+            'order_id' => $orderPurchase->order_id,
+            'order_purchase_id' => $id,
+            'type' => StockLog::TYPE_IN
+        ])->all();
 
         $data = [];
         $data['orderPurchase'] = $data['model'] = $orderPurchase;
