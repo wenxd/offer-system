@@ -8,6 +8,7 @@ use app\models\Stock;
 use app\models\Goods;
 use app\models\GoodsSearch;
 use app\models\Inquiry;
+use app\models\CompetitorGoods;
 
 /**
  * GoodsController implements the CRUD actions for Goods model.
@@ -87,7 +88,8 @@ class GoodsController extends BaseController
             yii::$app->getSession()->setFlash('error', '没有此零件');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $goods_id = $goods;
+        $goods_id = $goods->id;
+
         //价格最优
         $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
         //同期最短
@@ -100,13 +102,17 @@ class GoodsController extends BaseController
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
+        //竞争对手
+        $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
+
         $data = [];
-        $data['goods']         = $goods ? $goods : [];
-        $data['inquiryPrice']  = $inquiryPriceQuery;
-        $data['inquiryTime']   = $inquiryTimeQuery;
-        $data['inquiryNew']    = $inquiryNewQuery;
-        $data['inquiryBetter'] = $inquiryBetterQuery;
-        $data['stock']         = $stockQuery;
+        $data['goods']            = $goods ? $goods : [];
+        $data['inquiryPrice']     = $inquiryPriceQuery;
+        $data['inquiryTime']      = $inquiryTimeQuery;
+        $data['inquiryNew']       = $inquiryNewQuery;
+        $data['inquiryBetter']    = $inquiryBetterQuery;
+        $data['stock']            = $stockQuery;
+        $data['competitorGoods']  = $competitorGoods;
 
         return $this->render('search-result', $data);
     }

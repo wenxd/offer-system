@@ -40,8 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'competitor_price',
+            'tax_rate',
+            'price',
+            'tax_price',
             'offer_date',
+            'remark',
             'updated_at',
             'created_at',
         ],

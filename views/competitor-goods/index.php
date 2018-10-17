@@ -54,7 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'competitor_price',
+            'tax_rate',
+            'price',
+            'tax_price',
             [
                 'attribute' => 'offer_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],

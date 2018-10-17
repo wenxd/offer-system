@@ -195,6 +195,30 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             </thead>
         </table>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th rowspan="2">竞争对手记录</th>
+                <th>类型</th>
+                <th>零件号</th>
+                <th>竞争对手</th>
+                <th>针对客户</th>
+                <th>税率</th>
+                <th>未税单价</th>
+                <th>含税单价</th>
+                <th>货期</th>
+                <th>报价时间</th>
+                <th>备注</th>
+
+            </tr>
+            <tr class="competit_list">
+                <td>对手记录</td>
+                <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
+                <td><?=$competitorGoods ? $competitorGoods->competitor_price : ''?></td>
+            </tr>
+            </thead>
+        </table>
     </div>
 </div>
 
