@@ -21,9 +21,9 @@ class CompetitorGoodsSearch extends CompetitorGoods
     {
         return [
             [['id', 'goods_id', 'competitor_id', 'is_deleted'], 'integer'],
-            [['competitor_price'], 'number'],
+            [['tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name'], 'safe'],
-            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'competitor_price'], 'trim'],
+            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price'], 'trim'],
         ];
     }
 
@@ -55,7 +55,7 @@ class CompetitorGoodsSearch extends CompetitorGoods
                 'defaultOrder' => [
                     'id' => SORT_DESC
                 ],
-                'attributes' => ['id', 'competitor_price', 'offer_date', 'updated_at', 'created_at']
+                'attributes' => ['id', 'price', 'tax_price', 'offer_date', 'updated_at', 'created_at']
             ]
         ]);
 
@@ -80,7 +80,9 @@ class CompetitorGoodsSearch extends CompetitorGoods
             'competitor_goods.id'               => $this->id,
             'competitor_goods.goods_id'         => $this->goods_id,
             'competitor_goods.competitor_id'    => $this->competitor_id,
-            'competitor_goods.competitor_price' => $this->competitor_price,
+            'competitor_goods.tax_rate'         => $this->tax_rate,
+            'competitor_goods.price'            => $this->price,
+            'competitor_goods.tax_price'        => $this->tax_price,
             'competitor_goods.is_deleted'       => self::IS_DELETED_NO,
         ]);
 
