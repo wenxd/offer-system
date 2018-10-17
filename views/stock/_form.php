@@ -9,7 +9,7 @@ use app\models\Stock;
 /* @var $this yii\web\View */
 /* @var $model app\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
-$model->tax_rate='10';
+$model->tax_rate='16';
 ?>
 
 <div class="box">
