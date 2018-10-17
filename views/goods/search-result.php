@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>同期最短</td>
+                <td>货期最短</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
