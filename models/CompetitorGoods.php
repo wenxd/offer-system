@@ -12,7 +12,6 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id 自增id
  * @property int $goods_id 商品ID
  * @property int $competitor_id 竞争对手ID
- * @property string $competitor_price 对手报价
  * @property string $offer_date 报价时间
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
@@ -54,10 +53,11 @@ class CompetitorGoods extends ActiveRecord
     {
         return [
             [['goods_id', 'competitor_id', 'is_deleted'], 'integer'],
-            [['competitor_price'], 'number'],
+            [['tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
-            [['competitor_price'], 'double', 'min' => 0],
-            [['goods_id', 'competitor_id', 'competitor_price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
+            [['price', 'tax_price'], 'double', 'min' => 0],
+            [['goods_id', 'competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
+            [['remark'], 'string'],
         ];
     }
 
@@ -72,7 +72,10 @@ class CompetitorGoods extends ActiveRecord
             'goods_number'     => '商品编号',
             'competitor_id'    => '竞争对手ID',
             'competitor_name'  => '竞争对手名称',
-            'competitor_price' => '对手报价',
+            'price'            => '未税价格',
+            'tax_price'        => '含税价格',
+            'tax_rate'         => '税率',
+            'remark'           => '备注',
             'offer_date'       => '报价时间',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
