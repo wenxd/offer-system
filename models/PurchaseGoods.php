@@ -26,6 +26,9 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
 
+    const TYPE_INQUIRY  = '0';
+    const TYPE_STOCK    = '1';
+
     /**
      * {@inheritdoc}
      */
@@ -73,12 +76,23 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
 
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
     public function getStock()
     {
         return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
     }
+
     public function getInquiry()
     {
         return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
+    }
+
+    public function getOrderPurchase()
+    {
+        return $this->hasOne(OrderPurchase::className(), ['id' => 'order_purchase_id']);
     }
 }

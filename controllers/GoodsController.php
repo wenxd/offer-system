@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\PurchaseGoods;
 use Yii;
 use app\actions;
 use app\models\Stock;
@@ -102,6 +103,33 @@ class GoodsController extends BaseController
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
+        //采购记录
+        $purchaseInquiry = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_INQUIRY])->all();
+        $price = 100000000;
+        $offerDay = 10000000;
+        $purchasePrice = '';
+        $purchaseDay = '';
+        foreach ($purchaseInquiry as $item) {
+            if ($item->inquiry->price < $price) {
+                $price = $item->inquiry->price;
+                $purchasePrice = $item;
+            }
+            if ($item->inquiry->delivery_time < $offerDay) {
+                $offerDay = $item->inquiry->delivery_time;
+                $purchaseDay = $item;
+            }
+        }
+        $purchaseStock = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_STOCK])->all();
+        foreach ($purchaseStock as $item) {
+            if ($item->stock->price < $price) {
+                $price = $item->stock->price;
+                $purchasePrice = $item;
+            }
+        }
+
+        //最新采购
+        $purchaseNew = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+
         //竞争对手
         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
@@ -112,6 +140,11 @@ class GoodsController extends BaseController
         $data['inquiryNew']       = $inquiryNewQuery;
         $data['inquiryBetter']    = $inquiryBetterQuery;
         $data['stock']            = $stockQuery;
+
+        $data['purchasePrice']    = $purchasePrice;
+        $data['purchaseDay']      = $purchaseDay;
+        $data['purchaseNew']      = $purchaseNew;
+
         $data['competitorGoods']  = $competitorGoods;
 
         return $this->render('search-result', $data);

@@ -198,6 +198,83 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
+                <th rowspan="4">采购记录</th>
+                <th>类型</th>
+                <th>零件号</th>
+                <th>单位</th>
+                <th>供应商</th>
+                <th>数量</th>
+                <th>税率</th>
+                <th>未税单价</th>
+                <th>含税单价</th>
+                <th>货期</th>
+                <th>采购员</th>
+                <th>采购时间</th>
+                <th>入库时间</th>
+                <th>订单号</th>
+                <th>采购单号</th>
+                <th>未税总价</th>
+                <th>含税总价</th>
+            </tr>
+            <tr class="inquiry_list">
+                <td>价格最低</td>
+                <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->unit : '' ?></td>
+                <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
+                <td class="number"><?= $purchasePrice ? $purchasePrice->number : 0 ?></td>
+                <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_rate : $purchasePrice->inquiry->tax_rate) : 0 ?></td>
+                <td class="price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->price : $purchasePrice->inquiry->price) : 0 ?></td></td>
+                <td class="tax_price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></td>
+                <td></td>
+                <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
+                <td><?= $purchasePrice ? $purchasePrice->created_at : '' ?></td>
+                <td><?= $purchasePrice ? $purchasePrice->orderPurchase->updated_at : '' ?></td>
+                <td><?=$purchasePrice ? $purchasePrice->order->order_sn : ''?></td>
+                <td><?=$purchasePrice ? $purchasePrice->order_purchase_sn : ''?></td>
+                <td class="all_price"></td>
+                <td class="all_tax_price"></td>
+            </tr>
+            <tr class="inquiry_list">
+                <td>货期最短</td>
+                <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->unit : '' ?></td>
+                <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
+                <td class="number"><?= $purchaseDay ? $purchaseDay->number : 0 ?></td>
+                <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_rate : $purchaseDay->inquiry->tax_rate) : 0 ?></td>
+                <td class="price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->price : $purchaseDay->inquiry->price) : 0 ?></td></td>
+                <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
+                <td><?= $purchaseDay ? $purchaseDay->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
+                <td><?= $purchaseDay ? $purchaseDay->created_at : '' ?></td>
+                <td><?= $purchaseDay ? $purchaseDay->orderPurchase->updated_at : '' ?></td>
+                <td><?= $purchaseDay ? $purchaseDay->order->order_sn : ''?></td>
+                <td><?= $purchaseDay ? $purchaseDay->order_purchase_sn : ''?></td>
+                <td class="all_price"></td>
+                <td class="all_tax_price"></td>
+            </tr>
+            <tr class="inquiry_list">
+                <td>最新采购</td>
+                <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->unit : '' ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
+                <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
+                <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
+                <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->created_at : '' ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->updated_at : '' ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->order->order_sn : ''?></td>
+                <td><?= $purchaseNew ? $purchaseNew->order_purchase_sn : ''?></td>
+                <td class="all_price"></td>
+                <td class="all_tax_price"></td>
+            </tr>
+            </thead>
+        </table>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+            <tr>
                 <th rowspan="2">竞争对手记录</th>
                 <th>类型</th>
                 <th>零件号</th>
@@ -209,9 +286,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>货期</th>
                 <th>报价时间</th>
                 <th>备注</th>
-
             </tr>
-            <tr class="competit_list">
+            <tr>
                 <td>对手记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
@@ -227,4 +303,16 @@ $this->params['breadcrumbs'][] = $this->title;
         </table>
     </div>
 </div>
-
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.inquiry_list').each(function (i, e) {
+            var number = $(e).find('.number').text();
+            var price = $(e).find('.price').text();
+            var tax_price = $(e).find('.tax_price').text();
+            $(e).find('.all_price').text(number * price);
+            $(e).find('.all_tax_price').text(number * tax_price);
+        });
+    });
+</script>
