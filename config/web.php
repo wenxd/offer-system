@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => '询价管理系统',
+    'name' => '订单管理系统',
     'language' => 'zh-CN',
     'defaultRoute' => 'site/index',
     'basePath' => dirname(__DIR__),
