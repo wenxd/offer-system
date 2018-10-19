@@ -88,7 +88,7 @@ class StockInController extends BaseController
                 $stock->price       = $inquiry->price;
                 $stock->tax_price   = $inquiry->tax_price;
                 $stock->tax_rate    = $inquiry->tax_rate;
-                $stock->number      = $params['number'];
+                $stock->number      = 0;
                 $stock->save();
             }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
