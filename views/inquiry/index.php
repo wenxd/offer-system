@@ -14,7 +14,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\InquirySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '询价管理列表';
+$this->title = '询价记录列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
