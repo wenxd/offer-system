@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php foreach ($orderFinal as $final):?>
                 <tr>
                     <td><?=$final->order_id?></td>
-                    <td><?=Html::a($final->final_sn, Url::to(['order-inquiry/detail', 'id' => $final->id]))?></td>
+                    <td><?=Html::a($final->final_sn, Url::to(['order-final/detail', 'id' => $final->id]))?></td>
                 </tr>
             <?php endforeach;?>
             </thead>
@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php foreach ($orderPurchase as $purchse):?>
                 <tr>
                     <td><?=$purchse->order_id?></td>
-                    <td><?=Html::a($purchse->purchase_sn, Url::to(['order-purchse/detail', 'id' => $purchse->id]))?></td>
+                    <td><?=Html::a($purchse->purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchse->id]))?></td>
                 </tr>
             <?php endforeach;?>
             </thead>
