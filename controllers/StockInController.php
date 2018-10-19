@@ -57,7 +57,15 @@ class StockInController extends BaseController
         $params = Yii::$app->request->post();
         $orderPurchase = OrderPurchase::findOne($params['order_purchase_id']);
 
-        $stockLog                    = new StockLog();
+        $stockLog = StockLog::find()->where([
+            'order_id'          => $orderPurchase['order_id'],
+            'order_purchase_id' => $params['order_purchase_id'],
+            'goods_id'          => $params['order_purchase_id'],
+            'type'              => StockLog::TYPE_IN,
+        ])->one();
+        if (!$stockLog) {
+            $stockLog                    = new StockLog();
+        }
         $stockLog->order_id          = $orderPurchase['order_id'];
         $stockLog->order_purchase_id = $params['order_purchase_id'];
         $stockLog->purchase_sn       = $orderPurchase['purchase_sn'];
@@ -70,7 +78,8 @@ class StockInController extends BaseController
             if (!$stock) {
                 $purchaseGoods = PurchaseGoods::findOne([
                     'order_purchase_id' => $params['order_purchase_id'],
-                    'order_id' => $orderPurchase['order_id']
+                    'order_id'          => $orderPurchase['order_id'],
+                    'goods_id'          => $params['goods_id']
                 ]);
                 $inquiry = Inquiry::findOne($purchaseGoods->relevance_id);
                 $stock = new Stock();
