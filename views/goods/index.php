@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -35,7 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => CheckboxColumn::className(),
             ],
             'id',
-            'goods_number',
+            [
+                'attribute' => 'goods_number',
+                'format'         => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->goods_number, Url::to(['view', 'id' => $model->id]));
+                }
+            ],
             'description',
             'description_en',
             'original_company',
@@ -59,6 +66,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Goods::$nameplate,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$nameplate[$model->is_nameplate];
+                }
+            ],
+            [
+                'attribute' => 'is_emerg',
+                'filter'    => Goods::$emerg,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$emerg[$model->is_emerg];
                 }
             ],
             [

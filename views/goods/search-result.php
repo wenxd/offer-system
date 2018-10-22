@@ -28,10 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
-                <th>原厂家备注</th>
-                <th>是否加工</th>
-                <th>是否特制</th>
-                <th>是否铭牌</th>
+                <th>厂家备注</th>
+                <th>加工</th>
+                <th>特制</th>
+                <th>铭牌</th>
                 <th>技术备注</th>
                 <th>更新时间</th>
                 <th>创建时间</th>

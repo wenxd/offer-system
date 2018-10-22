@@ -48,6 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_emerg',
+                'value'     => function ($model) {
+                    return Goods::$emerg[$model->is_emerg];
+                }
+            ],
+            [
                 'attribute' => 'nameplate_img_id',
                 'format'    => 'raw',
                 'value'     => function ($model) {

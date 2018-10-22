@@ -39,8 +39,11 @@ class Goods extends ActiveRecord
     const IS_SPECIAL_NO    = '0';
     const IS_SPECIAL_YES   = '1';
     
-    const IS_NAMEPLATE_NO    = '0';
-    const IS_NAMEPLATE_YES   = '1';
+    const IS_NAMEPLATE_NO   = '0';
+    const IS_NAMEPLATE_YES  = '1';
+
+    const IS_EMERG_NO       = '0';
+    const IS_EMERG_YES      = '1';
 
     public static $process = [
         self::IS_PROCESS_NO  => '否',
@@ -56,7 +59,12 @@ class Goods extends ActiveRecord
         self::IS_NAMEPLATE_NO  => '否',
         self::IS_NAMEPLATE_YES => '是',
     ];
-    
+
+    public static $emerg = [
+        self::IS_EMERG_NO  => '否',
+        self::IS_EMERG_YES => '是',
+    ];
+
     public $img_url = '';
     public $nameplate_img_url = '';
 
@@ -90,12 +98,12 @@ class Goods extends ActiveRecord
     public function rules()
     {
         return [
-            [['is_process', 'is_deleted', 'is_special', 'is_nameplate'], 'integer'],
+            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
             [['goods_number', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en'], 'string', 'max' => 256],
             [
-                ['goods_number','description'],
+                ['goods_number'],
                 'required',
                 'on' => 'goods',
             ],
@@ -120,6 +128,7 @@ class Goods extends ActiveRecord
             'is_process'              => '加工',
             'is_special'              => '特制',
             'is_nameplate'            => '铭牌',
+            'is_emerg'                => '紧急',
             'nameplate_img_id'        => '铭牌照片',
             'is_deleted'              => '是否删除：0未删除 1已删除',
             'updated_at'              => '更新时间',
