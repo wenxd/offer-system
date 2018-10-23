@@ -11,6 +11,12 @@ $this->title = '询价单详情';
 $this->params['breadcrumbs'][] = ['label' => '询价单列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    .alarm {
+        background-color: #ffacac;
+    }
+</style>
+
 <section class="content">
 <div class="box table-responsive">
     <div class="box-body">
@@ -20,16 +26,32 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>询价单号</th>
                 <th>订单号</th>
                 <th>零件号</th>
+                <th>原厂家</th>
+                <th>原厂家备注</th>
+                <th>中文描述</th>
+                <th>英文描述</th>
+                <th>单位</th>
+                <th>铭牌照片</th>
+                <th>加工照片</th>
+                <th>数量</th>
                 <th>是否询价</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
             <tbody>
                 <?php foreach ($inquiryGoods as $item):?>
-                <tr>
+                <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                     <td><?=$orderInquiry->inquiry_sn?></td>
                     <td><?=$orderInquiry->order->order_sn?></td>
                     <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->original_company?></td>
+                    <td><?=$item->goods->original_company_remark?></td>
+                    <td><?=$item->goods->description?></td>
+                    <td><?=$item->goods->description_en?></td>
+                    <td><?=$item->goods->unit?></td>
+                    <td><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></td>
+                    <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
+                    <td><?=$orderGoods[$item->goods_id]->number?></td>
                     <td><?=$item::$Inquiry[$item->is_inquiry]?></td>
                     <td>
                         <?php if (!$item->is_inquiry):?>

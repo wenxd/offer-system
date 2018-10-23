@@ -65,4 +65,8 @@ class InquiryGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
+    public function getOrderInquiry()
+    {
+        return $this->hasOne(OrderInquiry::className(), ['inquiry_sn' => 'inquiry_sn']);
+    }
 }

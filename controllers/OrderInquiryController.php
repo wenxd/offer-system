@@ -8,6 +8,7 @@
 namespace app\controllers;
 
 use app\models\InquiryGoods;
+use app\models\OrderGoods;
 use app\models\QuoteRecord;
 use Yii;
 use app\actions;
@@ -191,11 +192,14 @@ class OrderInquiryController extends BaseController
             return $this->redirect(['index']);
         }
 
+        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->indexBy('goods_id')->all();
+
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
         $inquiryGoods = InquiryGoods::find()->where(['inquiry_sn' => $orderInquiry->inquiry_sn,
             'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
         $data['inquiryGoods'] = $inquiryGoods;
+        $data['orderGoods']   = $orderGoods;
 
         return $this->render('view', $data);
     }

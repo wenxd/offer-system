@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderInquiry;
+use yii\helpers\ArrayHelper;
 
 /**
  * OrderInquirySearch represents the model behind the search form of `app\models\OrderInquiry`.
@@ -43,7 +44,21 @@ class OrderInquirySearch extends OrderInquiry
      */
     public function search($params)
     {
-        $query = OrderInquiry::find();
+        $userId   = Yii::$app->user->identity->id;
+        $userName = Yii::$app->user->identity->username;
+        //询价员
+        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $adminList = Admin::find()->where(['id' => $adminIds])->all();
+        $admins = [];
+        foreach ($adminList as $key => $admin) {
+            $admins[$admin->id] = $admin->username;
+        }
+        if (in_array($userId, $adminIds)) {
+            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO]);
+        } else {
+            $query = OrderInquiry::find();
+        }
 
         // add conditions that should always apply here
 

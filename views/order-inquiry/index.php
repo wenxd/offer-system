@@ -59,14 +59,6 @@ foreach ($adminList as $key => $admin) {
                 ])
             ],
             [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderInquirySearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderInquirySearch')['updated_at'],
-                ])
-            ],
-            [
                 'attribute' => 'created_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
