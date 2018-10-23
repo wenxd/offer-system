@@ -90,8 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryPrice ? Inquiry::$better[$inquiryPrice->is_better] : ''?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->better_reason : ''?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->remark : ''?></td>
-                <td><?= $inquiryPrice ? ($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '') : '' ?></td>
-                <td><?= $inquiryPrice ? ($inquiryPrice->order_inquiry_id ? $inquiryPrice->orderInquiry->inquiry_sn : '') : '' ?></td>
+                <td><?= $inquiryPrice ? Html::a($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '', $inquiryPrice->order_id ? Url::to(['order/detail', 'id' => $inquiryPrice->order_id]) : '') : '' ?></td>
+                <td><?= $inquiryPrice ? Html::a($inquiryPrice->order_inquiry_id ? $inquiryPrice->orderInquiry->inquiry_sn : '', $inquiryPrice->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryPrice->order_inquiry_id]) : '') : '' ?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
