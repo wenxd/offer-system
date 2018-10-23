@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税总价</th>
             </tr>
             <tr class="inquiry_list">
-                <td>价格最优</td>
+                <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>货期最短</td>
+                <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
@@ -115,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>最新报价</td>
+                <td>最新</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
@@ -135,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>优选记录</td>
+                <td>优选</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
