@@ -35,8 +35,7 @@ $model->tax_rate='16';
     <?= $form->field($model, 'suggest_number')->textInput() ?>
     <?= $form->field($model, 'high_number')->textInput() ?>
     <?= $form->field($model, 'low_number')->textInput() ?>
-    <?= $form->field($model, 'is_emerg')->radioList(Stock::$emerg, ['class' => 'radio'])->label('是否紧急')?>
-
+   
     </div>
 
     <div class="box-footer">
