@@ -299,7 +299,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>对手记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
-                <td></td>
+                <td><?=($competitorGoods && $competitorGoods->customer) ? $competitorGoods->customers->name : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->tax_rate : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->price : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->tax_price : ''?></td>

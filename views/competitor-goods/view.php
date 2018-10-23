@@ -40,6 +40,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
+            [
+                'attribute' => 'customer',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+                'label'     => '针对客户',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    if ($model->customer && $model->customers) {
+                        return $model->customers->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'tax_rate',
             'price',
             'tax_price',
