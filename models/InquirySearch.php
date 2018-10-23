@@ -102,7 +102,7 @@ class InquirySearch extends Inquiry
             'is_deleted'    => $this->is_deleted,
         ]);
 
-        $query->andFilterWhere(['like', 'good_id', $this->good_id]);
+        $query->andFilterWhere(['good_id' => $this->good_id]);
         $query->andFilterWhere(['like', 'remark', $this->remark]);
 
         if ($this->inquiry_datetime && strpos($this->inquiry_datetime, ' - ')) {

@@ -16,6 +16,11 @@ use kartik\daterange\DateRangePicker;
 $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    .number {
+        color : red;
+    }
+</style>
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
@@ -92,7 +97,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'price',
             'tax_price',
             'position',
-            'number',
+            [
+                'attribute' => 'number',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->number > $model->high_number || $model->number < $model->low_number ) {
+                        return '<span class="number">' . $model->number . '</span>';
+                    } else {
+                        return $model->number;
+                    }
+                }
+            ],
             'suggest_number',
             'high_number',
             'low_number',

@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'CompetitorGoodsSearch[offer_date]',
-                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['offer_date'],
+                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['offer_date'] ?? '',
                 ])
             ],
             [
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'CompetitorGoodsSearch[updated_at]',
-                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['updated_at'],
+                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['updated_at'] ?? '',
                 ])
             ],
             [
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'CompetitorGoodsSearch[created_at]',
-                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['created_at'],
+                    'value' => Yii::$app->request->get('CompetitorGoodsSearch')['created_at'] ?? '',
                 ])
             ],
 

@@ -18,6 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
         float: right;
         margin-right: 10px;
     }
+    .changeColor {
+        color : red;
+    }
+    .stressColor{
+        color : #ee4ee1;
+    }
+    .price {
+        color : #ee4ee1;
+    }
 </style>
 <div class="box table-responsive">
     <div class="box-body">
@@ -55,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="5">询价记录</th>
+                <th rowspan="5"><?=Html::a('询价记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号</th>
                 <th>单位</th>
@@ -79,12 +88,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
+                <td class="stressColor"><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
                 <td class="number">1</td>
                 <td><?= $inquiryPrice ? $inquiryPrice->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
-                <td><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></td>
+                <td class="stressColor"><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></td>
                 <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
                 <td><?= $inquiryPrice ? substr($inquiryPrice->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryPrice ? Inquiry::$better[$inquiryPrice->is_better] : ''?></td>
@@ -99,12 +108,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
+                <td class="stressColor"><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
                 <td class="number">1</td>
                 <td><?= $inquiryTime ? $inquiryTime->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryTime ? $inquiryTime->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
-                <td><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></td>
+                <td class="stressColor"><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></td>
                 <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
                 <td><?= $inquiryTime ? substr($inquiryTime->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryTime ? Inquiry::$better[$inquiryTime->is_better] : ''?></td>
@@ -119,12 +128,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>最新</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
+                <td class="stressColor"><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
                 <td class="number">1</td>
                 <td><?= $inquiryNew ? $inquiryNew->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryNew ? $inquiryNew->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
-                <td><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></td>
+                <td class="stressColor"><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></td>
                 <td><?= $inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
                 <td><?= $inquiryNew ? substr($inquiryNew->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryNew ? Inquiry::$better[$inquiryNew->is_better] : ''?></td>
@@ -139,12 +148,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>优选</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
+                <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
                 <td class="number">1</td>
                 <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
-                <td><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></td>
+                <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></td>
                 <td><?= $inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
                 <td><?= $inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
@@ -176,7 +185,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>未税总价</th>
                 <th>含税总价</th>
             </tr>
-            <tr class="inquiry_list">
+            <tr class="inquiry_list stock_list">
                 <td>库存记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
@@ -187,8 +196,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $stock ? $stock->position : 0 ?></td>
                 <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
                 <td><?= $stock ? $stock->suggest_number : 0 ?></td>
-                <td><?= $stock ? $stock->high_number : 0 ?></td>
-                <td><?= $stock ? $stock->low_number : 0 ?></td>
+                <td class="high_number"><?= $stock ? $stock->high_number : 0 ?></td>
+                <td class="low_number"><?= $stock ? $stock->low_number : 0 ?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
@@ -197,7 +206,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="4">采购记录</th>
+                <th rowspan="4"><?=Html::a('采购记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号</th>
                 <th>单位</th>
@@ -216,10 +225,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税总价</th>
             </tr>
             <tr class="inquiry_list">
+                <td>最新</td>
+                <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->unit : '' ?></td>
+                <td class="stressColor"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
+                <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
+                <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
+                <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
+                <td class="stressColor"><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
+                <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
+                <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
+                <td class="all_price"></td>
+                <td class="all_tax_price"></td>
+            </tr>
+            <tr class="inquiry_list">
                 <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
+                <td class="stressColor"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
                 <td class="number"><?= $purchasePrice ? $purchasePrice->number : 0 ?></td>
                 <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_rate : $purchasePrice->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->price : $purchasePrice->inquiry->price) : 0 ?></td></td>
@@ -237,12 +264,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
+                <td class="stressColor"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
                 <td class="number"><?= $purchaseDay ? $purchaseDay->number : 0 ?></td>
                 <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_rate : $purchaseDay->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->price : $purchaseDay->inquiry->price) : 0 ?></td></td>
                 <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
-                <td><?= $purchaseDay ? $purchaseDay->inquiry->delivery_time : '' ?></td>
+                <td class="stressColor"><?= $purchaseDay ? $purchaseDay->inquiry->delivery_time : '' ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->orderPurchase->updated_at,0, 10) : '' ?></td>
@@ -251,30 +278,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
-            <tr class="inquiry_list">
-                <td>最新</td>
-                <td><?= $goods ? $goods->goods_number : '' ?></td>
-                <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
-                <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
-                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
-                <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
-                <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
-                <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
-                <td class="all_price"></td>
-                <td class="all_tax_price"></td>
-            </tr>
             </thead>
         </table>
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="2">竞争对手记录</th>
+                <th rowspan="2"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号</th>
                 <th>竞争对手</th>
@@ -306,6 +315,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        init();
         $('.inquiry_list').each(function (i, e) {
             var number = $(e).find('.number').text();
             var price = $(e).find('.price').text();
@@ -313,5 +323,16 @@ $this->params['breadcrumbs'][] = $this->title;
             $(e).find('.all_price').text(number * price);
             $(e).find('.all_tax_price').text(number * tax_price);
         });
+
+        function init(){
+            var stock_number = $('.stock_list').find('.number').text();
+            var high_number  = $('.stock_list').find('.high_number').text();
+            var low_number   = $('.stock_list').find('.low_number').text();
+
+            if (stock_number > high_number || stock_number < low_number) {
+                $('.stock_list').find('.number').addClass('changeColor');
+            }
+        }
+
     });
 </script>
