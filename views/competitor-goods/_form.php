@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Competitor;
+use app\models\Customer;
 /* @var $this yii\web\View */
 /* @var $model app\models\CompetitorGoods */
 /* @var $form yii\widgets\ActiveForm */
@@ -21,6 +22,8 @@ $model->tax_rate='16';
     <?= $form->field($model, 'goods_id')->dropDownList(Goods::getAllDropDown())->label('零件号') ?>
 
     <?= $form->field($model, 'competitor_id')->dropDownList(Competitor::getAllDropDown())->label('竞争对手') ?>
+
+    <?= $form->field($model, 'customer')->dropDownList(Customer::getAllDropDown())->label('针对客户') ?>
 
     <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>

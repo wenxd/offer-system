@@ -112,4 +112,14 @@ class Customer extends ActiveRecord
         return ['0' => '请选择'] + $return;
     }
 
+    public static function getSelectDropDown()
+    {
+        $list = self::find()->all();
+
+        $return = [];
+        foreach ($list as $row) {
+            $return[$row->id] = $row->name;
+        }
+        return $return;
+    }
 }

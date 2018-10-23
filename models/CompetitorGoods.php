@@ -52,7 +52,7 @@ class CompetitorGoods extends ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'competitor_id', 'is_deleted'], 'integer'],
+            [['goods_id', 'competitor_id', 'is_deleted', 'customer'], 'integer'],
             [['tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
@@ -91,5 +91,10 @@ class CompetitorGoods extends ActiveRecord
     public function getCompetitor()
     {
         return $this->hasOne(Competitor::className(), ['id' => 'competitor_id']);
+    }
+
+    public function getCustomers()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer']);
     }
 }
