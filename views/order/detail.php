@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use app\models\Order;
+use app\models\OrderInquiry;
 use yii\widgets\DetailView;
 
 $this->title = '订单详情';
@@ -55,11 +56,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>订单号</th>
                 <th>询价单号</th>
+                <th>是否询价完成</th>
             </tr>
             <?php foreach ($orderInquiry as $inquiry):?>
             <tr>
                 <td><?=$inquiry->order_id?></td>
                 <td><?=Html::a($inquiry->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $inquiry->id]))?></td>
+                <td><?=OrderInquiry::$Inquiry[$inquiry->is_inquiry]?></td>
             </tr>
             <?php endforeach;?>
             </thead>

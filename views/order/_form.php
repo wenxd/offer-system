@@ -13,14 +13,22 @@ use kartik\datetime\DateTimePicker;
 if ($model->isNewRecord) {
     $model->created_at = date('Y-m-d H:i:s');
     $model->order_type = 1;
+    $model->order_sn = 'D' . date('Ymdhis') . rand(100, 999);
+    $model->manage_name = Yii::$app->user->identity->username;
 }
+
 
 ?>
 
 <div class="box">
+    <div class="box-header">
+        <?= Html::a('新增零件', Url::to(['goods/create']), [
+                'class' => 'btn btn-success',
+                'name'  => 'submit-button']
+        )?>
+    </div>
 
     <?php $form = ActiveForm::begin(); ?>
-
     <div class="box-body">
         <?= $form->field($model, 'order_type')->radioList(Order::$orderType, ['class' => 'radio']) ?>
 
@@ -66,55 +74,62 @@ if ($model->isNewRecord) {
 
 <script type="text/javascript">
     $(document).ready(function () {
-       $('#order-customer_id').change(function () {
-           var id = $(this).val();
-           $.ajax({
-               type:"get",
-               url:"?r=customer/info",
-               data:{id:id},
-               dataType:'JSON',
-               success:function(res){
-                   if (res && res.code == 200) {
-                       $('#order-customer_short_name').val(res.data.short_name);
-                   } else {
-                       $('#order-customer_short_name').val('');
-                   }
-               }
-           });
-       });
+        $('#order-customer_id').change(function () {
+            var id = $(this).val();
+            $.ajax({
+                type:"get",
+                url:"?r=customer/info",
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200) {
+                        $('#order-customer_short_name').val(res.data.short_name);
+                    } else {
+                        $('#order-customer_short_name').val('');
+                    }
+                }
+            });
+        });
 
-       $('.created').on('click', function () {
-           var parameter = '';
+        $('.created').on('click', function () {
+            var parameter = '';
 
-           var order_type = $('#order-order_type').find('input:checked').val();
-           parameter += 'order_type=' + order_type + '&';
-           var order_sn = $('#order-order_sn').val();
-           if (order_sn === ''){
-               layer.msg('请输入订单编号', {time:2000});
-               return false;
-           }
-           parameter += 'order_sn=' + order_sn + '&';
-           var customer_id = $('#order-customer_id').val();
-           if (customer_id == 0){
-               layer.msg('请选择客户名称', {time:2000});
-               return false;
-           }
-           parameter += 'customer_id=' + customer_id + '&';
-           var manage_name = $('#order-manage_name').val();
-           if (manage_name === ''){
-               layer.msg('请输入订单管理员名称', {time:2000});
-               return false;
-           }
-           parameter += 'manage_name=' + manage_name + '&';
-           var provide_date = $('#order-provide_date').val();
-           if (provide_date === ''){
-               layer.msg('请输入报价截止日期', {time:2000});
-               return false;
-           }
-           var created_at = $('#order-created_at').val();
-           parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
-           location.replace("?r=order/generate&" + encodeURI(parameter));
-       });
-
+            var order_type = $('#order-order_type').find('input:checked').val();
+            parameter += 'order_type=' + order_type + '&';
+            var order_sn = $('#order-order_sn').val();
+            if (order_sn === ''){
+                layer.msg('请输入订单编号', {time:2000});
+                return false;
+            }
+            parameter += 'order_sn=' + order_sn + '&';
+            var customer_id = $('#order-customer_id').val();
+            if (customer_id == 0){
+                layer.msg('请选择客户名称', {time:2000});
+                return false;
+            }
+            parameter += 'customer_id=' + customer_id + '&';
+            var manage_name = $('#order-manage_name').val();
+            if (manage_name === ''){
+                layer.msg('请输入订单管理员名称', {time:2000});
+                return false;
+            }
+            parameter += 'manage_name=' + manage_name + '&';
+            var provide_date = $('#order-provide_date').val();
+            if (provide_date === ''){
+                layer.msg('请输入报价截止日期', {time:2000});
+                return false;
+            }
+            var created_at = $('#order-created_at').val();
+            parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
+            location.replace("?r=order/generate&" + encodeURI(parameter));
+        });
+        var date = $('#order-order_sn').val();
+        $('input:radio').change(function (e) {
+            if ($("input:radio:checked").val() == 1) {
+                $('#order-order_sn').val(date);
+            } else {
+                $('#order-order_sn').val('F' + date);
+            }
+        });
     });
 </script>

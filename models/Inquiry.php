@@ -81,7 +81,7 @@ class Inquiry extends ActiveRecord
                  'order_id', 'order_inquiry_id'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at', 'offer_date'], 'safe'],
-            [['inquiry_datetime', 'remark'], 'string', 'max' => 255],
+            [['inquiry_datetime', 'remark', 'better_reason'], 'string', 'max' => 255],
             [
                 ['good_id', 'supplier_id', 'inquiry_datetime'],
                 'required',
@@ -112,6 +112,7 @@ class Inquiry extends ActiveRecord
             'remark'           => '询价备注',
             'sort'             => '排序',
             'is_better'        => '是否优选',
+            'better_reason'    => '优选理由',
             'is_newest'        => '是否最新询价',
             'is_priority'      => '是否优先询价',
             'is_deleted'       => '是否删除：0未删除 1已删除',

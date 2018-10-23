@@ -19,16 +19,17 @@ if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
     }
+    $model->inquiry_datetime = date('Y-m-d H:i:s');
 }
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
+//$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+//$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+//$adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-
+//foreach ($adminList as $key => $admin) {
+//    $admins[$admin->id] = $admin->username;
+//}
+$admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 ?>
 
 <div class="box">
@@ -64,7 +65,7 @@ foreach ($adminList as $key => $admin) {
 
     <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
 
-    <?= $form->field($model, 'is_priority')->dropDownList(Inquiry::$priority) ?>
+    <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 

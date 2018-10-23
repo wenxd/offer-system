@@ -39,10 +39,15 @@ foreach ($orderGoods as $v) {
 }
 
 ?>
+<style>
+    .color {
+        color : #5dcc6e;
+    }
+</style>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
@@ -66,16 +71,16 @@ foreach ($orderGoods as $v) {
                 <?php foreach ($goods as $key => $good):?>
                 <tr>
                     <td><?= in_array($good->id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$good->id} class='select_id'>" ?></td>
-                    <td><?= $good->goods_number?></td>
+                    <td><?= Html::a($good->goods_number, Url::to(['inquiry/index', 'InquirySearch[good_id]' => $good->id]))?></td>
                     <td><?= $good->description?></td>
                     <td><?= $good->description_en?></td>
                     <td><?= $good->original_company?></td>
                     <td><?= $good->original_company_remark?></td>
                     <td><?= $good->unit?></td>
                     <td class="number"><?= $order_goods_ids[$good->id]?></td>
-                    <td><?= Goods::$process[$good->is_process]?></td>
-                    <td><?= Goods::$special[$good->is_special]?></td>
-                    <td><?= Goods::$nameplate[$good->is_nameplate]?></td>
+                    <td class="addColor"><?= Goods::$process[$good->is_process]?></td>
+                    <td class="addColor"><?= Goods::$special[$good->is_special]?></td>
+                    <td class="addColor"><?= Goods::$nameplate[$good->is_nameplate]?></td>
                     <td><?= $good->updated_at?></td>
                     <td><?= $good->created_at?></td>
                     <td><?= $good->technique_remark?></td>
@@ -173,6 +178,12 @@ foreach ($orderGoods as $v) {
                 document.getElementById("orderinquiry-admin_id").disabled = true;
                 document.getElementById("orderinquiry-end_date").disabled = true;
             }
+
+            $('.addColor').each(function (i, e) {
+                if ($(this).text() == '是') {
+                    $(this).addClass('color');
+                }
+            })
         }
     });
 </script>
