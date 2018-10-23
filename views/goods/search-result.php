@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\Inquiry;
@@ -37,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>创建时间</th>
             </tr>
             <tr>
-                <td><?=$goods ? $goods->goods_number : ''?></td>
+                <td><?=$goods ? Html::a($goods->goods_number, Url::to(['goods/view', 'id' => $goods->id])) : ''?></td>
                 <td><?=$goods ? $goods->description : ''?></td>
                 <td><?=$goods ? $goods->description_en : ''?></td>
                 <td><?=$goods ? $goods->original_company : ''?></td>
