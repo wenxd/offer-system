@@ -206,7 +206,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="4"><?=Html::a('采购记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
+                <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号</th>
                 <th>单位</th>
