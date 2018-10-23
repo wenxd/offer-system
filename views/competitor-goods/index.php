@@ -11,7 +11,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\CompetitorGoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '竞争对手零件列表';
+$this->title = '竞争对手价格记录';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
