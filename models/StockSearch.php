@@ -66,9 +66,10 @@ class StockSearch extends Stock
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->goods_number) {
+        if ($this->goods_number || $this->is_emerg !== '') {
             $query->leftJoin('goods as a', 'a.id = stock.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+            $query->andFilterWhere(['like', 'a.is_emerg', $this->is_emerg]);
         }
         if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
@@ -84,7 +85,6 @@ class StockSearch extends Stock
             'stock.suggest_number'      => $this->suggest_number,
             'stock.high_number'         => $this->high_number,
             'stock.low_number'          => $this->low_number,
-            'stock.is_emerg'            => $this->is_emerg,
             'stock.sort'                => $this->sort,
             'stock.is_deleted'          => self::IS_DELETED_NO,
         ]);
