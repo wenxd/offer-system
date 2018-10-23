@@ -18,7 +18,17 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
-        <?= Bar::widget()?>
+        <?= Bar::widget([
+            'template' => '{create} {gen} {delete}',
+            'buttons' => [
+                'gen' => function () {
+                    return Html::a('<i class="fa fa-chrome"></i> 批量移库', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat stock-move',
+                    ]);
+                }
+            ]
+        ])?>
     </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
@@ -108,3 +118,66 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
     </div>
 </div>
+
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    var list = [];
+    $(document).ready(function () {
+        $('.stock-move').click(function (event) {
+            var flag = true;
+            $("input[name='selection[]']").each(function (i, e) {
+                if ($(e).is(':checked')) {
+                    flag = false;
+                    list.push($(e).val());
+                }
+            });
+            if (flag) {
+                layer.msg('请选择要移库的记录', {time:2000});
+                return false;
+            }
+
+            layer.open({
+                type: 1,
+                title: '修改地址',
+                skin: 'layui-layer-rim', //加上边框
+                area: ['500px', '240px'], //宽高
+                content: '<form class="form-horizontal">\n' +
+                '  <div class="form-group">\n' +
+                '    <label for="newAddress" class="col-sm-2 control-label">新库地址</label>\n' +
+                '    <div class="col-sm-10">\n' +
+                '      <input type="text" class="form-control" id="newAddress" placeholder="新库地址">\n' +
+                '    </div>\n' +
+                '  </div>\n' +
+                '  <div class="form-group">\n' +
+                '    <div class="col-sm-offset-2 col-sm-10">\n' +
+                '      <a class="btn btn-default" href="javascript:void(0)" onclick="sure()">确定</a>\n' +
+                '    </div>\n' +
+                '  </div>\n' +
+                '</form>'
+            });
+        });
+    });
+
+    function sure() {
+        var address = $('#newAddress').val();
+        if (!address) {
+            layer.msg('请输入新库地址', {time:2000});
+            return false;
+        }
+        $.ajax({
+            type:"post",
+            url:"?r=stock/address",
+            data:{list:list, address:address},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200) {
+                    window.location.reload();
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    }
+</script>

@@ -110,8 +110,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryTime ? Inquiry::$better[$inquiryTime->is_better] : ''?></td>
                 <td><?= $inquiryTime ? $inquiryTime->better_reason : ''?></td>
                 <td><?= $inquiryTime ? $inquiryTime->remark : ''?></td>
-                <td><?= $inquiryTime ? ($inquiryTime->order_id ? $inquiryTime->order->order_sn : '') : '' ?></td>
-                <td><?= $inquiryTime ? ($inquiryTime->order_inquiry_id ? $inquiryTime->orderInquiry->inquiry_sn : '') : '' ?></td>
+                <td><?= $inquiryTime ? Html::a($inquiryTime->order_id ? $inquiryTime->order->order_sn : '', $inquiryTime->order_id ? Url::to(['order/detail', 'id' => $inquiryTime->order_id]) : '') : '' ?></td>
+                <td><?= $inquiryTime ? Html::a($inquiryTime->order_inquiry_id ? $inquiryTime->orderInquiry->inquiry_sn : '', $inquiryTime->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryTime->order_inquiry_id]) : '') : '' ?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
@@ -130,8 +130,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryNew ? Inquiry::$better[$inquiryNew->is_better] : ''?></td>
                 <td><?= $inquiryNew ? $inquiryNew->better_reason : ''?></td>
                 <td><?= $inquiryNew ? $inquiryNew->remark : ''?></td>
-                <td><?= $inquiryNew ? ($inquiryNew->order_id ? $inquiryNew->order->order_sn : '') : '' ?></td>
-                <td><?= $inquiryNew ? ($inquiryNew->order_inquiry_id ? $inquiryNew->orderInquiry->inquiry_sn : '') : '' ?></td>
+                <td><?= $inquiryNew ? Html::a($inquiryNew->order_id ? $inquiryNew->order->order_sn : '', $inquiryNew->order_id ? Url::to(['order/detail', 'id' => $inquiryNew->order_id]) : '') : '' ?></td>
+                <td><?= $inquiryNew ? Html::a($inquiryNew->order_inquiry_id ? $inquiryNew->orderInquiry->inquiry_sn : '', $inquiryNew->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryNew->order_inquiry_id]) : '') : '' ?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
@@ -150,8 +150,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->better_reason : ''?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->remark : ''?></td>
-                <td><?= $inquiryBetter ? ($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '') : '' ?></td>
-                <td><?= $inquiryBetter ? ($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '') : '' ?></td>
+                <td><?= $inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
+                <td><?= $inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
@@ -164,7 +164,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>类型</th>
                 <th>零件号</th>
                 <th>单位</th>
-                <th>供应商</th>
                 <th>数量</th>
                 <th>税率</th>
                 <th>未税单价</th>
@@ -181,7 +180,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>库存记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td><?= $stock ? $stock->supplier->name : '' ?></td>
                 <td class="number"><?= $stock ? $stock->number : 0 ?></td>
                 <td><?= $stock ? $stock->tax_rate : 0 ?></td>
                 <td class="price"><?= $stock ? $stock->price : 0 ?></td>

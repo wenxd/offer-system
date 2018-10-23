@@ -54,4 +54,15 @@ class StockController extends BaseController
             ],
         ];
     }
+
+    public function actionAddress()
+    {
+        $params = Yii::$app->request->post();
+        $num = Stock::updateAll(['position' => $params['address']], ['id' => $params['list']]);
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '失败']);
+        }
+    }
 }
