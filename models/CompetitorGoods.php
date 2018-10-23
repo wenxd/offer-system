@@ -68,8 +68,8 @@ class CompetitorGoods extends ActiveRecord
     {
         return [
             'id'               => '自增id',
-            'goods_id'         => '商品ID',
-            'goods_number'     => '商品编号',
+            'goods_id'         => '零件ID',
+            'goods_number'     => '零件编号',
             'competitor_id'    => '竞争对手ID',
             'competitor_name'  => '竞争对手名称',
             'price'            => '未税价格',
