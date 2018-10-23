@@ -46,8 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$goods ? Goods::$special[$goods->is_special] : ''?></td>
                 <td><?=$goods ? Goods::$nameplate[$goods->is_nameplate] : ''?></td>
                 <td><?=$goods ? $goods->technique_remark : ''?></td>
-                <td><?=$goods ? $goods->updated_at : ''?></td>
-                <td><?=$goods ? $goods->created_at : ''?></td>
+                <td><?=$goods ? substr($goods->updated_at, 0, 10) : ''?></td>
+                <td><?=$goods ? substr($goods->created_at, 0, 10) : ''?></td>
             </tr>
             </thead>
         </table>
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></td>
                 <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
-                <td><?= $inquiryPrice ? $inquiryPrice->inquiry_datetime : '' ?></td>
+                <td><?= $inquiryPrice ? substr($inquiryPrice->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryPrice ? Inquiry::$better[$inquiryPrice->is_better] : ''?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->better_reason : ''?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->remark : ''?></td>
@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
                 <td><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></td>
                 <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
-                <td><?= $inquiryTime ? $inquiryTime->inquiry_datetime : '' ?></td>
+                <td><?= $inquiryTime ? substr($inquiryTime->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryTime ? Inquiry::$better[$inquiryTime->is_better] : ''?></td>
                 <td><?= $inquiryTime ? $inquiryTime->better_reason : ''?></td>
                 <td><?= $inquiryTime ? $inquiryTime->remark : ''?></td>
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
                 <td><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></td>
                 <td><?= $inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
-                <td><?= $inquiryNew ? $inquiryNew->inquiry_datetime : '' ?></td>
+                <td><?= $inquiryNew ? substr($inquiryNew->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryNew ? Inquiry::$better[$inquiryNew->is_better] : ''?></td>
                 <td><?= $inquiryNew ? $inquiryNew->better_reason : ''?></td>
                 <td><?= $inquiryNew ? $inquiryNew->remark : ''?></td>
@@ -145,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></td>
                 <td><?= $inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
-                <td><?= $inquiryBetter ? $inquiryBetter->inquiry_datetime : '' ?></td>
+                <td><?= $inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->better_reason : ''?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->remark : ''?></td>
@@ -227,8 +227,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></td>
                 <td></td>
                 <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchasePrice ? $purchasePrice->created_at : '' ?></td>
-                <td><?= $purchasePrice ? $purchasePrice->orderPurchase->updated_at : '' ?></td>
+                <td><?= $purchasePrice ? substr($purchasePrice->created_at, 0, 10) : '' ?></td>
+                <td><?= $purchasePrice ? substr($purchasePrice->orderPurchase->updated_at, 0, 10) : '' ?></td>
                 <td><?=$purchasePrice ? $purchasePrice->order->order_sn : ''?></td>
                 <td><?=$purchasePrice ? $purchasePrice->order_purchase_sn : ''?></td>
                 <td class="all_price"></td>
@@ -245,8 +245,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->inquiry->delivery_time : '' ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchaseDay ? $purchaseDay->created_at : '' ?></td>
-                <td><?= $purchaseDay ? $purchaseDay->orderPurchase->updated_at : '' ?></td>
+                <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
+                <td><?= $purchaseDay ? substr($purchaseDay->orderPurchase->updated_at,0, 10) : '' ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->order->order_sn : ''?></td>
                 <td><?= $purchaseDay ? $purchaseDay->order_purchase_sn : ''?></td>
                 <td class="all_price"></td>
@@ -263,8 +263,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->created_at : '' ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->updated_at : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->order->order_sn : ''?></td>
                 <td><?= $purchaseNew ? $purchaseNew->order_purchase_sn : ''?></td>
                 <td class="all_price"></td>
@@ -296,7 +296,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$competitorGoods ? $competitorGoods->price : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->tax_price : ''?></td>
                 <td></td>
-                <td><?=$competitorGoods ? $competitorGoods->offer_date : ''?></td>
+                <td><?=$competitorGoods ? substr($competitorGoods->offer_date, 0, 10) : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->remark : ''?></td>
             </tr>
             </thead>
