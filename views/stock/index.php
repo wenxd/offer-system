@@ -3,6 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\models\Goods;
 use app\models\Stock;
 use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
@@ -87,9 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'low_number',
             [
                 'attribute' => 'is_emerg',
-                'filter'    => Stock::$emerg,
+                'filter'    => Goods::$emerg,
                 'value'     => function ($model, $key, $index, $column) {
-                    return Stock::$emerg[$model->is_emerg];
+                    if ($model->goods) {
+                        return Goods::$emerg[$model->goods->is_emerg];
+                    } else {
+                        return '';
+                    }
                 }
             ],
             [
