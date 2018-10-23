@@ -212,6 +212,5 @@ class OrderPurchaseController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()], JSON_UNESCAPED_UNICODE);
         }
-
     }
 }

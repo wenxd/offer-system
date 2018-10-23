@@ -29,6 +29,10 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     const TYPE_INQUIRY  = '0';
     const TYPE_STOCK    = '1';
 
+    public static $purchase = [
+        self::IS_PURCHASE_NO  => '否',
+        self::IS_PURCHASE_YES => '是',
+    ];
     /**
      * {@inheritdoc}
      */
@@ -45,7 +49,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['order_purchase_id', 'order_purchase_sn'], 'string', 'max' => 255],
+            [['order_purchase_id', 'order_purchase_sn', 'goods_number', 'order_sn'], 'string', 'max' => 255],
         ];
     }
 
@@ -55,19 +59,21 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
-            'order_final_id' => '最终订单ID',
+            'id'                => 'ID',
+            'order_id'          => '订单ID',
+            'order_sn'          => '订单号',
+            'order_final_id'    => '最终订单ID',
             'order_purchase_id' => '采购订单ID',
             'order_purchase_sn' => '采购订单号',
-            'goods_id' => '零件ID',
-            'type' => '关联类型  0询价  1库存',
-            'number' => '采购数量',
-            'relevance_id' => '关联ID（询价或库存）',
-            'is_purchase' => '是否采购了 0否  1是',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'goods_id'          => '零件ID',
+            'goods_number'      => '零件号',
+            'type'              => '关联类型  0询价  1库存',
+            'number'            => '采购数量',
+            'relevance_id'      => '关联ID（询价或库存）',
+            'is_purchase'       => '是否采购',
+            'is_deleted'        => '是否删除：0未删除 1已删除',
+            'updated_at'        => '更新时间',
+            'created_at'        => '创建时间',
         ];
     }
 
