@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\InquiryGoods;
 use app\models\PurchaseGoods;
 use Yii;
 use app\actions;

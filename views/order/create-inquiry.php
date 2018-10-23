@@ -32,6 +32,12 @@ foreach ($adminList as $key => $admin) {
 
 $model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
 $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
+
+$order_goods_ids = [];
+foreach ($orderGoods as $v) {
+    $order_goods_ids[$v->goods_id] = $v->number;
+}
+
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -46,6 +52,7 @@ $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
                     <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>单位</th>
+                    <th>数量</th>
                     <th>是否加工</th>
                     <th>是否特制</th>
                     <th>是否铭牌</th>
@@ -65,6 +72,7 @@ $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
                     <td><?= $good->original_company?></td>
                     <td><?= $good->original_company_remark?></td>
                     <td><?= $good->unit?></td>
+                    <td class="number"><?= $order_goods_ids[$good->id]?></td>
                     <td><?= Goods::$process[$good->is_process]?></td>
                     <td><?= Goods::$special[$good->is_special]?></td>
                     <td><?= Goods::$nameplate[$good->is_nameplate]?></td>
@@ -127,10 +135,13 @@ $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
                 layer.msg('请最少选择一个零件', {time:2000});
                 return false;
             }
-            var goods_ids = [];
+            var goods_info = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
-                    goods_ids.push($(element).val());
+                    var item = {};
+                    item.goods_id = $(element).val();
+                    item.number   = $(element).parent().parent().find('.number').text();
+                    goods_info.push(item);
                 }
             });
 
@@ -142,7 +153,7 @@ $model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
             $.ajax({
                 type:"post",
                 url:'?r=order-inquiry/save-order',
-                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_ids:goods_ids},
+                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>创建时间</th>
             </tr>
             <tr>
-                <td><?=$goods ? Html::a($goods->goods_number, Url::to(['goods/view', 'id' => $goods->id])) : ''?></td>
+                <td><?=$goods ? $goods->goods_number : ''?></td>
                 <td><?=$goods ? $goods->description : ''?></td>
                 <td><?=$goods ? $goods->description_en : ''?></td>
                 <td><?=$goods ? $goods->original_company : ''?></td>
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
-                <td class="number"></td>
+                <td class="number">1</td>
                 <td><?= $inquiryPrice ? $inquiryPrice->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
-                <td class="number">4</td>
+                <td class="number">1</td>
                 <td><?= $inquiryTime ? $inquiryTime->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryTime ? $inquiryTime->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
-                <td class="number">4</td>
+                <td class="number">1</td>
                 <td><?= $inquiryNew ? $inquiryNew->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryNew ? $inquiryNew->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
-                <td class="number">4</td>
+                <td class="number">1</td>
                 <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
                 <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
@@ -218,7 +218,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税总价</th>
             </tr>
             <tr class="inquiry_list">
-                <td>价格最低</td>
+                <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
@@ -230,13 +230,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchasePrice ? substr($purchasePrice->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchasePrice ? substr($purchasePrice->orderPurchase->updated_at, 0, 10) : '' ?></td>
-                <td><?=$purchasePrice ? $purchasePrice->order->order_sn : ''?></td>
-                <td><?=$purchasePrice ? $purchasePrice->order_purchase_sn : ''?></td>
+                <td><?=$purchasePrice ? Html::a($purchasePrice->order->order_sn, Url::to(['order/detail', 'id' => $purchasePrice->order_id])) : ''?></td>
+                <td><?=$purchasePrice ? Html::a($purchasePrice->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchasePrice->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>货期最短</td>
+                <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
@@ -248,13 +248,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->orderPurchase->updated_at,0, 10) : '' ?></td>
-                <td><?= $purchaseDay ? $purchaseDay->order->order_sn : ''?></td>
-                <td><?= $purchaseDay ? $purchaseDay->order_purchase_sn : ''?></td>
+                <td><?= $purchaseDay ? Html::a($purchaseDay->order->order_sn, Url::to(['order/detail', 'id' => $purchaseDay->order_id])) : ''?></td>
+                <td><?= $purchaseDay ? Html::a($purchaseDay->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseDay->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
             <tr class="inquiry_list">
-                <td>最新采购</td>
+                <td>最新</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
@@ -266,8 +266,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->order->order_sn : ''?></td>
-                <td><?= $purchaseNew ? $purchaseNew->order_purchase_sn : ''?></td>
+                <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
+                <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>

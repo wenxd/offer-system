@@ -417,15 +417,17 @@ class OrderController extends BaseController
         if (!$order) {
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
-        $goods_ids     = json_decode($order->goods_ids, true);
-        $goods         = Goods::find()->where(['id' => $goods_ids])->all();
-
+        $goods_ids            = json_decode($order->goods_ids, true);
+        $goods                = Goods::find()->where(['id' => $goods_ids])->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+        $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->all();
 
         $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;
         $data['model']        = new OrderInquiry();
         $data['order']        = $order;
+        $data['orderGoods']   = $orderGoods;
+
         return $this->render('create-inquiry', $data);
     }
 
