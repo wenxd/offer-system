@@ -52,6 +52,7 @@ foreach ($adminList as $key => $admin) {
                 <th>含率总价</th>
                 <th>是否有采购单</th>
                 <th>采购单号</th>
+                <th>订单需求数量</th>
                 <th>数量</th>
             </tr>
             </thead>
@@ -60,7 +61,7 @@ foreach ($adminList as $key => $admin) {
             <tr class="order_final_list">
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
 data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
-                <td><?=$item->goods->goods_number?></td>
+                <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
@@ -81,6 +82,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="all_tax_price"></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
+                <td><?=$orderGoods[$item->goods_id]->number?></td>
                 <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : '<input type="number" size="4" class="number" min="1">'?></td>
             </tr>
             <?php endforeach;?>
