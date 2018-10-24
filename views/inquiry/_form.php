@@ -69,9 +69,9 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 
     <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
-    <?= $form->field($model, 'order_id')->textInput(['maxlength' => true])->label('订单号') ?>
+    <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->label('订单号') ?>
 
-    <?= $form->field($model, 'order_inquiry_id')->textInput(['maxlength' => true])->label('询价单号') ?>
+    <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->label('询价单号') ?>
 
     </div>
 
@@ -106,5 +106,28 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         var price = tax_price / (1 + tax/100);
         $("#inquiry-price").attr("value",price.toFixed(2));
         $("#inquiry-price").val(price.toFixed(2));
+    });
+
+    var goods_id = $('#inquiry-good_id').val();
+    getGoodsInfo(goods_id);
+    function getGoodsInfo(goods_id) {
+        $.ajax({
+            type:"get",
+            url:'?r=goods/get-info',
+            data:{goods_id:goods_id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    console.log(res.data);
+                    $('#inquiry-better_reason').val(res.data.goods.original_company);
+                    $('#inquiry-order_id').val(res.data.orderGoods.order_id);
+                    $('#inquiry-order_inquiry_id').val(res.data.orderInquiry.id);
+                }
+            }
+        });
+    }
+    $('#inquiry-good_id').change(function (e) {
+        goods_id = $(this).val();
+        getGoodsInfo(goods_id);
     });
 </script>

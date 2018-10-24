@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\InquiryGoods;
+use app\models\OrderGoods;
+use app\models\OrderInquiry;
 use app\models\PurchaseGoods;
 use app\models\StockLog;
 use Yii;
@@ -176,5 +178,21 @@ class GoodsController extends BaseController
         $data['average']          = $average;
 
         return $this->render('search-result', $data);
+    }
+
+    public function actionGetInfo()
+    {
+        $goods_id = Yii::$app->request->get('goods_id');
+
+        $goods        = Goods::findOne($goods_id);
+        $orderGoods   = OrderGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->asArray()->one();
+        $orderInquiry = OrderInquiry::find()->where(['order_id' => $orderGoods['order_id']])->orderBy('created_at Desc')->asArray()->one();
+
+        $data                 = [];
+        $data['goods']        = $goods->toArray();
+        $data['orderGoods']   = $orderGoods;
+        $data['orderInquiry'] = $orderInquiry;
+
+        return json_encode(['code' => 200, 'data' => $data]);
     }
 }
