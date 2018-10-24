@@ -47,12 +47,12 @@ class OrderGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
-            'goods_id' => '零件ID',
-            'number' => '数量',
-            'is_out' => '是否出库 0否 1是',
-            'out_time' => '出库时间',
+            'id'         => 'ID',
+            'order_id'   => '订单ID',
+            'goods_id'   => '零件ID',
+            'number'     => '数量',
+            'is_out'     => '是否出库 0否 1是',
+            'out_time'   => '出库时间',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',
             'created_at' => '创建时间',

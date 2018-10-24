@@ -55,7 +55,7 @@ class FinalGoods extends \yii\db\ActiveRecord
             'goods_id' => '零件ID',
             'type' => '关联类型  0询价  1库存',
             'relevance_id' => '关联ID',
-            'is_purchase' => '是否有采购单 0否  1是',
+            'is_purchase' => '有采购单 0否  1是',
             'purchase_id' => '采购单ID',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',

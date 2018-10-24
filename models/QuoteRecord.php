@@ -96,7 +96,7 @@ class QuoteRecord extends ActiveRecord
             'order_id'         => '订单ID',
             'order_type'       => '订单类型 1:报价单  2询价单',
             'remark'           => '询价备注',
-            'status'           => '是否询价',
+            'status'           => '询价',
             'offer_date'       => '交货期',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',

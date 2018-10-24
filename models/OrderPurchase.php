@@ -68,7 +68,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'goods_info'     => '零件信息 json，包括ID',
             'end_date'       => '采购截止时间',
             'admin_id'       => '采购员ID',
-            'is_purchase'    => '是否完成采购',
+            'is_purchase'    => '完成采购',
             'is_deleted'     => '是否删除：0未删除 1已删除',
             'updated_at'     => '更新时间',
             'created_at'     => '创建时间',

@@ -70,7 +70,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
             'type'              => '关联类型  0询价  1库存',
             'number'            => '采购数量',
             'relevance_id'      => '关联ID（询价或库存）',
-            'is_purchase'       => '是否采购',
+            'is_purchase'       => '采购',
             'is_deleted'        => '是否删除：0未删除 1已删除',
             'updated_at'        => '更新时间',
             'created_at'        => '创建时间',

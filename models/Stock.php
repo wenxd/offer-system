@@ -99,7 +99,7 @@ class Stock extends ActiveRecord
             'high_number'      => '高储',
             'low_number'       => '低储',
             'sort'             => '排序',
-            'is_emerg'         => '是否紧急',
+            'is_emerg'         => '紧急',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',

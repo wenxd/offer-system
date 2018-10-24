@@ -60,7 +60,7 @@ class OrderInquiry extends \yii\db\ActiveRecord
             'order_sn'   => '订单号',
             'goods_info' => '零件信息 json，包括ID，是否询价完成',
             'end_date'   => '询价截止时间',
-            'is_inquiry' => '是否询价',
+            'is_inquiry' => '询价',
             'admin_id'   => '询价员ID',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',

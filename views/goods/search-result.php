@@ -216,6 +216,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>货期</th>
+                <th>实际货期</th>
                 <th>采购员</th>
                 <th>采购时间</th>
                 <th>入库时间</th>
@@ -235,6 +236,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
                 <td class="stressColor"><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
