@@ -1,10 +1,12 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Goods;
 use app\models\Stock;
+use app\models\AuthAssignment;
 use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
@@ -16,7 +18,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
 $isShow    = in_array($userId, $adminIds);
@@ -87,15 +89,15 @@ $isShow    = in_array($userId, $adminIds);
             ],
             [
                 'attribute' => 'tax_rate',
-                'visible'   => $isShow,
+                'visible'   => !$isShow,
             ],
             [
                 'attribute' => 'price',
-                'visible'   => $isShow,
+                'visible'   => !$isShow,
             ],
             [
                 'attribute' => 'tax_price',
-                'visible'   => $isShow,
+                'visible'   => !$isShow,
             ],
             'position',
             [
