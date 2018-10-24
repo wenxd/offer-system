@@ -14,6 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
 
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
+$isShow = in_array($userId, $adminIds);
+
 ?>
 
 <div class="box table-responsive">
@@ -29,10 +34,12 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                 <th>原厂家备注</th>
                 <th>单位</th>
                 <th>技术备注</th>
+                <?php if (!$isShow):?>
                 <th>是否加工</th>
                 <th>是否特制</th>
                 <th>是否铭牌</th>
                 <th>图片</th>
+                <?php endif;?>
                 <th>数量</th>
                 <th>是否出库</th>
                 <th>操作</th>
@@ -48,10 +55,12 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                     <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->unit?></td>
                     <td><?=$item->goods->technique_remark?></td>
+                    <?php if (!$isShow):?>
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
+                    <?php endif;?>
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
                     <td>
