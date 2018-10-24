@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\InquiryGoods;
 use app\models\PurchaseGoods;
+use app\models\StockLog;
 use Yii;
 use app\actions;
 use app\models\Stock;
@@ -11,6 +12,7 @@ use app\models\Goods;
 use app\models\GoodsSearch;
 use app\models\Inquiry;
 use app\models\CompetitorGoods;
+use yii\helpers\ArrayHelper;
 
 /**
  * GoodsController implements the CRUD actions for Goods model.
@@ -134,6 +136,28 @@ class GoodsController extends BaseController
         //竞争对手
         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
+
+        //最后三条入库的
+
+        $stockLog = StockLog::find()->where(['type' => StockLog::TYPE_IN, 'goods_id' => $goods_id])
+            ->orderBy('operate_time Desc')->limit(3)->all();
+        $order_ids = ArrayHelper::getColumn($stockLog, 'order_id');
+        $order_purchase_ids = ArrayHelper::getColumn($stockLog, 'order_purchase_id');
+
+        $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $order_ids, 'order_purchase_id' => $order_purchase_ids, 'goods_id' => $goods_id])->all();
+
+        $inquiry_ids = [];
+        $stock_ids   = [];
+        foreach ($purchaseGoods as $key => $item) {
+            if ($item->type) {
+                $stock_ids[] = $item->relevance_id;
+            } else {
+                $inquiry_ids[] = $item->relevance_id;
+            }
+        }
+
+        $average = Inquiry::find()->where(['id' => $inquiry_ids])->average('price');
+
         $data = [];
         $data['goods']            = $goods ? $goods : [];
         $data['inquiryPrice']     = $inquiryPriceQuery;
@@ -147,6 +171,9 @@ class GoodsController extends BaseController
         $data['purchaseNew']      = $purchaseNew;
 
         $data['competitorGoods']  = $competitorGoods;
+        $data['competitorGoods']  = $competitorGoods;
+
+        $data['average']          = $average;
 
         return $this->render('search-result', $data);
     }

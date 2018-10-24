@@ -191,7 +191,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="number"><?= $stock ? $stock->number : 0 ?></td>
                 <td><?= $stock ? $stock->tax_rate : 0 ?></td>
-                <td class="price"><?= $stock ? $stock->price : 0 ?></td>
+                <td class="price"><?= $stock ? number_format($average, 2, '.', '') : ''?></td>
                 <td class="tax_price"><?= $stock ? $stock->tax_price : 0 ?></td>
                 <td><?= $stock ? $stock->position : 0 ?></td>
                 <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
