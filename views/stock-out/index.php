@@ -28,18 +28,19 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'columns' => [
                 'id',
-                [
-                    'attribute' => 'customer_name',
-                    'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class'=>'form-control']),
-                    'value'     => function ($model, $key, $index, $column) {
-                        if ($model->customer) {
-                            return $model->customer->name;
-                        }
-                    }
-                ],
-                'order_sn',
+//                [
+//                    'attribute' => 'customer_name',
+//                    'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class'=>'form-control']),
+//                    'value'     => function ($model, $key, $index, $column) {
+//                        if ($model->customer) {
+//                            return $model->customer->name;
+//                        }
+//                    }
+//                ],
+//                'order_sn',
                 [
                     'attribute' => 'provide_date',
+                    'label'     => '订单交货日期',
                     'filter'    => DateRangePicker::widget([
                         'name'  => 'OrderSearch[provide_date]',
                         'value' => Yii::$app->request->get('OrderSearch')['provide_date'],
@@ -61,14 +62,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => Yii::$app->request->get('OrderSearch')['created_at'],
                     ])
                 ],
-                [
-                    'attribute' => 'status',
-                    'format'    => 'raw',
-                    'filter'    => Order::$status,
-                    'value'     => function ($model, $key, $index, $column) {
-                        return Order::$status[$model->status];
-                    }
-                ],
+//                [
+//                    'attribute' => 'status',
+//                    'format'    => 'raw',
+//                    'filter'    => Order::$status,
+//                    'value'     => function ($model, $key, $index, $column) {
+//                        return Order::$status[$model->status];
+//                    }
+//                ],
                 [
                     'attribute' => 'order_type',
                     'format'    => 'raw',
