@@ -15,6 +15,11 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId    = Yii::$app->user->identity->id;
+$isShow    = in_array($userId, $adminIds);
 ?>
 <style>
     .number {
@@ -64,19 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'supplier_id',
-            [
-                'attribute' => 'supplier_name',
-                'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'supplier_name',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->supplier) {
-                        return $model->supplier->name;
-                    } else {
-                        return '';
-                    }
-                }
-            ],
             [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -93,9 +85,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('StockSearch')['created_at'],
                 ])
             ],
-            'tax_rate',
-            'price',
-            'tax_price',
+            [
+                'attribute' => 'tax_rate',
+                'visible'   => $isShow,
+            ],
+            [
+                'attribute' => 'price',
+                'visible'   => $isShow,
+            ],
+            [
+                'attribute' => 'tax_price',
+                'visible'   => $isShow,
+            ],
             'position',
             [
                 'attribute' => 'number',
