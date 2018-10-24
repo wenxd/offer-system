@@ -177,14 +177,16 @@ class OrderFinalController extends BaseController
 
     public function actionDetail($id)
     {
-        $orderFinal = OrderFinal::findOne($id);
-        $order = Order::findOne($orderFinal->order_id);
-        $finalGoods = FinalGoods::findAll(['order_final_id' => $id]);
+        $orderFinal   = OrderFinal::findOne($id);
+        $order        = Order::findOne($orderFinal->order_id);
+        $finalGoods   = FinalGoods::findAll(['order_final_id' => $id]);
         $inquiryGoods = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
         $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $order->id, 'order_final_id' => $id])->indexBy('goods_id')->all();
-
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+        
         $data = [];
         $data['order']         = $order;
+        $data['orderGoods']    = $orderGoods;
         $data['orderFinal']    = $orderFinal;
         $data['finalGoods']    = $finalGoods;
         $data['inquiryGoods']  = $inquiryGoods;
