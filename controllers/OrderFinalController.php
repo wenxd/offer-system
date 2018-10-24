@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\FinalGoods;
 use app\models\InquiryGoods;
 use app\models\Order;
+use app\models\OrderGoods;
 use app\models\OrderFinalQuoteSearch;
 use app\models\OrderPurchase;
 use app\models\PurchaseGoods;
