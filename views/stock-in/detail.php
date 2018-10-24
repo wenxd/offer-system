@@ -12,15 +12,13 @@ use app\models\AuthAssignment;
 $this->title = '入库管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
+$userId   = Yii::$app->user->identity->id;
+
+$isShow = in_array($userId, $adminIds);
 
 ?>
 
@@ -37,6 +35,7 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                 <th>原厂家备注</th>
                 <th>单位</th>
                 <th>技术备注</th>
+                <?php if (!$isShow):?>
                 <th>是否加工</th>
                 <th>是否特制</th>
                 <th>是否铭牌</th>
@@ -48,6 +47,7 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                 <th>货期(天)</th>
                 <th>未率总价</th>
                 <th>含率总价</th>
+                <?php endif;?>
                 <th>数量</th>
                 <th>采购状态</th>
                 <th>是否入库</th>
@@ -64,6 +64,7 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                     <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->unit?></td>
                     <td><?=$item->goods->technique_remark?></td>
+                    <?php if (!$isShow):?>
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
@@ -75,6 +76,7 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
                     <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
+                    <?php endif;?>
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
