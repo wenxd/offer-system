@@ -24,6 +24,20 @@ class Supplier extends ActiveRecord
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
 
+    const IS_CONFIRM_NO    = '0';
+    const IS_CONFIRM_YES   = '1';
+
+    public static $confirm = [
+        self::IS_CONFIRM_NO  => '否',
+        self::IS_CONFIRM_YES => '是',
+    ];
+
+    public static $grade = [
+        '1' => '一级',
+        '2' => '二级',
+        '3' => '三级',
+    ];
+
     public function behaviors()
     {
         return [
@@ -55,9 +69,9 @@ class Supplier extends ActiveRecord
     public function rules()
     {
         return [
-            [['sort', 'is_deleted'], 'integer'],
+            [['sort', 'is_deleted', 'is_confirm'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name', 'mobile', 'telephone', 'email'], 'string', 'max' => 255],
+            [['name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'string', 'max' => 255],
             [
                 ['name', 'mobile', 'email'],
                 'required',
@@ -74,15 +88,19 @@ class Supplier extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '自增id',
-            'name' => '供应商名称',
-            'mobile' => '供应商电话',
-            'telephone' => '供应商座机',
-            'email' => '供应商邮箱',
-            'sort' => '排序',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'id'                   => '自增id',
+            'name'                 => '供应商名称',
+            'mobile'               => '供应商电话',
+            'telephone'            => '供应商座机',
+            'email'                => '供应商邮箱',
+            'sort'                 => '排序',
+            'grade'                => '评级',
+            'grade_reason'         => '评级理由',
+            'advantage_product'    => '优势产品',
+            'is_confirm'           => '是否确认',
+            'is_deleted'           => '是否删除：0未删除 1已删除',
+            'updated_at'           => '更新时间',
+            'created_at'           => '创建时间',
         ];
     }
 
@@ -96,12 +114,6 @@ class Supplier extends ActiveRecord
                 return false;
             }
         }
-
-        if (!$insert) {
-            Stock::updateAll(['supplier_name' => $this->name], ['supplier_id' => $this->id]);
-            Inquiry::updateAll(['supplier_name' => $this->name], ['supplier_id' => $this->id]);
-        }
-
         return parent::beforeSave($insert);
     }
 
@@ -126,4 +138,5 @@ class Supplier extends ActiveRecord
         }
         return $return;
     }
+
 }

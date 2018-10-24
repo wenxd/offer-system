@@ -18,9 +18,9 @@ class SupplierSearch extends Supplier
     public function rules()
     {
         return [
-            [['id', 'sort', 'is_deleted'], 'integer'],
-            [['name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at'], 'safe'],
-            [['id', 'name', 'mobile', 'telephone', 'email'], 'trim']
+            [['id', 'sort', 'is_deleted', 'is_confirm'], 'integer'],
+            [['name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade', 'grade_reason', 'advantage_product'], 'safe'],
+            [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'trim']
         ];
     }
 
@@ -66,15 +66,19 @@ class SupplierSearch extends Supplier
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'sort' => $this->sort,
+            'id'         => $this->id,
+            'sort'       => $this->sort,
             'is_deleted' => self::IS_DELETED_NO,
+            'is_confirm' => $this->is_confirm,
+            'grade'      => $this->grade,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'telephone', $this->telephone])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'grade_reason', $this->email])
+            ->andFilterWhere(['like', 'advantage_product', $this->email]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

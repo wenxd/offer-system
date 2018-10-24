@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use app\models\Supplier;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
@@ -21,6 +22,15 @@ use yii\helpers\Url;
         <?= $form->field($model, 'telephone')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'grade')->dropDownList(Supplier::$grade) ?>
+
+        <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
+
     </div>
 
     <div class="box-footer">

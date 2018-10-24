@@ -20,6 +20,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'mobile',
             'telephone',
             'email',
+            [
+                'attribute' => 'grade',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    return $model->grade ? Supplier::$grade[$model->grade] : '';
+                }
+            ],
+            'grade_reason',
+            'advantage_product',
+            [
+                'attribute' => 'is_confirm',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    return Supplier::$confirm[$model->is_confirm];
+                }
+            ],
             'updated_at',
             'created_at',
         ],
