@@ -23,6 +23,9 @@ use Yii;
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
+    public $goods_number;
+    public $order_sn;
+
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
 
@@ -75,6 +78,13 @@ class PurchaseGoods extends \yii\db\ActiveRecord
             'updated_at'        => '更新时间',
             'created_at'        => '创建时间',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        unset($this->goods_number);
+
+        return parent::beforeSave($insert);
     }
 
     public function getGoods()

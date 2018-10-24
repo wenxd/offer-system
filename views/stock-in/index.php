@@ -101,11 +101,11 @@ foreach ($adminList as $key => $admin) {
                 }
             ],
             [
-                'attribute' => 'is_purchase',
+                'attribute' => 'is_stock',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$purchase,
+                'filter'    => OrderPurchase::$stock,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$purchase[$model->is_purchase];
+                    return OrderPurchase::$stock[$model->is_stock];
                 }
             ],
             [

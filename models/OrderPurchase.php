@@ -29,6 +29,14 @@ class OrderPurchase extends \yii\db\ActiveRecord
         self::IS_PURCHASE_YES  => '是',
     ];
 
+    const IS_STOCK_NO  = '0';
+    const IS_STOCK_YES = '1';
+
+    public static $stock = [
+        self::IS_STOCK_NO   => '否',
+        self::IS_STOCK_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -43,7 +51,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_deleted'], 'integer'],
+            [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
             [['end_date'], 'required'],
             [['end_date', 'updated_at', 'created_at', 'agreement_date'], 'safe'],
             [['purchase_sn'], 'string', 'max' => 255],
@@ -69,6 +77,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'end_date'       => '采购截止时间',
             'admin_id'       => '采购员ID',
             'is_purchase'    => '完成采购',
+            'is_stock'       => '入库',
             'is_deleted'     => '是否删除：0未删除 1已删除',
             'updated_at'     => '更新时间',
             'created_at'     => '创建时间',

@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php if (!$item->is_inquiry):?>
                             <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                         <?php endif;?>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                     </td>
                 </tr>
                 <?php endforeach;?>

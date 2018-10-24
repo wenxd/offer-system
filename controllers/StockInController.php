@@ -91,6 +91,12 @@ class StockInController extends BaseController
                 $stock->number      = 0;
                 $stock->save();
             }
+            $purchaseCount = PurchaseGoods::find()->where(['order_purchase_id' => $params['order_purchase_id']])->count();
+            $stockCount    = StockLog::find()->where(['order_purchase_id' => $params['order_purchase_id']])->count();
+            if ($purchaseCount == $stockCount) {
+                $orderPurchase->is_stock = OrderPurchase::IS_STOCK_YES;
+                $orderPurchase->save();
+            }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
             if ($res) {
                 return json_encode(['code' => 200, 'msg' => '入库成功']);
