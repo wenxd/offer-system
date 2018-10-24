@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderPurchase;
+use yii\helpers\ArrayHelper;
 
 /**
  * OrderPurchaseSearch represents the model behind the search form of `app\models\OrderPurchase`.
@@ -44,7 +45,14 @@ class OrderPurchaseSearch extends OrderPurchase
      */
     public function search($params)
     {
-        $query = OrderPurchase::find();
+        $userId   = Yii::$app->user->identity->id;
+        $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        if (in_array($userId, $adminIds)) {
+            $query = static::find()->where(['is_purchase' => static::IS_PURCHASE_NO]);
+        } else {
+            $query = static::find();
+        }
 
         // add conditions that should always apply here
 

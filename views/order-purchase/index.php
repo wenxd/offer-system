@@ -25,7 +25,7 @@ $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
-
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-body">
@@ -35,9 +35,18 @@ foreach ($adminList as $key => $admin) {
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'is_purchase',
+                'format'    => 'raw',
+                'filter'    => OrderPurchase::$purchase,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPurchase::$purchase[$model->is_purchase];
+                }
+            ],
             'purchase_sn',
             [
                 'attribute' => 'order_sn',
+                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
@@ -50,6 +59,7 @@ foreach ($adminList as $key => $admin) {
             ],
             [
                 'attribute' => 'order_final_sn',
+                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_final_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
@@ -92,14 +102,6 @@ foreach ($adminList as $key => $admin) {
                     if ($model->admin) {
                         return $model->admin->username;
                     }
-                }
-            ],
-            [
-                'attribute' => 'is_purchase',
-                'format'    => 'raw',
-                'filter'    => OrderPurchase::$purchase,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$purchase[$model->is_purchase];
                 }
             ],
             [
