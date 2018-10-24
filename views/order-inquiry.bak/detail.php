@@ -31,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th><input type="checkbox" class="select_all"></th>
                         <th>零件ID</th>
                         <th>零件号</th>
-                        <th>是否最新</th>
-                        <th>是否优选</th>
+                        <th>最新</th>
+                        <th>优选</th>
                         <th>供应商ID</th>
                         <th>供应商名称</th>
                         <th>商品类型</th>
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>交货期</th>
                         <th>询价备注</th>
                         <th>金额</th>
-                        <th>是否询价</th>
+                        <th>询价</th>
                         <th>操作</th>
                     </tr>
                 </thead>

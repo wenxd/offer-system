@@ -67,8 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th>原厂家</th>
                             <th>单位</th>
                             <th>税率</th>
-                            <th>是否加工</th>
-                            <th>是否特制</th>
+                            <th>加工</th>
+                            <th>特制</th>
                             <th>图片</th>
                             <th>数量</th>
                         </tr>

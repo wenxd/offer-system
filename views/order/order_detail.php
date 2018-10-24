@@ -37,8 +37,8 @@ if (!$model->id) {
                     <tr>
                         <th><input type="checkbox" name="select_all" class="select_all"></th>
                         <th>零件号</th>
-                        <th>是否最新</th>
-                        <th>是否优选</th>
+                        <th>最新</th>
+                        <th>优选</th>
                         <th>商品类型</th>
                         <th style="width: 150px;">报价金额</th>
                         <th>库存数量</th>

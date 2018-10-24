@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_process',
-                'label'     => '是否加工',
+                'label'     => '加工',
                 'filter'    => Goods::$process,
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {

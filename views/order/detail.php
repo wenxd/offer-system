@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>订单号</th>
                 <th>询价单号</th>
-                <th>是否询价完成</th>
+                <th>询价完成</th>
             </tr>
             <?php foreach ($orderInquiry as $inquiry):?>
             <tr>

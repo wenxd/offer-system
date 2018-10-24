@@ -30,9 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
-                    <th>是否加工</th>
-                    <th>是否特制</th>
-                    <th>是否铭牌</th>
+                    <th>加工</th>
+                    <th>特制</th>
+                    <th>铭牌</th>
                     <th>技术备注</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>货期</th>
                     <th>询价员</th>
                     <th>询价时间</th>
-                    <th>是否优选</th>
+                    <th>优选</th>
                     <th>优选理由</th>
                     <th>备注</th>
                     <th>订单号</th>
@@ -191,7 +191,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>库存位置</th>
-                    <th>是否紧急</th>
+                    <th>紧急</th>
                     <th>建议库存</th>
                     <th>高储</th>
                     <th>低储</th>

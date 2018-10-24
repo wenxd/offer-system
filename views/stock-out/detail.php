@@ -35,13 +35,13 @@ $isShow = in_array($userId, $adminIds);
                 <th>单位</th>
                 <th>技术备注</th>
                 <?php if (!$isShow):?>
-                <th>是否加工</th>
-                <th>是否特制</th>
-                <th>是否铭牌</th>
+                <th>加工</th>
+                <th>特制</th>
+                <th>铭牌</th>
                 <th>图片</th>
                 <?php endif;?>
                 <th>数量</th>
-                <th>是否出库</th>
+                <th>出库</th>
                 <th>操作</th>
             </tr>
             </thead>

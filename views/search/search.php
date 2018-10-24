@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>技术备注</th>
-                    <th>是否加工</th>
+                    <th>加工</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
                 </tr>
@@ -56,8 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                     <tr>
                         <th>零件号</th>
-                        <th>是否最新</th>
-                        <th>是否优选</th>
+                        <th>最新</th>
+                        <th>优选</th>
                         <th>商品类型</th>
                         <th>税率</th>
                         <th>未税价格</th>

@@ -38,9 +38,9 @@ foreach ($adminList as $key => $admin) {
                 <th>原厂家备注</th>
                 <th>单位</th>
                 <th>技术备注</th>
-                <th>是否加工</th>
-                <th>是否特制</th>
-                <th>是否铭牌</th>
+                <th>加工</th>
+                <th>特制</th>
+                <th>铭牌</th>
                 <th>图片</th>
                 <th>供应商</th>
                 <th>税率</th>

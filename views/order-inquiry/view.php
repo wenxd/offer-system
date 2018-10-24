@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>铭牌照片</th>
                 <th>加工照片</th>
                 <th>数量</th>
-                <th>是否询价</th>
+                <th>询价</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
