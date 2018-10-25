@@ -44,6 +44,33 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderPurchase::$stock[$model->is_stock];
                 }
             ],
+            [
+                'attribute' => 'is_advancecharge',
+                'label'     => '预付款完成',
+                'format'    => 'raw',
+                'filter'    => OrderPurchase::$advance,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPurchase::$advance[$model->is_advancecharge];
+                }
+            ],
+            [
+                'attribute' => 'is_payment',
+                'label'     => '全单付款完成',
+                'format'    => 'raw',
+                'filter'    => OrderPurchase::$payment,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPurchase::$payment[$model->is_payment];
+                }
+            ],
+            [
+                'attribute' => 'is_bill',
+                'label'     => '收到发票',
+                'format'    => 'raw',
+                'filter'    => OrderPurchase::$bill,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPurchase::$bill[$model->is_bill];
+                }
+            ],
             'purchase_sn',
             [
                 'attribute' => 'order_sn',
