@@ -48,9 +48,9 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'is_advancecharge',
                 'label'     => '预付款完成',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$advance,
+                'filter'    => OrderPurchase::$advanceCharge,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$advance[$model->is_advancecharge];
+                    return OrderPurchase::$advanceCharge[$model->is_advancecharge];
                 }
             ],
             [
