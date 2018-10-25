@@ -48,4 +48,60 @@ class FinancialController extends BaseController
 
         return $this->render('detail', $data);
     }
+
+    public function actionAddRemark()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderPurchase = OrderPurchase::findOne($params['id']);
+        $orderPurchase->financial_remark = $params['remark'];
+
+        if ($orderPurchase->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
+    }
+
+    public function actionChangeAdvance()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderPurchase = OrderPurchase::findOne($params['id']);
+        $orderPurchase->is_advancecharge = OrderPurchase::IS_ADVANCECHARGE_YES;
+
+        if ($orderPurchase->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
+    }
+
+    public function actionChangePayment()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderPurchase = OrderPurchase::findOne($params['id']);
+        $orderPurchase->is_payment = OrderPurchase::IS_PAYMENT_YES;
+
+        if ($orderPurchase->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
+    }
+
+    public function actionChangeBill()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderPurchase = OrderPurchase::findOne($params['id']);
+        $orderPurchase->is_bill = OrderPurchase::IS_BILL_YES;
+
+        if ($orderPurchase->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
+    }
 }

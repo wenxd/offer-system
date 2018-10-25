@@ -51,7 +51,6 @@ $isShow = in_array($userId, $adminIds);
                 <th>数量</th>
                 <th>采购状态</th>
                 <th>入库</th>
-                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -80,15 +79,35 @@ $isShow = in_array($userId, $adminIds);
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
-                    <td>
-                        <?php if (!in_array($item->goods_id, $stock_goods_ids)):?>
-                            <a class="btn btn-success btn-xs btn-flat stock_in" href="javascript:void(0);" data-goods_id="<?=$item->goods_id?>">入库</a>
-                        <?php endif;?>
-                    </td>
                 </tr>
             <?php endforeach;?>
             </tbody>
         </table>
+        <?= $form->field($model, 'financial_remark')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="box-footer">
+        <?= Html::button('保存备注', [
+                'class' => 'btn btn-primary save_remark',
+                'name'  => 'submit-button']
+        )?>
+        <?php if(!$model->is_advancecharge):?>
+        <?= Html::button('预付款完成', [
+                'class' => 'btn btn-info rimary save_advance',
+                'name'  => 'submit-button']
+        )?>
+        <?php endif;?>
+        <?php if(!$model->is_payment):?>
+        <?= Html::button('全单付款完成', [
+                'class' => 'btn btn-info save_payment',
+                'name'  => 'submit-button']
+        )?>
+        <?php endif;?>
+        <?php if(!$model->is_bill):?>
+        <?= Html::button('收到发票', [
+                'class' => 'btn btn-info save_bill',
+                'name'  => 'submit-button']
+        )?>
+        <?php endif;?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -122,6 +141,79 @@ $isShow = in_array($userId, $adminIds);
                 type:"post",
                 url:'?r=stock-in/in',
                 data:{goods_id:goods_id, order_purchase_id:order_purchase_id, number:number},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+        var id = $('.data').data('order_purchase_id');
+        $('.save_remark').click(function (e) {
+            var remark = $('#orderpurchase-financial_remark').val();
+            $.ajax({
+                type:"post",
+                url:'?r=financial/add-remark',
+                data:{id:id, remark:remark},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        $('.save_advance').click(function (e) {
+            $.ajax({
+                type:"post",
+                url:'?r=financial/change-advance',
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        $('.save_payment').click(function (e) {
+            $.ajax({
+                type:"post",
+                url:'?r=financial/change-payment',
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        $('.save_bill').click(function (e) {
+            $.ajax({
+                type:"post",
+                url:'?r=financial/change-bill',
+                data:{id:id},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

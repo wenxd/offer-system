@@ -24,17 +24,41 @@ class OrderPurchase extends \yii\db\ActiveRecord
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
 
+    const IS_STOCK_NO     = '0';
+    const IS_STOCK_YES    = '1';
+
+    const IS_ADVANCECHARGE_NO  = '0';
+    const IS_ADVANCECHARGE_YES = '1';
+
+    const IS_PAYMENT_NO  = '0';
+    const IS_PAYMENT_YES = '1';
+
+    const IS_BILL_NO     = '0';
+    const IS_BILL_YES    = '1';
+
     public static $purchase = [
         self::IS_PURCHASE_NO   => '否',
         self::IS_PURCHASE_YES  => '是',
     ];
 
-    const IS_STOCK_NO  = '0';
-    const IS_STOCK_YES = '1';
-
     public static $stock = [
         self::IS_STOCK_NO   => '否',
         self::IS_STOCK_YES  => '是',
+    ];
+
+    public static $advanceCharge = [
+        self::IS_ADVANCECHARGE_NO   => '否',
+        self::IS_ADVANCECHARGE_YES  => '是',
+    ];
+
+    public static $payment = [
+        self::IS_PAYMENT_NO   => '否',
+        self::IS_PAYMENT_YES  => '是',
+    ];
+
+    public static $bill = [
+        self::IS_BILL_NO   => '否',
+        self::IS_BILL_YES  => '是',
     ];
 
     /**
@@ -54,7 +78,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
             [['end_date'], 'required'],
             [['end_date', 'updated_at', 'created_at', 'agreement_date'], 'safe'],
-            [['purchase_sn'], 'string', 'max' => 255],
+            [['purchase_sn', 'financial_remark'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
     }
@@ -65,22 +89,23 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'             => 'ID',
-            'purchase_sn'    => '采购单号',
-            'agreement_sn'   => '合同号',
-            'agreement_date' => '合同日期',
-            'order_id'       => '订单ID',
-            'order_sn'       => '订单编号',
-            'order_final_id' => '最终订单ID',
-            'order_final_sn' => '最终订单号',
-            'goods_info'     => '零件信息 json，包括ID',
-            'end_date'       => '采购截止时间',
-            'admin_id'       => '采购员ID',
-            'is_purchase'    => '完成采购',
-            'is_stock'       => '入库',
-            'is_deleted'     => '是否删除：0未删除 1已删除',
-            'updated_at'     => '更新时间',
-            'created_at'     => '创建时间',
+            'id'               => 'ID',
+            'purchase_sn'      => '采购单号',
+            'agreement_sn'     => '合同号',
+            'agreement_date'   => '合同日期',
+            'order_id'         => '订单ID',
+            'order_sn'         => '订单编号',
+            'order_final_id'   => '最终订单ID',
+            'order_final_sn'   => '最终订单号',
+            'goods_info'       => '零件信息 json，包括ID',
+            'end_date'         => '采购截止时间',
+            'admin_id'         => '采购员ID',
+            'financial_remark' => '财务备注',
+            'is_purchase'      => '完成采购',
+            'is_stock'         => '入库',
+            'is_deleted'       => '是否删除：0未删除 1已删除',
+            'updated_at'       => '更新时间',
+            'created_at'       => '创建时间',
         ];
     }
 
