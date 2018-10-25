@@ -75,7 +75,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
+            [['order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_advancecharge', 'is_deleted'], 'integer'],
             [['end_date'], 'required'],
             [['end_date', 'updated_at', 'created_at', 'agreement_date'], 'safe'],
             [['purchase_sn', 'financial_remark'], 'string', 'max' => 255],
@@ -103,6 +103,9 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'financial_remark' => '财务备注',
             'is_purchase'      => '完成采购',
             'is_stock'         => '入库',
+            'is_advancecharge' => '入库',
+            'is_payment'       => '入库',
+            'is_bill'          => '入库',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',
