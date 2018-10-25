@@ -119,7 +119,7 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             success:function(res){
                 if (res && res.code == 200){
                     console.log(res.data);
-                    $('#inquiry-better_reason').val(res.data.goods.original_company);
+                    $('#inquiry-better_reason').val('原厂家');
                     $('#inquiry-order_id').val(res.data.orderGoods.order_id);
                     $('#inquiry-order_inquiry_id').val(res.data.orderInquiry.id);
                 }
