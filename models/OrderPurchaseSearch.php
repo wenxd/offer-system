@@ -21,7 +21,7 @@ class OrderPurchaseSearch extends OrderPurchase
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_advance', 'is_payment', 'is_bill', 'is_deleted'], 'integer'],
             [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
             [['id', 'purchase_sn', 'order_sn', 'order_final_sn'], 'trim'],
         ];
@@ -91,6 +91,9 @@ class OrderPurchaseSearch extends OrderPurchase
             'order_purchase.admin_id'       => $this->admin_id,
             'order_purchase.is_purchase'    => $this->is_purchase,
             'order_purchase.is_stock'       => $this->is_stock,
+            'order_purchase.is_advance'     => $this->is_advance,
+            'order_purchase.is_payment'     => $this->is_payment,
+            'order_purchase.is_bill'        => $this->is_bill,
             'order_purchase.is_deleted'     => $this->is_deleted,
         ]);
 
