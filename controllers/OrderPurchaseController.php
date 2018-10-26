@@ -205,7 +205,6 @@ class OrderPurchaseController extends BaseController
     {
         $params = Yii::$app->request->post();
         $orderPurchase = OrderPurchase::findOne($params['id']);
-        $orderPurchase->agreement_sn   = $params['agreement_sn'];
         $orderPurchase->agreement_date = $params['agreement_date'];
         $orderPurchase->agreement_time = date('Y-m-d H:i:s');
         $orderPurchase->is_purchase    = OrderPurchase::IS_PURCHASE_YES;

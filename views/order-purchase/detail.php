@@ -11,9 +11,7 @@ use app\models\AuthAssignment;
 
 $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
-if (!$model->agreement_sn) {
-    $model->agreement_sn = 'HT' . date('YmdHis') . rand(10, 99);
-}
+
 if (!$model->agreement_date) {
     $model->agreement_date = substr($model->orderFinal->agreement_date, 0, 10);
 }
@@ -208,12 +206,6 @@ foreach ($adminList as $key => $admin) {
                 return false;
             }
 
-            var agreement_sn = $('#orderpurchase-agreement_sn').val();
-            if (!agreement_sn) {
-                layer.msg('请输入合同号', {time:2000});
-                return false;
-            }
-
             var agreement_date = $('#orderpurchase-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入合同日期', {time:2000});
@@ -224,7 +216,7 @@ foreach ($adminList as $key => $admin) {
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase/complete-all',
-                data:{id:id, agreement_sn:agreement_sn, agreement_date:agreement_date},
+                data:{id:id, agreement_date:agreement_date},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

@@ -39,7 +39,7 @@ foreach ($adminList as $key => $admin) {
                 'attribute' => 'purchase_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->purchase_sn, Url::to(['stock-in/detail', 'id' => $model->id]));
+                    return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
                 }
             ],
             [
