@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
-                    <td class="number">4</td>
+                    <td class="number">1</td>
                     <td><?= $inquiryPrice ? $inquiryPrice->tax_rate : 0 ?></td>
                     <td class="price"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
-                    <td class="number">4</td>
+                    <td class="number">1</td>
                     <td><?= $inquiryTime ? $inquiryTime->tax_rate : 0 ?></td>
                     <td class="price"><?= $inquiryTime ? $inquiryTime->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
@@ -133,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
-                    <td class="number">4</td>
+                    <td class="number">1</td>
                     <td><?= $inquiryNew ? $inquiryNew->tax_rate : 0 ?></td>
                     <td class="price"><?= $inquiryNew ? $inquiryNew->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
-                    <td class="number">4</td>
+                    <td class="number">1</td>
                     <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
                     <td class="price"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
                     <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
