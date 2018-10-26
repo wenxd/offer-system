@@ -63,6 +63,16 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                     <?php endforeach;?>
                 </tbody>
             </table>
+            <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
+                'removeButton'  => false,
+                'pluginOptions' => [
+                    'autoclose' => true,
+                    'format'    => 'yyyy-mm-dd',
+                    'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                    'maxView'   =>2,  //最大选择范围（年）
+                    'minView'   =>2,  //最小选择范围（年）
+                ]
+            ]);?>
         </div>
         <div class="box-footer">
             <?= Html::button('保存最终订单', [
@@ -90,7 +100,11 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                 layer.msg('所有的零件需关联询价', {time:2000});
                 return false;
             }
-
+            var agreement_date = $('#orderfinal-agreement_date').val();
+            if (!agreement_date) {
+                layer.msg('请输入合同交货日期', {time:2000});
+                return false;
+            }
             var goods_ids = $('.goods').data('goods_ids');
             var order_id  = $('.goods').data('order_id');
             var key       = $('.goods').data('key');
@@ -98,7 +112,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
             $.ajax({
                 type:"post",
                 url:'?r=order-final/save-order',
-                data:{order_id:order_id, goods_ids:goods_ids, key:key},
+                data:{order_id:order_id, goods_ids:goods_ids, key:key, agreement_date:agreement_date},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

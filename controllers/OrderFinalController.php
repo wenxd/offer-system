@@ -163,10 +163,11 @@ class OrderFinalController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderFinal = new OrderFinal();
-        $orderFinal->final_sn = 'zzdd' . date('YmdHis') . rand(10, 99);
-        $orderFinal->order_id = $params['order_id'];
-        $orderFinal->goods_info = json_encode($params['goods_ids']);
+        $orderFinal                 = new OrderFinal();
+        $orderFinal->final_sn       = 'zzdd' . date('YmdHis') . rand(10, 99);
+        $orderFinal->order_id       = $params['order_id'];
+        $orderFinal->goods_info     = json_encode($params['goods_ids']);
+        $orderFinal->agreement_date = $params['agreement_date'];
         if ($orderFinal->save()) {
             $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],
                 ['order_id' => $params['order_id'], 'key' => $params['key']]);

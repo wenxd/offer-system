@@ -92,7 +92,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'id'               => 'ID',
             'purchase_sn'      => '采购单号',
             'agreement_sn'     => '合同号',
-            'agreement_date'   => '合同日期',
+            'agreement_date'   => '合同交货日期',
             'order_id'         => '订单ID',
             'order_sn'         => '订单编号',
             'order_final_id'   => '最终订单ID',

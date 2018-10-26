@@ -15,7 +15,7 @@ if (!$model->agreement_sn) {
     $model->agreement_sn = 'HT' . date('YmdHis') . rand(10, 99);
 }
 if (!$model->agreement_date) {
-    $model->agreement_date = '';
+    $model->agreement_date = substr($model->orderFinal->agreement_date, 0, 10);
 }
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
@@ -54,6 +54,8 @@ foreach ($adminList as $key => $admin) {
                 <th>含率总价</th>
                 <th>数量</th>
                 <th>采购状态</th>
+                <th>合同号</th>
+                <th>交货日期</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -81,6 +83,22 @@ foreach ($adminList as $key => $admin) {
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
                     <td>
+                        <?php if ($item->agreement_sn):?>
+                            <?=$item->agreement_sn?>
+                        <?php else:?>
+                            <input type="text" class="agreement_sn">
+                        <?php endif;?>
+                    </td>
+                    <td>
+                        <div style="width: 140px;">
+                        <?php if ($item->purchase_date):?>
+                            <?=substr($item->purchase_date, 0, 10)?>
+                        <?php else:?>
+                            <input size="16" type="text" value="" readonly class="form_datetime delivery_date">
+                        <?php endif;?>
+                        </div>
+                    </td>
+                    <td>
                         <?php if (!$item->is_purchase):?>
                         <a class="btn btn-success btn-xs btn-flat complete" href="javascript:void(0);" data-id="<?=$item->id?>">完成采购</a>
                         <?php endif;?>
@@ -89,8 +107,6 @@ foreach ($adminList as $key => $admin) {
             <?php endforeach;?>
             </tbody>
         </table>
-
-        <?= $form->field($model, 'agreement_sn')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -138,19 +154,35 @@ foreach ($adminList as $key => $admin) {
                 }
             });
             if (open) {
-                var sn = '<?=$model->agreement_sn?>';
-                $('#orderpurchase-agreement_sn').val(sn);
                 var date = '<?=$model->agreement_date?>';
                 $('#orderpurchase-agreement_date').val(date);
             }
+            $(".form_datetime").datetimepicker({
+                format    : 'yyyy-mm-dd',
+                startView : 2,  //其实范围（0：日  1：天 2：年）
+                maxView   : 2,  //最大选择范围（年）
+                minView   : 2,  //最小选择范围（年）
+                autoclose : true,
+            });
         }
 
         $('.complete').click(function (e) {
             var id = $(this).data('id');
+            var this_agreement_sn = $(this).parent().parent().find('.agreement_sn').val();
+            var this_delivery_date = $(this).parent().parent().find('.delivery_date').val();
+            if (!this_agreement_sn) {
+                layer.msg('请输入合同号', {time:2000});
+                return false;
+            }
+
+            if (!this_delivery_date) {
+                layer.msg('请输入交货日期', {time:2000});
+                return false;
+            }
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase/complete',
-                data:{id:id},
+                data:{id:id, this_agreement_sn:this_agreement_sn, this_delivery_date:this_delivery_date},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

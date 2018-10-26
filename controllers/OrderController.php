@@ -445,6 +445,7 @@ class OrderController extends BaseController
         $data['goods']        = $goods;
         $data['order']        = $order;
         $data['finalGoods']   = $finalGoods;
+        $data['model']        = new OrderFinal();
 
         return $this->render('create-final', $data);
     }

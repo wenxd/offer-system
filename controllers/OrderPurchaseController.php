@@ -184,15 +184,16 @@ class OrderPurchaseController extends BaseController
 
     public function actionComplete()
     {
-        $id = Yii::$app->request->post('id');
+        $params = Yii::$app->request->post();
 
-        $purchaseGoods = PurchaseGoods::findOne($id);
+        $purchaseGoods = PurchaseGoods::findOne($params['id']);
         if (!$purchaseGoods) {
             return json_encode(['code' => 500, 'msg' => '不存在此条数据']);
         }
 
         $purchaseGoods->is_purchase   = PurchaseGoods::IS_PURCHASE_YES;
-        $purchaseGoods->purchase_date = date('Y-m-d H:i:s');
+        $purchaseGoods->agreement_sn  = $params['this_agreement_sn'];
+        $purchaseGoods->purchase_date = $params['this_delivery_date'];
         if ($purchaseGoods->save()){
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {

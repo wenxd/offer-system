@@ -33,7 +33,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'is_deleted'], 'integer'],
-            [['updated_at', 'created_at', 'provide_date'], 'safe'],
+            [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -45,18 +45,19 @@ class OrderFinal extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'           => 'ID',
-            'final_sn'     => '最终订单号',
-            'order_sn'     => '订单编号',
-            'customer'     => '客户名称',
-            'short_name'   => '客户缩写',
-            'manage_name'  => '订单管理员',
-            'provide_date' => '订单报价截止日期',
-            'order_id'     => '订单ID',
-            'goods_info'   => '零件ID json',
-            'is_deleted'   => '是否删除：0未删除 1已删除',
-            'updated_at'   => '更新时间',
-            'created_at'   => '创建时间',
+            'id'             => 'ID',
+            'final_sn'       => '最终订单号',
+            'order_sn'       => '订单编号',
+            'customer'       => '客户名称',
+            'short_name'     => '客户缩写',
+            'manage_name'    => '订单管理员',
+            'provide_date'   => '订单报价截止日期',
+            'agreement_date' => '合同交货日期',
+            'order_id'       => '订单ID',
+            'goods_info'     => '零件ID json',
+            'is_deleted'     => '是否删除：0未删除 1已删除',
+            'updated_at'     => '更新时间',
+            'created_at'     => '创建时间',
         ];
     }
 
