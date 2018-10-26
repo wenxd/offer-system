@@ -191,7 +191,8 @@ class OrderPurchaseController extends BaseController
             return json_encode(['code' => 500, 'msg' => '不存在此条数据']);
         }
 
-        $purchaseGoods->is_purchase = PurchaseGoods::IS_PURCHASE_YES;
+        $purchaseGoods->is_purchase   = PurchaseGoods::IS_PURCHASE_YES;
+        $purchaseGoods->purchase_date = date('Y-m-d H:i:s');
         if ($purchaseGoods->save()){
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
