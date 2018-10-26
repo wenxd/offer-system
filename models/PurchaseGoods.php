@@ -111,4 +111,10 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(OrderPurchase::className(), ['id' => 'order_purchase_id']);
     }
+
+    //库存日志
+    public function getStockLog()
+    {
+        return $this->hasOne(StockLog::className(), ['goods_id' => 'goods_id', 'order_id' => 'order_id', 'order_purchase_id' => 'order_purchase_id']);
+    }
 }

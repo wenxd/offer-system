@@ -235,10 +235,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
                 <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
                 <td class="stressColor"><?= $purchaseNew ? $purchaseNew->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? (strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24) : '') : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->created_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->orderPurchase->updated_at, 0, 10) : '' ?></td>
+                <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? substr($purchaseNew->stockLog->operate_time, 0, 10) : '') : '' ?></td>
                 <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
                 <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
@@ -253,10 +253,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_rate : $purchasePrice->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->price : $purchasePrice->inquiry->price) : 0 ?></td></td>
                 <td class="tax_price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></td>
-                <td></td>
+                <td class="stressColor"><?= $purchasePrice ? $purchasePrice->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchasePrice ? ($purchasePrice->stockLog ? (strtotime($purchasePrice->stockLog->operate_time) - strtotime($purchasePrice->purchase_date))/(3600*24) : '') : '' ?></td>
                 <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchasePrice ? substr($purchasePrice->created_at, 0, 10) : '' ?></td>
-                <td><?= $purchasePrice ? substr($purchasePrice->orderPurchase->updated_at, 0, 10) : '' ?></td>
+                <td><?= $purchasePrice ? substr($purchasePrice->purchase_date, 0, 10) : '' ?></td>
+                <td><?= $purchasePrice ? ($purchasePrice->stockLog ? substr($purchasePrice->stockLog->operate_time, 0, 10) : '') : '' ?></td>
                 <td><?=$purchasePrice ? Html::a($purchasePrice->order->order_sn, Url::to(['order/detail', 'id' => $purchasePrice->order_id])) : ''?></td>
                 <td><?=$purchasePrice ? Html::a($purchasePrice->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchasePrice->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
@@ -272,9 +273,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->price : $purchaseDay->inquiry->price) : 0 ?></td></td>
                 <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
                 <td class="stressColor"><?= $purchaseDay ? $purchaseDay->inquiry->delivery_time : '' ?></td>
+                <td><?= $purchaseDay ? ($purchaseDay->stockLog ? (strtotime($purchaseDay->stockLog->operate_time) - strtotime($purchaseDay->purchase_date))/(3600*24) : '') : '' ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
-                <td><?= $purchaseDay ? substr($purchaseDay->orderPurchase->updated_at,0, 10) : '' ?></td>
+                <td><?= $purchaseDay ? ($purchaseDay->stockLog ? substr($purchaseDay->stockLog->operate_time, 0, 10) : '') : '' ?></td>
                 <td><?= $purchaseDay ? Html::a($purchaseDay->order->order_sn, Url::to(['order/detail', 'id' => $purchaseDay->order_id])) : ''?></td>
                 <td><?= $purchaseDay ? Html::a($purchaseDay->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseDay->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
