@@ -21,7 +21,7 @@ class OrderFinancialSearch extends OrderPurchase
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted'], 'integer'],
             [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
             [['id', 'purchase_sn', 'order_sn', 'order_final_sn'], 'trim'],
         ];
@@ -76,13 +76,16 @@ class OrderFinancialSearch extends OrderPurchase
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_purchase.id'             => $this->id,
-            'order_purchase.order_id'       => $this->order_id,
-            'order_purchase.order_final_id' => $this->order_final_id,
-            'order_purchase.admin_id'       => $this->admin_id,
-            'order_purchase.is_purchase'    => static::IS_PURCHASE_YES,
-            'order_purchase.is_stock'       => $this->is_stock,
-            'order_purchase.is_deleted'     => $this->is_deleted,
+            'order_purchase.id'               => $this->id,
+            'order_purchase.order_id'         => $this->order_id,
+            'order_purchase.order_final_id'   => $this->order_final_id,
+            'order_purchase.admin_id'         => $this->admin_id,
+            'order_purchase.is_purchase'      => static::IS_PURCHASE_YES,
+            'order_purchase.is_stock'         => $this->is_stock,
+            'order_purchase.is_advancecharge' => $this->is_advancecharge,
+            'order_purchase.is_payment'       => $this->is_payment,
+            'order_purchase.is_bill'          => $this->is_bill,
+            'order_purchase.is_deleted'       => $this->is_deleted,
         ]);
 
         if ($this->end_date && strpos($this->end_date, ' - ')) {
