@@ -369,8 +369,14 @@ class OrderController extends BaseController
     //创建订单  添加动作
     public function actionAddGoods()
     {
-        $goods_id = (string)Yii::$app->request->post('goods_id');
-        $goods = Goods::find()->where(['goods_number' => $goods_id])->asArray()->one();
+        $goods_id   = (string)Yii::$app->request->post('goods_id');
+        $goods_id_b = (string)Yii::$app->request->post('goods_id_b');
+        if ($goods_id) {
+            $goods = Goods::find()->where(['goods_number' => $goods_id])->asArray()->one();
+        } else {
+            $goods = Goods::find()->where(['goods_number_b' => $goods_id_b])->asArray()->one();
+        }
+
         if ($goods) {
             return json_encode(['code' => 200, 'data' => $goods]);
         } else {
@@ -400,9 +406,10 @@ class OrderController extends BaseController
                 $row[] = $order->primaryKey;
                 $row[] = $item['goods_id'];
                 $row[] = $item['number'];
+                $row[] = $item['serial'];
                 $data[] = $row;
             }
-            $feild = ['order_id', 'goods_id', 'number'];
+            $feild = ['order_id', 'goods_id', 'number', 'serial'];
             $num = Yii::$app->db->createCommand()->batchInsert(OrderGoods::tableName(), $feild, $data)->execute();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {

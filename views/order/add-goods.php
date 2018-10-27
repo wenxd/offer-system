@@ -19,10 +19,31 @@ $this->params['breadcrumbs'][] = $this->title;
         margin-left: 56px;
         border: 1px solid black;
         z-index: 10;
+        float: left;
     }
     .box-search li:hover {
         background-color: #84b5bc;
     }
+
+    .box-search-b li {
+        list-style: none;
+        padding-left: 10px;
+        line-height: 30px;
+    }
+    .box-search-b-ul {
+        margin-left: -40px;
+    }
+    .box-search-b {
+        width: 200px;
+        margin-top: -10px;
+        margin-left: 312px;
+        border: 1px solid black;
+        z-index: 10;
+    }
+    .box-search-b li:hover {
+        background-color: #84b5bc;
+    }
+
     .cancel {
         display: none;
     }
@@ -44,10 +65,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                    onkeydown="if(event.keyCode == 13){return false;}">
 
                         </div>
+                        <div class="form-group good_number_b">
+                            <label for="good_number_b">零件号B</label>
+                            <input type="text" class="form-control" id="good_number_b"
+                                   placeholder="请输入零件号B" autocomplete="off"
+                                   onkeydown="if(event.keyCode == 13){return false;}">
+                        </div>
                         <div class="form-group number">
                             <label for="number">数量</label>
                             <input type="text" class="form-control" id="number"
                                    placeholder="请输入零件数量" autocomplete="off"
+                                   onkeydown="if(event.keyCode == 13){return false;}">
+                        </div>
+                        <div class="form-group serial">
+                            <label for="serial">序号</label>
+                            <input type="text" class="form-control" id="serial"
+                                   placeholder="请输入序号" autocomplete="off"
                                    onkeydown="if(event.keyCode == 13){return false;}">
                         </div>
                         <button type="button" class="btn btn-primary add_goods" style="float: right">添加</button>
@@ -59,11 +92,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     </ul>
                 </div>
+                <div class="box-search-b cancel">
+                    <ul class="box-search-b-ul">
+
+                    </ul>
+                </div>
                 <div class="box-body">
                     <table id="example2" class="table table-bordered table-hover">
                         <thead>
                         <tr>
                             <th>零件号</th>
+                            <th>零件号B</th>
                             <th>原厂家</th>
                             <th>单位</th>
                             <th>税率</th>
@@ -71,6 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th>特制</th>
                             <th>图片</th>
                             <th>数量</th>
+                            <th>序号</th>
                         </tr>
                         </thead>
                         <tbody class="goods_list">
@@ -97,6 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    //零件搜索
     $("#good_number").bind('input propertychange', function (e) {
         var good_number = $('#good_number').val();
         if (good_number === '') {
@@ -125,10 +166,42 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     });
+
+    //零件号B搜索
+    $("#good_number_b").bind('input propertychange', function (e) {
+        var good_number_b = $('#good_number_b').val();
+        if (good_number_b === '') {
+            $('.box-search-b').addClass('cancel');
+            return;
+        }
+        $('.box-search-b-ul').html("");
+        $('.box-search-b').removeClass('cancel');
+        $.ajax({
+            type:"GET",
+            url:"?r=search/get-good-number-b",
+            data:{good_number_b:good_number_b},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    var li = '';
+                    for (var i in res.data) {
+                        li += '<li onclick="selectB($(this))">' + res.data[i] + '</li>';
+                    }
+                    if (li) {
+                        $('.box-search-b-ul').append(li);
+                    } else {
+                        $('.box-search-b').addClass('cancel');
+                    }
+                }
+            }
+        });
+    });
+
     $('.add_goods').click(function(e){
-        var goods_id = $('#good_number').val();
-        if (goods_id === '') {
-            layer.msg('零件号不能为空', {time:2000});
+        var goods_id   = $('#good_number').val();
+        var goods_id_b = $('#good_number_b').val();
+        if (goods_id === '' && goods_id_b === '') {
+            layer.msg('输入零件号或者零件号B', {time:2000});
             return false;
         }
 
@@ -138,10 +211,13 @@ $this->params['breadcrumbs'][] = $this->title;
             layer.msg('数量请输入正整数', {time:2000});
             return false;
         }
+
+        var serialNumber = $('#serial').val();
+
         $.ajax({
             type:"post",
             url:"?r=order/add-goods",
-            data:{goods_id:goods_id},
+            data:{goods_id:goods_id, goods_id_b:goods_id_b},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
@@ -157,6 +233,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     //添加此零件
                     var tr = '<tr class="goods_id" data-id="' + res.data.id +'">';
                     tr += '<td>' + res.data.goods_number + '</td>';
+                    tr += '<td>' + res.data.goods_number_b + '</td>';
                     tr += '<td>' + res.data.original_company + '</td>';
                     tr += '<td>' + res.data.unit + '</td>';
                     tr += '<td>16%</td>';
@@ -164,6 +241,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
                     tr += '<td class="goodsNumber">' + number + '</td>';
+                    tr += '<td class="serialNumber">' + serialNumber + '</td>';
                     tr += '</tr>';
                     $('.goods_list').append(tr);
                     if ($('.select_all').prop('checked')) {
@@ -182,7 +260,10 @@ $this->params['breadcrumbs'][] = $this->title;
         $("#good_number").val(obj.html());
         $('.box-search').addClass('cancel');
     }
-
+    function selectB(obj){
+        $("#good_number_b").val(obj.html());
+        $('.box-search-b').addClass('cancel');
+    }
     $('.order_save').click(function (e) {
         var goods  = $('.goods_id');
         var goodsIds = [];
@@ -192,6 +273,7 @@ $this->params['breadcrumbs'][] = $this->title;
             goodsIds.push($(e).data('id'));
             item.goods_id = $(e).data('id');
             item.number   = $(e).find('.goodsNumber').text();
+            item.serial   = $(e).find('.serialNumber').text();
             goodsInfo.push(item);
         });
 

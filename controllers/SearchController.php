@@ -42,6 +42,19 @@ class SearchController extends BaseController
         return json_encode(['code' => 200, 'data' => $good_number_list]);
     }
 
+    /**获取零件号B
+     * @return string
+     */
+    public function actionGetGoodNumberB()
+    {
+        $good_number_b = (string)Yii::$app->request->get('good_number_b');
+
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number_b', $good_number_b])->all();
+        $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number_b');
+
+        return json_encode(['code' => 200, 'data' => $good_number_list]);
+    }
+
     /*
      * 搜索结果
      */
