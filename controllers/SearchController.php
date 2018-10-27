@@ -9,6 +9,7 @@ namespace app\controllers;
 
 
 use app\models\Goods;
+use app\models\Supplier;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -53,6 +54,19 @@ class SearchController extends BaseController
         $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number_b');
 
         return json_encode(['code' => 200, 'data' => $good_number_list]);
+    }
+
+    /**获取供应商
+     * @return string
+     */
+    public function actionGetSupplier()
+    {
+        $supplier_name = (string)Yii::$app->request->get('supplier_name');
+
+        $supplierList       = Supplier::find()->filterWhere(['like', 'name', $supplier_name])->all();
+        $supplier_name_list = ArrayHelper::getColumn($supplierList, 'name');
+
+        return json_encode(['code' => 200, 'data' => $supplier_name_list]);
     }
 
     /*

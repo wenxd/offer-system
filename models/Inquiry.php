@@ -48,6 +48,9 @@ class Inquiry extends ActiveRecord
         self::IS_PRIORITY_NO   => '否',
         self::IS_PRIORITY_YES  => '是',
     ];
+
+    public $supplier_name;
+
     public function behaviors()
     {
         return [
@@ -83,7 +86,7 @@ class Inquiry extends ActiveRecord
             [['updated_at', 'created_at', 'offer_date'], 'safe'],
             [['inquiry_datetime', 'remark', 'better_reason'], 'string', 'max' => 255],
             [
-                ['good_id', 'supplier_id', 'inquiry_datetime'],
+                ['good_id', 'supplier_name', 'inquiry_datetime'],
                 'required',
                 'on' => 'inquiry'
             ],
@@ -130,6 +133,13 @@ class Inquiry extends ActiveRecord
             self::updateAll(['is_newest' => self::IS_NEWEST_NO], ['good_id' => $this->good_id]);
             $this->is_newest = self::IS_NEWEST_YES;
         }
+
+        $supplier = Supplier::find()->where(['name' => trim($this->supplier_name)])->one();
+        if (!$supplier) {
+            $this->addError('supplier_name', '此供应商不存在');
+            return false;
+        }
+        $this->supplier_id = $supplier->id;
 
         return parent::beforeSave($insert);
     }

@@ -20,6 +20,8 @@ if ($model->isNewRecord) {
         $model->good_id = $_GET['goods_id'];
     }
     $model->inquiry_datetime = date('Y-m-d H:i:s');
+} else {
+    $model->supplier_name = $model->supplier->name;
 }
 
 //$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
@@ -31,6 +33,28 @@ $admins = [];
 //}
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 ?>
+<style>
+    .box-search li {
+        list-style: none;
+        padding-left: 10px;
+        line-height: 30px;
+    }
+    .box-search-ul {
+        margin-left: -40px;
+    }
+    .box-search {
+        width: 200px;
+        margin-top: -10px;
+        border: 1px solid black;
+        z-index: 10;
+    }
+    .box-search li:hover {
+        background-color: #84b5bc;
+    }
+    .cancel {
+        display: none;
+    }
+</style>
 
 <div class="box">
 
@@ -42,9 +66,17 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
         ->label('零件号') ?>
 
-    <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())
-        ->label('供应商名称') ?>
+    <div class="form-group field-inquiry-price">
+        <label class="control-label" for="inquiry-supplier_name">供应商</label>
+        <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
+               value="<?=$model->supplier_name?>" autocomplete="off" aria-invalid="false">
+        <div class="help-block"></div>
+    </div>
+    <div class="box-search cancel">
+        <ul class="box-search-ul">
 
+        </ul>
+    </div>
     <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true])
 //        ->hint('只输入数字，例如10%，只输入10')
     ?>
@@ -118,7 +150,6 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
-                    console.log(res.data);
                     $('#inquiry-better_reason').val('原厂家');
                     $('#inquiry-order_id').val(res.data.orderGoods.order_id);
                     $('#inquiry-order_inquiry_id').val(res.data.orderInquiry.id);
@@ -130,4 +161,40 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         goods_id = $(this).val();
         getGoodsInfo(goods_id);
     });
+
+    //供应商搜索
+    $("#inquiry-supplier_name").bind('input propertychange', function (e) {
+        var supplier_name = $('#inquiry-supplier_name').val();
+        if (supplier_name === '') {
+            $('.box-search').addClass('cancel');
+            return;
+        }
+        $('.box-search-ul').html("");
+        $('.box-search').removeClass('cancel');
+        $.ajax({
+            type:"GET",
+            url:"?r=search/get-supplier",
+            data:{supplier_name:supplier_name},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+
+                    var li = '';
+                    for (var i in res.data) {
+                        li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                    }
+                    if (li) {console.log(li);
+                        $('.box-search-ul').append(li);
+                    } else {
+                        $('.box-search').addClass('cancel');
+                    }
+                }
+            }
+        });
+    });
+    function select(obj){
+        $("#inquiry-supplier_name").val(obj.html());
+        $('.box-search').addClass('cancel');
+    }
+
 </script>
