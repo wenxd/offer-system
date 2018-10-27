@@ -427,7 +427,7 @@ class OrderController extends BaseController
         $goods_ids            = json_decode($order->goods_ids, true);
         $goods                = Goods::find()->where(['id' => $goods_ids])->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
-        $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->all();
+        $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;

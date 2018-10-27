@@ -58,6 +58,7 @@ foreach ($orderGoods as $v) {
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
+                    <th>序号</th>
                     <th>加工</th>
                     <th>特制</th>
                     <th>铭牌</th>
@@ -77,7 +78,8 @@ foreach ($orderGoods as $v) {
                     <td><?= $good->original_company?></td>
                     <td><?= $good->original_company_remark?></td>
                     <td><?= $good->unit?></td>
-                    <td class="number"><?= $order_goods_ids[$good->id]?></td>
+                    <td class="number"><?= $orderGoods[$good->id]->number?></td>
+                    <td class="serial"><?= $orderGoods[$good->id]->serial?></td>
                     <td class="addColor"><?= Goods::$process[$good->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$good->is_special]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$good->is_nameplate]?></td>
