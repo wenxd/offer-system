@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($model->goods_number, Url::to(['view', 'id' => $model->id]));
                 }
             ],
+            'goods_number_b',
             'description',
             'description_en',
             'original_company',

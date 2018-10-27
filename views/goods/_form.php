@@ -19,6 +19,8 @@ use app\models\Goods;
 
     <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
         
     <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>

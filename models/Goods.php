@@ -100,7 +100,7 @@ class Goods extends ActiveRecord
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
-            [['goods_number', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
+            [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en'], 'string', 'max' => 256],
             [
                 ['goods_number'],
@@ -118,6 +118,7 @@ class Goods extends ActiveRecord
         return [
             'id'                      => '序号',
             'goods_number'            => '零件号',
+            'goods_number_b'          => '零件号B',
             'description'             => '描述',
             'description_en'          => '英文描述',
             'original_company'        => '原厂家',

@@ -19,8 +19,9 @@ class GoodsSearch extends Goods
     {
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg'], 'integer'],
-            [['goods_number', 'description', 'description_en', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
+            [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'updated_at', 'created_at'], 'safe'],
+            [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark', 'technique_remark'], 'trim'],
         ];
     }
 
@@ -75,6 +76,7 @@ class GoodsSearch extends Goods
         ]);
 
         $query->andFilterWhere(['like', 'goods_number', $this->goods_number])
+            ->andFilterWhere(['like', 'goods_number_b', $this->goods_number_b])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'description_en', $this->description_en])
             ->andFilterWhere(['like', 'original_company', $this->original_company])
