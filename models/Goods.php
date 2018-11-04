@@ -117,7 +117,7 @@ class Goods extends ActiveRecord
     {
         return [
             'id'                      => '序号',
-            'goods_number'            => '零件号',
+            'goods_number'            => '零件号A',
             'goods_number_b'          => '零件号B',
             'description'             => '描述',
             'description_en'          => '英文描述',
@@ -130,6 +130,7 @@ class Goods extends ActiveRecord
             'is_special'              => '特制',
             'is_nameplate'            => '铭牌',
             'is_emerg'                => '紧急',
+            'is_assembly'             => '总成',
             'nameplate_img_id'        => '铭牌照片',
             'is_deleted'              => '是否删除：0未删除 1已删除',
             'updated_at'              => '更新时间',
