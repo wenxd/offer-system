@@ -13,7 +13,7 @@ use kartik\datetime\DateTimePicker;
 if ($model->isNewRecord) {
     $model->created_at = date('Y-m-d H:i:s');
     $model->order_type = 1;
-    $model->order_sn = 'D' . date('Ymdhis') . rand(100, 999);
+    $model->order_sn = 'D' . date('Ymd_');
     $model->manage_name = Yii::$app->user->identity->username;
 }
 
@@ -24,7 +24,8 @@ if ($model->isNewRecord) {
     <div class="box-header">
         <?= Html::a('新增零件', Url::to(['goods/create']), [
                 'class' => 'btn btn-success',
-                'name'  => 'submit-button']
+                'name'  => 'submit-button',
+                'target' => 'blank']
         )?>
     </div>
 
@@ -44,7 +45,7 @@ if ($model->isNewRecord) {
         'removeButton'  => false,
         'pluginOptions' => [
             'autoclose' => true,
-            'format'    => 'yyyy-mm-dd',
+            'format'    => 'yyyy-mm-dd 12:00:00',
             'startView' =>2,  //其实范围（0：日  1：天 2：年）
             'maxView'   =>2,  //最大选择范围（年）
             'minView'   =>2,  //最小选择范围（年）
@@ -128,7 +129,7 @@ if ($model->isNewRecord) {
             if ($("input:radio:checked").val() == 1) {
                 $('#order-order_sn').val(date);
             } else {
-                $('#order-order_sn').val('F' + date);
+                $('#order-order_sn').val('F' + date.substring(1));
             }
         });
     });
