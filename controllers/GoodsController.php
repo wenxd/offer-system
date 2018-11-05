@@ -2,20 +2,13 @@
 
 namespace app\controllers;
 
-use app\models\InquiryGoods;
-use app\models\OrderGoods;
-use app\models\OrderInquiry;
-use app\models\PurchaseGoods;
-use app\models\StockLog;
 use Yii;
 use app\actions;
-use app\models\Stock;
-use app\models\Goods;
-use app\models\GoodsSearch;
-use app\models\Inquiry;
-use app\models\CompetitorGoods;
+use app\models\{Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods, OrderInquiry, PurchaseGoods, StockLog};
 use yii\helpers\ArrayHelper;
-
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 /**
  * GoodsController implements the CRUD actions for Goods model.
  */
@@ -194,5 +187,96 @@ class GoodsController extends BaseController
         $data['orderInquiry'] = $orderInquiry;
 
         return json_encode(['code' => 200, 'data' => $data]);
+    }
+
+    /**
+     * 下载零件模板
+     */
+    public function actionDownload()
+    {
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel=$spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E'];
+        $tableheader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家'];
+        for($i = 0; $i < count($tableheader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i].'1',$tableheader[$i]);
+        }
+
+        $title = '零件上传模板';
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
+    }
+
+    /**
+     *批量上传零件
+     */
+    public function actionUpload()
+    {
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件']);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } //导入文件类型
+            else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' ||
+                $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                $_FILES['FileName']['type'] == 'application/octet-stream'
+            ) {
+                //保存文件路径
+                $savePath = Yii::$app->params['savePath'];
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+
+                //创建上传目录
+                if (!is_dir($savePath)) {
+                    mkdir($savePath, 0777, true);
+                }
+                //保存文件
+                @move_uploaded_file($_FILES["FileName"]["tmp_name"], $savePath . $saveName);
+
+                if (file_exists($savePath . $saveName)) {
+                    
+                }
+            }
+        }
     }
 }
