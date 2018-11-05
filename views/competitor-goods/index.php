@@ -80,7 +80,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'CompetitorGoodsSearch[offer_date]',
                     'value' => Yii::$app->request->get('CompetitorGoodsSearch')['offer_date'] ?? '',
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->offer_date, 0, 10);
+                }
             ],
             [
                 'attribute' => 'updated_at',

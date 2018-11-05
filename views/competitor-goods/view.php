@@ -58,7 +58,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_price',
             'number',
             'unit',
-            'offer_date',
+            [
+                'attribute' => 'offer_date',
+                'value'     => function($model){
+                    return substr($model->offer_date, 0, 10);
+                }
+            ],
             'remark',
             [
                 'attribute' => 'created_at',

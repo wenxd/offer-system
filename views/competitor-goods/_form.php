@@ -11,6 +11,9 @@ use app\models\Customer;
 /* @var $model app\models\CompetitorGoods */
 /* @var $form yii\widgets\ActiveForm */
 $model->tax_rate='16';
+if (!$model->isNewRecord) {
+    $model->offer_date = substr($model->offer_date, 0, 10);
+}
 ?>
 <style>
     .box-search li {
