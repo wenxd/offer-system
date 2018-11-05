@@ -44,7 +44,10 @@ class Goods extends ActiveRecord
 
     const IS_EMERG_NO       = '0';
     const IS_EMERG_YES      = '1';
-
+    
+    const IS_ASSEMBLY_NO    = '0';
+    const IS_ASSEMBLY_YES   = '1';
+    
     public static $process = [
         self::IS_PROCESS_NO  => '否',
         self::IS_PROCESS_YES => '是',
@@ -65,6 +68,11 @@ class Goods extends ActiveRecord
         self::IS_EMERG_YES => '是',
     ];
 
+    public static $assembly = [
+        self::IS_ASSEMBLY_NO  => '否',
+        self::IS_ASSEMBLY_YES => '是',
+    ];
+    
     public $img_url = '';
     public $nameplate_img_url = '';
 
@@ -98,7 +106,7 @@ class Goods extends ActiveRecord
     public function rules()
     {
         return [
-            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg'], 'integer'],
+            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en'], 'string', 'max' => 256],
