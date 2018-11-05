@@ -145,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
         accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
         //上传前加载动画
         beforeSend : function () {
-            index = window.top.layer.msg('正在处理，请稍后', {icon: 16,shade: 0.01,time:false});
+
         },
         onprogress : function (e) {},
         error : function () {},
@@ -156,7 +156,9 @@ $this->params['breadcrumbs'][] = $this->title;
             var data = JSON.parse(data);
             if(data.code == 200){
                 //导入成功
-                layer.msg(data.msg,{icon:1,time:2000},function(){});
+                layer.msg(data.msg,{time:2000},function(){
+                    window.location.reload();
+                });
             }else{
                 //失败提示
                 layer.msg(data.msg,{icon:1});

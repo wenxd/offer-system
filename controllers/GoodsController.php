@@ -14,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class GoodsController extends BaseController
 {
+    public $enableCsrfValidation = false;
+
     public function actions()
     {
         return [
@@ -261,21 +263,37 @@ class GoodsController extends BaseController
                 $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
                 $_FILES['FileName']['type'] == 'application/octet-stream'
             ) {
-                //保存文件路径
-                $savePath = Yii::$app->params['savePath'];
+                //获取文件名称
                 $ext = explode('.', $_FILES["FileName"]["name"]);
                 $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
-
-                //创建上传目录
-                if (!is_dir($savePath)) {
-                    mkdir($savePath, 0777, true);
-                }
                 //保存文件
-                @move_uploaded_file($_FILES["FileName"]["tmp_name"], $savePath . $saveName);
-
-                if (file_exists($savePath . $saveName)) {
-                    
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    //总数
+                    $total = count($sheetData);
+                    $data = [];
+                    foreach ($sheetData as $key => $value) {
+                        if ($key > 1) {
+                            $item = [];
+                            $item[] = $value['A'];
+                            $item[] = $value['B'];
+                            $item[] = $value['C'];
+                            $item[] = $value['D'];
+                            $item[] = $value['E'];
+                            if (!Goods::findOne(['goods_number' => $value['A']])) {
+                                $data[] = $item;
+                            }
+                        }
+                    }
                 }
+                $feild = ['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company'];
+                $num = Yii::$app->db->createCommand()->batchInsert(Goods::tableName(), $feild, $data)->execute();
+                unlink($saveName);
+                return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
         }
     }
