@@ -23,7 +23,7 @@ $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
-
+$userId   = Yii::$app->user->identity->id;
 ?>
 
 <div class="box table-responsive">
@@ -32,7 +32,10 @@ foreach ($adminList as $key => $admin) {
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
             <tr>
-                <th>零件号</th>
+                <?php if(!in_array($userId, $adminIds)):?>
+                <th>零件号A</th>
+                <?php endif;?>
+                <th>零件号B</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
@@ -60,7 +63,10 @@ foreach ($adminList as $key => $admin) {
             <tbody>
             <?php foreach ($purchaseGoods as $item):?>
                 <tr class="order_final_list">
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
+                    <?php endif;?>
+                    <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>

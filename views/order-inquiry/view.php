@@ -2,7 +2,9 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
+use app\models\AuthAssignment;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\OrderInquiry */
@@ -10,6 +12,10 @@ use yii\widgets\DetailView;
 $this->title = '询价单详情';
 $this->params['breadcrumbs'][] = ['label' => '询价单列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <style>
     .alarm {
@@ -25,7 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>询价单号</th>
                 <th>订单号</th>
-                <th>零件号</th>
+                <?php if(!in_array($userId, $adminIds)):?>
+                <th>零件号A</th>
+                <?php endif;?>
+                <th>零件号B</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>中文描述</th>
@@ -43,7 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                     <td><?=$orderInquiry->inquiry_sn?></td>
                     <td><?=$orderInquiry->order->order_sn?></td>
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
+                    <?php endif;?>
+                    <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->description?></td>

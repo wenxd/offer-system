@@ -34,7 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <thead>
             <tr>
                 <th rowspan="2">零件基础数据</th>
-                <th>零件号</th>
+                <th>零件号A</th>
+                <th>零件号B</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
@@ -48,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             <tr>
                 <td><?=$goods ? $goods->goods_number : ''?></td>
+                <td><?=$goods ? $goods->goods_number_b : ''?></td>
                 <td><?=$goods ? $goods->description : ''?></td>
                 <td><?=$goods ? $goods->description_en : ''?></td>
                 <td><?=$goods ? $goods->original_company : ''?></td>
@@ -66,7 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th rowspan="5"><?=Html::a('询价记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
                 <th>类型</th>
-                <th>零件号</th>
+                <th>零件号A</th>
+                <th>零件号B</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>数量</th>
@@ -87,6 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
                 <td class="number">1</td>
@@ -107,6 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
                 <td class="number">1</td>
@@ -127,6 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>最新</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
                 <td class="number">1</td>
@@ -147,6 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>优选</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
                 <td class="number">1</td>
@@ -171,7 +178,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th rowspan="2">库存记录</th>
                 <th>类型</th>
-                <th>零件号</th>
+                <th>零件号A</th>
+                <th>零件号B</th>
                 <th>单位</th>
                 <th>数量</th>
                 <th>税率</th>
@@ -188,6 +196,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list stock_list">
                 <td>库存记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="number"><?= $stock ? $stock->number : 0 ?></td>
                 <td><?= $stock ? $stock->tax_rate : 0 ?></td>
@@ -208,7 +217,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
-                <th>零件号</th>
+                <th>零件号A</th>
+                <th>零件号B</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>数量</th>
@@ -228,6 +238,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>最新</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
                 <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
@@ -247,6 +258,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>价格</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
                 <td class="number"><?= $purchasePrice ? $purchasePrice->number : 0 ?></td>
@@ -266,6 +278,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr class="inquiry_list">
                 <td>货期</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
                 <td class="stressColor"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
                 <td class="number"><?= $purchaseDay ? $purchaseDay->number : 0 ?></td>
@@ -289,7 +302,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th rowspan="2"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
-                <th>零件号</th>
+                <th>零件号A</th>
+                <th>零件号B</th>
                 <th>竞争对手</th>
                 <th>针对客户</th>
                 <th>税率</th>
@@ -302,6 +316,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td>对手记录</td>
                 <td><?= $goods ? $goods->goods_number : '' ?></td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
                 <td><?=($competitorGoods && $competitorGoods->customer) ? $competitorGoods->customers->name : ''?></td>
                 <td><?=$competitorGoods ? $competitorGoods->tax_rate : ''?></td>
