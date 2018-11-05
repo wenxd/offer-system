@@ -37,7 +37,8 @@ class SearchController extends BaseController
     {
         $good_number = (string)Yii::$app->request->get('good_number');
 
-        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])->all();
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->all();
         $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number');
 
         return json_encode(['code' => 200, 'data' => $good_number_list]);

@@ -66,7 +66,7 @@ class GoodsController extends BaseController
     {
         $goods_number = Yii::$app->request->get('goods_number');
 
-        $goods = Goods::findOne(['goods_number' => $goods_number]);
+        $goods = Goods::findOne(['goods_number' => $goods_number, 'is_deleted' => Goods::IS_DELETED_NO]);
 
         if ($goods) {
             return json_encode(['code' => 200, 'data' => $goods->id]);
@@ -84,7 +84,7 @@ class GoodsController extends BaseController
     public function actionSearchResult()
     {
         $good_number = (string)Yii::$app->request->get('good_number');
-        $goods = Goods::find()->where(['goods_number' => $good_number])->one();
+        $goods = Goods::find()->where(['goods_number' => $good_number, 'is_deleted' => Goods::IS_DELETED_NO])->one();
         if (!$goods) {
             yii::$app->getSession()->setFlash('error', '没有此零件');
             return $this->redirect(yii::$app->request->headers['referer']);
