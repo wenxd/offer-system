@@ -18,7 +18,7 @@ class GoodsSearch extends Goods
     public function rules()
     {
         return [
-            [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg'], 'integer'],
+            [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'updated_at', 'created_at'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark', 'technique_remark'], 'trim'],
@@ -72,6 +72,7 @@ class GoodsSearch extends Goods
             'is_special'   => $this->is_special,
             'is_nameplate' => $this->is_nameplate,
             'is_emerg'     => $this->is_emerg,
+            'is_assembly'  => $this->is_assembly,
             'is_deleted'   => self::IS_DELETED_NO,
         ]);
 
