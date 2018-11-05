@@ -46,10 +46,12 @@ use app\models\Goods;
 
     <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
 
-    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
-
     <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-
+        
+    <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
+        
+    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
+        
     <?= $form->field($model, 'nameplate_img_id')->widget(FileInput::classname(), [
         'options' => [
             'accept' => 'image/*'
