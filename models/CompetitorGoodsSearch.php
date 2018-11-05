@@ -20,10 +20,10 @@ class CompetitorGoodsSearch extends CompetitorGoods
     public function rules()
     {
         return [
-            [['id', 'goods_id', 'competitor_id', 'is_deleted', 'customer'], 'integer'],
+            [['id', 'goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
             [['tax_rate', 'price', 'tax_price'], 'number'],
-            [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name'], 'safe'],
-            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price'], 'trim'],
+            [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name', 'unit'], 'safe'],
+            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price', 'unit'], 'trim'],
         ];
     }
 
@@ -84,6 +84,8 @@ class CompetitorGoodsSearch extends CompetitorGoods
             'competitor_goods.tax_rate'         => $this->tax_rate,
             'competitor_goods.price'            => $this->price,
             'competitor_goods.tax_price'        => $this->tax_price,
+            'competitor_goods.number'           => $this->number,
+            'competitor_goods.unit'             => $this->unit,
             'competitor_goods.is_deleted'       => self::IS_DELETED_NO,
         ]);
 

@@ -22,6 +22,7 @@ class CompetitorGoods extends ActiveRecord
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
 
+    public $goods_number;
     public function behaviors()
     {
         return [
@@ -52,12 +53,12 @@ class CompetitorGoods extends ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'competitor_id', 'is_deleted', 'customer'], 'integer'],
+            [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
             [['tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
             [['goods_id', 'competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
-            [['remark'], 'string'],
+            [['remark', 'unit', 'goods_number'], 'string'],
         ];
     }
 
@@ -75,6 +76,8 @@ class CompetitorGoods extends ActiveRecord
             'price'            => '未税价格',
             'tax_price'        => '含税价格',
             'tax_rate'         => '税率',
+            'number'           => '数量',
+            'unit'             => '单位',
             'remark'           => '备注',
             'offer_date'       => '报价时间',
             'is_deleted'       => '是否删除：0未删除 1已删除',
@@ -83,6 +86,26 @@ class CompetitorGoods extends ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if (!$this->goods_number) {
+            $this->addError('id', '请输入零件号A');
+            return false;
+        }
+        $goods = Goods::findOne(['goods_number' => $this->goods_number, 'is_deleted' => Goods::IS_DELETED_NO]);
+        if (!$goods) {
+            $this->addError('id', '没有此零件号');
+            return false;
+        }
+        $this->goods_id = $goods->id;
+        return parent::beforeSave($insert);
+    }
+    public function afterFind()
+    {
+        if ($this->goods_id) {
+            $this->goods_number = $this->goods->goods_number;
+        }
+    }
     public function getGoods()
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);

@@ -56,6 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_rate',
             'price',
             'tax_price',
+            'number',
+            'unit',
             'offer_date',
             'remark',
             [

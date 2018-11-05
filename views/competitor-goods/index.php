@@ -72,6 +72,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_rate',
             'price',
             'tax_price',
+            'number',
+            'unit',
             [
                 'attribute' => 'offer_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
