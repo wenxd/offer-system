@@ -105,7 +105,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'GoodsSearch[updated_at]',
                     'value' => Yii::$app->request->get('GoodsSearch')['updated_at'],
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->updated_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'created_at',
@@ -113,7 +116,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'GoodsSearch[created_at]',
                     'value' => Yii::$app->request->get('GoodsSearch')['created_at'],
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->created_at, 0, 10);
+                }
             ],
             'technique_remark',
             [
