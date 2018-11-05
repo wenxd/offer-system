@@ -43,15 +43,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'is_nameplate',
-                'value'     => function ($model) {
-                    return Goods::$nameplate[$model->is_nameplate];
-                }
-            ],
-            [
                 'attribute' => 'is_emerg',
                 'value'     => function ($model) {
                     return Goods::$emerg[$model->is_emerg];
+                }
+            ],
+            [
+                'attribute' => 'is_assembly',
+                'value'     => function ($model) {
+                    return Goods::$assembly[$model->is_assembly];
+                }
+            ],
+            [
+                'attribute' => 'is_nameplate',
+                'value'     => function ($model) {
+                    return Goods::$nameplate[$model->is_nameplate];
                 }
             ],
             [
