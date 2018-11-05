@@ -77,6 +77,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_assembly',
+                'filter'    => Goods::$assembly,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$assembly[$model->is_assembly];
+                }
+            ],
+            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
