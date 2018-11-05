@@ -25,7 +25,7 @@ class CreateAction extends \yii\base\Action
         if (yii::$app->getRequest()->getIsPost()) {
             if ($model->load(yii::$app->getRequest()->post()) && $model->validate() && $model->save()) {
                 yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
-                return $this->controller->redirect(['index']);
+                return $this->controller->redirect(['update', 'id' => $model->getPrimaryKey()]);
             } else {
                 $errors = $model->getErrors();
                 $err = '';
