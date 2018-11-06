@@ -40,7 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                 ],
-                'order_sn',
+                [
+                    'attribute' => 'order_sn',
+                    'format'    => 'raw',
+                    'value'     => function ($model, $key, $index, $column) {
+                         return Html::a($model->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    }
+                ],
                 [
                     'attribute' => 'provide_date',
                     'filter'    => DateRangePicker::widget([
