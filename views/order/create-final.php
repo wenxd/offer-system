@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
-
+$model->final_sn = 'Z' . date('ymd_');
 ?>
 <section class="content">
     <div class="box table-responsive">
@@ -73,6 +73,8 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
                     'minView'   =>2,  //最小选择范围（年）
                 ]
             ]);?>
+
+            <?= $form->field($model, 'final_sn')->textInput() ?>
         </div>
         <div class="box-footer">
             <?= Html::button('保存最终订单', [
@@ -112,7 +114,7 @@ $goods_id = ArrayHelper::getColumn($goods, 'id');
             $.ajax({
                 type:"post",
                 url:'?r=order-final/save-order',
-                data:{order_id:order_id, goods_ids:goods_ids, key:key, agreement_date:agreement_date},
+                data:{order_id:order_id, goods_ids:goods_ids, key:key, agreement_date:agreement_date, final_sn:final_sn},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

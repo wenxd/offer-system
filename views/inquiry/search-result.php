@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <tr class="inquiry_list">
                     <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryPrice ? $inquiryPrice->id : ''?>"></td>
-                    <td>价格最优</td>
+                    <td>最优</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
@@ -100,12 +100,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>"><i class="fa fa-plus"></i>添加记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
                 </tr>
                 <tr class="inquiry_list">
                     <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryTime ? $inquiryTime->id : ''?>"></td>
-                    <td>同期最短</td>
+                    <td>最短</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryTime ? $inquiryTime->supplier->name : '' ?></td>
@@ -124,12 +124,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>"><i class="fa fa-plus"></i>添加记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
                 </tr>
                 <tr class="inquiry_list">
                     <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryNew ? $inquiryNew->id : ''?>"></td>
-                    <td>最新报价</td>
+                    <td>最新</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
@@ -148,12 +148,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>"><i class="fa fa-plus"></i>添加记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
                 </tr>
                 <tr class="inquiry_list">
                     <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryBetter ? $inquiryBetter->id : ''?>"></td>
-                    <td>优选记录</td>
+                    <td>优选</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
@@ -172,7 +172,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>"><i class="fa fa-plus"></i>添加记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
                 </tr>
                 </thead>
@@ -217,7 +217,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=stock/create&goods_id=<?=$goods ? $goods->id : ''?>"><i class="fa fa-plus"></i>添加记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=stock/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
                 </tr>
                 </thead>
