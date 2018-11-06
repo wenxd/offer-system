@@ -115,17 +115,6 @@ $isShow    = in_array($userId, $adminIds);
             'high_number',
             'low_number',
             [
-                'attribute' => 'is_emerg',
-                'filter'    => Goods::$emerg,
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->goods) {
-                        return Goods::$emerg[$model->goods->is_emerg];
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
                 'class' => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header' => '操作',
