@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'order_sn',
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column) {
-                         return Html::a($model->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                         return Html::a($model->order_sn, Url::to(['order/detail', 'id' => $model->id]));
                     }
                 ],
                 [
