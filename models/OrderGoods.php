@@ -68,4 +68,9 @@ class OrderGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(InquiryGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id']);
     }
+
+    public function getFinalGoods()
+    {
+        return $this->hasOne(FinalGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id']);
+    }
 }

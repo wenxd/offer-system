@@ -9,6 +9,10 @@ use app\models\Goods;
 /* @var $this yii\web\View */
 /* @var $model app\models\Goods */
 /* @var $form yii\widgets\ActiveForm */
+
+if ($model->isNewRecord) {
+    $model->unit = '个';
+}
 ?>
 
 <div class="box">
@@ -28,6 +32,8 @@ use app\models\Goods;
     <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
 

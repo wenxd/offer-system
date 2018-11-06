@@ -4,10 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\Goods;
-use app\models\Stock;
-use app\models\Inquiry;
-use app\models\InquirySearch;
+use app\models\{Goods, Stock, Inquiry, PurchaseGoods, InquirySearch};
 
 /**
  * InquiryController implements the CRUD actions for Inquiry model.
@@ -72,6 +69,33 @@ class InquiryController extends BaseController
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
+        //采购记录
+        $purchaseInquiry = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_INQUIRY])->all();
+        $price = 100000000;
+        $offerDay = 10000000;
+        $purchasePrice = '';
+        $purchaseDay = '';
+        foreach ($purchaseInquiry as $item) {
+            if ($item->inquiry->price < $price) {
+                $price = $item->inquiry->price;
+                $purchasePrice = $item;
+            }
+            if ($item->inquiry->delivery_time < $offerDay) {
+                $offerDay = $item->inquiry->delivery_time;
+                $purchaseDay = $item;
+            }
+        }
+        $purchaseStock = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_STOCK])->all();
+        foreach ($purchaseStock as $item) {
+            if ($item->stock->price < $price) {
+                $price = $item->stock->price;
+                $purchasePrice = $item;
+            }
+        }
+
+        //最新采购
+        $purchaseNew = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+
         $data = [];
         $data['goods']         = $goods ? $goods : [];
         $data['inquiryPrice']  = $inquiryPriceQuery;
@@ -79,6 +103,10 @@ class InquiryController extends BaseController
         $data['inquiryNew']    = $inquiryNewQuery;
         $data['inquiryBetter'] = $inquiryBetterQuery;
         $data['stock']         = $stockQuery;
+
+        $data['purchasePrice']    = $purchasePrice;
+        $data['purchaseDay']      = $purchaseDay;
+        $data['purchaseNew']      = $purchaseNew;
 
         return $this->render('search-result', $data);
     }

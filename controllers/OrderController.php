@@ -461,10 +461,12 @@ class OrderController extends BaseController
         $goods_ids     = json_decode($order->goods_ids, true);
         $goods         = Goods::find()->where(['id' => $goods_ids])->all();
         $finalGoods    = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $data['goods']        = $goods;
         $data['order']        = $order;
         $data['finalGoods']   = $finalGoods;
+        $data['orderGoods']   = $orderGoods;
         $data['model']        = new OrderFinal();
 
         return $this->render('create-final', $data);

@@ -329,8 +329,10 @@ $this->params['breadcrumbs'][] = $this->title;
             var number = $(e).find('.number').text();
             var price = $(e).find('.price').text();
             var tax_price = $(e).find('.tax_price').text();
-            $(e).find('.all_price').text(number * price);
-            $(e).find('.all_tax_price').text(number * tax_price);
+            var all_price = number * price;
+            var all_tax_price = number * tax_price;
+            $(e).find('.all_price').text(all_price.toFixed(2));
+            $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
         });
 
         function init(){

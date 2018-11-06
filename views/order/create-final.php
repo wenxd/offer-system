@@ -21,12 +21,21 @@ $model->final_sn = 'Z' . date('ymd_');
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>" data-key="<?=$_GET['key']?>">
-                        <th>零件号</th>
+                        <th>序号</th>
+                        <th>零件号A</th>
+                        <th>零件号B</th>
                         <th>中文描述</th>
                         <th>英文描述</th>
                         <th>原厂家</th>
                         <th>原厂家备注</th>
                         <th>单位</th>
+                        <th>数量</th>
+                        <th>税率</th>
+                        <th>未税单价</th>
+                        <th>含税单价</th>
+                        <th>未税总价</th>
+                        <th>含税总价</th>
+                        <th>货期</th>
                         <th>加工</th>
                         <th>特制</th>
                         <th>铭牌</th>
@@ -39,28 +48,44 @@ $model->final_sn = 'Z' . date('ymd_');
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($goods as $key => $good):?>
-                    <tr>
-                        <td><?= Html::a($good->goods_number, Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
-                        <td><?= $good->description?></td>
-                        <td><?= $good->description_en?></td>
-                        <td><?= $good->original_company?></td>
-                        <td><?= $good->original_company_remark?></td>
-                        <td><?= $good->unit?></td>
-                        <td><?= Goods::$process[$good->is_process]?></td>
-                        <td><?= Goods::$special[$good->is_special]?></td>
-                        <td><?= Goods::$nameplate[$good->is_nameplate]?></td>
-                        <td><?= $good->updated_at?></td>
-                        <td><?= $good->created_at?></td>
-                        <td><?= $good->technique_remark?></td>
-                        <td class="relevance"><?= in_array($good->id, $inquiry_goods_ids) ? '是' : '否'?></td>
-                        <td><?= isset($finalGoods[$good->id]) ? Html::a($finalGoods[$good->id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$good->id]['relevance_id']])) : ''?></td>
+                    <?php foreach ($orderGoods as $key => $item):?>
+                    <tr class="goods_list">
+                        <td><?= $item->serial?></td>
+                        <td><?= Html::a($item->goods->goods_number, Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
+                        <td><?= $item->goods->goods_number_b?></td>
+                        <td><?= $item->goods->description?></td>
+                        <td><?= $item->goods->description_en?></td>
+                        <td><?= $item->goods->original_company?></td>
+                        <td><?= $item->goods->original_company_remark?></td>
+                        <td><?= $item->goods->unit?></td>
+                        <td class="number"><?= $item->number?></td>
+                        <td><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->tax_rate : $item->finalGoods->inquiry->tax_rate) : ''?></td>
+                        <td class="price"><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->price : $item->finalGoods->inquiry->price) : ''?></td>
+                        <td class="tax_price"><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->tax_price : $item->finalGoods->inquiry->tax_price) : ''?></td>
+                        <td class="all_price"></td>
+                        <td class="all_tax_price"></td>
+                        <td class="delivery_time"><?= $item->finalGoods ? ($item->finalGoods->type ? '' : $item->finalGoods->inquiry->delivery_time) : ''?></td>
+                        <td><?= Goods::$process[$item->goods->is_process]?></td>
+                        <td><?= Goods::$special[$item->goods->is_special]?></td>
+                        <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                        <td><?= substr($item->goods->updated_at, 0 , 10)?></td>
+                        <td><?= substr($item->goods->created_at, 0 , 10)?></td>
+                        <td><?= $item->goods->technique_remark?></td>
+                        <td class="relevance"><?= in_array($item->goods_id, $inquiry_goods_ids) ? '是' : '否'?></td>
+                        <td><?= isset($finalGoods[$item->goods_id]) ? Html::a($finalGoods[$item->goods_id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$item->goods_id]['relevance_id']])) : ''?></td>
                         <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
-                                Url::to(['inquiry/search', 'goods_id' => $good->id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]),
+                                Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]),
                                 ['class' => 'btn btn-primary btn-xs btn-flat']
                             );?></td>
                     </tr>
                     <?php endforeach;?>
+                    <tr style="background-color: #acccb9">
+                        <td colspan="12">汇总统计</td>
+                        <td class="sta_all_price"></td>
+                        <td class="sta_all_tax_price"></td>
+                        <td class="mostLongTime"></td>
+                        <td colspan="9"></td>
+                    </tr>
                 </tbody>
             </table>
             <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
@@ -107,6 +132,13 @@ $model->final_sn = 'Z' . date('ymd_');
                 layer.msg('请输入合同交货日期', {time:2000});
                 return false;
             }
+
+            var final_sn  = $('#orderfinal-final_sn').val();
+            if (!final_sn) {
+                layer.msg('请输入最终订单号', {time:2000});
+                return false;
+            }
+
             var goods_ids = $('.goods').data('goods_ids');
             var order_id  = $('.goods').data('order_id');
             var key       = $('.goods').data('key');
@@ -126,6 +158,29 @@ $model->final_sn = 'Z' . date('ymd_');
                     }
                 }
             });
+        });
+        var sta_all_price     = 0;
+        var sta_all_tax_price = 0;
+        var mostLongTime      = 0;
+        $('.goods_list').each(function (i, e) {
+            var delivery_time = $(e).find('.delivery_time').text();
+            var number = $(e).find('.number').text();
+            var price = $(e).find('.price').text();
+            var tax_price = $(e).find('.tax_price').text();
+            var all_price = number * price;
+            var all_tax_price = number * tax_price;
+            sta_all_price += all_price;
+            sta_all_tax_price += all_tax_price;
+            if (delivery_time > mostLongTime) {
+                mostLongTime = delivery_time;
+            }
+            $(e).find('.all_price').text(all_price.toFixed(2));
+            $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
+
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+
+            $('.mostLongTime').text(mostLongTime);
         });
     });
 </script>

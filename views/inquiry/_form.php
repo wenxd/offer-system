@@ -20,6 +20,7 @@ if ($model->isNewRecord) {
         $model->good_id = $_GET['goods_id'];
     }
     $model->inquiry_datetime = date('Y-m-d H:i:s');
+    $model->delivery_time    = 100;
 } else {
     $model->supplier_name = $model->supplier->name;
 }
