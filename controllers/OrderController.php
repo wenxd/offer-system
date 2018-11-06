@@ -193,11 +193,13 @@ class OrderController extends BaseController
         $orderInquiry  = OrderInquiry::findAll(['order_id' => $id]);
         $orderFinal    = OrderFinal::findAll(['order_id' => $id]);
         $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $id])->groupBy('goods_id')->all();
 
         $data['model']         = $order;
         $data['orderInquiry']  = $orderInquiry;
         $data['orderFinal']    = $orderFinal;
         $data['orderPurchase'] = $orderPurchase;
+        $data['orderGoods']    = $orderGoods;
 
         return $this->render('detail', $data);
     }
@@ -425,15 +427,26 @@ class OrderController extends BaseController
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
         $goods_ids            = json_decode($order->goods_ids, true);
-        $goods                = Goods::find()->where(['id' => $goods_ids])->all();
+        $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
         $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+
+        $date = date('ymd_');
+        $orderI = OrderInquiry::find()->where(['order_id' => $order->id])
+            ->andWhere(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $inquirySn = explode('_', $orderI->inquiry_sn);
+            $number = sprintf("%03d", $inquirySn[1]+1);
+        } else {
+            $number = '001';
+        }
 
         $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;
         $data['model']        = new OrderInquiry();
         $data['order']        = $order;
         $data['orderGoods']   = $orderGoods;
+        $data['number']       = $number;
 
         return $this->render('create-inquiry', $data);
     }

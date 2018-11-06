@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead>
                     <tr>
                         <th>序号</th>
-                        <th>零件号</th>
+                        <th>零件号A</th>
                         <th>零件号B</th>
                         <th>原厂家</th>
                         <th>单位</th>
@@ -117,6 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>特制</th>
                         <th>图片</th>
                         <th>数量</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody class="goods_list">
@@ -238,13 +239,16 @@ $this->params['breadcrumbs'][] = $this->title;
             success:function(res){
                 if (res && res.code == 200){
                     //判断是否存在此零件
-                    var goodsIds = $('.goods_list').find('tr').children(':first-child').children();
-                    var length = goodsIds.length;
-                    for(var i = 0; i < length; i++) {
-                        var goods = goodsIds[i];
-                        if (res.data.id == goods.value) {
-                            return false;
+                    var goodsIds = $('.goods_list').find('.goods_id');
+                    var open = false;
+                    goodsIds.each(function (i, e) {
+                        if (res.data.id == $(e).data('id')) {
+                            open = true;
                         }
+                    });
+                    if (open) {
+                        layer.msg('已添加了此零件', {time:2000});
+                        return false;
                     }
                     //添加此零件
                     var tr = '<tr class="goods_id" data-id="' + res.data.id +'">';
@@ -258,6 +262,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';
                     tr += '<td class="goodsNumber">' + number + '</td>';
+                    tr += '<td><button type="button" class="btn btn-danger" onclick="deleted(this)">删除</button></td>';
                     tr += '</tr>';
                     $('.goods_list').append(tr);
                     if ($('.select_all').prop('checked')) {
@@ -322,4 +327,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     });
 
+    function deleted(obj) {
+        $(obj).parent().parent().remove();
+    }
 </script>

@@ -31,7 +31,7 @@ foreach ($adminList as $key => $admin) {
 }
 
 $model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
-$model->inquiry_sn = date('YmdHis') . rand(1000, 9999);
+$model->inquiry_sn = 'X' . date('ymd_') . $number;
 
 $order_goods_ids = [];
 foreach ($orderGoods as $v) {
@@ -51,42 +51,46 @@ foreach ($orderGoods as $v) {
             <thead>
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
-                    <th>零件号</th>
+                    <th>序号</th>
+                    <th>零件号A</th>
+                    <th>零件号B</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
-                    <th>序号</th>
                     <th>加工</th>
                     <th>特制</th>
                     <th>铭牌</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
                     <th>技术备注</th>
-                    <th>是否有询价单</th>
+                    <th>询价单号</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($goods as $key => $good):?>
+                <?php foreach ($orderGoods as $key => $item):?>
                 <tr>
-                    <td><?= in_array($good->id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$good->id} class='select_id'>" ?></td>
-                    <td><?= Html::a($good->goods_number, Url::to(['inquiry/index', 'InquirySearch[good_id]' => $good->id]))?></td>
-                    <td><?= $good->description?></td>
-                    <td><?= $good->description_en?></td>
-                    <td><?= $good->original_company?></td>
-                    <td><?= $good->original_company_remark?></td>
-                    <td><?= $good->unit?></td>
-                    <td class="number"><?= $orderGoods[$good->id]->number?></td>
-                    <td class="serial"><?= $orderGoods[$good->id]->serial?></td>
-                    <td class="addColor"><?= Goods::$process[$good->is_process]?></td>
-                    <td class="addColor"><?= Goods::$special[$good->is_special]?></td>
-                    <td class="addColor"><?= Goods::$nameplate[$good->is_nameplate]?></td>
-                    <td><?= $good->updated_at?></td>
-                    <td><?= $good->created_at?></td>
-                    <td><?= $good->technique_remark?></td>
-                    <td><?= in_array($good->id, $inquiryYes) ? $good->inquirySn->inquiry_sn : '否'?></td></td>
+                    <td><?= in_array($item->goods_id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>" ?></td>
+                    <td class="serial"><?= $item->serial?></td>
+                    <td><?= Html::a($item->goods->goods_number,
+                            Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
+                            ['target' => 'blank'])?></td>
+                    <td><?= $item->goods->goods_number_b?></td>
+                    <td><?= $item->goods->description?></td>
+                    <td><?= $item->goods->description_en?></td>
+                    <td><?= $item->goods->original_company?></td>
+                    <td><?= $item->goods->original_company_remark?></td>
+                    <td><?= $item->goods->unit?></td>
+                    <td class="number"><?= $item->number?></td>
+                    <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
+                    <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
+                    <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                    <td><?= $item->goods->updated_at?></td>
+                    <td><?= $item->goods->created_at?></td>
+                    <td><?= $item->goods->technique_remark?></td>
+                    <td><?= in_array($item->goods_id, $inquiryYes) ? $item->inquiryGoods->inquiry_sn : ''?></td></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>
@@ -165,7 +169,7 @@ foreach ($orderGoods as $v) {
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-inquiry/index");
+                        window.location.reload();
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
