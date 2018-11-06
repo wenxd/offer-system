@@ -50,6 +50,7 @@ class Inquiry extends ActiveRecord
     ];
 
     public $supplier_name;
+    public $goods_number_b;
 
     public function behaviors()
     {
@@ -84,7 +85,7 @@ class Inquiry extends ActiveRecord
                  'order_id', 'order_inquiry_id'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at', 'offer_date'], 'safe'],
-            [['inquiry_datetime', 'remark', 'better_reason'], 'string', 'max' => 255],
+            [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
             [
                 ['good_id', 'supplier_name', 'inquiry_datetime'],
                 'required',
@@ -104,6 +105,7 @@ class Inquiry extends ActiveRecord
             'id'               => '自增id',
             'good_id'          => '零件ID',
             'goods_number'     => '零件号',
+            'goods_number_b'   => '零件号B',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',
@@ -140,6 +142,15 @@ class Inquiry extends ActiveRecord
             return false;
         }
         $this->supplier_id = $supplier->id;
+
+        if ($this->goods_number_b) {
+            $goods = Goods::findOne(['goods_number_b' => $this->goods_number_b]);
+            if (!$goods) {
+                $this->addError('goods_number_b', '此零件不存在');
+                return false;
+            }
+            $this->good_id = $goods->id;
+        }
 
         return parent::beforeSave($insert);
     }

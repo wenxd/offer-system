@@ -22,8 +22,13 @@ $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
-
+$userId   = Yii::$app->user->identity->id;
 ?>
+<style>
+    .add_danger {
+        background-color: red;
+    }
+</style>
 <div class="box table-responsive">
     <div class="box-body">
     <?= GridView::widget([
@@ -39,6 +44,7 @@ foreach ($adminList as $key => $admin) {
             'id',
             [
                 'attribute' => 'order_sn',
+                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
@@ -52,11 +58,14 @@ foreach ($adminList as $key => $admin) {
             'inquiry_sn',
             [
                 'attribute' => 'end_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'end_date'],
                 'filter'    => DateRangePicker::widget([
                     'name' => 'OrderInquirySearch[end_date]',
                     'value' => Yii::$app->request->get('OrderInquirySearch')['end_date'],
-                ])
+                ]),
+                'value'     => function($model) {
+                    return substr($model->end_date, 0, 10);
+                }
             ],
             [
                 'attribute' => 'created_at',
@@ -64,10 +73,14 @@ foreach ($adminList as $key => $admin) {
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'OrderInquirySearch[created_at]',
                     'value' => Yii::$app->request->get('OrderInquirySearch')['created_at'],
-                ])
+                ]),
+                'value'     => function($model) {
+                    return substr($model->created_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'is_inquiry',
+                'contentOptions'=>['class'=>'is_inquiry'],
                 'format'    => 'raw',
                 'filter'    => OrderInquiry::$Inquiry,
                 'value'     => function ($model, $key, $index, $column) {
@@ -99,3 +112,20 @@ foreach ($adminList as $key => $admin) {
     ]); ?>
     </div>
 </div>
+
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    $('tr').each(function (i, e) {
+        var end_date = $(e).find('.end_date').text();
+        var inquiry = $(e).find('.is_inquiry').text();
+        if (end_date && inquiry == '否') {
+            end_date = new Date(end_date);
+            end_date.setDate(end_date.getDate() - 1);
+            var today = new Date();
+            if (end_date < today) {
+                $(e).css("background-color","red");
+            }
+        }
+    });
+</script>

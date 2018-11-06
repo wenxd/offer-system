@@ -2,9 +2,11 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Order;
+use app\models\AuthAssignment;
 use app\extend\widgets\Bar;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -13,6 +15,11 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '订单管理列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
@@ -42,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'order_sn',
+                    'visible'   => !in_array($userId, $adminIds),
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column) {
                          return Html::a($model->order_sn, Url::to(['order/detail', 'id' => $model->id]));

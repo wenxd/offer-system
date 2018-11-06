@@ -18,6 +18,8 @@ $model->tax_rate='16';
 if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
+        $goods = Goods::findOne($_GET['goods_id']);
+        $model->goods_number_b = $goods->goods_number_b;
     }
     $model->inquiry_datetime = date('Y-m-d H:i:s');
     $model->delivery_time    = 100;
@@ -55,6 +57,27 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
     .cancel {
         display: none;
     }
+
+    .box-search-goods_number_b li {
+        list-style: none;
+        padding-left: 10px;
+        line-height: 30px;
+    }
+    .box-search-ul-goods_number_b {
+        margin-left: -40px;
+    }
+    .box-search-goods_number_b {
+        width: 200px;
+        margin-top: -15px;
+        border: 1px solid black;
+        z-index: 10;
+    }
+    .box-search-goods_number_b li:hover {
+        background-color: #84b5bc;
+    }
+    .cancel-goods_number_b {
+        display: none;
+    }
 </style>
 
 <div class="box">
@@ -62,11 +85,19 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-body">
+    <?php if (isset($_GET['order_inquiry'])) :?>
+        <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号B') ?>
+        <div class="box-search-goods_number_b cancel-goods_number_b">
+            <ul class="box-search-ul-goods_number_b">
 
-    <?= $form->field($model, 'good_id')
-        ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
-        ->label('零件号') ?>
-
+            </ul>
+        </div>
+    <?php else :?>
+        <?= $form->field($model, 'good_id')
+            ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
+            ->label('零件号') ?>
+    <?php endif;?>
     <div class="form-group field-inquiry-price">
         <label class="control-label" for="inquiry-supplier_name">供应商</label>
         <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
@@ -102,9 +133,9 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 
     <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
-    <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->label('订单号') ?>
+    <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->hiddenInput()->label(false) ?>
 
-    <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->label('询价单号') ?>
+    <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->hiddenInput()->label(false)  ?>
 
     </div>
 
@@ -141,8 +172,15 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         $("#inquiry-price").val(price.toFixed(2));
     });
 
-    var goods_id = $('#inquiry-good_id').val();
-    getGoodsInfo(goods_id);
+    init();
+    function init() {
+        var is_inquiry = '<?=$_GET['order_inquiry'] ?? 0?>';
+        if (is_inquiry == 1) {
+            var goods_id = '<?=$_GET['goods_id'] ?? 0?>';
+            getGoodsInfo(goods_id);
+        }
+    }
+
     function getGoodsInfo(goods_id) {
         $.ajax({
             type:"get",
@@ -193,9 +231,46 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             }
         });
     });
+
+    //零件B搜索
+    $("#inquiry-goods_number_b").bind('input propertychange', function (e) {
+        var good_number_b = $('#inquiry-goods_number_b').val();
+        if (good_number_b === '') {
+            $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
+            return;
+        }
+        $('.box-search-ul-goods_number_b').html("");
+        $('.box-search-goods_number_b').removeClass('cancel-goods_number_b');
+        $.ajax({
+            type:"GET",
+            url:"?r=search/get-good-number-b",
+            data:{good_number_b:good_number_b},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    var li = '';
+                    for (var i in res.data) {
+                        li += '<li onclick="selectGoods($(this))">' + res.data[i] + '</li>';
+                    }
+                    if (li) {
+                        $('.box-search-ul-goods_number_b').append(li);
+                    } else {
+                        $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
+                    }
+                }
+            }
+        })
+    });
+
     function select(obj){
         $("#inquiry-supplier_name").val(obj.html());
         $('.box-search').addClass('cancel');
     }
+
+    function selectGoods(obj){
+        $("#inquiry-goods_number_b").val(obj.html());
+        $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
+    }
+
 
 </script>

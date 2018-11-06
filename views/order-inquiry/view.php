@@ -30,8 +30,8 @@ $userId   = Yii::$app->user->identity->id;
             <thead>
             <tr>
                 <th>询价单号</th>
-                <th>订单号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
+                <th>订单号</th>
                 <th>零件号A</th>
                 <?php endif;?>
                 <th>零件号B</th>
@@ -51,8 +51,8 @@ $userId   = Yii::$app->user->identity->id;
                 <?php foreach ($inquiryGoods as $item):?>
                 <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                     <td><?=$orderInquiry->inquiry_sn?></td>
-                    <td><?=$orderInquiry->order->order_sn?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
+                    <td><?=$orderInquiry->order->order_sn?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
@@ -69,7 +69,7 @@ $userId   = Yii::$app->user->identity->id;
                         <?php if (!$item->is_inquiry):?>
                             <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                         <?php endif;?>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&order_inquiry=1" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                     </td>
                 </tr>
                 <?php endforeach;?>
