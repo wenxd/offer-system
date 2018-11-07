@@ -1,13 +1,18 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
-use app\models\Supplier;
+use app\models\{Supplier, AuthAssignment};
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
 /* @var $form yii\widgets\ActiveForm */
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$userId = Yii::$app->user->identity->id;
 ?>
 
 <div class="box">
@@ -28,9 +33,9 @@ use app\models\Supplier;
         <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
-
+        <?php if (!in_array($userId, $adminIds)):?>
+            <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
+        <?php endif;?>
     </div>
 
     <div class="box-footer">

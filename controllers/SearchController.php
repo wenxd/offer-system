@@ -64,7 +64,11 @@ class SearchController extends BaseController
     {
         $supplier_name = (string)Yii::$app->request->get('supplier_name');
 
-        $supplierList       = Supplier::find()->filterWhere(['like', 'name', $supplier_name])->all();
+        $supplierList       = Supplier::find()->filterWhere(['like', 'name', $supplier_name])
+            ->andWhere([
+                'is_confirm' => Supplier::IS_CONFIRM_YES,
+                'is_deleted' => Supplier::IS_DELETED_NO
+            ])->all();
         $supplier_name_list = ArrayHelper::getColumn($supplierList, 'name');
 
         return json_encode(['code' => 200, 'data' => $supplier_name_list]);
