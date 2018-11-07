@@ -70,6 +70,7 @@ $userId   = Yii::$app->user->identity->id;
                             <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                         <?php endif;?>
                         <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&order_inquiry=1" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                     </td>
                 </tr>
                 <?php endforeach;?>
@@ -102,4 +103,49 @@ $userId   = Yii::$app->user->identity->id;
             });
         });
     });
+
+    function reasons(obj) {
+        var id = $(obj).data('id');
+        layer.open({
+            type: 1,
+            title: '询不出原因',
+            skin: 'layui-layer-rim', //加上边框
+            area: ['500px', '240px'], //宽高
+            content: '<form class="form-horizontal">\n' +
+            '  <div class="form-group">\n' +
+            '    <label for="reason" class="col-sm-2 control-label">原因</label>\n' +
+            '    <div class="col-sm-10">\n' +
+            '      <input type="text" class="form-control" id="reason">\n' +
+            '    </div>\n' +
+            '  </div>\n' +
+            '  <div class="form-group">\n' +
+            '    <div class="col-sm-offset-2 col-sm-10">\n' +
+            '      <a class="btn btn-default" href="javascript:void(0)" onclick="sure(' + id + ')">确定</a>\n' +
+            '    </div>\n' +
+            '  </div>\n' +
+            '</form>'
+        });
+    }
+
+    function sure(id) {
+        var reason = $('#reason').val();
+        if (!reason) {
+            layer.msg('请输入原因', {time:2000});
+            return false;
+        }
+        $.ajax({
+            type:"post",
+            url:"?r=order-inquiry/add-reason",
+            data:{id:id, reason:reason},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200) {
+                    window.location.reload();
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    }
 </script>

@@ -149,7 +149,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[updated_at]',
                     'value' => Yii::$app->request->get('InquirySearch')['updated_at'] ?? '',
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->updated_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'created_at',
@@ -157,7 +160,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[created_at]',
                     'value' => Yii::$app->request->get('InquirySearch')['created_at'] ?? '',
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->created_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'is_better',

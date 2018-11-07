@@ -227,4 +227,17 @@ class OrderInquiryController extends BaseController
             return json_encode(['code' => 500, 'msg' => $info->getErrors()]);
         }
     }
+
+    //询价记录询不出添加原因
+    public function actionAddReason()
+    {
+        $params = Yii::$app->request->post();
+        $inquiryGoods = InquiryGoods::findOne($params['id']);
+        $inquiryGoods->reason = $params['reason'];
+        if ($inquiryGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $inquiryGoods->getErrors()]);
+        }
+    }
 }

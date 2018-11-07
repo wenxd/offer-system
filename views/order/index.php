@@ -68,7 +68,10 @@ $userId   = Yii::$app->user->identity->id;
                     'filter'    => DateRangePicker::widget([
                         'name'  => 'OrderSearch[updated_at]',
                         'value' => Yii::$app->request->get('OrderSearch')['updated_at'],
-                    ])
+                    ]),
+                    'value'     => function($model){
+                        return substr($model->updated_at, 0, 10);
+                    }
                 ],
                 [
                     'attribute' => 'created_at',
@@ -76,7 +79,10 @@ $userId   = Yii::$app->user->identity->id;
                     'filter'    => DateRangePicker::widget([
                         'name'  => 'OrderSearch[created_at]',
                         'value' => Yii::$app->request->get('OrderSearch')['created_at'],
-                    ])
+                    ]),
+                    'value'     => function($model){
+                        return substr($model->created_at, 0, 10);
+                    }
                 ],
                 [
                     'attribute' => 'status',
