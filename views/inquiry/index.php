@@ -135,6 +135,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_price',
             'tax_rate',
             [
+                'attribute' => 'delivery_time',
+                'contentOptions'=>['style'=>'min-width: 80px;']
+            ],
+            [
                 'attribute' => 'inquiry_datetime',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
