@@ -97,8 +97,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number">1</td>
                 <td><?= $inquiryPrice ? $inquiryPrice->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></td>
-                <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
-                <td class="stressColor"><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
                 <td><?= $inquiryPrice ? substr($inquiryPrice->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryPrice ? Inquiry::$better[$inquiryPrice->is_better] : ''?></td>
@@ -117,8 +117,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number">1</td>
                 <td><?= $inquiryTime ? $inquiryTime->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryTime ? $inquiryTime->price : 0 ?></td>
-                <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
-                <td class="stressColor"><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
                 <td><?= $inquiryTime ? substr($inquiryTime->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryTime ? Inquiry::$better[$inquiryTime->is_better] : ''?></td>
@@ -137,8 +137,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number">1</td>
                 <td><?= $inquiryNew ? $inquiryNew->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryNew ? $inquiryNew->price : 0 ?></td>
-                <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
-                <td class="stressColor"><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
                 <td><?= $inquiryNew ? substr($inquiryNew->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryNew ? Inquiry::$better[$inquiryNew->is_better] : ''?></td>
@@ -157,8 +157,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number">1</td>
                 <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
                 <td class="price"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></td>
-                <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
-                <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
                 <td><?= $inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?= $inquiryBetter ? Inquiry::$better[$inquiryBetter->is_better] : ''?></td>
@@ -194,10 +194,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>库存记录</td>
                 <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td class="number"><?= $stock ? $stock->number : 0 ?></td>
+                <td class="number color"><b><?= $stock ? $stock->number : 0 ?></b></td>
                 <td><?= $stock ? $stock->tax_rate : 0 ?></td>
                 <td class="price"><?= $stock ? number_format($average, 2, '.', '') : ''?></td>
-                <td class="tax_price"><?= $stock ? $stock->tax_price : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $stock ? $stock->tax_price : 0 ?></b></td>
                 <td><?= $stock ? $stock->position : 0 ?></td>
                 <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
                 <td><?= $stock ? $stock->suggest_number : 0 ?></td>
@@ -238,8 +238,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
                 <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
-                <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
-                <td class="stressColor"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></td>
+                <td class="tax_price"><b class="color"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></b></td>
                 <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
@@ -257,8 +257,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number"><?= $purchasePrice ? $purchasePrice->number : 0 ?></td>
                 <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_rate : $purchasePrice->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->price : $purchasePrice->inquiry->price) : 0 ?></td></td>
-                <td class="tax_price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></td>
-                <td class="stressColor"><?= $purchasePrice && $purchasePrice->inquiry ? $purchasePrice->inquiry->delivery_time : '' ?></td>
+                <td class="tax_price"><b class="color"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $purchasePrice && $purchasePrice->inquiry ? $purchasePrice->inquiry->delivery_time : '' ?></b></td>
                 <td><?= $purchasePrice ? ($purchasePrice->stockLog ? ceil((strtotime($purchasePrice->stockLog->operate_time) - strtotime($purchasePrice->purchase_date))/(3600*24)) : '') : '' ?></td>
                 <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchasePrice ? substr($purchasePrice->purchase_date, 0, 10) : '' ?></td>
@@ -276,8 +276,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="number"><?= $purchaseDay ? $purchaseDay->number : 0 ?></td>
                 <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_rate : $purchaseDay->inquiry->tax_rate) : 0 ?></td>
                 <td class="price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->price : $purchaseDay->inquiry->price) : 0 ?></td></td>
-                <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
-                <td class="stressColor"><?= $purchaseDay && $purchaseDay->inquiry ? $purchaseDay->inquiry->delivery_time : '' ?></td>
+                <td class="tax_price"><b class="color"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $purchaseDay && $purchaseDay->inquiry ? $purchaseDay->inquiry->delivery_time : '' ?></b></td>
                 <td><?= $purchaseDay ? ($purchaseDay->stockLog ? ceil((strtotime($purchaseDay->stockLog->operate_time) - strtotime($purchaseDay->purchase_date))/(3600*24)) : '') : '' ?></td>
                 <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
@@ -336,11 +336,11 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         function init(){
-            var stock_number = $('.stock_list').find('.number').text();
-            var high_number  = $('.stock_list').find('.high_number').text();
-            var low_number   = $('.stock_list').find('.low_number').text();
-
+            var stock_number = parseInt($('.stock_list').find('.number').text());
+            var high_number  = parseInt($('.stock_list').find('.high_number').text());
+            var low_number   = parseInt($('.stock_list').find('.low_number').text());
             if (stock_number > high_number || stock_number < low_number) {
+                $('.stock_list').find('.number').removeClass('color');
                 $('.stock_list').find('.number').addClass('changeColor');
             }
         }
