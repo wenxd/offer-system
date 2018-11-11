@@ -87,7 +87,7 @@ class Stock extends ActiveRecord
         return [
             'id'               => '自增id',
             'good_id'          => '零件ID',
-            'goods_number'     => '零件号',
+            'goods_number'     => '零件号A',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',
