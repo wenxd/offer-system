@@ -73,6 +73,16 @@ if ($model->isNewRecord) {
 
     <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'device_one')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'device_two')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'device_three')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'device_four')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'device_five')->textInput(['maxlength' => true]) ?>
+
     </div>
     <div class="box-footer">
         <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [

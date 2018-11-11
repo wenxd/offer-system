@@ -121,7 +121,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     return substr($model->created_at, 0, 10);
                 }
             ],
-            'technique_remark',
+            [
+                'attribute' => 'technique_remark',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'device_one',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'device_two',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'device_three',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'device_four',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'device_five',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
             [
                 'class'         => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],
