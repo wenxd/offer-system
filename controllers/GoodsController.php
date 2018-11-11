@@ -215,8 +215,8 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E'];
-        $tableheader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        $tableheader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备1', '设备2', '设备3', '设备4', '设备5'];
         for($i = 0; $i < count($tableheader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -275,23 +275,53 @@ class GoodsController extends BaseController
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
                     //总数
                     $total = count($sheetData);
-                    $data = [];
+                    $num = 0;
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            $item = [];
-                            $item[] = $value['A'];
-                            $item[] = $value['B'];
-                            $item[] = $value['C'];
-                            $item[] = $value['D'];
-                            $item[] = $value['E'];
-                            if (!Goods::findOne(['goods_number' => $value['A']])) {
-                                $data[] = $item;
+                            $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
+                                ->andWhere(['or', ['goods_number' => $value['A']], ['goods_number_b' => $value['B']]])->one();
+                            if (!$goods) {
+                                $goods = new Goods();
+                            }
+                            if ($value['A']) {
+                                $goods->goods_number = $value['A'];
+                            }
+                            if ($value['B']) {
+                                $goods->goods_number_b = $value['B'];
+                            }
+                            if ($value['C']) {
+                                $goods->description = $value['C'];
+                            }
+                            if ($value['D']) {
+                                $goods->description_en = $value['D'];
+                            }
+                            if ($value['E']) {
+                                $goods->original_company = $value['E'];
+                            }
+                            if ($value['F']) {
+                                $goods->original_company_remark = $value['F'];
+                            }
+                            if ($value['G']) {
+                                $goods->device_one = $value['G'];
+                            }
+                            if ($value['H']) {
+                                $goods->device_two = $value['H'];
+                            }
+                            if ($value['I']) {
+                                $goods->device_three = $value['I'];
+                            }
+                            if ($value['J']) {
+                                $goods->device_four = $value['J'];
+                            }
+                            if ($value['K']) {
+                                $goods->device_five = $value['K'];
+                            }
+                            if ($goods->save()) {
+                                $num++;
                             }
                         }
                     }
                 }
-                $feild = ['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company'];
-                $num = Yii::$app->db->createCommand()->batchInsert(Goods::tableName(), $feild, $data)->execute();
                 unlink($saveName);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
