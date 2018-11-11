@@ -193,7 +193,7 @@ class OrderController extends BaseController
         $orderInquiry  = OrderInquiry::findAll(['order_id' => $id]);
         $orderFinal    = OrderFinal::findAll(['order_id' => $id]);
         $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
-        $orderGoods    = OrderGoods::find()->where(['order_id' => $id])->groupBy('goods_id')->all();
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $id])->all();
 
         $data['model']         = $order;
         $data['orderInquiry']  = $orderInquiry;
