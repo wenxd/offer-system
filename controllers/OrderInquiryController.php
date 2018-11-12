@@ -196,7 +196,9 @@ class OrderInquiryController extends BaseController
 
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
-        $inquiryGoods = InquiryGoods::find()->where(['inquiry_sn' => $orderInquiry->inquiry_sn,
+        $inquiryGoods = InquiryGoods::find()->where([
+            'inquiry_sn' => $orderInquiry->inquiry_sn,
+            'order_id'   => $orderInquiry->order_id,
             'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;

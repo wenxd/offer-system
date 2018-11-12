@@ -441,8 +441,7 @@ class OrderController extends BaseController
         $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $date = date('ymd_');
-        $orderI = OrderInquiry::find()->where(['order_id' => $order->id])
-            ->andWhere(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
+        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $inquirySn = explode('_', $orderI->inquiry_sn);
             $number = sprintf("%03d", $inquirySn[1]+1);
