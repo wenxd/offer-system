@@ -57,7 +57,7 @@ class CompetitorGoods extends ActiveRecord
             [['tax_rate', 'price', 'tax_price'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
-            [['goods_id', 'competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
+            [['competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
             [['remark', 'unit', 'goods_number'], 'string'],
         ];
     }
