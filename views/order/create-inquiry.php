@@ -63,6 +63,7 @@ foreach ($orderGoods as $v) {
                     <th>加工</th>
                     <th>特制</th>
                     <th>铭牌</th>
+                    <th>总成</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
                     <th>技术备注</th>
@@ -87,6 +88,7 @@ foreach ($orderGoods as $v) {
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                    <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
                     <td><?= $item->goods->updated_at?></td>
                     <td><?= $item->goods->created_at?></td>
                     <td><?= $item->goods->technique_remark?></td>
