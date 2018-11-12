@@ -13,7 +13,7 @@ use kartik\datetime\DateTimePicker;
 if ($model->isNewRecord) {
     $model->created_at = date('Y-m-d H:i:s');
     $model->order_type = 1;
-    $model->order_sn = 'D' . date('ymd_');
+    $model->order_sn = 'D' . date('ymd__') . $number;
     $model->manage_name = Yii::$app->user->identity->username;
 }
 

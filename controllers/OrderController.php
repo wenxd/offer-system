@@ -80,9 +80,18 @@ class OrderController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
+        $date = date('ymd_');
+        $orderI = Order::find()->where(['like', 'order_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $num = strrpos($orderI->order_sn, '_');
+            $str = substr($orderI->order_sn, $num+1);
+            $number = sprintf("%02d", $str+1);
+        } else {
+            $number = '01';
+        }
         return $this->render('create', [
-            'model' => $model,
+            'model'  => $model,
+            'number' => $number
         ]);
     }
 

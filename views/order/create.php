@@ -12,6 +12,7 @@ $this->title = '创建订单';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'number' => $number
     ]) ?>
 
 </div>
