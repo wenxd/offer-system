@@ -49,13 +49,8 @@ class OrderInquirySearch extends OrderInquiry
         //询价员
         $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-        $adminList = Admin::find()->where(['id' => $adminIds])->all();
-        $admins = [];
-        foreach ($adminList as $key => $admin) {
-            $admins[$admin->id] = $admin->username;
-        }
         if (in_array($userId, $adminIds)) {
-            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO]);
+            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO, 'admin_id' => $userId]);
         } else {
             $query = OrderInquiry::find();
         }
