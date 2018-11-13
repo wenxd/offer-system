@@ -471,11 +471,21 @@ class OrderController extends BaseController
         $finalGoods    = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
         $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
+        $date = date('ymd_');
+        $orderI = OrderFinal::find()->where(['like', 'final_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $finalSn = explode('_', $orderI->final_sn);
+            $number = sprintf("%03d", $finalSn[1]+1);
+        } else {
+            $number = '001';
+        }
+
         $data['goods']        = $goods;
         $data['order']        = $order;
         $data['finalGoods']   = $finalGoods;
         $data['orderGoods']   = $orderGoods;
         $data['model']        = new OrderFinal();
+        $data['number']       = $number;
 
         return $this->render('create-final', $data);
     }

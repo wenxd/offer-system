@@ -37,6 +37,7 @@ $admins = [];
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 ?>
 <style>
+    /*供应商*/
     .box-search li {
         list-style: none;
         padding-left: 10px;
@@ -58,6 +59,29 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         display: none;
     }
 
+    /*零件号A*/
+    .box-search-goods_number li {
+        list-style: none;
+        padding-left: 10px;
+        line-height: 30px;
+    }
+    .box-search-ul-goods_number {
+        margin-left: -40px;
+    }
+    .box-search-goods_number {
+        width: 200px;
+        margin-top: -10px;
+        border: 1px solid black;
+        z-index: 10;
+    }
+    .box-search-goods_number li:hover {
+        background-color: #84b5bc;
+    }
+    .cancel-goods_number {
+        display: none;
+    }
+
+    /*零件号B*/
     .box-search-goods_number_b li {
         list-style: none;
         padding-left: 10px;
@@ -85,8 +109,8 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-body">
-    <?php if (isset($_GET['order_inquiry'])) :?>
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
+    <?php if (isset($_GET['order_inquiry'])) :?>
         <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号B') ?>
         <div class="box-search-goods_number_b cancel-goods_number_b">
             <ul class="box-search-ul-goods_number_b">
@@ -94,9 +118,12 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             </ul>
         </div>
     <?php else :?>
-        <?= $form->field($model, 'good_id')
-            ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
-            ->label('零件号') ?>
+        <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号A') ?>
+        <div class="box-search-goods_number cancel-goods_number">
+            <ul class="box-search-ul-goods_number">
+
+            </ul>
+        </div>
     <?php endif;?>
     <div class="form-group field-inquiry-price">
         <label class="control-label" for="inquiry-supplier_name">供应商</label>
@@ -261,6 +288,41 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             }
         })
     });
+
+    $("#inquiry-goods_number").bind('input propertychange', function (e) {
+        var good_number = $('#inquiry-goods_number').val();
+        if (good_number === '') {
+            $('.box-search-goods_number').addClass('cancel-goods_number');
+            return;
+        }
+        $('.box-search-ul-goods_number').html("");
+        $('.box-search-goods_number').removeClass('cancel-goods_number');
+        $.ajax({
+            type:"GET",
+            url:"?r=search/get-good-number",
+            data:{good_number:good_number},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    var li = '';
+                    for (var i in res.data) {
+                        li += '<li onclick="selectGoodsA($(this))">' + res.data[i] + '</li>';
+                    }
+                    if (li) {
+                        $('.box-search-ul-goods_number').append(li);
+                    } else {
+                        $('.box-search-goods_number').addClass('cancel-goods_number');
+                    }
+                }
+            }
+        })
+    });
+
+    function selectGoodsA(obj){
+        $("#inquiry-goods_number").val(obj.html());
+        $('.box-search-goods_number').addClass('cancel-goods_number');
+    }
+
 
     function select(obj){
         $("#inquiry-supplier_name").val(obj.html());

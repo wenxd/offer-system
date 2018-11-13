@@ -50,6 +50,7 @@ class Inquiry extends ActiveRecord
     ];
 
     public $supplier_name;
+    public $goods_number;
     public $goods_number_b;
 
     public function behaviors()
@@ -143,15 +144,25 @@ class Inquiry extends ActiveRecord
         }
         $this->supplier_id = $supplier->id;
 
+        if (!$this->goods_number && !$this->goods_number_b) {
+            $this->addError('id', '零件号不能为空');
+            return false;
+        }
+
         if ($this->goods_number_b) {
             $goods = Goods::findOne(['goods_number_b' => $this->goods_number_b]);
             if (!$goods) {
-                $this->addError('goods_number_b', '此零件不存在');
+                $this->addError('goods_number_b', '此零件B不存在');
                 return false;
             }
-            $this->good_id = $goods->id;
+        } else {
+            $goods = Goods::findOne(['goods_number' => $this->goods_number]);
+            if (!$goods) {
+                $this->addError('goods_number', '此零件A不存在');
+                return false;
+            }
         }
-
+        $this->good_id = $goods->id;
         return parent::beforeSave($insert);
     }
 

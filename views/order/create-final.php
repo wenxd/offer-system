@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
-$model->final_sn = 'Z' . date('ymd_');
+$model->final_sn = 'Z' . date('ymd__') . $number;
 ?>
 <section class="content">
     <div class="box table-responsive">
