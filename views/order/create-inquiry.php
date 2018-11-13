@@ -92,7 +92,7 @@ foreach ($orderGoods as $v) {
                     <td><?= $item->goods->updated_at?></td>
                     <td><?= $item->goods->created_at?></td>
                     <td><?= $item->goods->technique_remark?></td>
-                    <td><?= in_array($item->goods_id, $inquiryYes) ? $item->inquiryGoods->inquiry_sn : ''?></td></td>
+                    <td><?= in_array($item->goods_id, $inquiryYes) ? $item->inquiryGoods->inquiry_sn : ''?></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>
