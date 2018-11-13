@@ -66,7 +66,7 @@ class OrderGoods extends \yii\db\ActiveRecord
 
     public function getInquiryGoods()
     {
-        return $this->hasOne(InquiryGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id']);
+        return $this->hasOne(InquiryGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id'])->orderBy('inquiry_goods.id Desc');
     }
 
     public function getFinalGoods()

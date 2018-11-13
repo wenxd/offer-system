@@ -73,7 +73,8 @@ foreach ($orderGoods as $v) {
             <tbody>
                 <?php foreach ($orderGoods as $key => $item):?>
                 <tr>
-                    <td><?= in_array($item->goods_id, $inquiryYes) ? '' : "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>" ?></td>
+                    <?php $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";?>
+                    <td><?= in_array($item->goods_id, $inquiryYes) ? ($item->inquiryGoods->is_result ? '' : $str) : $str ?></td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
@@ -92,7 +93,7 @@ foreach ($orderGoods as $v) {
                     <td><?= $item->goods->updated_at?></td>
                     <td><?= $item->goods->created_at?></td>
                     <td><?= $item->goods->technique_remark?></td>
-                    <td><?= in_array($item->goods_id, $inquiryYes) ? $item->inquiryGoods->inquiry_sn : ''?></td>
+                    <td><?= in_array($item->goods_id, $inquiryYes) ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>
