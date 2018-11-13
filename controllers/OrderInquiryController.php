@@ -235,7 +235,8 @@ class OrderInquiryController extends BaseController
     {
         $params = Yii::$app->request->post();
         $inquiryGoods = InquiryGoods::findOne($params['id']);
-        $inquiryGoods->reason = $params['reason'];
+        $inquiryGoods->reason    = $params['reason'];
+        $inquiryGoods->is_result = InquiryGoods::IS_RESULT_NO;
         if ($inquiryGoods->save()) {
             return json_encode(['code' => 200, 'msg' => '成功']);
         } else {

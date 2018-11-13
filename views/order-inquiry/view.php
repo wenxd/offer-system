@@ -66,11 +66,13 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$orderGoods[$item->goods_id]->number?></td>
                     <td><?=$item::$Inquiry[$item->is_inquiry]?></td>
                     <td>
-                        <?php if (!$item->is_inquiry):?>
+                        <?php if (!$item->is_inquiry && $item->is_result):?>
                             <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                         <?php endif;?>
                         <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&order_inquiry=1" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                        <?php if (!$item->is_inquiry && $item->is_result):?>
                         <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                        <?php endif;?>
                     </td>
                 </tr>
                 <?php endforeach;?>
