@@ -5,24 +5,21 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Order;
+use app\models\OrderQuote;
 
 /**
- * OrderQuoteSearch represents the model behind the search form of `backend\models\OrderQuote`.
+ * OrderQuoteSearch represents the model behind the search form of `app\models\OrderQuote`.
  */
-class OrderQuoteSearch extends Order
+class OrderQuoteSearch extends OrderQuote
 {
-    public $customer_name;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'is_deleted'], 'integer'],
-            [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
-            [['order_price'], 'number'],
-            [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
+            [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
+            [['quote_sn', 'goods_info', 'end_date', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -44,18 +41,12 @@ class OrderQuoteSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find();
+        $query = OrderQuote::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ],
-                'attributes' => ['id', 'order_price', 'provide_date', 'updated_at', 'created_at']
-            ],
         ]);
 
         $this->load($params);
@@ -68,40 +59,18 @@ class OrderQuoteSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order.id' => $this->id,
-            'order.order_price' => $this->order_price,
-            'order.is_deleted'  => $this->is_deleted,
-            'order.type'        => Order::TYPE_QUOTE,
+            'id' => $this->id,
+            'order_id' => $this->order_id,
+            'end_date' => $this->end_date,
+            'is_quote' => $this->is_quote,
+            'admin_id' => $this->admin_id,
+            'is_deleted' => $this->is_deleted,
+            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at,
         ]);
 
-        if ($this->customer_name) {
-            $query->leftJoin('customer as a', 'a.id = order.customer_id');
-            $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
-        }
-        $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'remark', $this->remark]);
-
-        if ($this->provide_date && strpos($this->provide_date, ' - ')) {
-            list($provide_at_start, $provide_at_end) = explode(' - ', $this->provide_date);
-            $provide_at_start .= ' 00:00:00';
-            $provide_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'provide_date', $provide_at_start, $provide_at_end]);
-        }
-
-        if ($this->updated_at && strpos($this->updated_at, ' - ')) {
-            list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
-            $updated_at_start .= ' 00:00:00';
-            $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
-        }
-
-        if ($this->created_at && strpos($this->created_at, ' - ')) {
-            list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
-            $created_at_start .= ' 00:00:00';
-            $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
-        }
+        $query->andFilterWhere(['like', 'quote_sn', $this->quote_sn])
+            ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
 
         return $dataProvider;
     }

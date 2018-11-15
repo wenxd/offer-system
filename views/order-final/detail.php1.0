@@ -9,21 +9,19 @@ use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
-$this->title = '生成报价单';
+$this->title = '生成采购单';
 $this->params['breadcrumbs'][] = $this->title;
 
 //同一个订单询价商品的IDs
 $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
-
-$model->quote_sn = 'B' . date('ymd__') . $number;
 
 ?>
 <div class="box table-responsive">
@@ -52,8 +50,8 @@ $model->quote_sn = 'B' . date('ymd__') . $number;
                 <th>询价状态</th>
                 <th>未率总价</th>
                 <th>含率总价</th>
-                <th>是否有报价单</th>
-                <th>报价单号</th>
+                <th>是否有采购单</th>
+                <th>采购单号</th>
                 <th>订单需求数量</th>
                 <th>数量</th>
             </tr>
@@ -85,21 +83,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td><?=$orderGoods[$item->goods_id]->number?></td>
-                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
-                        '<input type="number" size="4" class="number" min="1" 
-    onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
-    onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?></td>
+                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : '<input type="number" size="4" class="number" min="1">'?></td>
             </tr>
             <?php endforeach;?>
             </tbody>
         </table>
-        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择报价员') ?>
-
-        <?= $form->field($model, 'quote_sn')->textInput() ?>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
+        <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
     </div>
     <div class="box-footer">
-        <?= Html::button('保存报价单', [
-                'class' => 'btn btn-success quote_save',
+        <?= Html::button('保存采购单', [
+                'class' => 'btn btn-success purchase_save',
                 'name'  => 'submit-button']
         )?>
     </div>
@@ -133,7 +136,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 layer.msg('数量最少为1', {time:2000});
                 return false;
             }
-            var a = number.replace(/[\D]/g,'');
+            var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
             var price = $(this).parent().parent().find('.price').text();
@@ -144,7 +147,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         });
 
         //保存
-        $('.quote_save').click(function (e) {
+        $('.purchase_save').click(function (e) {
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
@@ -153,7 +156,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             var goods_info = [];
             var number_flag = false;
-            var number = 1;
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
@@ -172,33 +174,30 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 layer.msg('请给选中的行输入数量', {time:2000});
                 return false;
             }
-            var admin_id = $('#orderquote-admin_id').val();
+
+            var admin_id = $('#orderpurchase-admin_id').val();
             if (!admin_id) {
                 layer.msg('请选择采购员', {time:2000});
                 return false;
             }
-            var quote_sn = $('#orderquote-quote_sn').val();
-            if (!quote_sn) {
-                layer.msg('请填写报价单号', {time:2000});
+
+            var end_date = $('#orderpurchase-end_date').val();
+            if (!end_date) {
+                layer.msg('请输入采购截止时间', {time:2000});
                 return false;
             }
-            // var end_date = $('#orderpurchase-end_date').val();
-            // if (!end_date) {
-            //     layer.msg('请输入采购截止时间', {time:2000});
-            //     return false;
-            // }
 
             var order_final_id = $('.data').data('order_final_id');
 
             $.ajax({
                 type:"post",
-                url:'?r=order-quote/save-order',
-                data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, goods_info:goods_info},
+                url:'?r=order-purchase/save-order',
+                data:{order_final_id:order_final_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-quote/index");
+                        location.replace("?r=order-purchase/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
@@ -210,7 +209,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         function init(){
             if (!$('.select_id').length) {
                 $('.select_all').hide();
-                $('.quote_save').hide();
+                $('.purchase_save').hide();
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
