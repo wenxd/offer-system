@@ -12,10 +12,6 @@ use app\models\AuthAssignment;
 $this->title = '报价单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-if (!$model->agreement_date) {
-    $model->agreement_date = substr($model->orderFinal->agreement_date, 0, 10);
-}
-
 $use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
@@ -85,25 +81,15 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td class="afterNumber"><?=$item->number?></td>
-                    <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
+                    <td><?=$item->is_quote ? '完成' : '未完成'?></td>
                     <td>
-                        <?php if ($item->agreement_sn):?>
-                            <?=$item->agreement_sn?>
-                        <?php else:?>
-                            <input type="text" class="agreement_sn">
-                        <?php endif;?>
+
                     </td>
                     <td>
-                        <div style="width: 140px;">
-                        <?php if ($item->purchase_date):?>
-                            <?=substr($item->purchase_date, 0, 10)?>
-                        <?php else:?>
-                            <input size="16" type="text" value="" readonly class="form_datetime delivery_date">
-                        <?php endif;?>
-                        </div>
+
                     </td>
                     <td>
-                        <?php if (!$item->is_purchase):?>
+                        <?php if (!$item->is_quote):?>
                         <a class="btn btn-success btn-xs btn-flat complete" href="javascript:void(0);" data-id="<?=$item->id?>">完成采购</a>
                         <?php endif;?>
                     </td>
@@ -125,9 +111,9 @@ $userId   = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
-        <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
+
     </div>
-    <?php if (!$orderPurchase->is_purchase):?>
+    <?php if (!$orderQuote->is_quote):?>
     <div class="box-footer">
         <?= Html::button('完成采购', [
                 'class' => 'btn btn-success purchase_complete',

@@ -20,7 +20,7 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
-            [['quote_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
+            [['quote_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
             [['id', 'quote_sn', 'order_sn'], 'trim'],
         ];
     }
@@ -61,18 +61,35 @@ class OrderQuoteSearch extends OrderQuote
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'order_id' => $this->order_id,
-            'end_date' => $this->end_date,
-            'is_quote' => $this->is_quote,
-            'admin_id' => $this->admin_id,
-            'is_deleted' => $this->is_deleted,
-            'updated_at' => $this->updated_at,
-            'created_at' => $this->created_at,
+            'order_quote.id'             => $this->id,
+            'order_quote.order_id'       => $this->order_id,
+            'order_quote.agreement_date' => $this->agreement_date,
+            'order_quote.is_quote'       => $this->is_quote,
+            'order_quote.admin_id'       => $this->admin_id,
+            'order_quote.is_deleted'     => $this->is_deleted,
         ]);
+
+        if ($this->order_sn) {
+            $query->leftJoin('order as a', 'a.id = order_quote.order_id');
+            $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+        }
 
         $query->andFilterWhere(['like', 'quote_sn', $this->quote_sn])
             ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
+
+        if ($this->updated_at && strpos($this->updated_at, ' - ')) {
+            list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
+            $updated_at_start .= ' 00:00:00';
+            $updated_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_quote.updated_at', $updated_at_start, $updated_at_end]);
+        }
+
+        if ($this->created_at && strpos($this->created_at, ' - ')) {
+            list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
+            $created_at_start .= ' 00:00:00';
+            $created_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_quote.created_at', $created_at_start, $created_at_end]);
+        }
 
         return $dataProvider;
     }

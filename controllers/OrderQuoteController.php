@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\{
-    OrderQuote, OrderFinal, QuoteGoods
+    OrderAgreement, OrderQuote, OrderFinal, QuoteGoods
 };
 use app\models\OrderQuoteSearch;
 use yii\web\Controller;
@@ -179,8 +179,9 @@ class OrderQuoteController extends Controller
         $quoteGoods = QuoteGoods::findAll(['order_quote_id' => $id]);
 
         $data = [];
-        $data['orderQuote'] = $data['model'] = $orderQuote;
+        $data['orderQuote'] = $orderQuote;
         $data['quoteGoods'] = $quoteGoods;
+        $data['model']      = new OrderAgreement();
 
         return $this->render('detail', $data);
     }
