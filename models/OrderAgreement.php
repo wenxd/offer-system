@@ -22,6 +22,7 @@ use Yii;
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
+    public $order_sn;
     /**
      * {@inheritdoc}
      */
@@ -38,7 +39,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at'], 'safe'],
-            [['order_quote_sn', 'agreement_sn'], 'string', 'max' => 255],
+            [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
     }
@@ -52,6 +53,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'id'              => 'ID',
             'agreement_sn'    => '合同单号',
             'order_id'        => '订单ID',
+            'order_sn'        => '订单号',
             'order_quote_id'  => '报价订单ID',
             'order_quote_sn'  => '报价订单号',
             'goods_info'      => '零件信息 json，包括ID',
@@ -62,5 +64,15 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',
         ];
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
 }
