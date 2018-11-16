@@ -5,34 +5,36 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "quote_goods".
+ * This is the model class for table "agreement_goods".
  *
  * @property int $id
  * @property int $order_id 订单ID
- * @property int $order_final_id 最终订单ID
- * @property string $order_final_sn 最终订单号
+ * @property int $order_agreement_id 合同订单ID
+ * @property string $order_agreement_sn 合同订单号
  * @property string $order_quote_id 报价ID
  * @property string $order_quote_sn 报价单号
  * @property int $goods_id 零件ID
  * @property int $type 关联类型  0询价  1库存
  * @property int $relevance_id 关联ID（询价或库存）
+ * @property string $price 单价
+ * @property string $tax_price 含税单价
  * @property int $number 数量
- * @property int $is_quote 是否报价 0否 1是
+ * @property int $is_agreement 是否报价 0否 1是
+ * @property string $agreement_sn 单条合同号
+ * @property string $purchase_date 采购时间
+ * @property string $agreement_date 采购时间
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */
-class QuoteGoods extends \yii\db\ActiveRecord
+class AgreementGoods extends \yii\db\ActiveRecord
 {
-    const IS_QUOTE_NO  = 0;
-    const IS_QUOTE_YES = 1;
-
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'quote_goods';
+        return 'agreement_goods';
     }
 
     /**
@@ -41,9 +43,10 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted'], 'integer'],
+            [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement', 'is_deleted'], 'integer'],
+            [['price', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['order_final_sn', 'order_quote_id', 'order_quote_sn'], 'string', 'max' => 255],
+            [['order_agreement_sn', 'order_quote_id', 'order_quote_sn', 'agreement_sn', 'purchase_date', 'agreement_date'], 'string', 'max' => 255],
         ];
     }
 
@@ -55,38 +58,23 @@ class QuoteGoods extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => '订单ID',
-            'order_final_id' => '最终订单ID',
-            'order_final_sn' => '最终订单号',
+            'order_agreement_id' => '合同订单ID',
+            'order_agreement_sn' => '合同订单号',
             'order_quote_id' => '报价ID',
             'order_quote_sn' => '报价单号',
             'goods_id' => '零件ID',
             'type' => '关联类型  0询价  1库存',
             'relevance_id' => '关联ID（询价或库存）',
+            'price' => '单价',
+            'tax_price' => '含税单价',
             'number' => '数量',
-            'is_quote' => '是否报价 0否 1是',
+            'is_agreement' => '是否报价 0否 1是',
+            'agreement_sn' => '单条合同号',
+            'purchase_date' => '采购时间',
+            'agreement_date' => '采购时间',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',
             'created_at' => '创建时间',
         ];
-    }
-
-    public function getGoods()
-    {
-        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
-    }
-
-    public function getOrder()
-    {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
-    }
-
-    public function getStock()
-    {
-        return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
-    }
-
-    public function getInquiry()
-    {
-        return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
     }
 }

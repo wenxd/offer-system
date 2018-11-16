@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementGoods;
 use Yii;
 use app\models\{
     OrderAgreement, OrderQuote, OrderFinal, QuoteGoods
@@ -178,11 +179,98 @@ class OrderQuoteController extends Controller
         $orderQuote = OrderQuote::findOne($id);
         $quoteGoods = QuoteGoods::findAll(['order_quote_id' => $id]);
 
+        $date = date('ymd_');
+        $orderI = OrderAgreement::find()->where(['like', 'agreement_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $num = strrpos($orderI->agreement_sn, '_');
+            $str = substr($orderI->agreement_sn, $num+1);
+            $number = sprintf("%02d", $str+1);
+        } else {
+            $number = '01';
+        }
+
         $data = [];
         $data['orderQuote'] = $orderQuote;
         $data['quoteGoods'] = $quoteGoods;
         $data['model']      = new OrderAgreement();
+        $data['number']     = $number;
 
         return $this->render('detail', $data);
+    }
+
+    //完成报价
+    public function actionComplete()
+    {
+        $params = Yii::$app->request->post();
+
+        $quoteGoods = QuoteGoods::findOne($params['id']);
+        $quoteGoods->is_quote = QuoteGoods::IS_QUOTE_YES;
+        if ($quoteGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $quoteGoods->getErrors()]);
+        }
+    }
+
+    //创建合同订单
+    public function actionCreateAgreement()
+    {
+        $params = Yii::$app->request->post();
+
+        //首先保存报价单
+        $orderQuote = OrderQuote::findOne($params['id']);
+        $orderQuote->is_quote = OrderQuote::IS_QUOTE_YES;
+        $orderQuote->save();
+
+        //创建合同单
+        $orderAgreement = new OrderAgreement();
+        $orderAgreement->agreement_sn    = $params['agreement_sn'];
+        $orderAgreement->order_id        = $orderQuote->order_id;
+        $orderAgreement->order_quote_id  = $orderQuote->id;
+        $orderAgreement->order_quote_sn  = $orderQuote->quote_sn;
+
+        $json = [];
+        foreach ($params['goods_info'] as $goods) {
+            $item = [];
+            $item['goods_id']     = $goods['goods_id'];
+            $item['number']       = $goods['number'];
+            $item['price']        = $goods['price'];
+            $item['is_agreement'] = 0;
+            $json[] = $item;
+        }
+
+        $orderAgreement->goods_info      = json_encode($json, JSON_UNESCAPED_UNICODE);
+        $orderAgreement->agreement_date  = $params['agreement_date'];
+        $orderAgreement->admin_id        = $params['admin_id'];
+        if ($orderAgreement->save()) {
+            $data = [];
+            foreach ($params['goods_info'] as $item) {
+                $row = [];
+                //批量数据
+                $row[]  = $orderQuote->order_id;
+                $row[]  = $orderAgreement->primaryKey;
+                $row[]  = $orderAgreement->agreement_sn;
+                $row[]  = $orderQuote->id;
+                $row[]  = $orderQuote->quote_sn;
+                $row[]  = $item['goods_id'];
+                $row[]  = $item['type'];
+                $row[]  = $item['relevance_id'];
+                $row[]  = $item['price'];
+                $row[]  = $item['tax_price'];
+                $row[]  = $item['number'];
+                $data[] = $row;
+            }
+            self::insertAgreementGoods($data);
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
+        }
+    }
+
+    public static function insertAgreementGoods($data)
+    {
+        $feild = ['order_id', 'order_agreement_id', 'order_agreement_sn', 'order_quote_id', 'order_quote_sn', 'goods_id',
+            'type', 'relevance_id', 'price', 'tax_price', 'number'];
+        $num = Yii::$app->db->createCommand()->batchInsert(AgreementGoods::tableName(), $feild, $data)->execute();
     }
 }

@@ -54,17 +54,17 @@ class OrderQuote extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'          => 'ID',
-            'quote_sn'    => '报价单号',
-            'order_id'    => '订单ID',
-            'order_sn'    => '订单编号',
-            'goods_info'  => '零件信息 json，包括ID',
-            'end_date'    => '报价截止时间',
-            'is_quote'    => '报价',
-            'admin_id'    => '报价员ID',
-            'is_deleted'  => '是否删除：0未删除 1已删除',
-            'updated_at'  => '更新时间',
-            'created_at'  => '创建时间',
+            'id'             => 'ID',
+            'quote_sn'       => '报价单号',
+            'order_id'       => '订单ID',
+            'order_sn'       => '订单编号',
+            'goods_info'     => '零件信息 json，包括ID',
+            'agreement_date' => '报价截止时间',
+            'is_quote'       => '报价',
+            'admin_id'       => '报价员ID',
+            'is_deleted'     => '是否删除：0未删除 1已删除',
+            'updated_at'     => '更新时间',
+            'created_at'     => '创建时间',
         ];
     }
 
