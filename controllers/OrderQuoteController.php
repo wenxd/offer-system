@@ -171,4 +171,17 @@ class OrderQuoteController extends Controller
             'type', 'relevance_id','number'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
+
+    //报价单详情
+    public function actionDetail($id)
+    {
+        $orderQuote = OrderQuote::findOne($id);
+        $quoteGoods = QuoteGoods::findAll(['order_quote_id' => $id]);
+
+        $data = [];
+        $data['orderQuote'] = $data['model'] = $orderQuote;
+        $data['quoteGoods'] = $quoteGoods;
+
+        return $this->render('detail', $data);
+    }
 }

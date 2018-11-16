@@ -1,44 +1,111 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\models\Admin;
+use app\models\AuthAssignment;
+use app\models\OrderQuote;
+use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderQuoteSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Order Quotes';
+$this->title = '报价单列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+$userId   = Yii::$app->user->identity->id;
+
 ?>
-<div class="order-quote-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="box table-responsive">
+    <div class="box-body">
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Order Quote', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
-            'quote_sn',
-            'order_id',
-            'goods_info',
-            'end_date',
-            //'is_quote',
-            //'admin_id',
-            //'is_deleted',
-            //'updated_at',
-            //'created_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute' => 'quote_sn',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->quote_sn, Url::to(['order-quote/detail', 'id' => $model->id]));
+                }
+            ],
+            [
+                'attribute' => 'order_sn',
+                'visible'   => !in_array($userId, $adminIds),
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'is_quote',
+                'format'    => 'raw',
+                'filter'    => OrderQuote::$quote,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderQuote::$quote[$model->is_quote];
+                }
+            ],
+            [
+                'attribute' => 'updated_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderQuoteSearch[updated_at]',
+                    'value' => Yii::$app->request->get('OrderQuoteSearch')['updated_at'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->updated_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'created_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'OrderQuoteSearch[created_at]',
+                    'value' => Yii::$app->request->get('OrderQuoteSearch')['created_at'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->created_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'admin_id',
+                'label'     => '报价员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
+            [
+                'attribute'      => '操作',
+                'format'         => 'raw',
+                'value'          => function ($model, $key, $index, $column){
+                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-xs btn-flat',
+                    ]);
+                }
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
+    </div>
 </div>

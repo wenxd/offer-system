@@ -2,229 +2,238 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-use app\models\Inquiry;
-use app\models\Supplier;
-use app\models\Customer;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
+use app\models\Goods;
+use app\models\Admin;
+use app\models\AuthAssignment;
 
 $this->title = '报价单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-if (!$model->id) {
-    $model->provide_date = date('Y-m-d H:i:00');
+if (!$model->agreement_date) {
+    $model->agreement_date = substr($model->orderFinal->agreement_date, 0, 10);
 }
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+$userId   = Yii::$app->user->identity->id;
 ?>
-<style>
-    .but button{
-        float: right;
-    }
-    .but a{
-        float: right;
-        margin-right: 10px;
-    }
-    .offer {
-        margin-top: 10px;
-    }
-</style>
-<section class="content">
-    <div class="box table-responsive">
-        <?php $form = ActiveForm::begin(); ?>
-        <div class="box-body">
-            <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>零件号</th>
-                    <th>最新</th>
-                    <th>优选</th>
-                    <th>商品类型</th>
-                    <th style="width: 150px;">报价金额</th>
-                    <th>库存数量</th>
-                    <th style="width: 150px;">询价时间</th>
-                    <th>供应商ID</th>
-                    <th>供应商名称</th>
-                    <th>购买数量</th>
-                    <th>金额</th>
+
+<div class="box table-responsive">
+    <?php $form = ActiveForm::begin(); ?>
+    <div class="box-body">
+        <table id="example2" class="table table-bordered table-hover">
+            <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
+            <tr>
+                <?php if(!in_array($userId, $adminIds)):?>
+                <th>零件号A</th>
+                <?php endif;?>
+                <th>零件号B</th>
+                <th>中文描述</th>
+                <th>英文描述</th>
+                <th>原厂家</th>
+                <th>原厂家备注</th>
+                <th>单位</th>
+                <th>技术备注</th>
+                <th>加工</th>
+                <th>特制</th>
+                <th>铭牌</th>
+                <th>图片</th>
+                <th>供应商</th>
+                <th>税率</th>
+                <th>未率单价</th>
+                <th>含率单价</th>
+                <th>货期(天)</th>
+                <th>未率总价</th>
+                <th>含率总价</th>
+                <th>数量</th>
+                <th>采购状态</th>
+                <th>合同号</th>
+                <th>交货日期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($quoteGoods as $item):?>
+                <tr class="order_final_list">
+                    <?php if(!in_array($userId, $adminIds)):?>
+                    <td><?=$item->goods->goods_number?></td>
+                    <?php endif;?>
+                    <td><?=$item->goods->goods_number_b?></td>
+                    <td><?=$item->goods->description?></td>
+                    <td><?=$item->goods->description_en?></td>
+                    <td><?=$item->goods->original_company?></td>
+                    <td><?=$item->goods->original_company_remark?></td>
+                    <td><?=$item->goods->unit?></td>
+                    <td><?=$item->goods->technique_remark?></td>
+                    <td><?=Goods::$process[$item->goods->is_process]?></td>
+                    <td><?=Goods::$special[$item->goods->is_special]?></td>
+                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
+                    <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
+                    <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
+                    <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
+                    <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
+                    <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
+                    <td class="all_price"></td>
+                    <td class="all_tax_price"></td>
+                    <td class="afterNumber"><?=$item->number?></td>
+                    <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
+                    <td>
+                        <?php if ($item->agreement_sn):?>
+                            <?=$item->agreement_sn?>
+                        <?php else:?>
+                            <input type="text" class="agreement_sn">
+                        <?php endif;?>
+                    </td>
+                    <td>
+                        <div style="width: 140px;">
+                        <?php if ($item->purchase_date):?>
+                            <?=substr($item->purchase_date, 0, 10)?>
+                        <?php else:?>
+                            <input size="16" type="text" value="" readonly class="form_datetime delivery_date">
+                        <?php endif;?>
+                        </div>
+                    </td>
+                    <td>
+                        <?php if (!$item->is_purchase):?>
+                        <a class="btn btn-success btn-xs btn-flat complete" href="javascript:void(0);" data-id="<?=$item->id?>">完成采购</a>
+                        <?php endif;?>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($quoteList as $key => $value):?>
-                    <tr>
-                        <td><?=$value->goods->goods_number?></td>
-                        <td>
-                            <?php
-                            if ($value->type == 0 || $value->type == 1) {
-                                echo Inquiry::$newest[$value->inquiry->is_newest];
-                            } else {
-                                echo '否';
-                            }
-                            ?>
-                        </td>
-                        <td>
-                            <?php
-                            if ($value->type == 0 || $value->type == 1) {
-                                echo Inquiry::$newest[$value->inquiry->is_better];
-                            } else {
-                                echo '否';
-                            }
-                            ?>
-                        </td>
-                        <td><?=$value->type == 3 ? '库存商品' : '询价商品'?></td>
-                        <td class="price" data-cart_id="<?=$value->id?>"><?=$value['quote_price']?></td>
-                        <td><?=$value->type == 3 ? $value->stock->number : '无限多'?></td>
-                        <td><?=$value->type == 3 ? '无' : $value->inquiry->inquiry_datetime?></td>
-                        <td><?=$value->type == 3 ? $value->stock->supplier_id : $value->inquiry->supplier_id?></td>
-                        <td><?=$value->type == 3 ? Supplier::getAllDropDown()[$value->stock->supplier_id] : Supplier::getAllDropDown()[$value->inquiry->supplier_id]?></td>
-                        <td><?=$value['number']?></td>
-                        <td class="money">
-                            <?=number_format($value['quote_price'] * $value['number'], 2, '.', '')?>
-                        </td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan="10" style="text-align: right;"><b>金额合计</b></td>
-                    <td class="all_money"></td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
+            <?php endforeach;?>
+            </tbody>
+        </table>
 
-            <?= $form->field($model, 'customer_id')->dropDownList(Customer::getCreateDropDown())->textInput(['readonly' => true])?>
+        <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
 
-            <?= $form->field($model, 'order_sn')->textInput(['readonly' => true]) ?>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
-            <?= $form->field($model, 'description')->textInput(['readonly' => true]) ?>
-
-            <?= $form->field($model, 'provide_date')->widget(DateTimePicker::className(), [
-                'removeButton'  => false,
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format'    => 'yyyy-mm-dd hh:ii:00',
-                    'startView' =>2,  //其实范围（0：日  1：天 2：年）
-                    'maxView'   =>2,  //最大选择范围（年）
-                    'minView'   =>2,  //最小选择范围（年）
-                ]
-            ])->textInput(['readonly' => 'true']);?>
-
-            <?= $form->field($model, 'quote_price')->textInput(['readonly' => true]) ?>
-
-            <?= $form->field($model, 'remark')->textInput(['readonly' => true]) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
+        <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
     </div>
-</section>
+    <?php if (!$orderPurchase->is_purchase):?>
+    <div class="box-footer">
+        <?= Html::button('完成采购', [
+                'class' => 'btn btn-success purchase_complete',
+                'name'  => 'submit-button']
+        )?>
+    </div>
+    <?php endif;?>
+    <?php ActiveForm::end(); ?>
+</div>
+
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
-    function totalMoney() {
-        var allMoney = 0;
-        $('.money').each(function (index, element){
-            allMoney += parseFloat(element.innerText)
-        });
-        $('.all_money').html(allMoney);
-    }
-    function editPrice(obj) {
-        var price = $(obj).data('price');
-        var html = '<input type="text" style="width:100px"><a style="margin-left: 10px;"><i class="fa fa-save" onclick="savePrice(this)" data-price="' + price + '"></i></a>';
-        $(obj).parent().parent().html(html);
-    }
-
-    function savePrice(obj) {
-        var number      = $(obj).parent().parent().parent().find('td').eq(9).html();
-        var beforePrice = $(obj).data('price');
-        var beforeHtml  = beforePrice + '<a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="' + beforePrice + '"></i></a>';
-        var price       = $(obj).parent().parent().find('input').val();
-        var cart_id     = $(obj).parent().parent().data('cart_id');
-        if (!price) {
-            $(obj).parent().parent().html(beforeHtml);
-            return;
-        }
-        var reg = /^[0-9]*$/;
-        if (!reg.test(price) || price <= 0) {
-            layer.msg('数量请输入正整数', {time:2000});
-            return false;
-        }
-        var saveHtml = price + '<a style="margin-left: 10px;"><i class="fa fa-edit" onclick="editPrice(this)" data-price="' + price + '"></i></a>';
-        $.ajax({
-            type:"post",
-            url:"?r=cart/edit-price",
-            data:{price:price, cart_id:cart_id},
-            dataType:'JSON',
-            success:function(res){
-                if (res && res.code == 200) {
-                    $(obj).parent().parent().html(saveHtml);
-                    layer.msg(res.msg, {time:500}, function(){
-                        window.location.reload();
-                    });
+    $(document).ready(function () {
+        init();
+        function init(){
+            $('.order_final_list').each(function (i, e) {
+                var price     = $(e).find('.price').text();
+                var tax_price = $(e).find('.tax_price').text();
+                var number    = $(e).find('.afterNumber').text();
+                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
+                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            });
+            var open = true;
+            $('.order_final_list').each(function (i, item) {
+                if ($(item).children().last().prev().text() == '未完成') {
+                    open = false;
                 }
+            });
+            if (open) {
+                var date = '<?=$model->agreement_date?>';
+                $('#orderpurchase-agreement_date').val(date);
             }
-        });
-    }
-    window.onload = function() {
-
-        totalMoney();
-
-        function submit(type) {
-            $('form').submit(function(e){
-                e.preventDefault();
-                var form = $(this).serializeArray();
-
-                var parameter = '';
-                var is_go = false;
-                console.log(form);
-                $.each(form, function() {
-                    if (!this.value) {
-                        is_go = true;
-                    }
-                    parameter += this.name + '=' + this.value + '&';
-                });
-                parameter += 'type=' + type;
-                if (is_go) {
-                    return false;
-                }
-                $.ajax({
-                    type:"get",
-                    url:"?r=order-inquiry/submit&" + parameter,
-                    data:{},
-                    dataType:'JSON',
-                    success:function(res){
-                        if (res && res.code == 200) {
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if (type == 1) {
-                                    location.replace("?r=order-quote/index");
-                                } else {
-                                    location.replace("?r=order-inquiry/index");
-                                }
-                            });
-                        }
-                    }
-                });
+            $(".form_datetime").datetimepicker({
+                format    : 'yyyy-mm-dd',
+                startView : 2,  //其实范围（0：日  1：天 2：年）
+                maxView   : 2,  //最大选择范围（年）
+                minView   : 2,  //最小选择范围（年）
+                autoclose : true,
             });
         }
-        //报价
-        $('.quote_save').click(function () {
-            submit(1);
-        });
-        //询价
-        $('.inquiry_save').click(function () {
-            submit(2);
-        });
-        $('.delete').click(function () {
-            var cart_id = $(this).data('cart-id');
+
+        $('.complete').click(function (e) {
+            var id = $(this).data('id');
+            var this_agreement_sn = $(this).parent().parent().find('.agreement_sn').val();
+            var this_delivery_date = $(this).parent().parent().find('.delivery_date').val();
+            if (!this_agreement_sn) {
+                layer.msg('请输入合同号', {time:2000});
+                return false;
+            }
+
+            if (!this_delivery_date) {
+                layer.msg('请输入交货日期', {time:2000});
+                return false;
+            }
             $.ajax({
-                type:"get",
-                url:"?r=cart/delete",
-                data:{id:cart_id},
+                type:"post",
+                url:'?r=order-purchase/complete',
+                data:{id:id, this_agreement_sn:this_agreement_sn, this_delivery_date:this_delivery_date},
                 dataType:'JSON',
                 success:function(res){
-                    if (res && res.code == 200) {
-                        layer.msg(res.msg, {time:1500}, function(){
-                            location.reload();
-                        });
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
                     }
-
                 }
-            })
+            });
         });
-    }
+
+        $('.purchase_complete').click(function (e) {
+            var flag = false;
+            $('.order_final_list').each(function (i, item) {
+                if ($(item).children().last().prev().text() == '未完成') {
+                    flag = true;
+                }
+            });
+            if (flag) {
+                layer.msg('请完成每条零件的采购', {time:2000});
+                return false;
+            }
+
+            var agreement_date = $('#orderpurchase-agreement_date').val();
+            if (!agreement_date) {
+                layer.msg('请输入合同日期', {time:2000});
+                return false;
+            }
+
+            var id = $('.data').data('order_purchase_id');
+            $.ajax({
+                type:"post",
+                url:'?r=order-purchase/complete-all',
+                data:{id:id, agreement_date:agreement_date},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=order-purchase/index");
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+    });
 </script>

@@ -12,6 +12,7 @@ use app\models\OrderQuote;
  */
 class OrderQuoteSearch extends OrderQuote
 {
+    public $order_sn;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +20,8 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
-            [['quote_sn', 'goods_info', 'end_date', 'updated_at', 'created_at'], 'safe'],
+            [['quote_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
+            [['id', 'quote_sn', 'order_sn'], 'trim'],
         ];
     }
 
