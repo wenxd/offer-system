@@ -56,25 +56,40 @@ class AgreementGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
+            'id'                 => 'ID',
+            'order_id'           => '订单ID',
             'order_agreement_id' => '合同订单ID',
             'order_agreement_sn' => '合同订单号',
-            'order_quote_id' => '报价ID',
-            'order_quote_sn' => '报价单号',
-            'goods_id' => '零件ID',
-            'type' => '关联类型  0询价  1库存',
-            'relevance_id' => '关联ID（询价或库存）',
-            'price' => '单价',
-            'tax_price' => '含税单价',
-            'number' => '数量',
-            'is_agreement' => '是否报价 0否 1是',
-            'agreement_sn' => '单条合同号',
-            'purchase_date' => '采购时间',
-            'agreement_date' => '采购时间',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'order_quote_id'     => '报价ID',
+            'order_quote_sn'     => '报价单号',
+            'goods_id'           => '零件ID',
+            'type'               => '关联类型  0询价  1库存',
+            'relevance_id'       => '关联ID（询价或库存）',
+            'price'              => '单价',
+            'tax_price'          => '含税单价',
+            'number'             => '数量',
+            'is_agreement'       => '是否报价 0否 1是',
+            'agreement_sn'       => '单条合同号',
+            'purchase_date'      => '采购时间',
+            'agreement_date'     => '采购时间',
+            'is_deleted'         => '是否删除：0未删除 1已删除',
+            'updated_at'         => '更新时间',
+            'created_at'         => '创建时间',
         ];
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
+
+    public function getInquiry()
+    {
+        return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
+    }
+
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
     }
 }

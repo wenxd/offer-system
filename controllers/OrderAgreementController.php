@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\OrderAgreement;
+use app\models\{OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods};
 use app\models\OrderAgreementSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -123,5 +123,31 @@ class OrderAgreementController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionDetail($id)
+    {
+        $orderAgreement = OrderAgreement::findOne($id);
+        $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
+
+        $date = date('ymd_');
+        $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $num = strrpos($orderI->purchase_sn, '_');
+            $str = substr($orderI->purchase_sn, $num + 1);
+            $number = sprintf("%02d", $str + 1);
+        } else {
+            $number = '01';
+        }
+
+        $data = [];
+        $data['orderAgreement'] = $orderAgreement;
+        $data['agreementGoods'] = $agreementGoods;
+        $data['model']          = new OrderPurchase();
+        $data['number']         = $number;
+        $data['inquiryGoods']   = $inquiryGoods;
+
+        return $this->render('detail', $data);
     }
 }
