@@ -14,6 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 //同一个订单询价商品的IDs
 $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
+//采购商品IDs
+$purchaseGoods_ids = ArrayHelper::getColumn($purchaseGoods, 'goods_id');
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
@@ -23,6 +25,8 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
+$model->purchase_sn = 'C' . date('ymd__') . $number;
+$model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -99,13 +103,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
-                <td class="purcharse_price"></td>
-                <td class="purcharse_all_price"></td>
+                <td class="purchase_price"></td>
+                <td class="purchase_all_price"></td>
                 <td colspan="4"></td>
             </tr>
             </tbody>
         </table>
+        <?= $form->field($model, 'purchase_sn')->textInput() ?>
+
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
+
         <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
             'pluginOptions' => [
@@ -136,19 +143,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             if (!$('.select_id').length) {
                 $('.select_all').hide();
                 $('.purchase_save').hide();
+                $('.field-orderpurchase-purchase_sn').hide();
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
             var sta_all_price       = 0;
             var sta_all_tax_price   = 0;
             var mostLongTime        = 0;
-            var purcharse_price     = 0;
-            var purcharse_all_price = 0;
+            var purchase_price      = 0;
+            var purchase_all_price  = 0;
             $('.order_agreement_list').each(function (i, e) {
-                var price         = $(e).find('.price').text();
-                var tax_price     = $(e).find('.tax_price').text();
-                var number        = $(e).find('.oldNumber').text();
-                var delivery_time = $(e).find('.delivery_time').text();
+                var price           = $(e).find('.price').text();
+                var tax_price       = $(e).find('.tax_price').text();
+                var number          = $(e).find('.oldNumber').text();
+                var delivery_time   = $(e).find('.delivery_time').text();
+                var purchase_number = $(e).find('.number').val();
 
                 sta_all_price += parseFloat(price * number);
                 sta_all_tax_price += parseFloat(tax_price * number);
@@ -156,21 +165,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     mostLongTime = delivery_time;
                 }
 
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                $(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
+                $(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
 
-                var all_price     = $(e).find('.all_price').text();
-                var all_tax_price = $(e).find('.all_tax_price').text();
+                var all_price     = parseFloat(price * purchase_number);
+                var all_tax_price = parseFloat(tax_price* purchase_number);
 
-                purcharse_price     += parseFloat(all_price);
-                purcharse_all_price += parseFloat(all_tax_price);
-
+                purchase_price     += parseFloat(all_price);
+                purchase_all_price += parseFloat(all_tax_price);
+                console.log(purchase_price);
+                console.log(purchase_all_price);
             });
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
             $('.mostLongTime').text(mostLongTime);
-            $('.purcharse_price').text(purcharse_price.toFixed(2));
-            $('.purcharse_all_price').text(purcharse_all_price.toFixed(2));
+            $('.purchase_price').text(purchase_price.toFixed(2));
+            $('.purchase_all_price').text(purchase_all_price.toFixed(2));
         }
 
         //全选
@@ -204,16 +214,18 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
 
-            var purcharse_price     = 0;
-            var purcharse_all_price = 0;
+            var purchase_price     = 0;
+            var purchase_all_price = 0;
             $('.order_agreement_list').each(function (i, e) {
-                var all_price     = $(e).find('.all_price').text();
-                var all_tax_price = $(e).find('.all_tax_price').text();
-                purcharse_price     += parseFloat(all_price);
-                purcharse_all_price += parseFloat(all_tax_price);
+                var all_price       = $(e).find('.all_price').text();
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+                console.log(all_price);
+                console.log(all_tax_price);
+                purchase_price      += parseFloat(all_price);
+                purchase_all_price  += parseFloat(all_tax_price);
             });
-            $('.purcharse_price').text(purcharse_price.toFixed(2));
-            $('.purcharse_all_price').text(purcharse_all_price.toFixed(2));
+            $('.purchase_price').text(purchase_price.toFixed(2));
+            $('.purchase_all_price').text(purchase_all_price.toFixed(2));
         });
 
         //保存
@@ -244,6 +256,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 layer.msg('请给选中的行输入数量', {time:2000});
                 return false;
             }
+            var purchase_sn = $('#orderpurchase-purchase_sn').val();
+            if (!purchase_sn) {
+                layer.msg('请输入采购单号', {time:2000});
+                return false;
+            }
 
             var admin_id = $('#orderpurchase-admin_id').val();
             if (!admin_id) {
@@ -262,7 +279,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase/save-order',
-                data:{order_agreement_id:order_agreement_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
+                data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

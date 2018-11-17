@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\OrderAgreement;
 use Yii;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
@@ -130,22 +131,22 @@ class OrderPurchaseController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderFinal = OrderFinal::findOne($params['order_final_id']);
+        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
 
-        $orderPurchase                 = new OrderPurchase();
-        $orderPurchase->purchase_sn    = 'CGD' . date('YmdHis') . rand(10, 99);
-        $orderPurchase->order_id       = $orderFinal->order_id;
-        $orderPurchase->order_final_id = $params['order_final_id'];
-        $orderPurchase->goods_info     = json_encode($params['goods_info']);
-        $orderPurchase->end_date       = $params['end_date'];
-        $orderPurchase->admin_id       = $params['admin_id'];
+        $orderPurchase                     = new OrderPurchase();
+        $orderPurchase->purchase_sn        = $params['purchase_sn'];
+        $orderPurchase->order_id           = $orderAgreement->order_id;
+        $orderPurchase->order_agreement_id = $params['order_agreement_id'];
+        $orderPurchase->goods_info         = json_encode($params['goods_info'], JSON_UNESCAPED_UNICODE);
+        $orderPurchase->end_date           = $params['end_date'];
+        $orderPurchase->admin_id           = $params['admin_id'];
         if ($orderPurchase->save()) {
             $data = [];
             foreach ($params['goods_info'] as $item) {
                 $row = [];
 
-                $row[] = $orderFinal->order_id;
-                $row[] = $params['order_final_id'];
+                $row[] = $orderAgreement->order_id;
+                $row[] = $params['order_agreement_id'];
                 $row[] = $orderPurchase->primaryKey;
                 $row[] = $orderPurchase->purchase_sn;
                 $row[] = $item['goods_id'];
@@ -166,7 +167,7 @@ class OrderPurchaseController extends BaseController
     //批量插入
     public static function insertPurcharseGoods($data)
     {
-        $feild = ['order_id', 'order_final_id', 'order_purchase_id', 'order_purchase_sn', 'goods_id', 'type', 'relevance_id','number'];
+        $feild = ['order_id', 'order_agreement_id', 'order_purchase_id', 'order_purchase_sn', 'goods_id', 'type', 'relevance_id','number'];
         $num = Yii::$app->db->createCommand()->batchInsert(PurchaseGoods::tableName(), $feild, $data)->execute();
     }
 

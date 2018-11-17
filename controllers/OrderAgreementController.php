@@ -3,7 +3,9 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\{OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods};
+use app\models\{
+    OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods, PurchaseGoods
+};
 use app\models\OrderAgreementSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -129,7 +131,11 @@ class OrderAgreementController extends Controller
     {
         $orderAgreement = OrderAgreement::findOne($id);
         $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
-        $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
+        $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
+        $purchaseGoods  = PurchaseGoods::find()
+            ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])
+            ->indexBy('goods_id')
+            ->all();
 
         $date = date('ymd_');
         $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
@@ -147,6 +153,7 @@ class OrderAgreementController extends Controller
         $data['model']          = new OrderPurchase();
         $data['number']         = $number;
         $data['inquiryGoods']   = $inquiryGoods;
+        $data['purchaseGoods']  = $purchaseGoods;
 
         return $this->render('detail', $data);
     }
