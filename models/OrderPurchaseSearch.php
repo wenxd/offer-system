@@ -14,16 +14,16 @@ use yii\helpers\ArrayHelper;
 class OrderPurchaseSearch extends OrderPurchase
 {
     public $order_sn;
-    public $order_final_sn;
+    public $order_agreement_sn;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
-            [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
-            [['id', 'purchase_sn', 'order_sn', 'order_final_sn'], 'trim'],
+            [['id', 'order_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
+            [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn', 'order_agreement_sn'], 'safe'],
+            [['id', 'purchase_sn', 'order_sn', 'order_agreement_sn'], 'trim'],
         ];
     }
 
@@ -78,20 +78,20 @@ class OrderPurchaseSearch extends OrderPurchase
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
         }
 
-        if ($this->order_final_sn) {
-            $query->leftJoin('order_final as b', 'b.id = order_purchase.order_final_id');
-            $query->andFilterWhere(['like', 'b.final_sn', $this->order_final_sn]);
+        if ($this->order_agreement_sn) {
+            $query->leftJoin('order_agreement as b', 'b.id = order_purchase.order_agreement_id');
+            $query->andFilterWhere(['like', 'b.agreement_sn', $this->order_agreement_sn]);
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_purchase.id'             => $this->id,
-            'order_purchase.order_id'       => $this->order_id,
-            'order_purchase.order_final_id' => $this->order_final_id,
-            'order_purchase.admin_id'       => $this->admin_id,
-            'order_purchase.is_purchase'    => $this->is_purchase,
-            'order_purchase.is_stock'       => $this->is_stock,
-            'order_purchase.is_deleted'     => $this->is_deleted,
+            'order_purchase.id'                 => $this->id,
+            'order_purchase.order_id'           => $this->order_id,
+            'order_purchase.order_agreement_id' => $this->order_agreement_id,
+            'order_purchase.admin_id'           => $this->admin_id,
+            'order_purchase.is_purchase'        => $this->is_purchase,
+            'order_purchase.is_stock'           => $this->is_stock,
+            'order_purchase.is_deleted'         => $this->is_deleted,
         ]);
 
         if ($this->end_date && strpos($this->end_date, ' - ')) {
