@@ -86,13 +86,12 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'order_final_sn',
-                'visible'   => !in_array($userId, $adminIds),
+                'attribute' => 'order_agreement_sn',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_final_sn',['class'=>'form-control']),
+                'filter'    => Html::activeTextInput($searchModel, 'order_agreement_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->orderFinal) {
-                        return Html::a($model->orderFinal->final_sn, Url::to(['order-final/detail', 'id' => $model->order_final_id]));
+                    if ($model->orderAgreement) {
+                        return Html::a($model->orderAgreement->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->order_agreement_id]));
                     } else {
                         return '';
                     }

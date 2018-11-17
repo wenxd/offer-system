@@ -14,16 +14,16 @@ use yii\helpers\ArrayHelper;
 class OrderFinancialSearch extends OrderPurchase
 {
     public $order_sn;
-    public $order_final_sn;
+    public $order_agreement_sn;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_final_id', 'admin_id', 'is_purchase', 'is_stock', 'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted'], 'integer'],
-            [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
-            [['id', 'purchase_sn', 'order_sn', 'order_final_sn'], 'trim'],
+            [['id', 'order_id', 'order_final_id', 'order_agreement_id', 'admin_id', 'is_purchase', 'is_stock', 'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted'], 'integer'],
+            [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn', 'order_agreement_sn'], 'safe'],
+            [['id', 'purchase_sn', 'order_sn', 'order_agreement_sn'], 'trim'],
         ];
     }
 
@@ -69,9 +69,9 @@ class OrderFinancialSearch extends OrderPurchase
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
         }
 
-        if ($this->order_final_sn) {
-            $query->leftJoin('order_final as b', 'b.id = order_purchase.order_final_id');
-            $query->andFilterWhere(['like', 'b.final_sn', $this->order_final_sn]);
+        if ($this->order_agreement_sn) {
+            $query->leftJoin('order_agreement as b', 'b.id = order_purchase.order_agreement_id');
+            $query->andFilterWhere(['like', 'b.agreement_sn', $this->order_agreement_sn]);
         }
 
         // grid filtering conditions
