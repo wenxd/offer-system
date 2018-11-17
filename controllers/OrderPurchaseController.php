@@ -196,6 +196,14 @@ class OrderPurchaseController extends BaseController
         $purchaseGoods->agreement_sn  = $params['this_agreement_sn'];
         $purchaseGoods->purchase_date = $params['this_delivery_date'];
         if ($purchaseGoods->save()){
+            $purchaseComplete = PurchaseGoods::find()
+                ->where(['order_purchase_id' => $purchaseGoods->order_purchase_id])
+                ->andWhere('is_purchase = 0')->one();
+            if (!$purchaseComplete) {
+                $orderPurchase = OrderPurchase::findOne($purchaseGoods->order_purchase_id);
+                $orderPurchase->is_purchase = OrderPurchase::IS_PURCHASE_YES;
+                $orderPurchase->save();
+            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $purchaseGoods->getErrors()], JSON_UNESCAPED_UNICODE);

@@ -13,7 +13,7 @@ $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->agreement_date) {
-    $model->agreement_date = substr($model->orderFinal->agreement_date, 0, 10);
+    $model->agreement_date = substr($model->orderAgreement->agreement_date, 0, 10);
 }
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
@@ -121,20 +121,12 @@ $userId   = Yii::$app->user->identity->id;
                 'maxView'   => 2,  //最大选择范围（年）
                 'minView'   => 2,  //最小选择范围（年）
             ]
-        ]);?>
+        ])->hiddenInput()->label(false);?>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
     </div>
-    <?php if (!$orderPurchase->is_purchase):?>
-    <div class="box-footer">
-        <?= Html::button('完成采购', [
-                'class' => 'btn btn-success purchase_complete',
-                'name'  => 'submit-button']
-        )?>
-    </div>
-    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 
