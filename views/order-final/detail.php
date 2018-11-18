@@ -49,9 +49,9 @@ $model->quote_sn = 'B' . date('ymd__') . $number;
                 <th>未率单价</th>
                 <th>含率单价</th>
                 <th>货期(天)</th>
-                <th>询价状态</th>
                 <th>未率总价</th>
                 <th>含率总价</th>
+                <th>询价状态</th>
                 <th>是否有报价单</th>
                 <th>报价单号</th>
                 <th>订单需求数量</th>
@@ -78,10 +78,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
                 <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
                 <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
-                <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
-                <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
+                <td class="delivery_time"><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
+                <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td><?=$orderGoods[$item->goods_id]->number?></td>
@@ -91,8 +91,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
     onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?></td>
             </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="16" rowspan="2">汇总统计</td>
+                <td>最长货期</td>
+                <td>未税总价</td>
+                <td>含税总价</td>
+                <td colspan="5" rowspan="2"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="mostLongTime"></td>
+                <td class="sta_all_price"></td>
+                <td class="sta_all_tax_price"></td>
+            </tr>
             </tbody>
         </table>
+
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择报价员') ?>
 
         <?= $form->field($model, 'quote_sn')->textInput() ?>
@@ -111,6 +124,30 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 <script type="text/javascript">
     $(document).ready(function () {
         init();
+        function init(){
+            if (!$('.select_id').length) {
+                $('.select_all').hide();
+                $('.quote_save').hide();
+                $('.field-orderpurchase-admin_id').hide();
+                $('.field-orderpurchase-end_date').hide();
+            }
+            var mostLongTime        = 0;
+            $('.order_final_list').each(function (i, e) {
+                var delivery_time   = $(e).find('.delivery_time').text();
+                if (delivery_time > mostLongTime) {
+                    mostLongTime = delivery_time;
+                }
+                if (!$(e).find('.afterNumber').find('.number').length) {
+                    var price           = $(e).find('.price').text();
+                    var tax_price       = $(e).find('.tax_price').text();
+                    var number          = $(e).find('.afterNumber').text();
+                    $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
+                    $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                }
+            });
+            $('.mostLongTime').text(mostLongTime);
+        }
+
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked",$(this).prop("checked"));
@@ -141,6 +178,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+
+            var sta_all_price       = 0;
+            var sta_all_tax_price   = 0;
+            $('.order_final_list').each(function (i, e) {
+                var all_price       = $(e).find('.all_price').text();
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+
+                if (all_price) {
+                    sta_all_price      += parseFloat(all_price);
+                }
+                if (all_tax_price) {
+                    sta_all_tax_price  += parseFloat(all_tax_price);
+                }
+            });
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         });
 
         //保存
@@ -207,22 +260,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             });
         });
 
-        function init(){
-            if (!$('.select_id').length) {
-                $('.select_all').hide();
-                $('.quote_save').hide();
-                $('.field-orderpurchase-admin_id').hide();
-                $('.field-orderpurchase-end_date').hide();
-            }
-            $('.order_final_list').each(function (i, e) {
-                if (!$(e).find('.afterNumber').find('.number').length) {
-                    var price     = $(e).find('.price').text();
-                    var tax_price = $(e).find('.tax_price').text();
-                    var number    = $(e).find('.afterNumber').text();
-                    $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                    $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-                }
-            });
-        }
+
     });
 </script>
