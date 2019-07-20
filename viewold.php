@@ -3,7 +3,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = '订单添加零件';
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 <style>
     .box-search li {
