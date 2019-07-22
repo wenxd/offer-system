@@ -51,6 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => CheckboxColumn::className(),
             ],
+            [
+                'class'         => ActionColumn::className(),
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'header'        => '操作',
+                'template'      => '{update} {delete}',
+            ],
             'id',
             [
                 'attribute' => 'goods_number',
@@ -126,30 +132,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
             [
-                'attribute' => 'device_one',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'device_two',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'device_three',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'device_four',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'device_five',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'class'         => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
-                'header'        => '操作',
-                'template'      => '{view} {update} {delete}',
+                'attribute'      => 'device_info',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
+                'value'          => function($model){
+                    $text = '';
+                    if ($model->device_info) {
+                        foreach (json_decode($model->device_info, true) as $key => $device) {
+                            $text .= $key . ':' . $device . '<br/>';
+                        }
+                    }
+                    return $text;
+                }
             ],
         ],
     ]); ?>
