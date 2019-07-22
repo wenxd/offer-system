@@ -215,12 +215,19 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-        $tableheader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备1', '设备2', '设备3', '设备4', '设备5'];
-        for($i = 0; $i < count($tableheader); $i++) {
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备信息用|分组', '库存位置', '库存数量', '建议库存', '高储', '低储'];
+        $tableValues = '设备1=3|设备2=4|设备5=5';
+        for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableheader[$i]);
+            if ($i == 6) {
+                $excel->getColumnDimension($letter[$i])->setWidth(32);
+            }
+            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            if ($i == 6) {
+                $excel->setCellValue($letter[$i].'2',$tableValues);
+            }
         }
 
         $title = '零件上传模板';
@@ -278,46 +285,64 @@ class GoodsController extends BaseController
                     $num = 0;
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
+                            if (empty($value['A']) && empty($value['B'])) {
+                                continue;
+                            }
                             $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
-                                ->andWhere(['or', ['goods_number' => $value['A']], ['goods_number_b' => $value['B']]])->one();
+                                ->andWhere(['or', ['goods_number' => trim($value['A'])], ['goods_number_b' => trim($value['B'])]])->one();
                             if (!$goods) {
                                 $goods = new Goods();
                             }
                             if ($value['A']) {
-                                $goods->goods_number = $value['A'];
+                                $goods->goods_number = trim($value['A']);
                             }
                             if ($value['B']) {
-                                $goods->goods_number_b = $value['B'];
+                                $goods->goods_number_b = trim($value['B']);
                             }
                             if ($value['C']) {
-                                $goods->description = $value['C'];
+                                $goods->description = trim($value['C']);
                             }
                             if ($value['D']) {
-                                $goods->description_en = $value['D'];
+                                $goods->description_en = trim($value['D']);
                             }
                             if ($value['E']) {
-                                $goods->original_company = $value['E'];
+                                $goods->original_company = trim($value['E']);
                             }
                             if ($value['F']) {
-                                $goods->original_company_remark = $value['F'];
+                                $goods->original_company_remark = trim($value['F']);
                             }
                             if ($value['G']) {
-                                $goods->device_one = $value['G'];
-                            }
-                            if ($value['H']) {
-                                $goods->device_two = $value['H'];
-                            }
-                            if ($value['I']) {
-                                $goods->device_three = $value['I'];
-                            }
-                            if ($value['J']) {
-                                $goods->device_four = $value['J'];
-                            }
-                            if ($value['K']) {
-                                $goods->device_five = $value['K'];
+                                $deviceList = explode('|', trim($value['G']));
+                                $device_info = [];
+                                foreach ($deviceList as $device) {
+                                    list($name, $number) = explode('=', $device);
+                                    $device_info[$name] = $number;
+                                }
+                                $goods->device_info = json_encode($device_info, JSON_UNESCAPED_UNICODE);
                             }
                             if ($goods->save()) {
                                 $num++;
+                                $stock = Stock::find()->where(['good_id' => $goods->id])->one();
+                                if (!$stock) {
+                                    $stock = new Stock();
+                                    $stock->good_id = $goods->id;
+                                }
+                                if ($value['H']) {
+                                    $stock->position = trim($value['H']);
+                                }
+                                if ($value['I']) {
+                                    $stock->number += (int)trim($value['I']);
+                                }
+                                if ($value['J']) {
+                                    $stock->suggest_number = trim($value['J']);
+                                }
+                                if ($value['K']) {
+                                    $stock->high_number = trim($value['K']);
+                                }
+                                if ($value['L']) {
+                                    $stock->low_number = trim($value['L']);
+                                }
+                                $stock->save();
                             }
                         }
                     }
