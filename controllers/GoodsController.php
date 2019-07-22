@@ -326,7 +326,7 @@ class GoodsController extends BaseController
                         }
                     }
                 }
-                unlink($saveName);
+                unlink('./' . $saveName);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
         }

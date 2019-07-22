@@ -166,7 +166,7 @@ class Goods extends ActiveRecord
     public function beforeSave($insert)
     {
         //设备信息处理
-        if ($this->device_info) {
+        if ($this->device_info != $this->getOldAttribute('device_info')) {
             $arr = [];
             if (isset($this->device_info['name'])) {
                 foreach ($this->device_info['name'] as $key => $item) {
