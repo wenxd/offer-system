@@ -20,10 +20,9 @@ class GoodsSearch extends Goods
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_one', 'device_two',
-                'device_three', 'device_four', 'device_five', 'device_info'], 'safe'],
+                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five', 'device_info'], 'trim'],
+                'technique_remark', 'device_info'], 'trim'],
         ];
     }
 
@@ -86,11 +85,6 @@ class GoodsSearch extends Goods
             ->andFilterWhere(['like', 'original_company_remark', $this->original_company_remark])
             ->andFilterWhere(['like', 'unit', $this->unit])
             ->andFilterWhere(['like', 'technique_remark', $this->technique_remark])
-            ->andFilterWhere(['like', 'device_one', $this->device_one])
-            ->andFilterWhere(['like', 'device_two', $this->device_two])
-            ->andFilterWhere(['like', 'device_three', $this->device_three])
-            ->andFilterWhere(['like', 'device_four', $this->device_four])
-            ->andFilterWhere(['like', 'device_five', $this->device_five])
             ->andFilterWhere(['like', 'img_id', $this->img_id])
             ->andFilterWhere(['like', 'device_info', $this->device_info]);
 

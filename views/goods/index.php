@@ -53,9 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class'         => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'contentOptions'=>['style'=>'min-width: 10px;'],
                 'header'        => '操作',
-                'template'      => '{update} {delete}',
+                'template'      => '{update}',
             ],
             'id',
             [
