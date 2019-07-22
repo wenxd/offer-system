@@ -24,7 +24,9 @@ if ($model->isNewRecord) {
     $model->inquiry_datetime = date('Y-m-d H:i:s');
     $model->delivery_time    = 100;
 } else {
-    $model->supplier_name = $model->supplier->name;
+    $model->supplier_name  = $model->supplier->name;
+    $model->goods_number   = $model->goods->goods_number;
+    $model->goods_number_b = $model->goods->goods_number_b;
 }
 
 //$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
