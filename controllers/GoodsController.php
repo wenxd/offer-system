@@ -215,8 +215,8 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备信息用|分组', '库存位置', '库存数量', '建议库存', '高储', '低储'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备信息用|分组'];
         $tableValues = '设备1=3|设备2=4|设备5=5';
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -322,27 +322,6 @@ class GoodsController extends BaseController
                             }
                             if ($goods->save()) {
                                 $num++;
-                                $stock = Stock::find()->where(['good_id' => $goods->id])->one();
-                                if (!$stock) {
-                                    $stock = new Stock();
-                                    $stock->good_id = $goods->id;
-                                }
-                                if ($value['H']) {
-                                    $stock->position = trim($value['H']);
-                                }
-                                if ($value['I']) {
-                                    $stock->number += (int)trim($value['I']);
-                                }
-                                if ($value['J']) {
-                                    $stock->suggest_number = trim($value['J']);
-                                }
-                                if ($value['K']) {
-                                    $stock->high_number = trim($value['K']);
-                                }
-                                if ($value['L']) {
-                                    $stock->low_number = trim($value['L']);
-                                }
-                                $stock->save();
                             }
                         }
                     }

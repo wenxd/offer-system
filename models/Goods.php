@@ -170,12 +170,14 @@ class Goods extends ActiveRecord
         //设备信息处理
         if ($this->device_info) {
             $arr = [];
-            foreach ($this->device_info['name'] as $key => $item) {
-                if ($item) {
-                    $arr[$item] = $this->device_info['number'][$key];
+            if (isset($this->device_info['name'])) {
+                foreach ($this->device_info['name'] as $key => $item) {
+                    if ($item) {
+                        $arr[$item] = $this->device_info['number'][$key];
+                    }
                 }
+                $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
             }
-            $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
         }
 
         $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();
