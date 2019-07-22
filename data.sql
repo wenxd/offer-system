@@ -489,3 +489,13 @@ CREATE TABLE `inquiry_goods` (
 ) ENGINE=InnoDB COMMENT='询价单号与零件ID对应表';
 
 ALTER TABLE `goods` ADD COLUMN `device_info` VARCHAR(510) NOT NULL DEFAULT '' COMMENT '设备信息 json存储';
+
+CREATE TABLE `system_config` (
+  `id`         int(11) NOT NULL AUTO_INCREMENT,
+  `title`      varchar(255) NOT NULL DEFAULT '' COMMENT '配置名称',
+  `value`      varchar(255) NOT NULL DEFAULT '' COMMENT '配置参数值',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='系统配置';
