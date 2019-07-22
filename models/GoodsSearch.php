@@ -20,9 +20,9 @@ class GoodsSearch extends Goods
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info'], 'safe'],
+                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info', 'material'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_info'], 'trim'],
+                'technique_remark', 'device_info', 'material'], 'trim'],
         ];
     }
 
@@ -86,6 +86,7 @@ class GoodsSearch extends Goods
             ->andFilterWhere(['like', 'unit', $this->unit])
             ->andFilterWhere(['like', 'technique_remark', $this->technique_remark])
             ->andFilterWhere(['like', 'img_id', $this->img_id])
+            ->andFilterWhere(['like', 'material', $this->material])
             ->andFilterWhere(['like', 'device_info', $this->device_info]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {

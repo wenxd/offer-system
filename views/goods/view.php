@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'goods_number_b',
             'description',
             'description_en',
+            'material',
             'original_company',
             'original_company_remark',
             [
@@ -68,6 +69,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'technique_remark',
+            [
+                'attribute'      => 'device_info',
+                'format'         => 'raw',
+                'value'          => function($model){
+                    $text = '';
+                    if ($model->device_info) {
+                        foreach (json_decode($model->device_info, true) as $key => $device) {
+                            $text .= $key . ':' . $device . '<br/>';
+                        }
+                    }
+                    return $text;
+                }
+            ],
             [
                 'attribute' => 'created_at',
                 'value'     => function($model){
