@@ -21,9 +21,9 @@ class GoodsSearch extends Goods
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_one', 'device_two',
-                'device_three', 'device_four', 'device_five'], 'safe'],
+                'device_three', 'device_four', 'device_five', 'device_info'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five'], 'trim'],
+                'technique_remark', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five', 'device_info'], 'trim'],
         ];
     }
 
@@ -91,7 +91,8 @@ class GoodsSearch extends Goods
             ->andFilterWhere(['like', 'device_three', $this->device_three])
             ->andFilterWhere(['like', 'device_four', $this->device_four])
             ->andFilterWhere(['like', 'device_five', $this->device_five])
-            ->andFilterWhere(['like', 'img_id', $this->img_id]);
+            ->andFilterWhere(['like', 'img_id', $this->img_id])
+            ->andFilterWhere(['like', 'device_info', $this->device_info]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

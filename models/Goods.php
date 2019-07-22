@@ -27,6 +27,7 @@ use app\extend\tencent\Cos;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $device_info 设备信息
  */
 class Goods extends ActiveRecord
 {
@@ -109,7 +110,7 @@ class Goods extends ActiveRecord
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
-            [['description', 'description_en', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five'], 'string', 'max' => 255],
+            [['description', 'description_en', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five', 'device_info'], 'string', 'max' => 255],
             [
                 ['goods_number'],
                 'required',
@@ -150,6 +151,7 @@ class Goods extends ActiveRecord
             'device_three'            => '设备3',
             'device_four'             => '设备4',
             'device_five'             => '设备5',
+            'device_info'             => '设备信息',
         ];
     }
 
