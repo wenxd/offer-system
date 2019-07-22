@@ -80,6 +80,7 @@ if ($model->isNewRecord) {
 
     <div class="form-group field-goods-device_info">
         <div class="device_list">
+            <?php if ($deviceList):?>
             <?php foreach ($deviceList as $device => $number):?>
                 <div class="input-group">
                     <span class="input-group-addon device-name">设备名称</span>
@@ -95,6 +96,7 @@ if ($model->isNewRecord) {
                     </span>
                 </div>
             <?php endforeach;?>
+            <?php endif;?>
         </div>
     </div>
 
