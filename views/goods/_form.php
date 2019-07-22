@@ -10,8 +10,11 @@ use app\models\Goods;
 /* @var $model app\models\Goods */
 /* @var $form yii\widgets\ActiveForm */
 
+$deviceList = [];
 if ($model->isNewRecord) {
     $model->unit = '个';
+} else {
+    $deviceList = json_decode($model->device_info, true);
 }
 ?>
 
@@ -73,15 +76,27 @@ if ($model->isNewRecord) {
 
     <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'device_one')->textInput(['maxlength' => true]) ?>
+    <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>
 
-    <?= $form->field($model, 'device_two')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'device_three')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'device_four')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'device_five')->textInput(['maxlength' => true]) ?>
+    <div class="form-group field-goods-device_info">
+        <div class="device_list">
+            <?php foreach ($deviceList as $device => $number):?>
+                <div class="input-group">
+                    <span class="input-group-addon device-name">设备名称</span>
+                    <span class="input-group-addon">
+                        <input type="text" class="form-control" name="Goods[device_info][name][]" value="<?=$device?>" placeholder="输入设备数值">
+                    </span>
+                    <span class="input-group-addon device-number">设备数值</span>
+                    <span class="input-group-addon">
+                        <input type="text" class="form-control" name="Goods[device_info][number][]" value="<?=$number?>" placeholder="输入设备数值">
+                    </span>
+                    <span class="input-group-addon">
+                        <a class="btn-danger btn-sm btn-flat" href="javascript:void(0)" onclick="del(this)"><i class="fa fa-trash"></i> 删除</a>
+                    </span>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
 
     </div>
     <div class="box-footer">
@@ -115,4 +130,29 @@ if ($model->isNewRecord) {
             }
         })
     });
+
+    $('.add-device').click(function () {
+        var html = '<div class="input-group">\n' +
+            '            <span class="input-group-addon device-name">设备名称</span>\n' +
+            '            <span class="input-group-addon">\n' +
+            '                <input type="text" class="form-control" name="Goods[device_info][name][]" placeholder="输入设备数值">\n' +
+            '            </span>\n' +
+            '            <span class="input-group-addon device-number">设备数值</span>\n' +
+            '            <span class="input-group-addon">\n' +
+            '                <input type="text" class="form-control" name="Goods[device_info][number][]" placeholder="输入设备数值">\n' +
+            '            </span>\n' +
+            '            <span class="input-group-addon">\n' +
+            '                <a class="btn-danger btn-sm btn-flat" href="javascript:void(0)" onclick="del(this)"><i class="fa fa-trash"></i> 删除</a>\n' +
+            '            </span>\n' +
+            '        </div>';
+
+        $('.device_list').append(html);
+    });
+
+    function del(obj) {
+        $(obj).parent().parent().remove();
+    }
+
+
+
 </script>

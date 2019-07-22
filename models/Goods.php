@@ -108,9 +108,9 @@ class Goods extends ActiveRecord
     {
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
-            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url'], 'safe'],
+            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
-            [['description', 'description_en', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five', 'device_info'], 'string', 'max' => 255],
+            [['description', 'description_en', 'device_one', 'device_two', 'device_three', 'device_four', 'device_five'], 'string', 'max' => 255],
             [
                 ['goods_number'],
                 'required',
@@ -167,6 +167,17 @@ class Goods extends ActiveRecord
 
     public function beforeSave($insert)
     {
+        //设备信息处理
+        if ($this->device_info) {
+            $arr = [];
+            foreach ($this->device_info['name'] as $key => $item) {
+                if ($item) {
+                    $arr[$item] = $this->device_info['number'][$key];
+                }
+            }
+            $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
+        }
+
         $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();
         if ($insert && $is_goods_number) {
             $this->addError('id', '此零件编码已存在');
