@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 use app\extend\tencent\Cos;
 
@@ -153,10 +154,10 @@ class Goods extends ActiveRecord
     public function afterFind()
     {
         if ($this->img_id) {
-            $this->img_url = sprintf('%s/%s', Yii::$app->params['img_url_prefix'], $this->img_id);
+            $this->img_url = sprintf('%s/%s', Yii::$app->request->getHostInfo() . '/images', $this->img_id);
         }
         if ($this->nameplate_img_id) {
-            $this->nameplate_img_url = sprintf('%s/%s', Yii::$app->params['img_url_prefix'], $this->nameplate_img_id);
+            $this->nameplate_img_url = sprintf('%s/%s', Yii::$app->request->getHostInfo() . '/images', $this->nameplate_img_id);
         }
     }
 
@@ -181,25 +182,25 @@ class Goods extends ActiveRecord
             return false;
         }
         $img = UploadedFile::getInstance($this, 'img_id');
-        $cos = new Cos();
+        //$cos = new Cos();
         if ($img) {
             //用云
-            $this->img_id = $cos->uploadImage($img->tempName);
+            //$this->img_id = $cos->uploadImage($img->tempName);
             //用本地
-//            $key = time() . rand(1000, 9999);
-//            move_uploaded_file($img->tempName, 'images/' . $key . '.png');
-//            $this->img_id = 'images/' . $key . '.png';
-        }
-        else {
+            $key = time() . rand(1000, 9999);
+            move_uploaded_file($img->tempName, 'images/' . $key . '.png');
+            $this->img_id = $key . '.png';
+        } else {
             $this->img_id = $this->getOldAttribute('img_id') ? $this->getOldAttribute('img_id') : '';
         }
 
         $nameplate_img = UploadedFile::getInstance($this, 'nameplate_img_id');
         if ($nameplate_img) {
-            //用云
-            $this->nameplate_img_id = $cos->uploadImage($nameplate_img->tempName);
-        }
-        else {
+            //用本地
+            $key = time() . rand(1000, 9999);
+            move_uploaded_file($img->tempName, 'images/' . $key . '.png');
+            $this->nameplate_img = $key . '.png';
+        } else {
             $this->nameplate_img_id = $this->getOldAttribute('nameplate_img_id') ? $this->getOldAttribute('nameplate_img_id') : '';
         }
         
