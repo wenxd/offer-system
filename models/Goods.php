@@ -198,12 +198,15 @@ class Goods extends ActiveRecord
         if ($nameplate_img) {
             //用本地
             $key = time() . rand(1000, 9999);
-            move_uploaded_file($img->tempName, 'images/' . $key . '.png');
-            $this->nameplate_img = $key . '.png';
+            move_uploaded_file($nameplate_img->tempName, 'images/' . $key . '.png');
+            $this->nameplate_img_id = $key . '.png';
         } else {
             $this->nameplate_img_id = $this->getOldAttribute('nameplate_img_id') ? $this->getOldAttribute('nameplate_img_id') : '';
         }
-        
+        if ($this->nameplate_img_id) {
+            $this->is_nameplate = self::IS_NAMEPLATE_YES;
+        }
+
         // 删除零件时，如果存在则不能删除
         if ($this->is_deleted == static::IS_DELETED_YES ) { // 删除操作
 

@@ -155,6 +155,8 @@ if ($model->isNewRecord) {
         $(obj).parent().parent().remove();
     }
 
-
+    $('.file-preview').click(function () {
+       console.log(111);
+    });
 
 </script>
