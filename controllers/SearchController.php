@@ -30,7 +30,7 @@ class SearchController extends BaseController
         return $this->render('index');
     }
 
-    /**获取零件ID
+    /**获取零件号A
      * @return string
      */
     public function actionGetGoodNumber()
@@ -55,6 +55,28 @@ class SearchController extends BaseController
         $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number_b');
 
         return json_encode(['code' => 200, 'data' => $good_number_list]);
+    }
+
+    /**获取零件号A新方法
+     * @return string
+     */
+    public function actionGetNewGoodNumber()
+    {
+        $good_number = (string)Yii::$app->request->get('good_number');
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
+        return json_encode(['code' => 200, 'data' => $goodsList]);
+    }
+
+    /**获取零件号B新方法
+     * @return string
+     */
+    public function actionGetNewGoodNumberB()
+    {
+        $good_number_b = (string)Yii::$app->request->get('good_number_b');
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number_b', $good_number_b])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
+        return json_encode(['code' => 200, 'data' => $goodsList]);
     }
 
     /**获取供应商

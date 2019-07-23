@@ -126,6 +126,12 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 
             </ul>
         </div>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号B') ?>
+        <div class="box-search-goods_number_b cancel-goods_number_b">
+            <ul class="box-search-ul-goods_number_b">
+
+            </ul>
+        </div>
     <?php endif;?>
     <div class="form-group field-inquiry-price">
         <label class="control-label" for="inquiry-supplier_name">供应商</label>
@@ -260,6 +266,12 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             }
         });
     });
+    //选择供应商
+    function select(obj){
+        $("#inquiry-supplier_name").val(obj.html());
+        $('.box-search').addClass('cancel');
+    }
+
 
     //零件B搜索
     $("#inquiry-goods_number_b").bind('input propertychange', function (e) {
@@ -272,14 +284,14 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         $('.box-search-goods_number_b').removeClass('cancel-goods_number_b');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-good-number-b",
+            url:"?r=search/get-new-good-number-b",
             data:{good_number_b:good_number_b},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoods($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="selectGoodsB($(this))" data-goods_number="' + res.data[i]['goods_number'] + '">' + res.data[i]['goods_number_b'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number_b').append(li);
@@ -290,7 +302,14 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             }
         })
     });
+    //选择零件B
+    function selectGoodsB(obj){
+        $("#inquiry-goods_number_b").val($.trim(obj.html()));
+        $("#inquiry-goods_number").val($.trim(obj.data('goods_number')));
+        $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
+    }
 
+    //零件A搜索
     $("#inquiry-goods_number").bind('input propertychange', function (e) {
         var good_number = $('#inquiry-goods_number').val();
         if (good_number === '') {
@@ -301,14 +320,14 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         $('.box-search-goods_number').removeClass('cancel-goods_number');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-good-number",
+            url:"?r=search/get-new-good-number",
             data:{good_number:good_number},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this))" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -319,22 +338,11 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             }
         })
     });
-
+    //选择零件A
     function selectGoodsA(obj){
-        $("#inquiry-goods_number").val(obj.html());
+        $("#inquiry-goods_number").val($.trim(obj.html()));
+        $("#inquiry-goods_number_b").val($.trim(obj.data('goods_number_b')));
         $('.box-search-goods_number').addClass('cancel-goods_number');
     }
-
-
-    function select(obj){
-        $("#inquiry-supplier_name").val(obj.html());
-        $('.box-search').addClass('cancel');
-    }
-
-    function selectGoods(obj){
-        $("#inquiry-goods_number_b").val(obj.html());
-        $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
-    }
-
 
 </script>
