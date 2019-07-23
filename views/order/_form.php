@@ -9,6 +9,7 @@ use kartik\datetime\DateTimePicker;
 /* @var $this yii\web\View */
 /* @var $model app\models\Order */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $number  */
 
 if ($model->isNewRecord) {
     $model->created_at = date('Y-m-d H:i:s');
@@ -21,13 +22,6 @@ if ($model->isNewRecord) {
 ?>
 
 <div class="box">
-    <div class="box-header">
-        <?= Html::a('新增零件', Url::to(['goods/create']), [
-                'class' => 'btn btn-success',
-                'name'  => 'submit-button',
-                'target' => 'blank']
-        )?>
-    </div>
 
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
