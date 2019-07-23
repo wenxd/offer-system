@@ -144,7 +144,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'InquirySearch[inquiry_datetime]',
                     'value' => Yii::$app->request->get('InquirySearch')['inquiry_datetime'] ?? '',
-                ])
+                ]),
+                'value'     => function($model){
+                    return substr($model->inquiry_datetime, 0, 10);
+                }
             ],
             'remark',
             [

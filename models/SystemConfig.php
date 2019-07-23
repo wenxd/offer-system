@@ -16,6 +16,12 @@ use Yii;
  */
 class SystemConfig extends \yii\db\ActiveRecord
 {
+    const IS_DELETED_NO    = '0';
+    const IS_DELETED_YES   = '1';
+
+    const TITLE_TAX           = 'tax';
+    const TITLE_DELIVERY_TIME = 'delivery';
+
     /**
      * {@inheritdoc}
      */
@@ -43,7 +49,7 @@ class SystemConfig extends \yii\db\ActiveRecord
     {
         return [
             'id'         => 'ID',
-            'title'      => '配置名称',
+            'title'      => '配置参数',
             'value'      => '配置参数值',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',
@@ -51,9 +57,8 @@ class SystemConfig extends \yii\db\ActiveRecord
         ];
     }
 
-    const TITLE_TAX = 'tax';
-
     public static $config = [
-        self::TITLE_TAX => '税率',
+        self::TITLE_TAX           => '税率',
+        self::TITLE_DELIVERY_TIME => '货期',
     ];
 }

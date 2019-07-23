@@ -2,36 +2,29 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\SystemConfig;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\SystemConfig */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'System Configs', 'url' => ['index']];
+$this->title = '配置详情';
+$this->params['breadcrumbs'][] = ['label' => '配置列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-config-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'title',
+            [
+                'attribute' => 'title',
+                'filter'    => SystemConfig::$config,
+                'value'     => function ($model) {
+                    return SystemConfig::$config[$model->title];
+                }
+            ],
             'value',
-            'is_deleted',
             'updated_at',
             'created_at',
         ],

@@ -20,6 +20,7 @@ class SystemConfigSearch extends SystemConfig
         return [
             [['id', 'is_deleted'], 'integer'],
             [['title', 'value', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'value'], 'trim'],
         ];
     }
 
@@ -59,14 +60,14 @@ class SystemConfigSearch extends SystemConfig
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'is_deleted' => $this->is_deleted,
+            'id'         => $this->id,
+            'is_deleted' => self::IS_DELETED_NO,
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
+            'title'      => $this->title,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'value', $this->value]);
+        $query->andFilterWhere(['like', 'value', $this->value]);
 
         return $dataProvider;
     }

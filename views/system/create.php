@@ -6,13 +6,11 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\SystemConfig */
 
-$this->title = 'Create System Config';
-$this->params['breadcrumbs'][] = ['label' => 'System Configs', 'url' => ['index']];
+$this->title = '创建系统配置';
+$this->params['breadcrumbs'][] = ['label' => '系统配置列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-config-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -14,6 +14,8 @@ use app\models\AuthAssignment;
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
 
+
+$model->inquiry_datetime = date('Y-m-d');
 $model->tax_rate='16';
 if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
@@ -21,22 +23,29 @@ if ($model->isNewRecord) {
         $goods = Goods::findOne($_GET['goods_id']);
         $model->goods_number_b = $goods->goods_number_b;
     }
-    $model->inquiry_datetime = date('Y-m-d H:i:s');
     $model->delivery_time    = 100;
 } else {
     $model->supplier_name  = $model->supplier->name;
     $model->goods_number   = $model->goods->goods_number;
     $model->goods_number_b = $model->goods->goods_number_b;
 }
+//超级管理员
+$user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$superAdminIds  = ArrayHelper::getColumn($user_super, 'user_id');
+//判断当前用户是否是超管
+$is_super = false;
+if (in_array(Yii::$app->user->identity->id, $superAdminIds)) {
+    $is_super = true;
+}
 
-//$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
-//$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-//$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
-//foreach ($adminList as $key => $admin) {
-//    $admins[$admin->id] = $admin->username;
-//}
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
 ?>
 <style>
     /*供应商*/
@@ -120,12 +129,14 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
             </ul>
         </div>
     <?php else :?>
-        <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号A') ?>
-        <div class="box-search-goods_number cancel-goods_number">
-            <ul class="box-search-ul-goods_number">
+        <?php if ($is_super):?>
+            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号A') ?>
+            <div class="box-search-goods_number cancel-goods_number">
+                <ul class="box-search-ul-goods_number">
 
-            </ul>
-        </div>
+                </ul>
+            </div>
+        <?php endif;?>
         <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号B') ?>
         <div class="box-search-goods_number_b cancel-goods_number_b">
             <ul class="box-search-ul-goods_number_b">
@@ -154,7 +165,10 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
         'removeButton'  => false,
         'pluginOptions' => [
             'autoclose' => true,
-            'format'    => 'yyyy-mm-dd hh:ii:00'
+            'format'    => 'yyyy-mm-dd',
+            'startView' =>2,  //其实范围（0：日  1：天 2：年）
+            'maxView'   =>2,  //最大选择范围（年）
+            'minView'   =>2,  //最小选择范围（年）
         ]
     ]);?>
 

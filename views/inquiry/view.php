@@ -115,7 +115,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'price',
             'tax_price',
             'delivery_time',
-            'inquiry_datetime',
+            [
+                'attribute' => 'inquiry_datetime',
+                'value'     => function($model){
+                    return substr($model->inquiry_datetime, 0, 10);
+                }
+            ],
             'sort',
             [
                 'attribute' => 'is_better',
