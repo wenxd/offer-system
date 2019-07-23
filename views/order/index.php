@@ -23,7 +23,7 @@ $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
-        <?= Bar::widget()?>
+        <?= Bar::widget(['template' => '{create}'])?>
     </div>
     <div class="box-body">
         <?php Pjax::begin(); ?>

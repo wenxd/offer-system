@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
-        <?= Bar::widget()?>
+        <?= Bar::widget(['template' => '{create}'])?>
     </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
@@ -26,9 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            [
-                'class' => CheckboxColumn::className(),
-            ],
             'id',
             [
                 'attribute' => 'title',
