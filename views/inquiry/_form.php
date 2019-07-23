@@ -6,28 +6,30 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Supplier;
-use app\models\Inquiry;
-use app\models\Goods;
-use app\models\Admin;
-use app\models\AuthAssignment;
+use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig};
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
 
 
-$model->inquiry_datetime = date('Y-m-d');
-$model->tax_rate='16';
+$model->tax_rate = SystemConfig::find()->select('value')->where([
+        'title'  => SystemConfig::TITLE_TAX,
+    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
         $goods = Goods::findOne($_GET['goods_id']);
         $model->goods_number_b = $goods->goods_number_b;
     }
-    $model->delivery_time    = 100;
+    $model->inquiry_datetime = date('Y-m-d');
+    $model->delivery_time    = SystemConfig::find()->select('value')->where([
+        'title'  => SystemConfig::TITLE_DELIVERY_TIME,
+        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 } else {
-    $model->supplier_name  = $model->supplier->name;
-    $model->goods_number   = $model->goods->goods_number;
-    $model->goods_number_b = $model->goods->goods_number_b;
+    $model->supplier_name    = $model->supplier->name;
+    $model->goods_number     = $model->goods->goods_number;
+    $model->goods_number_b   = $model->goods->goods_number_b;
+    $model->inquiry_datetime = substr($model->inquiry_datetime, 0, 10);
 }
 //超级管理员
 $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
@@ -207,19 +209,31 @@ foreach ($adminList as $key => $admin) {
     //实现税率自动转换
     var tax = $('#inquiry-tax_rate').val();
 
-    $('#inquiry-price').blur(function () {
+    $("#inquiry-price").bind('input propertychange', function (e) {
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
         $("#inquiry-tax_price").attr("value",tax_price.toFixed(2));
         $("#inquiry-tax_price").val(tax_price.toFixed(2));
     });
-
-    $('#inquiry-tax_price').blur(function () {
+    $("#inquiry-tax_price").bind('input propertychange', function (e) {
         var tax_price = $('#inquiry-tax_price').val();
         var price = tax_price / (1 + tax/100);
         $("#inquiry-price").attr("value",price.toFixed(2));
         $("#inquiry-price").val(price.toFixed(2));
     });
+
+    // $('#inquiry-price').blur(function () {
+    //     var price = $('#inquiry-price').val();
+    //     var tax_price = price * (1 + tax/100);
+    //     $("#inquiry-tax_price").attr("value",tax_price.toFixed(2));
+    //     $("#inquiry-tax_price").val(tax_price.toFixed(2));
+    // });
+    // $('#inquiry-tax_price').blur(function () {
+    //     var tax_price = $('#inquiry-tax_price').val();
+    //     var price = tax_price / (1 + tax/100);
+    //     $("#inquiry-price").attr("value",price.toFixed(2));
+    //     $("#inquiry-price").val(price.toFixed(2));
+    // });
 
     init();
     function init() {

@@ -100,7 +100,7 @@ class InquirySearch extends Inquiry
             'sort'          => $this->sort,
             'is_better'     => $this->is_better,
             'is_newest'     => $this->is_newest,
-            'is_deleted'    => $this->is_deleted,
+            'is_deleted'    => self::IS_BETTER_NO,
         ]);
 
         $query->andFilterWhere(['good_id' => $this->good_id]);

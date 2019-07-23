@@ -31,6 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => CheckboxColumn::className(),
             ],
+            [
+                'class' => ActionColumn::className(),
+                'contentOptions'=>['style'=>'min-width: 200px;'],
+                'header' => '操作',
+                'template' => '{view} {update} {delete}',
+            ],
             'id',
             'good_id',
             [
@@ -185,12 +191,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'     => function ($model, $key, $index, $column) {
                     return Inquiry::$newest[$model->is_newest];
                 }
-            ],
-            [
-                'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
-                'header' => '操作',
-                'template' => '{view} {update} {delete}',
             ],
         ],
     ]); ?>

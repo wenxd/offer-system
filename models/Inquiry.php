@@ -129,6 +129,10 @@ class Inquiry extends ActiveRecord
 
     public function beforeSave($insert)
     {
+        if ($this->is_deleted) {
+            return parent::beforeSave($insert);
+        }
+
         $date = $this->inquiry_datetime;
         $isHasNew = self::find()->where(['good_id' => $this->good_id])->andWhere(" inquiry_datetime >= '$date' ")->one();
 
@@ -170,6 +174,7 @@ class Inquiry extends ActiveRecord
         }
 
         $this->good_id = $goods->id;
+
         return parent::beforeSave($insert);
     }
 
