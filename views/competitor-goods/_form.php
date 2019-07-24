@@ -5,12 +5,14 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
-use app\models\Competitor;
-use app\models\Customer;
+use app\models\{Competitor, Customer, SystemConfig};
+
 /* @var $this yii\web\View */
 /* @var $model app\models\CompetitorGoods */
 /* @var $form yii\widgets\ActiveForm */
-$model->tax_rate='16';
+$model->tax_rate = SystemConfig::find()->select('value')->where([
+    'title'  => SystemConfig::TITLE_TAX,
+    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 if (!$model->isNewRecord) {
     $model->offer_date = substr($model->offer_date, 0, 10);
 }
@@ -56,8 +58,6 @@ if (!$model->isNewRecord) {
     <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'offer_date')->widget(DateTimePicker::className(), [
         'removeButton'  => false,
@@ -92,19 +92,32 @@ if (!$model->isNewRecord) {
     //实现税率自动转换
     var tax = $('#competitorgoods-tax_rate').val();
 
-    $('#competitorgoods-price').blur(function () {
+    $("#competitorgoods-price").bind('input propertychange', function (e) {
         var price = $('#competitorgoods-price').val();
         var tax_price = price * (1 + tax/100);
         $("#competitorgoods-tax_price").attr("value",tax_price.toFixed(2));
         $("#competitorgoods-tax_price").val(tax_price.toFixed(2));
     });
-
-    $('#competitorgoods-tax_price').blur(function () {
+    $("#competitorgoods-tax_price").bind('input propertychange', function (e) {
         var tax_price = $('#competitorgoods-tax_price').val();
         var price = tax_price / (1 + tax/100);
         $("#competitorgoods-price").attr("value",price.toFixed(2));
         $("#competitorgoods-price").val(price.toFixed(2));
     });
+
+    // $('#competitorgoods-price').blur(function () {
+    //     var price = $('#competitorgoods-price').val();
+    //     var tax_price = price * (1 + tax/100);
+    //     $("#competitorgoods-tax_price").attr("value",tax_price.toFixed(2));
+    //     $("#competitorgoods-tax_price").val(tax_price.toFixed(2));
+    // });
+    //
+    // $('#competitorgoods-tax_price').blur(function () {
+    //     var tax_price = $('#competitorgoods-tax_price').val();
+    //     var price = tax_price / (1 + tax/100);
+    //     $("#competitorgoods-price").attr("value",price.toFixed(2));
+    //     $("#competitorgoods-price").val(price.toFixed(2));
+    // });
 
     $("#competitorgoods-goods_number").bind('input propertychange', function (e) {
         var good_number = $('#competitorgoods-goods_number').val();
