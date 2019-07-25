@@ -22,8 +22,8 @@ class CompetitorGoodsSearch extends CompetitorGoods
         return [
             [['id', 'goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
             [['tax_rate', 'price', 'tax_price'], 'number'],
-            [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name', 'unit'], 'safe'],
-            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price', 'unit'], 'trim'],
+            [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name', 'unit', 'remark'], 'safe'],
+            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price', 'unit', 'remark'], 'trim'],
         ];
     }
 

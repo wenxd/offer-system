@@ -46,8 +46,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => CheckboxColumn::className(),
             ],
+            [
+                'class' => ActionColumn::className(),
+                'contentOptions'=>['style'=>'min-width: 200px;'],
+                'header' => '操作',
+                'template' => '{view} {update} {delete}',
+            ],
             'id',
-            'goods_id',
+//            'goods_id',
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
@@ -60,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'competitor_id',
+//            'competitor_id',
             [
                 'attribute' => 'competitor_name',
                 'format'    => 'raw',
@@ -101,12 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return substr($model->offer_date, 0, 10);
                 }
             ],
-            [
-                'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
-                'header' => '操作',
-                'template' => '{view} {update} {delete}',
-            ],
+            'remark',
         ],
     ]); ?>
     <?php Pjax::end(); ?>
