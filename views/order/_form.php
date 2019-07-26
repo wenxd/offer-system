@@ -12,7 +12,7 @@ use kartik\datetime\DateTimePicker;
 /* @var $number  */
 
 if ($model->isNewRecord) {
-    $model->created_at = date('Y-m-d H:i:s');
+    $model->created_at = date('Y-m-d');
     $model->order_type = 1;
     $model->order_sn = 'D' . date('ymd__') . $number;
     $model->manage_name = Yii::$app->user->identity->username;
@@ -25,6 +25,7 @@ if ($model->isNewRecord) {
 
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
+        <span class="base_order_sn" style="display: none"><?=$model->order_sn?></span>
         <?= $form->field($model, 'order_type')->radioList(Order::$orderType, ['class' => 'radio']) ?>
 
         <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
@@ -39,7 +40,7 @@ if ($model->isNewRecord) {
         'removeButton'  => false,
         'pluginOptions' => [
             'autoclose' => true,
-            'format'    => 'yyyy-mm-dd 12:00:00',
+            'format'    => 'yyyy-mm-dd',
             'startView' =>2,  //其实范围（0：日  1：天 2：年）
             'maxView'   =>2,  //最大选择范围（年）
             'minView'   =>2,  //最小选择范围（年）
@@ -69,6 +70,7 @@ if ($model->isNewRecord) {
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         $('#order-customer_id').change(function () {
             var id = $(this).val();
             $.ajax({
@@ -77,10 +79,19 @@ if ($model->isNewRecord) {
                 data:{id:id},
                 dataType:'JSON',
                 success:function(res){
+                    var base_order_sn = $('.base_order_sn').html();
                     if (res && res.code == 200) {
                         $('#order-customer_short_name').val(res.data.short_name);
+                        var first = base_order_sn.slice(0, 8);
+                        var end = base_order_sn.slice(8);
+                        var order_sn = first + res.data.short_name + end;
+                        console.log(order_sn);
+                        //$('#order-order_sn').attr("value",order_sn);
+                        $('#order-order_sn').val(order_sn);
                     } else {
                         $('#order-customer_short_name').val('');
+                        //$('#order-order_sn').attr("value",base_order_sn);
+                        $('#order-order_sn').val(base_order_sn);
                     }
                 }
             });
@@ -118,12 +129,17 @@ if ($model->isNewRecord) {
             parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
             location.replace("?r=order/generate&" + encodeURI(parameter));
         });
-        var date = $('#order-order_sn').val();
+
+        var base_order_sn = $('.base_order_sn').html();
         $('input:radio').change(function (e) {
+            var short_name = $('#order-customer_short_name').val();
+            var first = base_order_sn.slice(0, 8);
+            var end = base_order_sn.slice(8);
+            var order_sn = first + short_name + end;
             if ($("input:radio:checked").val() == 1) {
-                $('#order-order_sn').val(date);
+                $('#order-order_sn').val(order_sn);
             } else {
-                $('#order-order_sn').val('F' + date.substring(1));
+                $('#order-order_sn').val('F' + order_sn.substring(1));
             }
         });
     });
