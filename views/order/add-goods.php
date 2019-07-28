@@ -242,7 +242,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     var goodsIds = $('.goods_list').find('.goods_id');
                     var open = false;
                     goodsIds.each(function (i, e) {
-                        if (res.data.id == $(e).data('id')) {
+
+                        if (res.data.id == $(e).data('id') && $(e).find('.serialNumber input').val() == serialNumber) {
                             open = true;
                         }
                     });
@@ -252,7 +253,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     //添加此零件
                     var tr = '<tr class="goods_id" data-id="' + res.data.id +'">';
-                    tr += '<td class="serialNumber">' + serialNumber + '</td>';
+                    tr += '<td class="serialNumber"><input type="text" style="width: 50px;" value="'+ serialNumber +'"/></td>';
                     tr += '<td>' + res.data.goods_number + '</td>';
                     tr += '<td>' + res.data.goods_number_b + '</td>';
                     tr += '<td>' + res.data.original_company + '</td>';
@@ -294,7 +295,7 @@ $this->params['breadcrumbs'][] = $this->title;
             goodsIds.push($(e).data('id'));
             item.goods_id = $(e).data('id');
             item.number   = $(e).find('.goodsNumber').text();
-            item.serial   = $(e).find('.serialNumber').text();
+            item.serial   = $(e).find('.serialNumber input').val();
             goodsInfo.push(item);
         });
 
