@@ -103,12 +103,9 @@ $userId   = Yii::$app->user->identity->id;
                 [
                     'attribute'      => '操作',
                     'format'         => 'raw',
-                    'contentOptions' =>['style'=>'min-width: 260px;'],
+                    'contentOptions' =>['style'=>'min-width: 210px;'],
                     'value'          => function ($model, $key, $index, $column){
-                        return Html::a('<i class="fa fa-eye"></i> 流程', Url::to(['detail', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
-                        ]) . Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
+                        return Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                         ]) . Html::a('<i class="fa fa-heart"></i> 生成最终订单', Url::to(['create-final', 'id' => $model['id'], 'key' => date('YmdHis') . rand(10, 99)]), [

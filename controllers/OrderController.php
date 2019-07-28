@@ -430,6 +430,9 @@ class OrderController extends BaseController
 
     public function actionCreateInquiry($id)
     {
+        $request = Yii::$app->request->get();
+//        var_dump($request);die;
+
         $data      = [];
         $order     = Order::findOne($id);
         if (!$order) {
@@ -438,7 +441,32 @@ class OrderController extends BaseController
         $goods_ids            = json_decode($order->goods_ids, true);
         $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
-        $orderGoods           = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+
+        $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
+            ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
+            ->where(['order_id' => $order->id]);
+        if (isset($request['goods_number']) && $request['goods_number']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
+        }
+        if (isset($request['goods_number_b']) && $request['goods_number_b']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number_b', $request['goods_number_b']]);
+        }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        if (isset($request['is_process']) && $request['is_process'] !== '') {
+            $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
+        }
+        if (isset($request['is_special']) && $request['is_special'] !== '') {
+            $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
+        }
+        if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
+            $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
+        }
+        if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
+            $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
+        }
+        $orderGoods           = $orderGoodsQuery->all();
 
         $date = date('ymd_');
         $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();

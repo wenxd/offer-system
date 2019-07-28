@@ -26,6 +26,7 @@ $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
+$admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
@@ -60,14 +61,60 @@ foreach ($orderGoods as $v) {
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
-                    <th>总成</th>
+                    <th style="width: 80px;">加工</th>
+                    <th style="width: 80px;">特制</th>
+                    <th style="width: 80px;">铭牌</th>
+                    <th style="width: 80px;">总成</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
+                </tr>
+                <tr id="w3-filters" class="filters">
+                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <select class="form-control" name="is_process">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_special">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_nameplate">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_assembly">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
                 </tr>
             </thead>
             <tbody>
@@ -90,8 +137,8 @@ foreach ($orderGoods as $v) {
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
-                    <td><?= $item->goods->updated_at?></td>
-                    <td><?= $item->goods->created_at?></td>
+                    <td><?= substr($item->goods->updated_at, 0, 10)?></td>
+                    <td><?= substr($item->goods->created_at, 0, 10)?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?= in_array($item->goods_id, $inquiryYes) ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
                 </tr>
@@ -194,5 +241,45 @@ foreach ($orderGoods as $v) {
                 }
             })
         }
+
+        $('.inquiry_search').click(function (e) {
+            var search = $('#w3-filters').find('td input');
+            var parameter = '';
+            search.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'goods_number':
+                        parameter += '&goods_number=' + $(e).val();
+                        break;
+                    case 'goods_number_b':
+                        parameter += '&goods_number_b=' + $(e).val();
+                        break;
+                    case 'original_company':
+                        parameter += '&original_company=' + $(e).val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            var searchOption = $('#w3-filters').find('td select');
+            searchOption.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'is_process':
+                        parameter += '&is_process=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_special':
+                        parameter += '&is_special=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_nameplate':
+                        parameter += '&is_nameplate=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_assembly':
+                        parameter += '&is_assembly=' + $(e).find("option:selected").val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            location.replace("?r=order/create-inquiry&id=<?=$_GET['id']?>" + encodeURI(parameter));
+        });
     });
 </script>
