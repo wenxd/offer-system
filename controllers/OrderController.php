@@ -431,8 +431,6 @@ class OrderController extends BaseController
     public function actionCreateInquiry($id)
     {
         $request = Yii::$app->request->get();
-//        var_dump($request);die;
-
         $data      = [];
         $order     = Order::findOne($id);
         if (!$order) {

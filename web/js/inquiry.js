@@ -45,3 +45,8 @@ $("form").on("beforeSubmit", function (e) {
 function selectRadio(obj){
     $(obj).find('input').attr("checked",'true');
 }
+　
+window.onload = run;
+function run(){
+
+}　

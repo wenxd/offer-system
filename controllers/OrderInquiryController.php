@@ -150,20 +150,16 @@ class OrderInquiryController extends BaseController
         $orderInquiry->end_date   = $params['end_date'];
         $orderInquiry->admin_id   = $params['admin_id'];
 
-        $json = [];
+        $json = $params['goods_info'] ? $params['goods_info'] : [];
         $data = [];
         foreach ($params['goods_info'] as $goods) {
-            $item = [];
-            $item['goods_id']   = $goods['goods_id'];
-            $item['number']     = $goods['number'];
-            $item['is_inquiry'] = 0;
-            $json[] = $item;
             $row = [];
             //批量数据
             $row[] = $params['order_id'];
             $row[] = $params['inquiry_sn'];
             $row[] = $goods['goods_id'];
             $row[] = $goods['number'];
+            $row[] = $goods['serial'];
             $data[] = $row;
         }
 
@@ -179,7 +175,7 @@ class OrderInquiryController extends BaseController
     //批量插入
     public static function insertInquiryGoods($data)
     {
-        $feild = ['order_id', 'inquiry_sn', 'goods_id', 'number'];
+        $feild = ['order_id', 'inquiry_sn', 'goods_id', 'number', 'serial'];
         $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
     }
 

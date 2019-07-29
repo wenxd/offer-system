@@ -12,12 +12,14 @@ use app\models\AuthAssignment;
 $this->title = '生成询价单';
 $this->params['breadcrumbs'][] = $this->title;
 
-$inquiryYes = [];
+//$inquiryYes = [];
+$inquiryInfo = [];
 if ($orderInquiry) {
     foreach ($orderInquiry as $k => $item) {
         $goods_info = json_decode($item['goods_info'], true);
         foreach ($goods_info as $g) {
-            $inquiryYes[] = $g['goods_id'];
+            //$inquiryYes[] = $g['goods_id'];
+            $inquiryInfo[] = $g;
         }
     }
 }
@@ -65,8 +67,6 @@ foreach ($orderGoods as $v) {
                     <th style="width: 80px;">特制</th>
                     <th style="width: 80px;">铭牌</th>
                     <th style="width: 80px;">总成</th>
-                    <th>更新时间</th>
-                    <th>创建时间</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
                 </tr>
@@ -120,8 +120,19 @@ foreach ($orderGoods as $v) {
             <tbody>
                 <?php foreach ($orderGoods as $key => $item):?>
                 <tr>
-                    <?php $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";?>
-                    <td><?= in_array($item->goods_id, $inquiryYes) ? ($item->inquiryGoods->is_result ? '' : $str) : $str ?></td>
+                    <?php
+                        $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
+                        $open = false;
+                        foreach ($inquiryInfo as $n => $iv) {
+                            if ($iv['goods_id'] == $item->goods_id && $iv['serial'] == $item->serial) {
+                                $open = true;
+                                break;
+                            }
+                        }
+                    ?>
+                    <td>
+                        <?=$open ? ($item->inquiryGoods->is_result ? '' : $str) : $str?>
+                    </td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
@@ -137,10 +148,8 @@ foreach ($orderGoods as $v) {
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
-                    <td><?= substr($item->goods->updated_at, 0, 10)?></td>
-                    <td><?= substr($item->goods->created_at, 0, 10)?></td>
                     <td><?= $item->goods->technique_remark?></td>
-                    <td><?= in_array($item->goods_id, $inquiryYes) ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
+                    <td><?= $open ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>
@@ -202,6 +211,7 @@ foreach ($orderGoods as $v) {
                     var item = {};
                     item.goods_id = $(element).val();
                     item.number   = $(element).parent().parent().find('.number').text();
+                    item.serial   = $(element).parent().parent().find('.serial').text();
                     goods_info.push(item);
                 }
             });
@@ -227,6 +237,8 @@ foreach ($orderGoods as $v) {
                 }
             });
         });
+
+        //初始化
         function init(){
             if (!$('.select_id').length) {
                 $('.select_all').hide();
@@ -242,6 +254,7 @@ foreach ($orderGoods as $v) {
             })
         }
 
+        //搜索功能
         $('.inquiry_search').click(function (e) {
             var search = $('#w3-filters').find('td input');
             var parameter = '';

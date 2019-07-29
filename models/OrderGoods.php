@@ -11,6 +11,7 @@ use Yii;
  * @property int $order_id 订单ID
  * @property int $goods_id 零件ID
  * @property int $number 数量
+ * @property int $serial 序号
  * @property int $is_out 是否出库 0否 1是
  * @property string $out_time 出库时间
  * @property int $is_deleted 是否删除：0未删除 1已删除
@@ -66,7 +67,7 @@ class OrderGoods extends \yii\db\ActiveRecord
 
     public function getInquiryGoods()
     {
-        return $this->hasOne(InquiryGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id'])->orderBy('inquiry_goods.id Desc');
+        return $this->hasOne(InquiryGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id', 'serial' => 'serial'])->orderBy('inquiry_goods.id Desc');
     }
 
     public function getFinalGoods()
