@@ -237,6 +237,8 @@ foreach ($adminList as $key => $admin) {
 
     init();
     function init() {
+        $('#inquiry-order_id').val(0);
+        $('#inquiry-order_inquiry_id').val(0);
         var is_inquiry = '<?=$_GET['order_inquiry'] ?? 0?>';
         if (is_inquiry == 1) {
             var goods_id = '<?=$_GET['goods_id'] ?? 0?>';
@@ -319,7 +321,7 @@ foreach ($adminList as $key => $admin) {
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsB($(this))" data-goods_number="' + res.data[i]['goods_number'] + '">' + res.data[i]['goods_number_b'] + '</li>';
+                        li += '<li onclick="selectGoodsB($(this), ' + res.data[i]['id'] + ')" data-goods_number="' + res.data[i]['goods_number'] + '">' + res.data[i]['goods_number_b'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number_b').append(li);
@@ -331,7 +333,8 @@ foreach ($adminList as $key => $admin) {
         })
     });
     //选择零件B
-    function selectGoodsB(obj){
+    function selectGoodsB(obj, goods_id){
+        $("#inquiry-good_id").val(goods_id);
         $("#inquiry-goods_number_b").val($.trim(obj.html()));
         $("#inquiry-goods_number").val($.trim(obj.data('goods_number')));
         $('.box-search-goods_number_b').addClass('cancel-goods_number_b');
@@ -355,7 +358,7 @@ foreach ($adminList as $key => $admin) {
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this))" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -367,7 +370,8 @@ foreach ($adminList as $key => $admin) {
         })
     });
     //选择零件A
-    function selectGoodsA(obj){
+    function selectGoodsA(obj, goods_id){
+        $("#inquiry-good_id").val(goods_id);
         $("#inquiry-goods_number").val($.trim(obj.html()));
         $("#inquiry-goods_number_b").val($.trim(obj.data('goods_number_b')));
         $('.box-search-goods_number').addClass('cancel-goods_number');

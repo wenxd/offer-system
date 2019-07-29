@@ -90,7 +90,6 @@ class Inquiry extends ActiveRecord
             [
                 ['good_id', 'supplier_name', 'inquiry_datetime'],
                 'required',
-                'on' => 'inquiry'
             ],
             [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
             [['delivery_time'], 'integer', 'min' => 0]

@@ -25,16 +25,6 @@ class InquiryController extends BaseController
                     ];
                 }
             ],
-            'create' => [
-                'class'      => actions\CreateAction::className(),
-                'modelClass' => Inquiry::className(),
-                'scenario'   => 'inquiry',
-            ],
-            'update' => [
-                'class'      => actions\UpdateAction::className(),
-                'modelClass' => Inquiry::className(),
-                'scenario'   => 'inquiry',
-            ],
             'delete' => [
                 'class'      => actions\DeleteAction::className(),
                 'modelClass' => Inquiry::className(),
@@ -52,6 +42,32 @@ class InquiryController extends BaseController
                 'modelClass' => Inquiry::className(),
             ],
         ];
+    }
+
+    public function actionCreate()
+    {
+        $model = new Inquiry();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = Inquiry::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     public function actionSearch($goods_id)
