@@ -24,11 +24,6 @@ foreach ($adminList as $key => $admin) {
 }
 $userId   = Yii::$app->user->identity->id;
 ?>
-<style>
-    .add_danger {
-        background-color: red;
-    }
-</style>
 <div class="box table-responsive">
     <div class="box-body">
     <?= GridView::widget([
@@ -122,10 +117,6 @@ $userId   = Yii::$app->user->identity->id;
         if (end_date && inquiry == '否') {
             end_date = new Date(end_date);
             end_date.setDate(end_date.getDate() - 1);
-            var today = new Date();
-            if (end_date < today) {
-                $(e).css("background-color","red");
-            }
         }
     });
 </script>

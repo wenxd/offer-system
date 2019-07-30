@@ -73,7 +73,7 @@ class Supplier extends ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'string', 'max' => 255],
             [
-                ['name', 'mobile', 'email'],
+                ['name', 'mobile'],
                 'required',
                 'on' => 'supplier'
             ],

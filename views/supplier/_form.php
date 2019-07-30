@@ -43,9 +43,11 @@ $userId = Yii::$app->user->identity->id;
                 'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
                 'name'  => 'submit-button']
         )?>
-        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
-            'class' => 'btn btn-default btn-flat',
-        ])?>
+        <?php if (!in_array($userId, $adminIds)):?>
+            <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
+                'class' => 'btn btn-default btn-flat',
+            ])?>
+        <?php endif;?>
     </div>
 
     <?php ActiveForm::end(); ?>
