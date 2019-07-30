@@ -131,8 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
         //上传前加载动画
         beforeSend : function () {
             layer.msg('上传中。。。', {
-                icon: 16
-                ,shade: 0.01
+                icon: 16, shade: 0.01
             });
         },
         onprogress : function (e) {},

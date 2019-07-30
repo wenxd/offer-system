@@ -121,6 +121,16 @@ foreach ($adminList as $key => $admin) {
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <div class="box-header">
+        <?= Html::submitButton('保存', [
+                'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
+                'name'  => 'submit-button']
+        )?>
+        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
+            'class' => 'btn btn-default btn-flat',
+        ])?>
+    </div>
+
     <div class="box-body">
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
     <?php if (isset($_GET['order_inquiry'])) :?>
@@ -191,7 +201,7 @@ foreach ($adminList as $key => $admin) {
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
+        <?= Html::submitButton('保存', [
                 'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
                 'name'  => 'submit-button']
         )?>
