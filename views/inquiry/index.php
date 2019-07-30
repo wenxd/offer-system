@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload}',
+            'template' => '{create} {delete}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -227,7 +227,7 @@ $this->params['breadcrumbs'][] = $this->title;
     //监听事件
     $('.upload').ajaxUploadPrompt({
         //上传地址
-        url : '?r=goods/upload',
+        url : '?r=inquiry/upload',
         //上传文件类型
         accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
         //上传前加载动画
