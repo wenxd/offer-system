@@ -29,6 +29,7 @@ $userId   = Yii::$app->user->identity->id;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
+                <th>序号</th>
                 <th>询价单号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>订单号</th>
@@ -50,6 +51,7 @@ $userId   = Yii::$app->user->identity->id;
             <tbody>
                 <?php foreach ($inquiryGoods as $item):?>
                 <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
+                    <td><?=$item->serial?></td>
                     <td><?=$orderInquiry->inquiry_sn?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$orderInquiry->order->order_sn?></td>
@@ -63,7 +65,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$item->goods->unit?></td>
                     <td><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></td>
                     <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
-                    <td><?=$orderGoods[$item->goods_id]->number?></td>
+                    <td><?=$item->number?></td>
                     <td><?=$item::$Inquiry[$item->is_inquiry]?></td>
                     <td>
                         <?php if (!$item->is_inquiry && $item->is_result):?>

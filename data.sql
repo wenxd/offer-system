@@ -502,3 +502,5 @@ CREATE TABLE `system_config` (
 
 ALTER TABLE `goods` ADD COLUMN `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';
 ALTER TABLE `inquiry_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
+
+

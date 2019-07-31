@@ -28,7 +28,11 @@ $identity = Yii::$app->user->getIdentity();
                         <i class="glyphicon glyphicon-user"></i> <span><?= $identity->username ?></span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="?r=message/index">
+                        <i class="fa fa-bell-o font-20"></i> <span class="label label-success ng-binding" style="background-color:#d24637;z-index:99999">55</span>
+                    </a>
+                </li>
                 <li>
                     <?= Html::a(
                         '<i class="glyphicon glyphicon-log-out"></i> 退出',

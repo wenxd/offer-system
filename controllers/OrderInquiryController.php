@@ -188,7 +188,7 @@ class OrderInquiryController extends BaseController
             return $this->redirect(['index']);
         }
 
-        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->indexBy('goods_id')->all();
+        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->all();
 
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
