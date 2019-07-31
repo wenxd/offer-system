@@ -7,9 +7,11 @@
  */
 namespace app\controllers;
 
+use app\models\AuthAssignment;
 use app\models\InquiryGoods;
 use app\models\OrderGoods;
 use app\models\QuoteRecord;
+use app\models\SystemNotice;
 use Yii;
 use app\actions;
 use app\models\Cart;
@@ -232,8 +234,17 @@ class OrderInquiryController extends BaseController
         $params = Yii::$app->request->post();
         $inquiryGoods = InquiryGoods::findOne($params['id']);
         $inquiryGoods->reason    = $params['reason'];
-        $inquiryGoods->is_result = InquiryGoods::IS_RESULT_NO;
+        $inquiryGoods->is_result = InquiryGoods::IS_RESULT_YES;
         if ($inquiryGoods->save()) {
+            //超级管理员
+            $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+            $admin_name = Yii::$app->user->identity->username;
+            //给超管通知
+            $notice = new SystemNotice();
+            $notice->admin_id  = $user_super->user_id;
+            $notice->content   = $admin_name . '寻不出零件的价格';
+            $notice->notice_at = date('Y-m-d H:i:s');
+            $notice->save();
             return json_encode(['code' => 200, 'msg' => '成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $inquiryGoods->getErrors()]);

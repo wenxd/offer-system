@@ -21,9 +21,9 @@ class InquiryGoods extends \yii\db\ActiveRecord
 
     const IS_INQUIRY_NO  = '0';
     const IS_INQUIRY_YES = '1';
-
-    const IS_RESULT_NO   = '0';
-    const IS_RESULT_YES  = '1';
+    //是否寻不出
+    const IS_RESULT_NO   = '0'; //否
+    const IS_RESULT_YES  = '1'; //是
 
     public static $Inquiry = [
         self::IS_INQUIRY_NO  => '否',

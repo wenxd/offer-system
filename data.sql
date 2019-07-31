@@ -515,3 +515,4 @@ CREATE TABLE `system_notice` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='系统通知';
 
+ALTER TABLE `inquiry` ADD COLUMN `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;

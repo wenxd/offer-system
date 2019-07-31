@@ -45,6 +45,7 @@ $userId   = Yii::$app->user->identity->id;
                 <th>加工照片</th>
                 <th>数量</th>
                 <th>询价</th>
+                <th>寻不出原因</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
@@ -67,13 +68,14 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
                     <td><?=$item->number?></td>
                     <td><?=$item::$Inquiry[$item->is_inquiry]?></td>
+                    <td><?=$item->reason?></td>
                     <td>
-                        <?php if (!$item->is_inquiry && $item->is_result):?>
+                        <?php if (!$item->is_inquiry):?>
                             <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                         <?php endif;?>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&order_inquiry=1" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
-                        <?php if (!$item->is_inquiry && $item->is_result):?>
-                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                            <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&order_inquiry=1" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                        <?php if (!$item->is_result):?>
+                            <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                         <?php endif;?>
                     </td>
                 </tr>
