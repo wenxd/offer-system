@@ -23,7 +23,7 @@ $(".multi-sort").on("click", function () {
 
     inputs.each(function() {
         $(this).clone().attr('type', 'hidden').appendTo('form[name="sort"]')
-    })
+    });
 
     $('form[name=sort]').submit();
 
@@ -48,5 +48,22 @@ function selectRadio(obj){
 　
 window.onload = run;
 function run(){
-
+    setInterval(getNotice,60000);
 }　
+
+function getNotice(){
+    $.ajax({
+        type:"get",
+        url:'?r=system-notice/get-notice',
+        data:{},
+        dataType:'JSON',
+        success:function(res){
+            if (res && res.code == 200){
+                layer.msg(res.msg, {time:2000});
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+
+        }
+    });
+}

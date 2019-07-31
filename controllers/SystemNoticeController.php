@@ -41,4 +41,17 @@ class SystemNoticeController extends BaseController
             ],
         ];
     }
+
+    public function actionGetNotice()
+    {
+        $recently_time = date('Y-m-d H:i:s', (time() - 300));
+        $notice = SystemNotice::find()->where([
+            'is_deleted' => SystemNotice::IS_DELETED_NO,
+            'is_read'    => SystemNotice::IS_READ_NO,
+            'admin_id'   => Yii::$app->user->id,
+        ])->andWhere("notice_at >= '$recently_time'")->one();
+        if ($notice) {
+            return json_encode(['code' => 200, 'msg' => '你有新的系统消息了！']);
+        }
+    }
 }
