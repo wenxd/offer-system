@@ -50,7 +50,13 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            'inquiry_sn',
+            [
+                'attribute' => 'inquiry_sn',
+                'format'    => 'raw',
+                'value'     => function($model) {
+                    return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                }
+            ],
             [
                 'attribute' => 'end_date',
                 'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'end_date'],
