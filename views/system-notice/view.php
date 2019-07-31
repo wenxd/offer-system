@@ -2,40 +2,30 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\SystemNotice;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\SystemNotice */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'System Notices', 'url' => ['index']];
+$this->title = '系统消息';
+$this->params['breadcrumbs'][] = ['label' => '消息列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-notice-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'admin_id',
             'content',
-            'is_read',
-            'is_deleted',
+            [
+                'attribute' => 'is_read',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    return SystemNotice::$read[$model->is_read];
+                }
+            ],
             'notice_at',
-            'updated_at',
-            'created_at',
         ],
     ]) ?>
 

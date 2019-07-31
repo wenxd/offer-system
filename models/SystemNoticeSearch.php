@@ -20,6 +20,7 @@ class SystemNoticeSearch extends SystemNotice
         return [
             [['id', 'admin_id', 'is_read', 'is_deleted'], 'integer'],
             [['content', 'notice_at', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'content', 'notice_at', 'updated_at', 'created_at'], 'trim'],
         ];
     }
 
