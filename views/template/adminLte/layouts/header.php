@@ -1,9 +1,16 @@
 <?php
 use yii\helpers\Html;
-
+use app\models\SystemNotice;
 /* @var $this \yii\web\View */
 /* @var $content string */
 $identity = Yii::$app->user->getIdentity();
+//统计每次气泡数量
+$notice_number = SystemNotice::find()->where([
+        'is_deleted' => SystemNotice::IS_DELETED_NO,
+        'is_read'    => SystemNotice::IS_READ_NO,
+        'admin_id'   => Yii::$app->user->id,
+])->count();
+
 ?>
 <style>
     .treeview-menu {
@@ -29,8 +36,8 @@ $identity = Yii::$app->user->getIdentity();
                     </a>
                 </li>
                 <li>
-                    <a href="?r=message/index">
-                        <i class="fa fa-bell-o font-20"></i> <span class="label label-success ng-binding" style="background-color:#d24637;z-index:99999">55</span>
+                    <a href="?r=system-notice/index">
+                        <i class="fa fa-bell-o font-20"></i> <span class="label label-success ng-binding" style="background-color:#d24637;z-index:99999"><?=$notice_number?></span>
                     </a>
                 </li>
                 <li>

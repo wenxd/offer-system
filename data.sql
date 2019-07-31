@@ -481,7 +481,7 @@ CREATE TABLE `order_inquiry` (
 CREATE TABLE `inquiry_goods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `inquiry_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '询价单号',
-  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `goods_id`   int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
   `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -503,4 +503,15 @@ CREATE TABLE `system_config` (
 ALTER TABLE `goods` ADD COLUMN `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';
 ALTER TABLE `inquiry_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
 
+CREATE TABLE `system_notice` (
+  `id`             int(11)      NOT NULL AUTO_INCREMENT,
+  `admin_id`       int(11)      NOT NULL DEFAULT '0'  COMMENT '后端用户ID',
+  `content`        varchar(255) NOT NULL DEFAULT ''   COMMENT '通知详情',
+  `is_read`        tinyint(2)   NOT NULL DEFAULT '0'  COMMENT '是否已读：0未读 1已读',
+  `is_deleted`     tinyint(2)   NOT NULL DEFAULT '0'  COMMENT '是否删除：0未删除 1已删除',
+  `notice_at`      datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '通知时间',
+  `updated_at`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='系统通知';
 
