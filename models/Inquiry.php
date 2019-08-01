@@ -19,6 +19,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $number  询价数量
+ * @property string $all_price 未税总价
+ * @property string $all_tax_rate 含税总价
  */
 class Inquiry extends ActiveRecord
 {
@@ -111,6 +114,9 @@ class Inquiry extends ActiveRecord
             'price'            => '未税价格',
             'tax_price'        => '含税价格',
             'tax_rate'         => '税率',
+            'number'           => '询价数量',
+            'all_price'        => '未税总价',
+            'all_tax_price'    => '含税总价',
             'inquiry_datetime' => '咨询时间',
             'offer_date'       => '交货日期',
             'delivery_time'    => '货期',

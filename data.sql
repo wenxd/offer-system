@@ -516,3 +516,6 @@ CREATE TABLE `system_notice` (
 ) ENGINE=InnoDB COMMENT='系统通知';
 
 ALTER TABLE `inquiry` ADD COLUMN `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
+ALTER TABLE `inquiry` ADD COLUMN `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;

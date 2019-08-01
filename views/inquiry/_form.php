@@ -6,11 +6,10 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Supplier;
-use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig};
+use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGoods};
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
-
 
 $model->tax_rate = SystemConfig::find()->select('value')->where([
         'title'  => SystemConfig::TITLE_TAX,
@@ -48,6 +47,11 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
+//通过inquiry_goods_id查询数量
+if (isset($_GET['inquiry_goods_id'])) {
+    $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
+}
+
 ?>
 <style>
     /*供应商*/
@@ -133,14 +137,7 @@ foreach ($adminList as $key => $admin) {
 
     <div class="box-body">
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
-    <?php if (isset($_GET['order_inquiry'])) :?>
-        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号B') ?>
-        <div class="box-search-goods_number_b cancel-goods_number_b">
-            <ul class="box-search-ul-goods_number_b">
 
-            </ul>
-        </div>
-    <?php else :?>
         <?php if ($is_super):?>
             <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号A') ?>
             <div class="box-search-goods_number cancel-goods_number">
@@ -155,48 +152,51 @@ foreach ($adminList as $key => $admin) {
 
             </ul>
         </div>
-    <?php endif;?>
-    <div class="form-group field-inquiry-price">
-        <label class="control-label" for="inquiry-supplier_name">供应商</label>
-        <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
-               value="<?=$model->supplier_name?>" autocomplete="off" aria-invalid="false">
-        <div class="help-block"></div>
-    </div>
-    <div class="box-search cancel">
-        <ul class="box-search-ul">
 
-        </ul>
-    </div>
-    <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true])
-//        ->hint('只输入数字，例如10%，只输入10')
-    ?>
-    <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
+        <div class="form-group field-inquiry-price">
+            <label class="control-label" for="inquiry-supplier_name">供应商</label>
+            <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
+                   value="<?=$model->supplier_name?>" autocomplete="off" aria-invalid="false">
+            <div class="help-block"></div>
+        </div>
 
-    <?= $form->field($model, 'inquiry_datetime')->widget(DateTimePicker::className(), [
-        'removeButton'  => false,
-        'pluginOptions' => [
-            'autoclose' => true,
-            'format'    => 'yyyy-mm-dd',
-            'startView' =>2,  //其实范围（0：日  1：天 2：年）
-            'maxView'   =>2,  //最大选择范围（年）
-            'minView'   =>2,  //最小选择范围（年）
-        ]
-    ]);?>
+        <div class="box-search cancel">
+            <ul class="box-search-ul">
 
-    <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(天)');?>
+            </ul>
+        </div>
 
-    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+        <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'all_price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'all_tax_price')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
+        <?= $form->field($model, 'inquiry_datetime')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   =>2,  //最大选择范围（年）
+                'minView'   =>2,  //最小选择范围（年）
+            ]
+        ]);?>
 
-    <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(天)');?>
 
-    <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
+        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->hiddenInput()->label(false) ?>
+        <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
 
-    <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->hiddenInput()->label(false)  ?>
+        <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
+
+        <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->hiddenInput()->label(false) ?>
+
+        <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->hiddenInput()->label(false)  ?>
 
     </div>
 
