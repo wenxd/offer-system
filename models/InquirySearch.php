@@ -27,12 +27,12 @@ class InquirySearch extends Inquiry
     public function rules()
     {
         return [
-            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time'], 'integer'],
+            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'is_process'], 'safe'],
-            [['price', 'tax_price'], 'number', 'min' => 0],
-            [['id', 'good_id', 'supplier_id', 'supplier_name', 'price', 'tax_price', 'remark'], 'trim']
+            [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
+            [['id', 'good_id', 'supplier_id', 'supplier_name', 'price', 'tax_price', 'all_price', 'all_tax_price', 'remark'], 'trim']
         ];
     }
 

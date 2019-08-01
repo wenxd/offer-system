@@ -87,14 +87,10 @@ class Inquiry extends ActiveRecord
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
                  'order_id', 'order_inquiry_id'], 'integer'],
-            [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at', 'offer_date', 'goods_number', 'goods_number_b'], 'safe'],
+            [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
-            [
-                ['good_id', 'supplier_name', 'inquiry_datetime'],
-                'required',
-            ],
-            [['price', 'tax_rate', 'tax_price'], 'double', 'min' => 0],
+            [['good_id', 'supplier_name', 'inquiry_datetime'], 'required'],
             [['delivery_time'], 'integer', 'min' => 0]
         ];
     }

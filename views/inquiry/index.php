@@ -159,9 +159,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
+            'tax_rate',
             'price',
             'tax_price',
-            'tax_rate',
+            'number',
+            'all_price',
+            'all_tax_price',
             [
                 'attribute' => 'delivery_time',
                 'contentOptions'=>['style'=>'min-width: 80px;']

@@ -50,6 +50,7 @@ foreach ($adminList as $key => $admin) {
 //通过inquiry_goods_id查询数量
 if (isset($_GET['inquiry_goods_id'])) {
     $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
+    $model->number = $inquiryGoods->number;
 }
 
 ?>
@@ -222,14 +223,24 @@ if (isset($_GET['inquiry_goods_id'])) {
     $("#inquiry-price").bind('input propertychange', function (e) {
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
+        var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
+        var all_price = price * number;
+        var all_tax_price = tax_price * number;
         $("#inquiry-tax_price").attr("value",tax_price.toFixed(2));
         $("#inquiry-tax_price").val(tax_price.toFixed(2));
+        $("#inquiry-all_price").val(all_price.toFixed(2));
+        $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
     $("#inquiry-tax_price").bind('input propertychange', function (e) {
         var tax_price = $('#inquiry-tax_price').val();
         var price = tax_price / (1 + tax/100);
+        var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
+        var all_price = price * number;
+        var all_tax_price = tax_price * number;
         $("#inquiry-price").attr("value",price.toFixed(2));
         $("#inquiry-price").val(price.toFixed(2));
+        $("#inquiry-all_price").val(all_price.toFixed(2));
+        $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
 
     // $('#inquiry-price').blur(function () {
