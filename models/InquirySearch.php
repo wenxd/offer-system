@@ -27,7 +27,7 @@ class InquirySearch extends Inquiry
     public function rules()
     {
         return [
-            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number'], 'integer'],
+            [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number', 'admin_id'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'is_process'], 'safe'],
@@ -101,6 +101,7 @@ class InquirySearch extends Inquiry
             'inquiry.is_better'     => $this->is_better,
             'inquiry.is_newest'     => $this->is_newest,
             'inquiry.is_deleted'    => self::IS_BETTER_NO,
+            'inquiry.admin_id'      => $this->admin_id,
         ]);
 
         $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);

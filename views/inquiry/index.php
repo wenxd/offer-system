@@ -1,5 +1,8 @@
 <?php
 
+use app\models\Admin;
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
@@ -16,6 +19,16 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '询价记录列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+$admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+$userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
@@ -54,6 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{view} {update} {delete}',
             ],
             'id',
+            [
+                'attribute' => 'admin_id',
+                'format'    => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
+                'label'     => '询价员',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->admin ? $model->admin->username : '';
+                }
+            ],
             [
                 'attribute'      => 'goods_number',
                 'format'         => 'raw',
