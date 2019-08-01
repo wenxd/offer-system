@@ -242,7 +242,15 @@ if (isset($_GET['inquiry_goods_id'])) {
         $("#inquiry-all_price").val(all_price.toFixed(2));
         $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
-
+    $("#inquiry-number").bind('input propertychange', function (e) {
+        var price = $('#inquiry-price').val();
+        var tax_price = price * (1 + tax/100);
+        var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
+        var all_price = price * number;
+        var all_tax_price = tax_price * number;
+        $("#inquiry-all_price").val(all_price.toFixed(2));
+        $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
+    });
     // $('#inquiry-price').blur(function () {
     //     var price = $('#inquiry-price').val();
     //     var tax_price = price * (1 + tax/100);

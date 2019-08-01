@@ -122,6 +122,7 @@ foreach ($orderGoods as $v) {
                 <tr>
                     <?php
                         $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
+                        //是否生成过询价单
                         $open = false;
                         foreach ($inquiryInfo as $n => $iv) {
                             if ($iv['goods_id'] == $item->goods_id && $iv['serial'] == $item->serial) {
@@ -131,7 +132,7 @@ foreach ($orderGoods as $v) {
                         }
                     ?>
                     <td>
-                        <?=$open ? ($item->inquiryGoods->is_result ? '' : $str) : $str?>
+                        <?=$open ? ($item->inquiryGoods->is_result ? $str : '') : $str?>
                     </td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
