@@ -90,7 +90,7 @@ class Inquiry extends ActiveRecord
             [['updated_at', 'created_at', 'offer_date', 'goods_number', 'goods_number_b'], 'safe'],
             [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
-            [['good_id', 'supplier_name', 'inquiry_datetime'], 'required'],
+            [['good_id', 'supplier_name', 'inquiry_datetime'], 'required', "on" => ["create", "update"]],
             [['delivery_time'], 'integer', 'min' => 0]
         ];
     }
@@ -133,7 +133,7 @@ class Inquiry extends ActiveRecord
         if ($this->is_deleted) {
             return parent::beforeSave($insert);
         }
-
+        
         $date = $this->inquiry_datetime;
         $isHasNew = self::find()->where(['good_id' => $this->good_id])->andWhere(" inquiry_datetime >= '$date' ")->one();
 

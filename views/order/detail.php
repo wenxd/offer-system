@@ -41,12 +41,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'order_sn',
             [
                 'attribute' => 'provide_date',
+                'value'     => function($model){
+                    return substr($model->provide_date, 0, 10);
+                }
             ],
             [
                 'attribute' => 'updated_at',
+                'value'     => function($model){
+                    return substr($model->updated_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'created_at',
+                'value'     => function($model){
+                    return substr($model->created_at, 0, 10);
+                }
             ],
         ],
     ])?>

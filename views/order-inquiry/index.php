@@ -44,7 +44,7 @@ $userId   = Yii::$app->user->identity->id;
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/view', 'id' => $model->order_id]));
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
                     } else {
                         return '';
                     }
@@ -96,17 +96,6 @@ $userId   = Yii::$app->user->identity->id;
                     if ($model->admin) {
                         return $model->admin->username;
                     }
-                }
-            ],
-            [
-                'attribute'      => '操作',
-                'format'         => 'raw',
-                'contentOptions' =>['style'=>'min-width: 80px;'],
-                'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
-                        ]);
                 }
             ],
         ],
