@@ -54,12 +54,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{view} {update} {delete}',
             ],
             'id',
-            'good_id',
             [
-                'attribute' => 'goods_number',
-                'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'attribute'      => 'goods_number',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
+                'value'          => function ($model, $key, $index, $column) {
                     if ($model->goods) {
                         return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
                     } else {
@@ -68,10 +68,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'original_company',
-                'label'     => '原厂家',
-                'filter'    => Html::activeTextInput($searchModel, 'original_company',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'attribute'      => 'original_company',
+                'label'          => '原厂家',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'original_company',['class'=>'form-control']),
+                'value'          => function ($model, $key, $index, $column) {
                     if ($model->goods) {
                         return $model->goods->original_company;
                     } else {
@@ -80,10 +81,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'original_company_remark',
-                'label'     => '原厂家备注',
-                'filter'    => Html::activeTextInput($searchModel, 'original_company_remark',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'attribute'      => 'original_company_remark',
+                'label'          => '原厂家备注',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'original_company_remark',['class'=>'form-control']),
+                'value'          => function ($model, $key, $index, $column) {
                     if ($model->goods) {
                         return $model->goods->original_company_remark;
                     } else {
@@ -117,10 +119,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'is_process',
-                'label'     => '加工',
-                'filter'    => Goods::$process,
-                'value'     => function ($model, $key, $index, $column) {
+                'attribute'      => 'is_process',
+                'label'          => '加工',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'         => Goods::$process,
+                'value'          => function ($model, $key, $index, $column) {
                     if ($model->goods) {
                         return Goods::$process[$model->goods->is_process];
                     } else {
@@ -129,18 +132,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'img_id',
-                'label'     => '图纸',
-                'format'    => 'raw',
+                'attribute' => 'is_better',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$better,
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->goods) {
-                        return HTML::img($model->goods->img_url, ['width' => '100px']);
-                    } else {
-                        return '';
-                    }
+                    return Inquiry::$newest[$model->is_better];
                 }
             ],
-            'supplier_id',
+            [
+                'attribute' => 'is_newest',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$newest,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Inquiry::$newest[$model->is_newest];
+                }
+            ],
             [
                 'attribute' => 'supplier_name',
                 'format'    => 'raw',
@@ -194,20 +200,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return substr($model->created_at, 0, 10);
                 }
             ],
-            [
-                'attribute' => 'is_better',
-                'filter'    => Inquiry::$better,
-                'value'     => function ($model, $key, $index, $column) {
-                    return Inquiry::$newest[$model->is_better];
-                }
-            ],
-            [
-                'attribute' => 'is_newest',
-                'filter'    => Inquiry::$newest,
-                'value'     => function ($model, $key, $index, $column) {
-                    return Inquiry::$newest[$model->is_newest];
-                }
-            ],
+
         ],
     ]); ?>
     <?php Pjax::end(); ?>

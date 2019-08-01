@@ -91,47 +91,47 @@ class InquirySearch extends Inquiry
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'            => $this->id,
-            'supplier_id'   => $this->supplier_id,
-            'price'         => $this->price,
-            'tax_price'     => $this->tax_price,
-            'delivery_time' => $this->delivery_time,
-            'remark'        => $this->remark,
-            'sort'          => $this->sort,
-            'is_better'     => $this->is_better,
-            'is_newest'     => $this->is_newest,
-            'is_deleted'    => self::IS_BETTER_NO,
+            'inquiry.id'            => $this->id,
+            'inquiry.supplier_id'   => $this->supplier_id,
+            'inquiry.price'         => $this->price,
+            'inquiry.tax_price'     => $this->tax_price,
+            'inquiry.delivery_time' => $this->delivery_time,
+            'inquiry.remark'        => $this->remark,
+            'inquiry.sort'          => $this->sort,
+            'inquiry.is_better'     => $this->is_better,
+            'inquiry.is_newest'     => $this->is_newest,
+            'inquiry.is_deleted'    => self::IS_BETTER_NO,
         ]);
 
-        $query->andFilterWhere(['good_id' => $this->good_id]);
-        $query->andFilterWhere(['like', 'remark', $this->remark]);
+        $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);
+        $query->andFilterWhere(['like', 'inquiry.remark', $this->remark]);
 
         if ($this->inquiry_datetime && strpos($this->inquiry_datetime, ' - ')) {
             list($inquiry_at_start, $inquiry_at_end) = explode(' - ', $this->inquiry_datetime);
             $inquiry_at_start .= ' 00:00:00';
             $inquiry_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'inquiry_datetime', $inquiry_at_start, $inquiry_at_end]);
+            $query->andFilterWhere(['between', 'inquiry.inquiry_datetime', $inquiry_at_start, $inquiry_at_end]);
         }
 
         if ($this->offer_date && strpos($this->offer_date, ' - ')) {
             list($offer_date_start, $offer_date_end) = explode(' - ', $this->offer_date);
             $offer_date_start .= ' 00:00:00';
             $offer_date_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'offer_date', $offer_date_start, $offer_date_end]);
+            $query->andFilterWhere(['between', 'inquiry.offer_date', $offer_date_start, $offer_date_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
             $updated_at_start .= ' 00:00:00';
             $updated_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'updated_at', $updated_at_start, $updated_at_end]);
+            $query->andFilterWhere(['between', 'inquiry.updated_at', $updated_at_start, $updated_at_end]);
         }
 
         if ($this->created_at && strpos($this->created_at, ' - ')) {
             list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
             $created_at_start .= ' 00:00:00';
             $created_at_end   .= ' 23::59:59';
-            $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
+            $query->andFilterWhere(['between', 'inquiry.created_at', $created_at_start, $created_at_end]);
         }
 
         return $dataProvider;
