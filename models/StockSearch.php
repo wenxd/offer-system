@@ -13,15 +13,18 @@ use app\models\Stock;
 class StockSearch extends Stock
 {
     public $goods_number;
+    public $description;
+    public $description_en;
     public $supplier_name;
+    public $is_zero;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg'], 'integer'],
-            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number'], 'safe'],
+            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero'], 'integer'],
+            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number', 'description', 'description_en'], 'safe'],
             [['price', 'tax_price'], 'number'],
             [['number', 'suggest_number', 'high_number', 'low_number'], 'integer', 'min' => 0],
         ];
@@ -66,9 +69,11 @@ class StockSearch extends Stock
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->goods_number || $this->is_emerg !== '') {
+        if ($this->goods_number || $this->description || $this->description_en || $this->is_emerg !== '') {
             $query->leftJoin('goods as a', 'a.id = stock.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+            $query->andFilterWhere(['like', 'a.description', $this->description]);
+            $query->andFilterWhere(['like', 'a.description_en', $this->description_en]);
             $query->andFilterWhere(['like', 'a.is_emerg', $this->is_emerg]);
         }
         if ($this->supplier_name) {
@@ -91,6 +96,14 @@ class StockSearch extends Stock
 
         $query->andFilterWhere(['like', 'stock.good_id', $this->good_id])
             ->andFilterWhere(['like', 'stock.position', $this->position]);
+
+        if ($this->is_zero && !$this->number) {
+            if ($this->is_zero == 1) {
+                $query->andFilterWhere(['stock.number' => 0]);
+            } else {
+                $query->andFilterWhere(['!=', 'stock.number', 0]);
+            }
+        }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

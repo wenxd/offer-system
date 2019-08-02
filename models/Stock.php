@@ -20,6 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $tax_rate  税率
  */
 class Stock extends ActiveRecord
 {
@@ -33,6 +34,15 @@ class Stock extends ActiveRecord
         self::IS_EMERG_NO  => '否',
         self::IS_EMERG_YES => '是',
     ];
+
+    public static $zero = [
+        '1' => '是',
+        '2' => '否'
+    ];
+
+    public $description;
+    public $description_en;
+    public $is_zero;
 
     public function behaviors()
     {
@@ -65,10 +75,10 @@ class Stock extends ActiveRecord
     public function rules()
     {
         return [
-            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg'], 'integer'],
+            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['position'], 'string', 'max' => 255],
+            [['position', 'description', 'description_en'], 'string', 'max' => 255],
             [
                 ['good_id', 'price', 'position', 'number'],
                 'required',
@@ -88,6 +98,8 @@ class Stock extends ActiveRecord
             'id'               => '自增id',
             'good_id'          => '零件ID',
             'goods_number'     => '零件号A',
+            'description'      => '中文描述',
+            'description_en'   => '英文描述',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',
@@ -100,6 +112,7 @@ class Stock extends ActiveRecord
             'low_number'       => '低储',
             'sort'             => '排序',
             'is_emerg'         => '紧急',
+            'is_zero'          => '为0',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',

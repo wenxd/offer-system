@@ -22,6 +22,15 @@ $use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
 $isShow    = in_array($userId, $adminIds);
+
+if ($isShow) {
+    $func = '{create} {gen}';
+    $operate = '{view}';
+} else {
+    $func = '{create} {gen} {delete}';
+    $operate = '{view} {update} {delete}';
+}
+
 ?>
 <style>
     .number {
@@ -31,7 +40,7 @@ $isShow    = in_array($userId, $adminIds);
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {gen} {delete}',
+            'template' => $func,
             'buttons' => [
                 'gen' => function () {
                     return Html::a('<i class="fa fa-chrome"></i> 批量移库', 'Javascript: void(0)', [
@@ -58,7 +67,6 @@ $isShow    = in_array($userId, $adminIds);
                 'class' => CheckboxColumn::className(),
             ],
             'id',
-            'good_id',
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
@@ -72,20 +80,28 @@ $isShow    = in_array($userId, $adminIds);
                 }
             ],
             [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'StockSearch[updated_at]',
-                    'value' => Yii::$app->request->get('StockSearch')['updated_at'],
-                ])
+                'attribute' => 'description',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'description',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->description;
+                    } else {
+                        return '';
+                    }
+                }
             ],
             [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'StockSearch[created_at]',
-                    'value' => Yii::$app->request->get('StockSearch')['created_at'],
-                ])
+                'attribute' => 'description_en',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'description_en',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->description_en;
+                    } else {
+                        return '';
+                    }
+                }
             ],
             [
                 'attribute' => 'tax_rate',
@@ -115,10 +131,18 @@ $isShow    = in_array($userId, $adminIds);
             'high_number',
             'low_number',
             [
+                'attribute' => 'is_zero',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => Stock::$zero,
+                'value'     => function($model){
+                    return $model->number ? '否' : '是';
+                }
+            ],
+            [
                 'class' => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header' => '操作',
-                'template' => '{view} {update} {delete}',
+                'template' => $operate,
             ],
         ],
     ]); ?>

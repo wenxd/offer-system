@@ -217,6 +217,19 @@ class Goods extends ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        if ($insert) {//这里是新增数据
+            $stock = new Stock();
+            $stock->good_id = $this->id;
+            $stock->tax_rate = SystemConfig::find()->select('value')->where([
+                'title'  => SystemConfig::TITLE_TAX,
+                'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+            $stock->save();
+        }
+    }
+
     public static function getCreateDropDown()
     {
         $goodList = self::find()->where(['is_deleted' => self::IS_DELETED_NO])->all();
