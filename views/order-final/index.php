@@ -10,7 +10,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\OrderFinalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '最终订单列表';
+$this->title = '成本单列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
@@ -21,6 +21,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'final_sn',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Html::a($model->final_sn, Url::to(['order-final/detail', 'id' => $model->id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'order_sn',
                 'format'    => 'raw',
@@ -81,23 +92,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'final_sn',
-                'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->order) {
-                        return Html::a($model->final_sn, Url::to(['order-final/detail', 'id' => $model->id]));
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
                     'name' => 'OrderFinalSearch[updated_at]',
                     'value' => Yii::$app->request->get('OrderFinalSearch')['updated_at'],
-                ])
+                ]),
+                'value'     => function ($model, $key, $index, $column) {
+                    return substr($model->updated_at, 0, 10);
+                }
             ],
             [
                 'attribute' => 'created_at',
@@ -105,7 +108,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => DateRangePicker::widget([
                     'name'  => 'OrderFinalSearch[created_at]',
                     'value' => Yii::$app->request->get('OrderFinalSearch')['created_at'],
-                ])
+                ]),
+                'value'     => function ($model, $key, $index, $column) {
+                    return substr($model->created_at, 0, 10);
+                }
             ],
             [
                 'attribute'      => '操作',

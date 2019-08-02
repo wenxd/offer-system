@@ -7,12 +7,14 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 
-$this->title = '生成最终订单';
+$this->title = '生成成本单';
 $this->params['breadcrumbs'][] = $this->title;
 
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
-$model->final_sn = 'Z' . date('ymd__') . $number;
+$customer_name = $order->customer ? $order->customer->short_name : '';
+
+$model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
 ?>
 <section class="content">
     <div class="box table-responsive">
@@ -88,21 +90,12 @@ $model->final_sn = 'Z' . date('ymd__') . $number;
                     </tr>
                 </tbody>
             </table>
-            <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
-                'removeButton'  => false,
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format'    => 'yyyy-mm-dd',
-                    'startView' =>2,  //其实范围（0：日  1：天 2：年）
-                    'maxView'   =>2,  //最大选择范围（年）
-                    'minView'   =>2,  //最小选择范围（年）
-                ]
-            ]);?>
 
             <?= $form->field($model, 'final_sn')->textInput() ?>
+
         </div>
         <div class="box-footer">
-            <?= Html::button('保存最终订单', [
+            <?= Html::button('保存成本单', [
                     'class' => 'btn btn-success final_save',
                     'name'  => 'submit-button']
             )?>

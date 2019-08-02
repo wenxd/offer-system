@@ -46,7 +46,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     {
         return [
             'id'             => 'ID',
-            'final_sn'       => '最终订单号',
+            'final_sn'       => '成本单号',
             'order_sn'       => '订单编号',
             'customer'       => '客户名称',
             'short_name'     => '客户缩写',

@@ -87,7 +87,7 @@ class Inquiry extends ActiveRecord
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
                  'order_id', 'order_inquiry_id'], 'integer'],
-            [['updated_at', 'created_at', 'offer_date', 'goods_number', 'goods_number_b'], 'safe'],
+            [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b'], 'safe'],
             [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
             [['good_id', 'supplier_name', 'inquiry_datetime'], 'required', "on" => ["create", "update"]],
@@ -133,7 +133,7 @@ class Inquiry extends ActiveRecord
         if ($this->is_deleted) {
             return parent::beforeSave($insert);
         }
-        
+
         $date = $this->inquiry_datetime;
         $isHasNew = self::find()->where(['good_id' => $this->good_id])->andWhere(" inquiry_datetime >= '$date' ")->one();
 
@@ -173,8 +173,6 @@ class Inquiry extends ActiveRecord
             $this->addError('id', '零件号不能为空');
             return false;
         }
-
-        $this->good_id = $goods->id;
 
         return parent::beforeSave($insert);
     }

@@ -51,8 +51,17 @@ class InquiryController extends BaseController
     {
         $model = new Inquiry();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['create']);
+        if (yii::$app->getRequest()->getIsPost()) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['create']);
+            } else {
+                $errors = $model->getErrors();
+                $err = '';
+                foreach ($errors as $v) {
+                    $err .= $v[0] . '<br>';
+                }
+                Yii::$app->getSession()->setFlash('error', $err);
+            }
         }
 
         return $this->render('create', [
