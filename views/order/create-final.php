@@ -108,7 +108,7 @@ $model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        //保存最终订单
+        //保存成本订单
         $('.final_save').click(function (e) {
             var flag = false;
             $('.relevance').each(function (i, element) {
@@ -120,15 +120,10 @@ $model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
                 layer.msg('所有的零件需关联询价', {time:2000});
                 return false;
             }
-            var agreement_date = $('#orderfinal-agreement_date').val();
-            if (!agreement_date) {
-                layer.msg('请输入合同交货日期', {time:2000});
-                return false;
-            }
 
             var final_sn  = $('#orderfinal-final_sn').val();
             if (!final_sn) {
-                layer.msg('请输入最终订单号', {time:2000});
+                layer.msg('请输入成本单号', {time:2000});
                 return false;
             }
 
@@ -139,7 +134,7 @@ $model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
             $.ajax({
                 type:"post",
                 url:'?r=order-final/save-order',
-                data:{order_id:order_id, goods_ids:goods_ids, key:key, agreement_date:agreement_date, final_sn:final_sn},
+                data:{order_id:order_id, goods_ids:goods_ids, key:key, final_sn:final_sn},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

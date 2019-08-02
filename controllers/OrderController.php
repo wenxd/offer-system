@@ -501,7 +501,7 @@ class OrderController extends BaseController
         $orderI = OrderFinal::find()->where(['like', 'final_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $finalSn = explode('_', $orderI->final_sn);
-            $number = sprintf("%03d", $finalSn[1]+1);
+            $number = sprintf("%03d", $finalSn[2]+1);
         } else {
             $number = '001';
         }
