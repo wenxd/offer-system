@@ -60,8 +60,13 @@ class OrderFinalController extends BaseController
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $model = $this->findModel($id);
+
+
+
+        return $this->render('view2', [
+            'model' => $model,
+
         ]);
     }
 

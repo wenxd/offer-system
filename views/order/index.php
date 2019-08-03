@@ -105,13 +105,17 @@ $userId   = Yii::$app->user->identity->id;
                     'format'         => 'raw',
                     'contentOptions' =>['style'=>'min-width: 200px;'],
                     'value'          => function ($model, $key, $index, $column){
-                        return Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
-                        ]) . Html::a('<i class="fa fa-heart"></i> 生成成本单', Url::to(['create-final', 'id' => $model['id'], 'key' => date('YmdHis') . rand(10, 99)]), [
+                        $html = Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-primary btn-xs btn-flat',
+                        ]);
+                        if (!$model->cost) {
+                            $html .= Html::a('<i class="fa fa-heart"></i> 生成成本单', Url::to(['create-final', 'id' => $model['id'], 'key' => date('YmdHis') . rand(10, 99)]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-success btn-xs btn-flat',
-                        ]);
+                            ]);
+                        }
+                        return $html;
                     }
                 ],
             ],

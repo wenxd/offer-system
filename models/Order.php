@@ -118,4 +118,10 @@ class Order extends ActiveRecord
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
+
+    //关联成本单
+    public function getCost()
+    {
+        return $this->hasOne(OrderFinal::className(), ['order_id' => 'id']);
+    }
 }
