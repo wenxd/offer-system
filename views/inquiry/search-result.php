@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>创建时间</th>
                 </tr>
                 <tr>
-                    <td class="data" data-goods_id="<?=$goods ? $goods->id : ''?>" data-order_id="<?=$_GET['order_id'] ?? ''?>" data-key="<?=$_GET['key'] ?? ''?>">
+                    <td class="data" data-goods_id="<?=$goods ? $goods->id : ''?>" data-order_id="<?=$_GET['order_id'] ?? ''?>" data-key="<?=$_GET['key'] ?? ''?>" data-serial="<?=$_GET['serial'] ?? ''?>">
                         <?=$goods ? $goods->goods_number_b : ''?>
                     </td>
                     <td><?=$goods ? $goods->description : ''?></td>
@@ -366,11 +366,12 @@ $this->params['breadcrumbs'][] = $this->title;
             var goods_id = $('.data').data('goods_id');
             var order_id = $('.data').data('order_id');
             var key      = $('.data').data('key');
+            var serial   = $('.data').data('serial');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-final/relevance',
-                data:{type:type, select_id:select_id, goods_id:goods_id, order_id:order_id, key:key},
+                data:{type:type, select_id:select_id, goods_id:goods_id, order_id:order_id, key:key, serial:serial},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

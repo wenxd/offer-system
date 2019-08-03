@@ -76,7 +76,7 @@ $model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
                         <td class="relevance"><?= in_array($item->goods_id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$item->goods_id]) ? Html::a($finalGoods[$item->goods_id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$item->goods_id]['relevance_id']])) : ''?></td>
                         <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
-                                Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]),
+                                Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'serial' => $item->serial, 'key' => ($_GET['key'] ?? '')]),
                                 ['class' => 'btn btn-primary btn-xs btn-flat']
                             );?></td>
                     </tr>

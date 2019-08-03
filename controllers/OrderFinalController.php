@@ -60,13 +60,16 @@ class OrderFinalController extends BaseController
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-
+        $orderFinal = $this->findModel($id);
+        $finalGoods = FinalGoods::find()->where([
+            'order_id'       => $orderFinal->order_id,
+            'order_final_id' => $orderFinal->id,
+        ])->all();
 
 
         return $this->render('view2', [
-            'model' => $model,
-
+            'model'      => $orderFinal,
+            'finalGoods' => $finalGoods
         ]);
     }
 
@@ -146,7 +149,8 @@ class OrderFinalController extends BaseController
         $finalGoods = FinalGoods::find()->where([
             'order_id'     => $params['order_id'],
             'goods_id'     => $params['goods_id'],
-            'key'          => $params['key']
+            'key'          => $params['key'],
+            'serial'       => $params['serial'],
         ])->one();
 
         if (!$finalGoods) {
@@ -154,6 +158,7 @@ class OrderFinalController extends BaseController
             $finalGoods->order_id     = $params['order_id'];
             $finalGoods->goods_id     = $params['goods_id'];
             $finalGoods->key          = $params['key'];
+            $finalGoods->serial       = $params['serial'];
         }
         //更新最新为准
         $finalGoods->type         = $params['type'];

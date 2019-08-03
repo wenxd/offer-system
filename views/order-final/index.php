@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
-                        return Html::a($model->final_sn, Url::to(['order-final/detail', 'id' => $model->id]));
+                        return Html::a($model->final_sn, Url::to(['order-final/view', 'id' => $model->id]));
                     } else {
                         return '';
                     }
