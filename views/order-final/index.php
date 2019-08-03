@@ -117,9 +117,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                    return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
                             'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
+                            'class' => 'btn btn-primary btn-xs btn-flat',
                         ]);
                 }
             ],
