@@ -524,3 +524,5 @@ ALTER TABLE `final_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' C
 
 ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
 
+ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
+

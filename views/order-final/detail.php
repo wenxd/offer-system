@@ -109,6 +109,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择报价员') ?>
 
         <?= $form->field($model, 'quote_sn')->textInput() ?>
+
+        <?= $form->field($model, 'quote_ratio')->textInput() ?>
+
+
     </div>
     <div class="box-footer">
         <?= Html::button('保存报价单', [
