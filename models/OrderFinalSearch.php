@@ -23,7 +23,7 @@ class OrderFinalSearch extends OrderFinal
     public function rules()
     {
         return [
-            [['id', 'order_id', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'is_deleted', 'is_quote'], 'integer'],
             [['final_sn', 'goods_info', 'updated_at', 'created_at', 'order_sn', 'customer', 'short_name', 'manage_name', 'provide_date'], 'safe'],
         ];
     }
@@ -89,9 +89,10 @@ class OrderFinalSearch extends OrderFinal
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_final.id' => $this->id,
-            'order_final.order_id' => $this->order_id,
+            'order_final.id'         => $this->id,
+            'order_final.order_id'   => $this->order_id,
             'order_final.is_deleted' => $this->is_deleted,
+            'order_final.is_quote'   => $this->is_quote,
         ]);
 
         $query->andFilterWhere(['like', 'final_sn', $this->final_sn])

@@ -142,6 +142,10 @@ class OrderQuoteController extends Controller
         $orderQuote->goods_info     = json_encode($params['goods_info']);
         $orderQuote->admin_id       = $params['admin_id'];
         if ($orderQuote->save()) {
+
+            $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
+            $orderFinal->save();
+
             $data = [];
             foreach ($params['goods_info'] as $item) {
                 $row = [];

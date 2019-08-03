@@ -521,3 +521,6 @@ ALTER TABLE `inquiry` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.0
 ALTER TABLE `inquiry` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
 
 ALTER TABLE `final_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
+
+ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
+

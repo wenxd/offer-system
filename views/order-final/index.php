@@ -6,6 +6,8 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\grid\CheckboxColumn;
 use kartik\daterange\DateRangePicker;
+use app\models\OrderFinal;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderFinalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -66,6 +68,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     } else {
                         return '';
                     }
+                }
+            ],
+            [
+                'attribute' => 'is_quote',
+                'format'    => 'raw',
+                'filter'    => OrderFinal::$quote,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderFinal::$quote[$model->is_quote];
                 }
             ],
             [
