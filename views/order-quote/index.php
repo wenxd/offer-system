@@ -38,7 +38,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'quote_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->quote_sn, Url::to(['order-quote/detail', 'id' => $model->id]));
+                    return Html::a($model->quote_sn, Url::to(['order-quote/view', 'id' => $model->id]));
                 }
             ],
             [

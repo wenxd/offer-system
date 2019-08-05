@@ -4,9 +4,7 @@ namespace app\controllers;
 
 use app\models\AgreementGoods;
 use Yii;
-use app\models\{
-    OrderAgreement, OrderQuote, OrderFinal, QuoteGoods
-};
+use app\models\{Inquiry, InquiryGoods, OrderAgreement, OrderQuote, OrderFinal, QuoteGoods};
 use app\models\OrderQuoteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -55,8 +53,14 @@ class OrderQuoteController extends Controller
      */
     public function actionView($id)
     {
+        $orderQuote = $this->findModel($id);
+        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $orderQuote->id])->all();
+        $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderQuote->order_id])->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model'        => $orderQuote,
+            'quoteGoods'   => $quoteGoods,
+            'inquiryGoods' => $inquiryGoods
         ]);
     }
 
