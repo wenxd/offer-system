@@ -141,6 +141,8 @@ class OrderQuoteController extends Controller
         $orderQuote->order_final_id = $params['order_final_id'];
         $orderQuote->goods_info     = json_encode($params['goods_info']);
         $orderQuote->admin_id       = $params['admin_id'];
+        $orderQuote->quote_ratio    = $params['quote_ratio'];
+        $orderQuote->delivery_ratio = $params['delivery_ratio'];
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
@@ -159,6 +161,17 @@ class OrderQuoteController extends Controller
                 $row[] = $item['type'];
                 $row[] = $item['relevance_id'];
                 $row[] = $item['number'];
+                $row[] = $item['serial'];
+                $row[] = $item['tax_rate'];
+                $row[] = $item['price'];
+                $row[] = $item['tax_price'];
+                $row[] = $item['all_price'];
+                $row[] = $item['all_tax_price'];
+                $row[] = $item['quote_price'];
+                $row[] = $item['quote_tax_price'];
+                $row[] = $item['quote_all_price'];
+                $row[] = $item['quote_all_tax_price'];
+                $row[] = $item['delivery_time'];
 
                 $data[] = $row;
             }
@@ -173,7 +186,8 @@ class OrderQuoteController extends Controller
     public static function insertQuoteGoods($data)
     {
         $feild = ['order_id', 'order_final_id', 'order_final_sn', 'order_quote_id', 'order_quote_sn', 'goods_id',
-            'type', 'relevance_id','number'];
+            'type', 'relevance_id', 'number', 'serial', 'tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price',
+             'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
 

@@ -527,3 +527,14 @@ ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0' 
 ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
 ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
 
+ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `quote_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` int(11) NOT NULL DEFAULT '0' COMMENT '货期（天）';

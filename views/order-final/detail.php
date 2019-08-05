@@ -69,7 +69,7 @@ $model->quote_sn = 'B' . date('ymd__') . $number;
             <tr class="order_final_list">
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
 data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
-                <td><?=$item->serial?></td>
+                <td class="serial"><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
@@ -329,7 +329,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             var goods_info = [];
             var number_flag = false;
-            var number = 1;
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
@@ -337,9 +336,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     if (!$(element).parent().parent().find('.number').val()){
                         number_flag  = true;
                     }
-                    item.number        = $(element).parent().parent().find('.number').val();
-                    item.type          = $(element).data('type');
-                    item.relevance_id  = $(element).data('relevance_id');
+                    item.number              = $(element).parent().parent().find('.number').val();
+                    item.type                = $(element).data('type');
+                    item.relevance_id        = $(element).data('relevance_id');
+
+                    item.serial              = $(element).parent().parent().find('.serial').text();
+                    item.tax_rate            = $(element).parent().parent().find('.ratio').text();
+                    item.delivery_time       = $(element).parent().parent().find('.delivery_time').text();
+                    item.price               = $(element).parent().parent().find('.price').text();
+                    item.tax_price           = $(element).parent().parent().find('.tax_price').text();
+                    item.all_price           = $(element).parent().parent().find('.all_price').text();
+                    item.all_tax_price       = $(element).parent().parent().find('.all_tax_price').text();
+                    item.quote_price         = $(element).parent().parent().find('.quote_price input').val();
+                    item.quote_tax_price     = $(element).parent().parent().find('.quote_tax_price').text();
+                    item.quote_all_price     = $(element).parent().parent().find('.quote_all_price').text();
+                    item.quote_all_tax_price = $(element).parent().parent().find('.quote_all_tax_price').text();
+
                     goods_info.push(item);
                 }
             });
@@ -358,18 +370,24 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 layer.msg('请填写报价单号', {time:2000});
                 return false;
             }
-            // var end_date = $('#orderpurchase-end_date').val();
-            // if (!end_date) {
-            //     layer.msg('请输入采购截止时间', {time:2000});
-            //     return false;
-            // }
+            var quote_ratio = $('#orderquote-quote_ratio').val();
+            if (!quote_ratio) {
+                layer.msg('请填写报价系数', {time:2000});
+                return false;
+            }
+            var delivery_ratio = $('#orderquote-delivery_ratio').val();
+            if (!delivery_ratio) {
+                layer.msg('请填写货期系数', {time:2000});
+                return false;
+            }
 
             var order_final_id = $('.data').data('order_final_id');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
-                data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, goods_info:goods_info},
+                data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
+                    delivery_ratio:delivery_ratio, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

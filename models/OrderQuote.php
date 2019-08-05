@@ -46,7 +46,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             [['order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'quote_ratio', 'delivery_ratio'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
-            [['goods_info'], 'string', 'max' => 512],
+            [['goods_info'], 'string'],
         ];
     }
 
