@@ -14,6 +14,7 @@ use Yii;
  * @property string $end_date 报价截止时间
  * @property int $is_quote 是否报价：0未报价 1已报价
  * @property int $quote_ratio
+ * @property int $delivery_ratio
  * @property int $admin_id 报价员ID
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
@@ -43,7 +44,7 @@ class OrderQuote extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
-            [['end_date', 'updated_at', 'created_at', 'quote_ratio'], 'safe'],
+            [['end_date', 'updated_at', 'created_at', 'quote_ratio', 'delivery_ratio'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -63,6 +64,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             'agreement_date' => '报价截止时间',
             'is_quote'       => '报价',
             'quote_ratio'    => '报价系数',
+            'delivery_ratio' => '货期系数',
             'admin_id'       => '报价员ID',
             'is_deleted'     => '是否删除：0未删除 1已删除',
             'updated_at'     => '更新时间',
