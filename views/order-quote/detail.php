@@ -9,7 +9,7 @@ use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
-$this->title = '生成最终合同';
+$this->title = '生成收入合同';
 $this->params['breadcrumbs'][] = $this->title;
 
 $model->agreement_date = date('Y-m-d');
@@ -117,7 +117,7 @@ $userId   = Yii::$app->user->identity->id;
     </div>
     <?php if (!$orderQuote->is_quote):?>
     <div class="box-footer">
-        <?= Html::button('生成最终合同', [
+        <?= Html::button('生成收入合同', [
                 'class' => 'btn btn-success quote_complete',
                 'name'  => 'submit-button']
         )?>
@@ -153,6 +153,7 @@ $userId   = Yii::$app->user->identity->id;
 
         $('.complete').click(function (e) {
             var id = $(this).data('id');
+            var item = $(this);
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/complete',
@@ -161,6 +162,9 @@ $userId   = Yii::$app->user->identity->id;
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
+                        item.parent().prev().text('完成');
+                        item.remove();
+                        //console.log()
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
