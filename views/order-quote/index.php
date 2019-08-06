@@ -113,7 +113,7 @@ $userId   = Yii::$app->user->identity->id;
                         }
                     } else {
                         if ($model->quote_status == OrderQuote::QUOTE_STATUS_CREATE) {
-                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download']), [
+                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download', 'id' => $model['id']]), [
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-primary btn-xs btn-flat',
                                 ]) . ' ' . Html::a('<i class="fa fa-send"></i> 已发送报价单', Url::to(['send', 'id' => $model['id']]), [
