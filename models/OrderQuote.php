@@ -19,16 +19,24 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $quote_at 报价时间
+ * @property string $quote_status 报价状态
+ * @property string $quote_only_one 报价状态
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
     const IS_QUOTE_NO  = '0';
     const IS_QUOTE_YES = '1';
 
+    const QUOTE_STATUS_CREATE    = '0';
+    const QUOTE_STATUS_SEND      = '1';
+    const QUOTE_STATUS_AGREEMENT = '2';
+
     public static $quote = [
         self::IS_QUOTE_NO   => '否',
         self::IS_QUOTE_YES  => '是',
     ];
+
     /**
      * {@inheritdoc}
      */
@@ -43,8 +51,8 @@ class OrderQuote extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
-            [['end_date', 'updated_at', 'created_at', 'quote_ratio', 'delivery_ratio'], 'safe'],
+            [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_status', 'quote_only_one'], 'integer'],
+            [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string'],
         ];
@@ -69,6 +77,9 @@ class OrderQuote extends \yii\db\ActiveRecord
             'is_deleted'     => '是否删除：0未删除 1已删除',
             'updated_at'     => '更新时间',
             'created_at'     => '创建时间',
+            'quote_at'       => '报价时间',
+            'quote_status'   => '报价状态',
+            'quote_only_one' => '是否唯一',
         ];
     }
 

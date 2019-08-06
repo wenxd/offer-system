@@ -63,17 +63,6 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderQuoteSearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderQuoteSearch')['updated_at'],
-                ]),
-                'value'     => function($model){
-                    return substr($model->updated_at, 0, 10);
-                }
-            ],
-            [
                 'attribute' => 'created_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
@@ -82,6 +71,17 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function($model){
                     return substr($model->created_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'quote_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'OrderQuoteSearch[quote_at]',
+                    'value' => Yii::$app->request->get('OrderQuoteSearch')['quote_at'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->quote_at, 0, 10);
                 }
             ],
             [
@@ -98,10 +98,41 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-info btn-xs btn-flat',
-                    ]);
+                    $html = '';
+                    if ($model->quote_only_one) {
+                        if ($model->quote_status == OrderQuote::QUOTE_STATUS_SEND) {
+                            $html .= Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        } else {
+                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download']), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        }
+                    } else {
+                        if ($model->quote_status == OrderQuote::QUOTE_STATUS_CREATE) {
+                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download']), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]) . ' ' . Html::a('<i class="fa fa-send"></i> 已发送报价单', Url::to(['send', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                        } elseif ($model->quote_status == OrderQuote::QUOTE_STATUS_SEND) {
+                            $html .= Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        } else {
+                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download']), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        }
+                    }
+                    return $html;
                 }
             ],
         ],

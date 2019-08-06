@@ -526,6 +526,9 @@ ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0' 
 
 ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
 ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
+ALTER TABLE `order_quote` ADD COLUMN `quote_at` NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报价时间';
+ALTER TABLE `order_quote` ADD COLUMN `quote_status` TINYINT NOT NULL DEFAULT '0' COMMENT '报价状态 0未发送报价 1已发送报价 2生成收入合同';
+ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
 
 ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
@@ -538,3 +541,4 @@ ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DE
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` int(11) NOT NULL DEFAULT '0' COMMENT '货期（天）';
+
