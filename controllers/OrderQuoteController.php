@@ -377,4 +377,19 @@ class OrderQuoteController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    public function actionSend($id)
+    {
+        $orderQuote = OrderQuote::findOne($id);
+        $orderQuote->quote_status = OrderQuote::QUOTE_STATUS_SEND;
+        $orderQuote->save();
+        $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
+            ->andWhere(['!=', 'id', $id])->all();
+        foreach ($orderQuoteList as $key => $quote) {
+            $quote->quote_only_one = 0;
+            $quote->save();
+        }
+
+        return $this->redirect(['index']);
+    }
 }
