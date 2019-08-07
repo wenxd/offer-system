@@ -17,7 +17,7 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
 //采购商品IDs
 $purchaseGoods_ids = ArrayHelper::getColumn($purchaseGoods, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
