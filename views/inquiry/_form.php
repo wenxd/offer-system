@@ -25,6 +25,10 @@ if ($model->isNewRecord) {
     $model->delivery_time    = SystemConfig::find()->select('value')->where([
         'title'  => SystemConfig::TITLE_DELIVERY_TIME,
         'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+    if (!isset($_GET['inquiry_goods_id'])) {
+        $model->order_id         = 0;
+        $model->order_inquiry_id = 0;   
+    }
 } else {
     $model->supplier_name    = $model->supplier->name;
     $model->goods_number     = $model->goods->goods_number;
