@@ -245,7 +245,8 @@ class OrderQuoteController extends Controller
 
         //首先保存报价单
         $orderQuote = OrderQuote::findOne($params['id']);
-        $orderQuote->is_quote = OrderQuote::IS_QUOTE_YES;
+        $orderQuote->is_quote       = OrderQuote::IS_QUOTE_YES;
+        $orderQuote->quote_only_one = OrderQuote::QUOTE_ONLY;
         $orderQuote->save();
 
         //创建合同单
@@ -267,8 +268,16 @@ class OrderQuoteController extends Controller
 
         $orderAgreement->goods_info      = json_encode($json, JSON_UNESCAPED_UNICODE);
         $orderAgreement->agreement_date  = $params['agreement_date'];
-        $orderAgreement->admin_id        = $params['admin_id'];
+        $orderAgreement->admin_id        = Yii::$app->user->identity->id;
         if ($orderAgreement->save()) {
+            //更新其他的报价单为不可生成合同单
+            $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
+                ->andWhere(['!=', 'id', $params['id']])->all();
+            foreach ($orderQuoteList as $key => $quote) {
+                $quote->quote_only_one = 0;
+                $quote->save();
+            }
+
             $data = [];
             foreach ($params['goods_info'] as $item) {
                 $row = [];
@@ -385,16 +394,10 @@ class OrderQuoteController extends Controller
     public function actionSend($id)
     {
         $orderQuote = OrderQuote::findOne($id);
-        $orderQuote->is_quote = OrderQuote::IS_QUOTE_YES;
-        $orderQuote->is_send  = OrderQuote::IS_SEND_YES;
-        $orderQuote->quote_at = date("Y-m-d H:i:s");
+        $orderQuote->is_quote       = OrderQuote::IS_QUOTE_YES;
+        $orderQuote->is_send        = OrderQuote::IS_SEND_YES;
+        $orderQuote->quote_at       = date("Y-m-d H:i:s");
         $orderQuote->save();
-//        $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
-//            ->andWhere(['!=', 'id', $id])->all();
-//        foreach ($orderQuoteList as $key => $quote) {
-//            $quote->quote_only_one = 0;
-//            $quote->save();
-//        }
 
         return $this->redirect(['index']);
     }

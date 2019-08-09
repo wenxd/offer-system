@@ -103,7 +103,7 @@ $userId   = Yii::$app->user->identity->id;
                         'class' => 'btn btn-primary btn-xs btn-flat',
                     ]);
                     if ($model->is_send) {
-                        $html .= ' ' . Html::a('<i class="fa fa-send"></i> 已发送', Url::to(['send', 'id' => $model['id']]), [
+                        $html .= ' ' . Html::button('<i class="fa"></i> 已发送', [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
@@ -114,10 +114,17 @@ $userId   = Yii::$app->user->identity->id;
                             ]);
                     }
                     if ($model->quote_only_one) {
-                        $html .= ' ' . Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
-                            ]);
+                        if ($model->quote_only_one == 1) {
+                            $html .= ' ' . Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                        } else {
+                            $html .= ' ' . Html::button('<i class="fa"></i> 已生成收入合同', [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                        }
                     }
                     return $html;
                 }

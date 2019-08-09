@@ -31,6 +31,10 @@ class OrderQuote extends \yii\db\ActiveRecord
     const IS_SEND_NO     = '0';
     const IS_SEND_YES    = '1';
 
+    const QUOTE_NO   = '0'; //不能生成合同
+    const QUOTE_YES  = '1'; //可以生成合同
+    const QUOTE_ONLY = '2'; //生成唯一合同
+
     public static $quote = [
         self::IS_QUOTE_NO   => '否',
         self::IS_QUOTE_YES  => '是',

@@ -49,12 +49,9 @@ $userId   = Yii::$app->user->identity->id;
                 <th>税率</th>
                 <th>未率单价</th>
                 <th>含率单价</th>
-                <th>货期(天)</th>
                 <th>未率总价</th>
                 <th>含率总价</th>
                 <th>数量</th>
-                <th>报价状态</th>
-                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -77,21 +74,14 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                     <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
                     <td class="tax"><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                    <td class="price"><input type="text" class="change_price" value="<?=$item->type ? $item->stock->price : $item->inquiry->price?>"></td>
-                    <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
-                    <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
+                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
+                    <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td class="afterNumber">
                         <input type="number" size="4" class="number" min="1" value="<?=$item->number?>"
                                onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
                                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}"/>
-                    </td>
-                    <td><?=$item->is_quote ? '完成' : '未完成'?></td>
-                    <td>
-                        <?php if (!$item->is_quote):?>
-                        <a class="btn btn-success btn-xs btn-flat complete" href="javascript:void(0);" data-id="<?=$item->id?>">完成报价</a>
-                        <?php endif;?>
                     </td>
                 </tr>
             <?php endforeach;?>
@@ -111,11 +101,8 @@ $userId   = Yii::$app->user->identity->id;
             ]
         ]);?>
 
-        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('采购员') ?>
-
-
     </div>
-    <?php if (!$orderQuote->is_quote):?>
+    <?php if ($orderQuote->is_quote):?>
     <div class="box-footer">
         <?= Html::button('生成收入合同', [
                 'class' => 'btn btn-success quote_complete',
@@ -240,17 +227,17 @@ $userId   = Yii::$app->user->identity->id;
                 return false;
             }
 
-            var admin_id = $('#orderagreement-admin_id').val();
-            if (!admin_id) {
-                layer.msg('请选择询价员', {time:2000});
-                return false;
-            }
+            // var admin_id = $('#orderagreement-admin_id').val();
+            // if (!admin_id) {
+            //     layer.msg('请选择询价员', {time:2000});
+            //     return false;
+            // }
 
             var id = $('.data').data('order_quote_id');
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/create-agreement',
-                data:{id:id, agreement_sn:agreement_sn, agreement_date:agreement_date, goods_info:goods_info, admin_id:admin_id},
+                data:{id:id, agreement_sn:agreement_sn, agreement_date:agreement_date, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
