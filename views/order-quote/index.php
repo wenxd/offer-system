@@ -98,27 +98,26 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    $html = '';
+                    $html = Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download', 'id' => $model['id']]), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-primary btn-xs btn-flat',
+                    ]);
+                    if ($model->is_send) {
+                        $html .= ' ' . Html::a('<i class="fa fa-send"></i> 已发送', Url::to(['send', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                    } else {
+                        $html .= ' ' . Html::a('<i class="fa fa-send"></i> 发送报价单', Url::to(['send', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                    }
                     if ($model->quote_only_one) {
-                        if ($model->quote_status == OrderQuote::QUOTE_STATUS_CREATE) {
-                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download', 'id' => $model['id']]), [
-                                    'data-pjax' => '0',
-                                    'class' => 'btn btn-primary btn-xs btn-flat',
-                                ]) . ' ' . Html::a('<i class="fa fa-send"></i> 已发送报价单', Url::to(['send', 'id' => $model['id']]), [
-                                    'data-pjax' => '0',
-                                    'class' => 'btn btn-primary btn-xs btn-flat',
-                                ]);
-                        } elseif ($model->quote_status == OrderQuote::QUOTE_STATUS_SEND) {
-                            $html .= Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
+                        $html .= ' ' . Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
-                        } else {
-                            $html .= Html::a('<i class="fa fa-download"></i> 导出报价单', Url::to(['download']), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
-                            ]);
-                        }
                     }
                     return $html;
                 }

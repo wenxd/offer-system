@@ -378,17 +378,23 @@ class OrderQuoteController extends Controller
         exit;
     }
 
+    /**发送报价单
+     * @param $id
+     * @return \yii\web\Response
+     */
     public function actionSend($id)
     {
         $orderQuote = OrderQuote::findOne($id);
-        $orderQuote->quote_status = OrderQuote::QUOTE_STATUS_SEND;
+        $orderQuote->is_quote = OrderQuote::IS_QUOTE_YES;
+        $orderQuote->is_send  = OrderQuote::IS_SEND_YES;
+        $orderQuote->quote_at = date("Y-m-d H:i:s");
         $orderQuote->save();
-        $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
-            ->andWhere(['!=', 'id', $id])->all();
-        foreach ($orderQuoteList as $key => $quote) {
-            $quote->quote_only_one = 0;
-            $quote->save();
-        }
+//        $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
+//            ->andWhere(['!=', 'id', $id])->all();
+//        foreach ($orderQuoteList as $key => $quote) {
+//            $quote->quote_only_one = 0;
+//            $quote->save();
+//        }
 
         return $this->redirect(['index']);
     }
