@@ -125,7 +125,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     <td>最长货期</td>
                     <td>采购未税总价</td>
                     <td>采购含税总价</td>
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                 </tr>
                 <tr style="background-color: #acccb9">
                     <td class="sta_all_price"></td>
@@ -133,7 +133,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     <td class="mostLongTime"></td>
                     <td class="purchase_price"></td>
                     <td class="purchase_all_price"></td>
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                 </tr>
             </tbody>
         </table>
@@ -321,6 +321,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             });
         });
 
-
+        //搜索功能
+        $('.inquiry_search').click(function (e) {
+            var search = $('#w3-filters').find('td input');
+            var parameter = '';
+            search.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'goods_number':
+                        parameter += '&goods_number=' + $(e).val();
+                        break;
+                    case 'goods_number_b':
+                        parameter += '&goods_number_b=' + $(e).val();
+                        break;
+                    case 'original_company':
+                        parameter += '&original_company=' + $(e).val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            location.replace("?r=order-agreement/detail&id=<?=$_GET['id']?>" + encodeURI(parameter));
+        });
     });
 </script>

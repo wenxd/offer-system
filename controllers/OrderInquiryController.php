@@ -114,34 +114,6 @@ class OrderInquiryController extends BaseController
         return $this->render('detail', $data);
     }
 
-    /*
-     * 已废弃
-     */
-    public function actionUpdate($id)
-    {
-        if (! $id) throw new BadRequestHttpException(yii::t('app', "Id doesn't exit"));
-
-        $model = Order::findOne($id);
-        if (! $model) throw new BadRequestHttpException(yii::t('app', "Cannot find model by $id"));
-
-        if (yii::$app->getRequest()->getIsPost()) {
-            if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->save()) {
-                yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
-                return $this->redirect(['update', 'id' => $model->getPrimaryKey()]);
-            } else {
-                $errors = $model->getErrors();
-                $err = '';
-                foreach ($errors as $v) {
-                    $err .= $v[0] . '<br>';
-                }
-                yii::$app->getSession()->setFlash('error', $err);
-            }
-        }
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();

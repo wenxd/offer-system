@@ -144,8 +144,15 @@ class OrderAgreementController extends Controller
 
     public function actionDetail($id)
     {
+        $request = Yii::$app->request->get();
         $orderAgreement = OrderAgreement::findOne($id);
-        $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        $agreementGoodsQuery = AgreementGoods::find()->from('agreement_goods ag')
+            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+            ->where(['order_agreement_id' => $id]);
+        if (isset($request['original_company']) && $request['original_company']) {
+            $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        $agreementGoods = $agreementGoodsQuery->all();
         $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
         $purchaseGoods  = PurchaseGoods::find()
             ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])
