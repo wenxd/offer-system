@@ -62,7 +62,9 @@ $userId   = Yii::$app->user->identity->id;
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td class="goods_id" data-goods_id="<?=$item->goods_id?>" data-goods_type="<?=$item->type?>"
-                        data-relevance_id="<?=$item->relevance_id?>"><?=$item->goods->description?></td>
+                        data-relevance_id="<?=$item->relevance_id?>" data-quote_goods_id="<?=$item->id?>">
+                        <?=$item->goods->description?>
+                    </td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
@@ -126,43 +128,12 @@ $userId   = Yii::$app->user->identity->id;
                 $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
                 $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             });
-            var open = true;
-            $('.order_quote_list').each(function (i, item) {
-                if ($(item).children().last().prev().text() == '未完成') {
-                    open = false;
-                }
-            });
-            if (open) {
-                var date = '<?=$model->agreement_date?>';
-                $('#orderpurchase-agreement_date').val(date);
-            }
+            var date = '<?=$model->agreement_date?>';
+            $('#orderpurchase-agreement_date').val(date);
         }
-
-        $('.complete').click(function (e) {
-            var id = $(this).data('id');
-            var item = $(this);
-            $.ajax({
-                type:"post",
-                url:'?r=order-quote/complete',
-                data:{id:id},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        item.parent().prev().text('完成');
-                        item.remove();
-                        //console.log()
-                    } else {
-                        layer.msg(res.msg, {time:2000});
-                        return false;
-                    }
-                }
-            });
-        });
 
         //改变数量
         $(".number").bind('input propertychange', function (e) {
-
             var number = $(this).val();
             if (number == 0) {
                 layer.msg('数量最少为1', {time:2000});
@@ -192,28 +163,20 @@ $userId   = Yii::$app->user->identity->id;
         });
 
         $('.quote_complete').click(function (e) {
-            var flag = false;
             var goods_info = [];
 
             $('.order_quote_list').each(function (i, ele) {
-                if ($(ele).children().last().prev().text() == '未完成') {
-                    flag = true;
-                }
                 var item = {};
-                item.goods_id     = $(ele).find('.goods_id').data('goods_id');
-                item.type         = $(ele).find('.goods_id').data('goods_type');
-                item.relevance_id = $(ele).find('.goods_id').data('relevance_id');
-                item.number       = $(ele).find('.number').val();
-                item.price        = $(ele).find('.change_price').val();
-                item.tax_price    = $(ele).find('.tax_price').text();
+                item.quote_goods_id  = $(ele).find('.goods_id').data('quote_goods_id');
+                item.goods_id        = $(ele).find('.goods_id').data('goods_id');
+                item.type            = $(ele).find('.goods_id').data('goods_type');
+                item.relevance_id    = $(ele).find('.goods_id').data('relevance_id');
+                item.number          = $(ele).find('.number').val();
+                item.price           = $(ele).find('.change_price').val();
+                item.tax_price       = $(ele).find('.tax_price').text();
                 goods_info.push(item);
 
             });
-
-            if (flag) {
-                layer.msg('请完成每条零件的报价', {time:2000});
-                return false;
-            }
 
             var agreement_sn = $('#orderagreement-agreement_sn').val();
             if (!agreement_sn) {

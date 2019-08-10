@@ -33,38 +33,88 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
-            <tr>
-                <th><input type="checkbox" name="select_all" class="select_all"></th>
-                <th>零件号</th>
-                <th>中文描述</th>
-                <th>英文描述</th>
-                <th>原厂家</th>
-                <th>原厂家备注</th>
-                <th>单位</th>
-                <th>技术备注</th>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
-                <th>供应商</th>
-                <th>询价状态</th>
-                <th>税率</th>
-                <th>未率单价</th>
-                <th>含率单价</th>
-                <th>货期(天)</th>
-                <th>未率总价</th>
-                <th>含率总价</th>
-                <th>是否有采购单</th>
-                <th>采购单号</th>
-                <th>合同需求数量</th>
-                <th>数量</th>
-            </tr>
+                <tr>
+                    <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <th>序号</th>
+                    <th>零件号A</th>
+                    <th>中文描述</th>
+                    <th>英文描述</th>
+                    <th>原厂家</th>
+                    <th>原厂家备注</th>
+                    <th>单位</th>
+                    <th>技术备注</th>
+                    <th>加工</th>
+                    <th>特制</th>
+                    <th>铭牌</th>
+                    <th>图片</th>
+                    <th>供应商</th>
+                    <th>询价状态</th>
+                    <th>税率</th>
+                    <th>未率单价</th>
+                    <th>含率单价</th>
+                    <th>货期(天)</th>
+                    <th>未率总价</th>
+                    <th>含率总价</th>
+                    <th>是否有采购单</th>
+                    <th>采购单号</th>
+                    <th>合同需求数量</th>
+                    <th>数量</th>
+                </tr>
+                <tr id="w3-filters" class="filters">
+                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <select class="form-control" name="is_process">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_special">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_nameplate">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_assembly">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                </tr>
             </thead>
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
             <tr class="order_agreement_list">
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
-data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
+                <td>
+                    <?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
+data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?>
+                </td>
+                <td><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>

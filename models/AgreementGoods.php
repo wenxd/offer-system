@@ -26,6 +26,13 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $serial 序号
+ * @property string $all_price 未税总价
+ * @property string $all_tax_price 含税总价
+ * @property string $quote_price 报价未税单价
+ * @property string $quote_tax_price 报价含税单价
+ * @property string $quote_all_price 报价未税总价
+ * @property string $quote_all_tax_price 报价含税总价
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
@@ -43,10 +50,13 @@ class AgreementGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement', 'is_deleted'], 'integer'],
-            [['price', 'tax_price'], 'number'],
+            [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement',
+                'is_deleted', 'order_quote_id'], 'integer'],
+            [['price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
+                'quote_all_price', 'quote_all_tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
-            [['order_agreement_sn', 'order_quote_id', 'order_quote_sn', 'agreement_sn', 'purchase_date', 'agreement_date'], 'string', 'max' => 255],
+            [['order_agreement_sn', 'order_quote_sn', 'agreement_sn', 'purchase_date',
+                'agreement_date', 'serial'], 'string', 'max' => 255],
         ];
     }
 

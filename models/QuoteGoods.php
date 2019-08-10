@@ -21,6 +21,8 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $serial 序号
+ * @property string $tax_rate 税率
  */
 class QuoteGoods extends \yii\db\ActiveRecord
 {
@@ -53,20 +55,22 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
+            'id'             => 'ID',
+            'order_id'       => '订单ID',
             'order_final_id' => '最终订单ID',
             'order_final_sn' => '最终订单号',
             'order_quote_id' => '报价ID',
             'order_quote_sn' => '报价单号',
-            'goods_id' => '零件ID',
-            'type' => '关联类型  0询价  1库存',
-            'relevance_id' => '关联ID（询价或库存）',
-            'number' => '数量',
-            'is_quote' => '是否报价 0否 1是',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'goods_id'       => '零件ID',
+            'type'           => '关联类型  0询价  1库存',
+            'relevance_id'   => '关联ID（询价或库存）',
+            'number'         => '数量',
+            'is_quote'       => '是否报价 0否 1是',
+            'is_deleted'     => '是否删除：0未删除 1已删除',
+            'updated_at'     => '更新时间',
+            'created_at'     => '创建时间',
+            'serial'         => '序号',
+            'tax_rate'       => '税率',
         ];
     }
 

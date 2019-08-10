@@ -278,35 +278,36 @@ class OrderQuoteController extends Controller
                 $quote->save();
             }
 
-            $data = [];
             foreach ($params['goods_info'] as $item) {
-                $row = [];
-                //批量数据
-                $row[]  = $orderQuote->order_id;
-                $row[]  = $orderAgreement->primaryKey;
-                $row[]  = $orderAgreement->agreement_sn;
-                $row[]  = $orderQuote->id;
-                $row[]  = $orderQuote->quote_sn;
-                $row[]  = $item['goods_id'];
-                $row[]  = $item['type'];
-                $row[]  = $item['relevance_id'];
-                $row[]  = $item['price'];
-                $row[]  = $item['tax_price'];
-                $row[]  = $item['number'];
-                $data[] = $row;
+                $quoteGoods = QuoteGoods::findOne($item['quote_goods_id']);
+                $agreementGoods = new AgreementGoods();
+                $agreementGoods->order_id            = $quoteGoods->order_id;
+                $agreementGoods->order_agreement_id  = $orderAgreement->primaryKey;
+                $agreementGoods->order_agreement_sn  = $orderAgreement->agreement_sn;
+                $agreementGoods->order_quote_id      = $orderQuote->primaryKey;
+                $agreementGoods->order_quote_sn      = $orderQuote->quote_sn;
+                $agreementGoods->serial              = $quoteGoods->serial;
+                $agreementGoods->goods_id            = $quoteGoods->goods_id;
+                $agreementGoods->type                = $quoteGoods->type;
+                $agreementGoods->relevance_id        = $quoteGoods->relevance_id;
+                $agreementGoods->tax_rate            = $quoteGoods->tax_rate;
+                $agreementGoods->price               = $quoteGoods->price;
+                $agreementGoods->tax_price           = $quoteGoods->tax_price;
+                $agreementGoods->all_price           = $quoteGoods->all_price;
+                $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
+                //用item的值
+                $agreementGoods->quote_price         = $item['price'];
+                $agreementGoods->quote_tax_price     = $item['tax_price'];
+                $agreementGoods->quote_all_price     = $item['price'] * $item['number'];
+                $agreementGoods->quote_all_tax_price = $item['tax_price'] * $item['number'];
+                $agreementGoods->number              = $item['number'];
+                $agreementGoods->save();
             }
-            self::insertAgreementGoods($data);
+
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
-    }
-
-    public static function insertAgreementGoods($data)
-    {
-        $feild = ['order_id', 'order_agreement_id', 'order_agreement_sn', 'order_quote_id', 'order_quote_sn', 'goods_id',
-            'type', 'relevance_id', 'price', 'tax_price', 'number'];
-        $num = Yii::$app->db->createCommand()->batchInsert(AgreementGoods::tableName(), $feild, $data)->execute();
     }
 
     /**
