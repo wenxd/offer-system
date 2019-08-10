@@ -52,7 +52,15 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderPurchase::$stock[$model->is_stock];
                 }
             ],
-            'purchase_sn',
+            [
+                'attribute' => 'purchase_sn',
+                'visible'   => !in_array($userId, $adminIds),
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'purchase_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                }
+            ],
             [
                 'attribute' => 'order_sn',
                 'visible'   => !in_array($userId, $adminIds),
@@ -73,7 +81,7 @@ $userId   = Yii::$app->user->identity->id;
                 'filter'    => Html::activeTextInput($searchModel, 'order_agreement_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->orderAgreement) {
-                        return Html::a($model->orderAgreement->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->order_agreement_id]));
+                        return Html::a($model->orderAgreement->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->order_agreement_id]));
                     } else {
                         return '';
                     }
