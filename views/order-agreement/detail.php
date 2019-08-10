@@ -28,6 +28,15 @@ foreach ($adminList as $key => $admin) {
 $model->purchase_sn = 'C' . date('ymd__') . $number;
 $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 ?>
+<style>
+    #example2 {
+        position: relative;
+        clear: both;
+        zoom: 1;
+        overflow-x: auto;
+    }
+
+</style>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
@@ -41,20 +50,15 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th>英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
-                    <th>单位</th>
-                    <th>技术备注</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
-                    <th>图片</th>
                     <th>供应商</th>
                     <th>询价状态</th>
+                    <th>询价员</th>
                     <th>税率</th>
                     <th>未率单价</th>
                     <th>含率单价</th>
-                    <th>货期(天)</th>
                     <th>未率总价</th>
                     <th>含率总价</th>
+                    <th>货期(天)</th>
                     <th>是否有采购单</th>
                     <th>采购单号</th>
                     <th>合同需求数量</th>
@@ -63,48 +67,25 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                 <tr id="w3-filters" class="filters">
                     <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
                     <td></td>
-                    <td>
-                        <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
-                    </td>
                     <td></td>
                     <td></td>
-                    <td>
+                    <td></td>
+                    <td style="width:100px">
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>
-                        <select class="form-control" name="is_process">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="is_special">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="is_nameplate">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="is_assembly">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -120,43 +101,40 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
-                <td><?=$item->goods->unit?></td>
-                <td><?=$item->goods->technique_remark?></td>
-                <td><?=Goods::$process[$item->goods->is_process]?></td>
-                <td><?=Goods::$special[$item->goods->is_special]?></td>
-                <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                 <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
                 <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
-                <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
-                <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
+                <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
+                <td><?=$item->tax_rate?></td>
+                <td class="price"><?=$item->price?></td>
+                <td class="tax_price"><?=$item->tax_price?></td>
+                <td class="all_price"><?=$item->all_price?></td>
+                <td class="all_tax_price"><?=$item->all_tax_price?></td>
                 <td class="delivery_time"><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
-                <td class="all_price"></td>
-                <td class="all_tax_price"></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td class="oldNumber"><?=$item->number?></td>
-                <td class="afterNumber"><input type="number" size="4" class="number" min="1" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : $item->number?>"></td>
+                <td class="afterNumber">
+                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : $item->number?>">
+                </td>
             </tr>
             <?php endforeach;?>
-            <tr style="background-color: #acccb9">
-                <td colspan="15" rowspan="2">汇总统计</td>
-                <td>合同未税总价</td>
-                <td>合同含税总价</td>
-                <td>最长货期</td>
-                <td>采购未税总价</td>
-                <td>采购含税总价</td>
-                <td colspan="4"></td>
-            </tr>
-            <tr style="background-color: #acccb9">
-                <td class="sta_all_price"></td>
-                <td class="sta_all_tax_price"></td>
-                <td class="mostLongTime"></td>
-                <td class="purchase_price"></td>
-                <td class="purchase_all_price"></td>
-                <td colspan="4"></td>
-            </tr>
+                <tr style="background-color: #acccb9">
+                    <td colspan="10" rowspan="2">汇总统计</td>
+                    <td>合同未税总价</td>
+                    <td>合同含税总价</td>
+                    <td>最长货期</td>
+                    <td>采购未税总价</td>
+                    <td>采购含税总价</td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr style="background-color: #acccb9">
+                    <td class="sta_all_price"></td>
+                    <td class="sta_all_tax_price"></td>
+                    <td class="mostLongTime"></td>
+                    <td class="purchase_price"></td>
+                    <td class="purchase_all_price"></td>
+                    <td colspan="4"></td>
+                </tr>
             </tbody>
         </table>
         <?= $form->field($model, 'purchase_sn')->textInput() ?>
