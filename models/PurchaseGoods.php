@@ -9,7 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property int $order_id 订单ID
- * @property int $order_final_id 最终订单ID
+ * @property int $order_agreement_id 收入合同订单ID
  * @property string $order_purchase_id 采购订单ID
  * @property string $order_purchase_sn 采购订单号
  * @property int $goods_id 零件ID
@@ -20,6 +20,18 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $serial 序号
+ * @property string $fixed_number 修改后价格
+ * @property string $tax_rate
+ * @property string $price
+ * @property string $tax_price
+ * @property string $all_price
+ * @property string $all_tax_price
+ * @property string $fixed_price
+ * @property string $fixed_tax_price
+ * @property string $inquiry_admin_id
+ * @property string $agreement_sn
+ * @property string $purchase_date
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
@@ -50,9 +62,10 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['order_purchase_id', 'order_purchase_sn', 'goods_number', 'order_sn'], 'string', 'max' => 255],
+            [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
+            , 'order_purchase_id'], 'integer'],
+            [['updated_at', 'created_at', 'fixed_number'], 'safe'],
+            [['order_purchase_sn', 'goods_number', 'order_sn', 'serial'], 'string', 'max' => 255],
         ];
     }
 

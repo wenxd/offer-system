@@ -33,6 +33,8 @@ use Yii;
  * @property string $quote_tax_price 报价含税单价
  * @property string $quote_all_price 报价未税总价
  * @property string $quote_all_tax_price 报价含税总价
+ * @property string $inquiry_admin_id 报价员ID
+ * @property string $tax_rate 报价员ID
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
@@ -52,7 +54,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement',
                 'is_deleted', 'order_quote_id'], 'integer'],
-            [['price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
+            [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'agreement_sn', 'purchase_date',
@@ -75,6 +77,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
             'goods_id'           => '零件ID',
             'type'               => '关联类型  0询价  1库存',
             'relevance_id'       => '关联ID（询价或库存）',
+            'tax_rate'           => '税率',
             'price'              => '单价',
             'tax_price'          => '含税单价',
             'number'             => '数量',

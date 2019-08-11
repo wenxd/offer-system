@@ -31,32 +31,78 @@ $userId   = Yii::$app->user->identity->id;
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
-            <tr>
-                <th><input type="checkbox" name="select_all" class="select_all"></th>
-                <?php if(!in_array($userId, $adminIds)):?>
-                <th>零件号A</th>
-                <?php endif;?>
-                <th>零件号B</th>
-                <th>中文描述</th>
-                <th>英文描述</th>
-                <th>原厂家</th>
-                <th>原厂家备注</th>
-                <th>单位</th>
-                <th>技术备注</th>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
-                <th>供应商</th>
-                <th>税率</th>
-                <th>未率单价</th>
-                <th>含率单价</th>
-                <th>货期(天)</th>
-                <th>未率总价</th>
-                <th>含率总价</th>
-                <th>数量</th>
-                <th>采购状态</th>
-            </tr>
+                <tr>
+                    <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <?php if(!in_array($userId, $adminIds)):?>
+                    <th>零件号A</th>
+                    <?php endif;?>
+                    <th>零件号B</th>
+                    <th>中文描述</th>
+                    <th>英文描述</th>
+                    <th>原厂家</th>
+                    <th>原厂家备注</th>
+                    <th>单位</th>
+                    <th>技术备注</th>
+                    <th>加工</th>
+                    <th>特制</th>
+                    <th>铭牌</th>
+                    <th>图片</th>
+                    <th>供应商</th>
+                    <th>税率</th>
+                    <th>未率单价</th>
+                    <th>含率单价</th>
+                    <th>货期(天)</th>
+                    <th>未率总价</th>
+                    <th>含率总价</th>
+                    <th>数量</th>
+                    <th>采购状态</th>
+                </tr>
+                <tr id="w3-filters" class="filters">
+                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <select class="form-control" name="is_process">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_special">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_nameplate">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="is_assembly">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                </tr>
             </thead>
             <tbody>
             <?php foreach ($purchaseGoods as $item):?>
@@ -125,7 +171,22 @@ $userId   = Yii::$app->user->identity->id;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //全选
+        $('.select_all').click(function (e) {
+            $('.select_id').prop("checked",$(this).prop("checked"));
+        });
+
+        //子选择
+        $('.select_id').on('click',function (e) {
+            if ($('.select_id').length == $('.select_id:checked').length) {
+                $('.select_all').prop("checked",true);
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+        });
+
         init();
+
         function init(){
             $('.order_final_list').each(function (i, e) {
                 var price     = $(e).find('.price').text();

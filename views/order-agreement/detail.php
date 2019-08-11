@@ -100,7 +100,7 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
             <tr class="order_agreement_list">
                 <td>
                     <?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
-data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?>
+data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>"?>
                 </td>
                 <td><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
@@ -276,13 +276,14 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
-                    item.goods_id    = $(element).val();
                     if (!$(element).parent().parent().find('.number').val()){
                         number_flag  = true;
                     }
-                    item.number        = $(element).parent().parent().find('.number').val();
-                    item.type          = $(element).data('type');
-                    item.relevance_id  = $(element).data('relevance_id');
+                    item.agreement_goods_id = $(element).data('agreement_goods_id');
+                    item.goods_id           = $(element).val();
+                    item.number             = $(element).parent().parent().find('.number').val();
+                    item.type               = $(element).data('type');
+                    item.relevance_id       = $(element).data('relevance_id');
                     goods_info.push(item);
                 }
             });

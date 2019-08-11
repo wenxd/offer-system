@@ -554,3 +554,17 @@ ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEF
 
 ALTER TABLE `supplier` ADD COLUMN `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
 
+ALTER TABLE `purchase_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `purchase_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `purchase_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_number` int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量';
+ALTER TABLE `purchase_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
+
+
+
