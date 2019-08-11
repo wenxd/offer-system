@@ -9,11 +9,10 @@ use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
-$this->title = '生成收入合同';
+$this->title = '收入合同详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-$model->agreement_date = date('Y-m-d');
-$model->agreement_sn = 'H' . date('ymd__') . $number;
+$model->agreement_date = substr($model->agreement_date, 0, 10);
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');

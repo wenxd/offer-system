@@ -11,6 +11,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id 自增id
  * @property string $name 供应商名称
+ * @property string $short_name 供应商名称
  * @property string $mobile 供应商电话
  * @property string $telephone 供应商座机
  * @property string $email 供应商邮箱
@@ -71,9 +72,9 @@ class Supplier extends ActiveRecord
         return [
             [['sort', 'is_deleted', 'is_confirm'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'string', 'max' => 255],
+            [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'string', 'max' => 255],
             [
-                ['name', 'mobile'],
+                ['name', 'short_name', 'mobile'],
                 'required',
                 'on' => 'supplier'
             ],
@@ -90,6 +91,7 @@ class Supplier extends ActiveRecord
         return [
             'id'                   => '自增id',
             'name'                 => '供应商名称',
+            'short_name'           => '供应商简称',
             'mobile'               => '供应商电话',
             'telephone'            => '供应商座机',
             'email'                => '供应商邮箱',

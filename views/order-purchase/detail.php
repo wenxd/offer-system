@@ -32,6 +32,7 @@ $userId   = Yii::$app->user->identity->id;
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
             <tr>
+                <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>零件号A</th>
                 <?php endif;?>
@@ -55,14 +56,25 @@ $userId   = Yii::$app->user->identity->id;
                 <th>含率总价</th>
                 <th>数量</th>
                 <th>采购状态</th>
-                <th>合同号</th>
-                <th>交货日期</th>
-                <th>操作</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($purchaseGoods as $item):?>
                 <tr class="order_final_list">
+                    <?php
+                    $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
+                    //是否生成过询价单
+                    $open = false;
+//                    foreach ($inquiryInfo as $n => $iv) {
+//                        if ($iv['goods_id'] == $item->goods_id && $iv['serial'] == $item->serial) {
+//                            $open = true;
+//                            break;
+//                        }
+//                    }
+                    ?>
+                    <td>
+                        <?=$str?>
+                    </td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
@@ -86,27 +98,6 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="all_tax_price"></td>
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
-                    <td>
-                        <?php if ($item->agreement_sn):?>
-                            <?=$item->agreement_sn?>
-                        <?php else:?>
-                            <input type="text" class="agreement_sn">
-                        <?php endif;?>
-                    </td>
-                    <td>
-                        <div style="width: 140px;">
-                        <?php if ($item->purchase_date):?>
-                            <?=substr($item->purchase_date, 0, 10)?>
-                        <?php else:?>
-                            <input size="16" type="text" value="" readonly class="form_datetime delivery_date">
-                        <?php endif;?>
-                        </div>
-                    </td>
-                    <td>
-                        <?php if (!$item->is_purchase):?>
-                        <a class="btn btn-success btn-xs btn-flat complete" href="javascript:void(0);" data-id="<?=$item->id?>">完成采购</a>
-                        <?php endif;?>
-                    </td>
                 </tr>
             <?php endforeach;?>
             </tbody>

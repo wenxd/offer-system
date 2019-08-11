@@ -96,22 +96,6 @@ $userId   = Yii::$app->user->identity->id;
                 ])
             ],
             [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPurchaseSearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderPurchaseSearch[created_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['created_at'],
-                ])
-            ],
-            [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
                 'filter'    => $admins,

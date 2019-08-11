@@ -19,7 +19,7 @@ class SupplierSearch extends Supplier
     {
         return [
             [['id', 'sort', 'is_deleted', 'is_confirm'], 'integer'],
-            [['name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade', 'grade_reason', 'advantage_product'], 'safe'],
+            [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade', 'grade_reason', 'advantage_product'], 'safe'],
             [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'trim']
         ];
     }
@@ -74,6 +74,7 @@ class SupplierSearch extends Supplier
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'short_name', $this->short_name])
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'telephone', $this->telephone])
             ->andFilterWhere(['like', 'email', $this->email])

@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             'name',
+            'short_name',
             'mobile',
             'telephone',
             'email',
@@ -56,22 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'     => function ($model, $key, $index, $column) {
                     return Supplier::$confirm[$model->is_confirm];
                 }
-            ],
-            [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'SupplierSearch[updated_at]',
-                    'value' => Yii::$app->request->get('SupplierSearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'SupplierSearch[created_at]',
-                    'value' => Yii::$app->request->get('SupplierSearch')['created_at'],
-                ])
             ],
             [
                 'class' => ActionColumn::className(),

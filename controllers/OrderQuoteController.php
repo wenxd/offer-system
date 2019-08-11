@@ -238,7 +238,7 @@ class OrderQuoteController extends Controller
         }
     }
 
-    //创建合同订单
+    //创建收入合同订单
     public function actionCreateAgreement()
     {
         $params = Yii::$app->request->post();
@@ -301,6 +301,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->quote_all_price     = $item['price'] * $item['number'];
                 $agreementGoods->quote_all_tax_price = $item['tax_price'] * $item['number'];
                 $agreementGoods->number              = $item['number'];
+                $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->save();
             }
 
