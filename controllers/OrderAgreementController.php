@@ -149,9 +149,13 @@ class OrderAgreementController extends Controller
         $agreementGoodsQuery = AgreementGoods::find()->from('agreement_goods ag')
             ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
             ->where(['order_agreement_id' => $id]);
+        if (isset($request['admin_id'])) {
+            $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
+        }
         if (isset($request['original_company']) && $request['original_company']) {
             $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
         }
+
         $agreementGoods = $agreementGoodsQuery->all();
         $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
         $purchaseGoods  = PurchaseGoods::find()

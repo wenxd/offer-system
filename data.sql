@@ -550,3 +550,4 @@ ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DE
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税价格';
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';

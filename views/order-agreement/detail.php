@@ -17,7 +17,7 @@ $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
 //采购商品IDs
 $purchaseGoods_ids = ArrayHelper::getColumn($purchaseGoods, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -76,7 +76,14 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>
+                        <select class="form-control" name="admin_id">
+                            <option value=""></option>
+                            <?php foreach ($admins as $key => $value) :?>
+                                <option value="<?=$key?>" <?=isset($_GET['admin_id']) ? ($_GET['admin_id'] === (string)$key ? 'selected' : '') : ''?>><?=$value?></option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -335,6 +342,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                         break;
                     case 'original_company':
                         parameter += '&original_company=' + $(e).val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            var searchOption = $('#w3-filters').find('td select');
+            searchOption.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'admin_id':
+                        parameter += '&admin_id=' + $(e).find("option:selected").val();
                         break;
                     default:
                         break;
