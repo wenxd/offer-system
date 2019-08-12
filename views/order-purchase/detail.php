@@ -16,6 +16,8 @@ if (!$model->agreement_date) {
     $model->agreement_date = substr($model->orderAgreement->agreement_date, 0, 10);
 }
 
+$model->payment_sn = 'Z' . date('ymd_') . '_' . $number;
+
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
@@ -33,6 +35,7 @@ $userId   = Yii::$app->user->identity->id;
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <th>序号</th>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <th>零件号A</th>
                     <?php endif;?>
@@ -48,6 +51,7 @@ $userId   = Yii::$app->user->identity->id;
                     <th>铭牌</th>
                     <th>图片</th>
                     <th>供应商</th>
+                    <th>供应商缩写</th>
                     <th>税率</th>
                     <th>未率单价</th>
                     <th>含率单价</th>
@@ -60,12 +64,8 @@ $userId   = Yii::$app->user->identity->id;
                 <tr id="w3-filters" class="filters">
                     <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
                     <td></td>
-                    <td>
-                        <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
-                    </td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td>
@@ -74,34 +74,27 @@ $userId   = Yii::$app->user->identity->id;
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
-                        <select class="form-control" name="is_process">
+                        <select class="form-control" name="supplier_id">
                             <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_process']) ? ($_GET['is_process'] === '1' ? 'selected' : '') : ''?>>是</option>
+                            <?php foreach ($supplier as $value) :?>
+                                <option value="<?=$value->id?>" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>><?=$value->name?></option>
+                            <?php endforeach;?>
                         </select>
                     </td>
-                    <td>
-                        <select class="form-control" name="is_special">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_special']) ? ($_GET['is_special'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="is_nameplate">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="is_assembly">
-                            <option value=""></option>
-                            <option value="0" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '0' ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
-                        </select>
-                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -109,7 +102,7 @@ $userId   = Yii::$app->user->identity->id;
                 <tr class="order_final_list">
                     <?php
                     $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
-                    //是否生成过询价单
+                    //是否生成过支出单
                     $open = false;
 //                    foreach ($inquiryInfo as $n => $iv) {
 //                        if ($iv['goods_id'] == $item->goods_id && $iv['serial'] == $item->serial) {
@@ -121,6 +114,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td>
                         <?=$str?>
                     </td>
+                    <td><?=$item->serial?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
@@ -136,6 +130,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                     <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
+                    <td><?=$item->type ? $item->stock->supplier->short_name : $item->inquiry->supplier->short_name?></td>
                     <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
                     <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
                     <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
@@ -163,6 +158,15 @@ $userId   = Yii::$app->user->identity->id;
         <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
+
+        <?= $form->field($model, 'payment_sn')->textInput(); ?>
+
+    </div>
+    <div class="box-footer">
+        <?= Html::button('保存支出合同单', [
+                'class' => 'btn btn-success payment_save',
+                'name'  => 'submit-button']
+        )?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -214,64 +218,63 @@ $userId   = Yii::$app->user->identity->id;
             });
         }
 
-        $('.complete').click(function (e) {
-            var id = $(this).data('id');
-            var this_agreement_sn = $(this).parent().parent().find('.agreement_sn').val();
-            var this_delivery_date = $(this).parent().parent().find('.delivery_date').val();
-            if (!this_agreement_sn) {
-                layer.msg('请输入合同号', {time:2000});
-                return false;
-            }
-
-            if (!this_delivery_date) {
-                layer.msg('请输入交货日期', {time:2000});
-                return false;
-            }
-            $.ajax({
-                type:"post",
-                url:'?r=order-purchase/complete',
-                data:{id:id, this_agreement_sn:this_agreement_sn, this_delivery_date:this_delivery_date},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        location.reload();
-                    } else {
-                        layer.msg(res.msg, {time:2000});
-                        return false;
-                    }
+        //搜索功能
+        $('.inquiry_search').click(function (e) {
+            var search = $('#w3-filters').find('td input');
+            var parameter = '';
+            search.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'goods_number':
+                        parameter += '&goods_number=' + $(e).val();
+                        break;
+                    case 'goods_number_b':
+                        parameter += '&goods_number_b=' + $(e).val();
+                        break;
+                    case 'original_company':
+                        parameter += '&original_company=' + $(e).val();
+                        break;
+                    default:
+                        break;
                 }
             });
+            var searchOption = $('#w3-filters').find('td select');
+            searchOption.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'supplier_id':
+                        parameter += '&supplier_id=' + $(e).find("option:selected").val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            location.replace("?r=order-purchase/detail&id=<?=$_GET['id']?>" + encodeURI(parameter));
         });
-
-        $('.purchase_complete').click(function (e) {
-            var flag = false;
-            $('.order_final_list').each(function (i, item) {
-                if ($(item).children().last().prev().text() == '未完成') {
-                    flag = true;
+        
+        $(".payment_save").click(function () {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+            var goods_info = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    var item = {};
+                    item.goods_id = $(element).val();
+                    item.number   = $(element).parent().parent().find('.number').text();
+                    item.serial   = $(element).parent().parent().find('.serial').text();
+                    goods_info.push(item);
                 }
             });
-            if (flag) {
-                layer.msg('请完成每条零件的采购', {time:2000});
-                return false;
-            }
-
-            var agreement_date = $('#orderpurchase-agreement_date').val();
-            if (!agreement_date) {
-                layer.msg('请输入合同日期', {time:2000});
-                return false;
-            }
-
-            var id = $('.data').data('order_purchase_id');
             $.ajax({
                 type:"post",
-                url:'?r=order-purchase/complete-all',
-                data:{id:id, agreement_date:agreement_date},
+                url:'?r=order-inquiry/save-order',
+                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-purchase/index");
+                        window.location.reload();
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;

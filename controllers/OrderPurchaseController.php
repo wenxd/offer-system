@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\AgreementGoods;
 use app\models\OrderAgreement;
+use app\models\OrderPayment;
+use app\models\Supplier;
 use Yii;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
@@ -179,12 +181,40 @@ class OrderPurchaseController extends BaseController
 
     public function actionDetail($id)
     {
+        $request = Yii::$app->request->get();
+
         $orderPurchase = OrderPurchase::findOne($id);
-        $purchaseGoods = PurchaseGoods::findAll(['order_purchase_id' => $id]);
+
+        $purchaseQuery = PurchaseGoods::find()->from('purchase_goods pg')->select('pg.*')
+            ->leftJoin('goods g', 'pg.goods_id=g.id');
+
+        if (isset($request['supplier_id']) && $request['supplier_id']) {
+            $purchaseQuery->leftJoin('inquiry i', 'pg.relevance_id=i.id')->where([
+                'i.supplier_id'     => $request['supplier_id'],
+                'order_purchase_id' => $id,
+            ])->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $purchaseQuery->where(['order_purchase_id' => $id])->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        $purchaseGoods         = $purchaseQuery->all();
 
         $data = [];
         $data['orderPurchase'] = $data['model'] = $orderPurchase;
         $data['purchaseGoods'] = $purchaseGoods;
+
+        $date = date('ymd_');
+        $orderI = OrderPayment::find()->where(['like', 'payment_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $finalSn = explode('_', $orderI->final_sn);
+            $number = sprintf("%03d", $finalSn[2]+1);
+        } else {
+            $number = '001';
+        }
+        $data['number'] = $number;
+
+        $supplier = Supplier::find()->all();
+        $data['supplier'] = $supplier;
 
         return $this->render('detail', $data);
     }

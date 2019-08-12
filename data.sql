@@ -566,5 +566,48 @@ ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_tax_price` decimal(10,2) NOT 
 ALTER TABLE `purchase_goods` ADD COLUMN `fixed_number` int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量';
 ALTER TABLE `purchase_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
 
+CREATE TABLE `order_payment` (
+  `id`                  int(11) NOT NULL AUTO_INCREMENT,
+  `payment_sn`          varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号',
+  `order_id`            int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `order_purchase_id`   int(11) NOT NULL DEFAULT '0' COMMENT '采购订单ID',
+  `order_purchase_sn`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购单号',
+  `goods_info`          varchar(512) NOT NULL DEFAULT '' COMMENT '零件信息 json，包括ID',
+  `payment_at`          datetime                     COMMENT '支付时间',
+  `is_payment`          int(11) NOT NULL DEFAULT '0' COMMENT '是否支付：0未 1已',
+  `admin_id`            int(11) NOT NULL DEFAULT '0' COMMENT '采购员ID',
+  `purchase_status`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '采购状态 0请审核 1审核通过 2驳回',
+  `updated_at`          datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`          datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支出合同单';
 
+CREATE TABLE `payment_goods` (
+  `id`                  int(11) NOT NULL AUTO_INCREMENT,
+  `order_id`            int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `order_payment_id`    int(11) NOT NULL DEFAULT '0' COMMENT '支出合同订单ID',
+  `order_payment_sn`    varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同订单号',
+  `order_purchase_id`   int(11) NOT NULL DEFAULT '0' COMMENT '采购订单ID',
+  `order_purchase_sn`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购订单号',
+  `serial`              varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
+  `goods_id`            int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `type`                int(11) NOT NULL DEFAULT '0' COMMENT '关联类型  0询价  1库存',
+  `relevance_id`        int(11) NOT NULL DEFAULT '0' COMMENT '关联ID（询价或库存）',
+  `number`              int(11) NOT NULL DEFAULT '0' COMMENT '采购数量',
+  `tax_rate`            decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率',
+  `price`               decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价',
+  `tax_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `fixed_price`         decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税单价',
+  `fixed_tax_price`     decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税单价',
+  `fixed_all_price`     decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税总价',
+  `fixed_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税总价',
+  `fixed_number`        int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量',
+  `inquiry_admin_id`    int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID',
+  `updated_at`          datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`          datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支出合同单与零件ID对应表';
 
+ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` ivarchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
