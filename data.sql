@@ -589,6 +589,7 @@ CREATE TABLE `payment_goods` (
   `order_payment_sn`    varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同订单号',
   `order_purchase_id`   int(11) NOT NULL DEFAULT '0' COMMENT '采购订单ID',
   `order_purchase_sn`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购订单号',
+  `purchase_goods_id`   int(11) NOT NULL DEFAULT '0' COMMENT '支出合同单商品主键',
   `serial`              varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
   `goods_id`            int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
   `type`                int(11) NOT NULL DEFAULT '0' COMMENT '关联类型  0询价  1库存',

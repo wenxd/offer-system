@@ -5,10 +5,12 @@ namespace app\controllers;
 use app\models\AgreementGoods;
 use app\models\OrderAgreement;
 use app\models\OrderPayment;
+use app\models\PaymentGoods;
 use app\models\Supplier;
 use Yii;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\OrderFinal;
@@ -164,6 +166,7 @@ class OrderPurchaseController extends BaseController
                     $purchaseGoods->all_price           = $agreementGoods->all_price;
                     $purchaseGoods->all_tax_price       = $agreementGoods->all_tax_price;
                     $purchaseGoods->fixed_price         = $agreementGoods->price;
+                    $purchaseGoods->fixed_tax_price     = $agreementGoods->tax_price;
                     $purchaseGoods->fixed_number        = $agreementGoods->number;
                     $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
 
@@ -176,7 +179,6 @@ class OrderPurchaseController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
         }
-
     }
 
     public function actionDetail($id)
@@ -187,7 +189,6 @@ class OrderPurchaseController extends BaseController
 
         $purchaseQuery = PurchaseGoods::find()->from('purchase_goods pg')->select('pg.*')
             ->leftJoin('goods g', 'pg.goods_id=g.id');
-
         if (isset($request['supplier_id']) && $request['supplier_id']) {
             $purchaseQuery->leftJoin('inquiry i', 'pg.relevance_id=i.id')->where([
                 'i.supplier_id'     => $request['supplier_id'],
@@ -203,18 +204,23 @@ class OrderPurchaseController extends BaseController
         $data['orderPurchase'] = $data['model'] = $orderPurchase;
         $data['purchaseGoods'] = $purchaseGoods;
 
+        //支出合同号
         $date = date('ymd_');
         $orderI = OrderPayment::find()->where(['like', 'payment_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
-            $finalSn = explode('_', $orderI->final_sn);
+            $finalSn = explode('_', $orderI->payment_sn);
             $number = sprintf("%03d", $finalSn[2]+1);
         } else {
             $number = '001';
         }
         $data['number'] = $number;
-
+        //供应商列表
         $supplier = Supplier::find()->all();
         $data['supplier'] = $supplier;
+        //获取生成了支出合同商品的列表
+        $purchaseGoodsIds = ArrayHelper::getColumn($purchaseGoods, 'id');
+        $paymentGoods = PaymentGoods::find()->where(['purchase_goods_id' => $purchaseGoodsIds])->all();
+        $data['paymentGoods'] = $paymentGoods;
 
         return $this->render('detail', $data);
     }

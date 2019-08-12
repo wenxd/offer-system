@@ -87,4 +87,14 @@ class PaymentGoods extends \yii\db\ActiveRecord
             'created_at' => '创建时间',
         ];
     }
+
+    public function getInquiry()
+    {
+        return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
 }

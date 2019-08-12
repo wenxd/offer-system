@@ -20,12 +20,11 @@ $model->payment_sn = 'Z' . date('ymd_') . '_' . $number;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
+
 $admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-$userId   = Yii::$app->user->identity->id;
+$admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
+
+$userId = Yii::$app->user->identity->id;
 ?>
 
 <div class="box table-responsive">
@@ -49,13 +48,12 @@ $userId   = Yii::$app->user->identity->id;
                     <th>加工</th>
                     <th>特制</th>
                     <th>铭牌</th>
-                    <th>图片</th>
                     <th>供应商</th>
                     <th>供应商缩写</th>
+                    <th>货期(天)</th>
                     <th>税率</th>
                     <th>未率单价</th>
                     <th>含率单价</th>
-                    <th>货期(天)</th>
                     <th>未率总价</th>
                     <th>含率总价</th>
                     <th>数量</th>
@@ -71,7 +69,6 @@ $userId   = Yii::$app->user->identity->id;
                     <td>
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -99,24 +96,24 @@ $userId   = Yii::$app->user->identity->id;
             </thead>
             <tbody>
             <?php foreach ($purchaseGoods as $item):?>
-                <tr class="order_final_list">
+                <tr class="order_purchase_list">
                     <?php
-                    $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
-                    //是否生成过支出单
-                    $open = false;
-//                    foreach ($inquiryInfo as $n => $iv) {
-//                        if ($iv['goods_id'] == $item->goods_id && $iv['serial'] == $item->serial) {
-//                            $open = true;
-//                            break;
-//                        }
-//                    }
+                        $str = "<input type='checkbox' name='select_id' value={$item->goods_id} class='select_id'>";
+                        //是否生成过支出单
+                        $open = true;
+                        $purchaseGoodsIds = ArrayHelper::getColumn($paymentGoods, 'purchase_goods_id');
+                        if (in_array($item->id, $purchaseGoodsIds)) {
+                            $open = false;
+                        }
                     ?>
                     <td>
-                        <?=$str?>
+                        <?=$open ? $str : ''?>
                     </td>
-                    <td><?=$item->serial?></td>
+                    <td class="purchase_detail" data-purchase_goods_id="<?=$item->id?>" >
+                        <?=$item->serial?>
+                    </td>
                     <?php if(!in_array($userId, $adminIds)):?>
-                    <td><?=$item->goods->goods_number?></td>
+                        <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
@@ -128,16 +125,17 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
-                    <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
-                    <td><?=$item->type ? $item->stock->supplier->short_name : $item->inquiry->supplier->short_name?></td>
-                    <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                    <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
-                    <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
-                    <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
+                    <td><?=$item->inquiry->supplier->name?></td>
+                    <td><?=$item->inquiry->supplier->short_name?></td>
+                    <td><?=$item->inquiry->delivery_time?></td>
+                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
+                    <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
-                    <td class="afterNumber"><?=$item->number?></td>
+                    <td class="afterNumber">
+                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
+                    </td>
                     <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
                 </tr>
             <?php endforeach;?>
@@ -163,7 +161,7 @@ $userId   = Yii::$app->user->identity->id;
 
     </div>
     <div class="box-footer">
-        <?= Html::button('保存支出合同单', [
+        <?= Html::button('提交支出申请', [
                 'class' => 'btn btn-success payment_save',
                 'name'  => 'submit-button']
         )?>
@@ -192,29 +190,12 @@ $userId   = Yii::$app->user->identity->id;
         init();
 
         function init(){
-            $('.order_final_list').each(function (i, e) {
-                var price     = $(e).find('.price').text();
+            $('.order_purchase_list').each(function (i, e) {
+                var price     = $(e).find('.price input').val();
                 var tax_price = $(e).find('.tax_price').text();
-                var number    = $(e).find('.afterNumber').text();
+                var number    = $(e).find('.afterNumber input').val();
                 $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
                 $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            });
-            var open = true;
-            $('.order_final_list').each(function (i, item) {
-                if ($(item).children().last().prev().text() == '未完成') {
-                    open = false;
-                }
-            });
-            if (open) {
-                var date = '<?=$model->agreement_date?>';
-                $('#orderpurchase-agreement_date').val(date);
-            }
-            $(".form_datetime").datetimepicker({
-                format    : 'yyyy-mm-dd',
-                startView : 2,  //其实范围（0：日  1：天 2：年）
-                maxView   : 2,  //最大选择范围（年）
-                minView   : 2,  //最小选择范围（年）
-                autoclose : true,
             });
         }
 
@@ -249,7 +230,35 @@ $userId   = Yii::$app->user->identity->id;
             });
             location.replace("?r=order-purchase/detail&id=<?=$_GET['id']?>" + encodeURI(parameter));
         });
-        
+
+        //输入未税单价
+        $(".price input").bind('input propertychange', function (e) {
+            var tax       = $(this).parent().parent().find('.tax').text();
+            var price     = $(this).val();
+            var tax_price = parseFloat(price * (1 + tax/100)).toFixed(2);
+            var number    = $(this).parent().parent().find('.number').val();
+            $(this).parent().parent().find('.tax_price').text(tax_price);
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+        });
+
+        //输入数量
+        $(".number").bind('input propertychange', function (e) {
+            var number = $(this).val();
+            if (number == 0) {
+                layer.msg('数量最少为1', {time:2000});
+                return false;
+            }
+            var a = number.replace(/[^\d]/g,'');
+            $(this).val(a);
+
+            var price     = $(this).parent().parent().find('.price input').val();
+            var tax_price = $(this).parent().parent().find('.tax_price').text();
+
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+        });
+
         $(".payment_save").click(function () {
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
@@ -260,16 +269,24 @@ $userId   = Yii::$app->user->identity->id;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var item = {};
-                    item.goods_id = $(element).val();
-                    item.number   = $(element).parent().parent().find('.number').text();
-                    item.serial   = $(element).parent().parent().find('.serial').text();
+                    item.purchase_goods_id = $(element).parent().parent().find('.purchase_detail').data('purchase_goods_id');
+                    item.goods_id          = $(element).val();
+                    item.fix_price         = $(element).parent().parent().find('.price input').val();
+                    item.fix_number        = $(element).parent().parent().find('.afterNumber input').val();
                     goods_info.push(item);
                 }
             });
+
+            var order_purchase_id = $('.data').data('order_purchase_id');
+            var admin_id = $('#orderpurchase-admin_id').val();
+            var end_date = $('#orderpurchase-end_date').val();
+            var payment_sn = $('#orderpurchase-payment_sn').val();
+
+            //创建审核
             $.ajax({
                 type:"post",
-                url:'?r=order-inquiry/save-order',
-                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
+                url:'?r=order-purchase-verify/save-order',
+                data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

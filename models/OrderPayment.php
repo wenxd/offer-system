@@ -21,6 +21,12 @@ use Yii;
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
+    public $reason;
+
+    const PURCHASE_STATUS_CREATE = '0'; // 新的
+    const PURCHASE_STATUS_PASS   = '1'; // 通过
+    const PURCHASE_STATUS_REBUT  = '2'; // 驳回
+
     /**
      * {@inheritdoc}
      */
@@ -35,7 +41,7 @@ class OrderPayment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_purchase_id', 'is_payment', 'admin_id'], 'integer'],
+            [['order_id', 'order_purchase_id', 'is_payment', 'admin_id', 'purchase_status'], 'integer'],
             [['payment_at', 'updated_at', 'created_at'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -57,8 +63,15 @@ class OrderPayment extends \yii\db\ActiveRecord
             'payment_at'        => '支付时间',
             'is_payment'        => '是否支付：0未 1已',
             'admin_id'          => '采购员ID',
+            'purchase_status'   => '采购审核状态',
             'updated_at'        => '更新时间',
             'created_at'        => '创建时间',
+            'reason'            => '驳回原因',
         ];
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
 }
