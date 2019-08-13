@@ -73,6 +73,10 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->purchase_goods_id    = $value['purchase_goods_id'];
 
                 $purchaseGoods = PurchaseGoods::findOne($value['purchase_goods_id']);
+                $purchaseGoods->fixed_price      = $value['fix_price'];
+                $purchaseGoods->fixed_tax_price  = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
+                $purchaseGoods->fixed_number     = $value['fix_number'];
+                $purchaseGoods->save();
 
                 $paymentGoods->serial               = $purchaseGoods->serial;
                 $paymentGoods->goods_id             = $purchaseGoods->goods_id;;
@@ -111,5 +115,20 @@ class OrderPurchaseVerifyController extends BaseController
             'orderPayment' => $orderPayment,
             'paymentGoods' => $paymentGoods,
         ]);
+    }
+
+    /**
+     * 审核通过
+     */
+    public function actionVerifyPass()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+        if ($orderPayment->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
     }
 }

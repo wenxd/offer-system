@@ -225,7 +225,18 @@ class OrderPurchaseController extends BaseController
         return $this->render('detail', $data);
     }
 
-    public function actionComplete()
+    public function actionComplete($id)
+    {
+        OrderPayment::updateAll(['purchase_status' => OrderPayment::PURCHASE_STATUS_PASS], ['order_purchase_id' => $id]);
+
+        $orderPurchase = OrderPurchase::findOne($id);
+        $orderPurchase->is_complete = 2;
+        $orderPurchase->save();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionComplete1()
     {
         $params = Yii::$app->request->post();
 

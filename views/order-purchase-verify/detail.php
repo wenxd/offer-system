@@ -27,7 +27,7 @@ $userId = Yii::$app->user->identity->id;
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
-            <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
+            <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
                 <tr>
                     <th>序号</th>
                     <th>零件号A</th>
@@ -35,14 +35,7 @@ $userId = Yii::$app->user->identity->id;
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
-                    <th>原厂家备注</th>
-                    <th>单位</th>
-                    <th>技术备注</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
                     <th>供应商</th>
-                    <th>供应商缩写</th>
                     <th>货期(天)</th>
                     <th>税率</th>
                     <th>未率单价</th>
@@ -50,32 +43,35 @@ $userId = Yii::$app->user->identity->id;
                     <th>未率总价</th>
                     <th>含率总价</th>
                     <th>数量</th>
+                    <th>修改后未率单价</th>
+                    <th>修改后含率单价</th>
+                    <th>修改后未率总价</th>
+                    <th>修改后含率总价</th>
+                    <th>修改后数量</th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach ($paymentGoods as $item):?>
-                <tr class="order_purchase_list">
+                <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
-                    <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=$item->inquiry->supplier->name?></td>
-                    <td><?=$item->inquiry->supplier->short_name?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td class="price"><?=$item->fixed_price?></td>
-                    <td class="tax_price"><?=$item->fixed_tax_price?></td>
-                    <td class="all_price"><?=$item->fixed_all_price?></td>
-                    <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
-                    <td class="afterNumber"><?=$item->fixed_number?></td>
+                    <td><?=$item->price?></td>
+                    <td><?=$item->tax_price?></td>
+                    <td><?=$item->all_price?></td>
+                    <td><?=$item->all_tax_price?></td>
+                    <td><?=$item->number?></td>
+                    <td style="background-color: darkgrey" class="price"><?=$item->fixed_price?></td>
+                    <td style="background-color: darkgrey" class="tax_price"><?=$item->fixed_tax_price?></td>
+                    <td style="background-color: darkgrey" class="all_price"><?=$item->fixed_all_price?></td>
+                    <td style="background-color: darkgrey" class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
+                    <td style="background-color: darkgrey" class="afterNumber"><?=$item->fixed_number?></td>
                 </tr>
             <?php endforeach;?>
             </tbody>
@@ -86,11 +82,11 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <div class="box-footer">
         <?= Html::button('审核通过', [
-                'class' => 'btn btn-success payment_save',
+                'class' => 'btn btn-success verify_save',
                 'name'  => 'submit-button']
         )?>
         <?= Html::button('驳回', [
-            'class' => 'btn btn-warning btn-flat',
+            'class' => 'btn btn-warning btn-flat verify_reject',
         ])?>
     </div>
     <?php ActiveForm::end(); ?>
@@ -99,5 +95,45 @@ $userId = Yii::$app->user->identity->id;
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    $('.verify_save').click(function (e) {
+        verify(true);
+    });
 
+    $('.verify_reject').click(function (e) {
+        verify(false);
+    });
+
+    function verify(action) {
+        var order_payment_id = $('.data').data('order_payment_id');
+        var goods_info = [];
+        $('.order_payment_list').each(function (i, e) {
+            var payment_goods_id = $(e).data('payment_goods_id');
+            goods_info.push(payment_goods_id);
+        });
+
+        var reason = $('#orderpayment-reason').val();
+
+        if (action) {
+            urls = '?r=order-purchase-verify/verify-pass';
+        } else {
+            urls = '?r=order-purchase-verify/verify-reject';
+        }
+
+        //ajax审核
+        $.ajax({
+            type:"post",
+            url:urls,
+            data:{order_payment_id:order_payment_id, goods_info:goods_info, reason:reason},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    window.location.href = '?r=order-purchase-verify';
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    }
 </script>

@@ -611,4 +611,5 @@ CREATE TABLE `payment_goods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支出合同单与零件ID对应表';
 
-ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` ivarchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
+ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
+ALTER TABLE `order_purchase` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';

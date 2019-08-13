@@ -109,10 +109,20 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-info btn-xs btn-flat',
-                    ]);
+                    $html = '';
+                    if ($model->is_complete == 0) {
+                        $html .= Html::a('<i class="fa"></i> 生成支出合同', Url::to(['detail', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-info btn-xs btn-flat',
+                        ]);
+                    }
+                    if ($model->is_complete == 1) {
+                        $html .= ' ' . Html::a('<i class="fa"></i> 生成合同', Url::to(['complete', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-primary btn-xs btn-flat',
+                        ]);
+                    }
+                    return $html;
                 }
             ],
         ],

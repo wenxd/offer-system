@@ -25,6 +25,9 @@ $admins = [];
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 
 $userId = Yii::$app->user->identity->id;
+
+//显示按钮开关
+$i = 0;
 ?>
 
 <div class="box table-responsive">
@@ -104,6 +107,7 @@ $userId = Yii::$app->user->identity->id;
                         $purchaseGoodsIds = ArrayHelper::getColumn($paymentGoods, 'purchase_goods_id');
                         if (in_array($item->id, $purchaseGoodsIds)) {
                             $open = false;
+                            $i++;
                         }
                     ?>
                     <td>
@@ -160,12 +164,14 @@ $userId = Yii::$app->user->identity->id;
         <?= $form->field($model, 'payment_sn')->textInput(); ?>
 
     </div>
-    <div class="box-footer">
-        <?= Html::button('提交支出申请', [
-                'class' => 'btn btn-success payment_save',
-                'name'  => 'submit-button']
-        )?>
-    </div>
+    <?php if ($i != count($purchaseGoods)):?>
+        <div class="box-footer">
+            <?= Html::button('提交支出申请', [
+                    'class' => 'btn btn-success payment_save',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
+    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 
