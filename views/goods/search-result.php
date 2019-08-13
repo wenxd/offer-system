@@ -69,6 +69,43 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
+                <th rowspan="2">库存记录</th>
+                <th>类型</th>
+                <th>零件号B</th>
+                <th>单位</th>
+                <th>数量</th>
+                <th>税率</th>
+                <th>未税单价</th>
+                <th>含税单价</th>
+                <th>库存位置</th>
+                <th>紧急</th>
+                <th>建议库存</th>
+                <th>高储</th>
+                <th>低储</th>
+                <th>未税总价</th>
+                <th>含税总价</th>
+            </tr>
+            <tr class="inquiry_list stock_list">
+                <td>库存记录</td>
+                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
+                <td><?= $goods ? $goods->unit : '' ?></td>
+                <td class="number color"><b><?= $stock ? $stock->number : 0 ?></b></td>
+                <td><?= $stock ? $stock->tax_rate : 0 ?></td>
+                <td class="price"><?= $stock ? number_format($stock->price, 2, '.', '') : ''?></td>
+                <td class="tax_price"><b class="color"><?= $stock ? $stock->tax_price : 0 ?></b></td>
+                <td><?= $stock ? $stock->position : 0 ?></td>
+                <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
+                <td><?= $stock ? $stock->suggest_number : 0 ?></td>
+                <td class="high_number"><?= $stock ? $stock->high_number : 0 ?></td>
+                <td class="low_number"><?= $stock ? $stock->low_number : 0 ?></td>
+                <td class="all_price"></td>
+                <td class="all_tax_price"></td>
+            </tr>
+            </thead>
+        </table>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+            <tr>
                 <th rowspan="5"><?=Html::a('询价记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号B</th>
@@ -174,43 +211,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="2">库存记录</th>
-                <th>类型</th>
-                <th>零件号B</th>
-                <th>单位</th>
-                <th>数量</th>
-                <th>税率</th>
-                <th>未税单价</th>
-                <th>含税单价</th>
-                <th>库存位置</th>
-                <th>紧急</th>
-                <th>建议库存</th>
-                <th>高储</th>
-                <th>低储</th>
-                <th>未税总价</th>
-                <th>含税总价</th>
-            </tr>
-            <tr class="inquiry_list stock_list">
-                <td>库存记录</td>
-                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                <td><?= $goods ? $goods->unit : '' ?></td>
-                <td class="number color"><b><?= $stock ? $stock->number : 0 ?></b></td>
-                <td><?= $stock ? $stock->tax_rate : 0 ?></td>
-                <td class="price"><?= $stock ? number_format($average, 2, '.', '') : ''?></td>
-                <td class="tax_price"><b class="color"><?= $stock ? $stock->tax_price : 0 ?></b></td>
-                <td><?= $stock ? $stock->position : 0 ?></td>
-                <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
-                <td><?= $stock ? $stock->suggest_number : 0 ?></td>
-                <td class="high_number"><?= $stock ? $stock->high_number : 0 ?></td>
-                <td class="low_number"><?= $stock ? $stock->low_number : 0 ?></td>
-                <td class="all_price"></td>
-                <td class="all_tax_price"></td>
-            </tr>
-            </thead>
-        </table>
-        <table id="example2" class="table table-bordered table-hover">
-            <thead>
-            <tr>
                 <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>零件号B</th>
@@ -287,6 +287,39 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
             </tr>
+            </thead>
+        </table>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th rowspan="4">收入记录</th>
+                <th>零件号B</th>
+                <th>单位</th>
+                <th>供应商</th>
+                <th>税率</th>
+                <th>报价未税单价</th>
+                <th>报价含税单价</th>
+                <th>报价未税总价</th>
+                <th>报价含税总价</th>
+                <th>卖出数量</th>
+                <th>收入合同单号</th>
+                <th>订单号</th>
+            </tr>
+            <?php foreach ($agreementGoods as $key => $agreementGood):?>
+                <tr class="agreement_list">
+                    <td><?= $goods ? $goods->goods_number_b : '' ?></td>
+                    <td><?= $goods ? $goods->unit : '' ?></td>
+                    <td class="stressColor"><?= $agreementGood ? $agreementGood->inquiry->supplier->name : '' ?></td>
+                    <td><?= $agreementGood->tax_rate?></td>
+                    <td class="price"><?=$agreementGood->quote_price?></td></td>
+                    <td class="tax_price"><b class="color"><?=$agreementGood->quote_tax_price?></b></td>
+                    <td><?=$agreementGood->quote_all_price?></td>
+                    <td><?=$agreementGood->quote_all_tax_price?></td>
+                    <td class="number"><?= $agreementGood ? $agreementGood->number : 0 ?></td>
+                    <td><?=Html::a($agreementGood->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGood->order_agreement_id]))?></td>
+                    <td><?=Html::a($agreementGood->order->order_sn, Url::to(['order/detail', 'id' => $agreementGood->order_id]))?></td>
+                </tr>
+            <?php endforeach;?>
             </thead>
         </table>
         <table id="example2" class="table table-bordered table-hover">

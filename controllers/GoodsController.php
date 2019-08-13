@@ -4,7 +4,17 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods, OrderInquiry, PurchaseGoods, StockLog};
+use app\models\{AgreementGoods,
+    PaymentGoods,
+    Stock,
+    Goods,
+    GoodsSearch,
+    Inquiry,
+    CompetitorGoods,
+    OrderGoods,
+    OrderInquiry,
+    PurchaseGoods,
+    StockLog};
 use yii\helpers\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -171,6 +181,10 @@ class GoodsController extends BaseController
         $data['competitorGoods']  = $competitorGoods;
 
         $data['average']          = $average;
+
+        //增加零件的收入记录
+        $agreementGoods = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->limit(3)->all();
+        $data['agreementGoods'] = $agreementGoods;
 
         return $this->render('search-result', $data);
     }

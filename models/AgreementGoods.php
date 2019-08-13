@@ -105,4 +105,9 @@ class AgreementGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
     }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
 }
