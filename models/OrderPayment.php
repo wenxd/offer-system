@@ -74,4 +74,9 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
 }
