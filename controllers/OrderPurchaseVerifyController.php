@@ -76,6 +76,8 @@ class OrderPurchaseVerifyController extends BaseController
                 $purchaseGoods->fixed_price      = $value['fix_price'];
                 $purchaseGoods->fixed_tax_price  = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
                 $purchaseGoods->fixed_number     = $value['fix_number'];
+                $purchaseGoods->reason           = '';
+                $purchaseGoods->apply_status     = PurchaseGoods::APPLY_STATUS_CREATE;
                 $purchaseGoods->save();
 
                 $paymentGoods->serial               = $purchaseGoods->serial;
@@ -125,6 +127,26 @@ class OrderPurchaseVerifyController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+        $orderPayment->purchase_status = OrderPayment::PURCHASE_STATUS_PASS;
+        $orderPayment->save();
+
+        foreach ($params['goods_info'] as $paymentGoodsId) {
+            $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
+            if ($paymentGoods) {
+                $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
+                $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
+                $purchaseGoods->save();
+            }
+        }
+
+        $hasNoApply = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
+            ->andWhere(['!=', 'apply_status', PurchaseGoods::APPLY_STATUS_PASS])->one();
+        if (!$hasNoApply) {
+            $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
+            $orderPurchase->is_complete = 1;
+            $orderPurchase->save();
+        }
+
         if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {

@@ -176,10 +176,12 @@ $i = 0;
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
 
-        <?= $form->field($model, 'payment_sn')->textInput(); ?>
+        <?php if (!$model->is_complete):?>
+            <?= $form->field($model, 'payment_sn')->textInput(); ?>
+        <?php endif;?>
 
     </div>
-    <?php if ($i != count($purchaseGoods)):?>
+    <?php if (!$model->is_complete):?>
         <div class="box-footer">
             <?= Html::button('提交支出申请', [
                     'class' => 'btn btn-success payment_save',
