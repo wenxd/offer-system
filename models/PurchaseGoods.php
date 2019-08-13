@@ -44,6 +44,10 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     const TYPE_INQUIRY  = '0';
     const TYPE_STOCK    = '1';
 
+    const APPLY_STATUS_CREATE = '1';
+    const APPLY_STATUS_PASS   = '2';
+    const APPLY_STATUS_REJECT = '3';
+
     public static $purchase = [
         self::IS_PURCHASE_NO  => '否',
         self::IS_PURCHASE_YES => '是',

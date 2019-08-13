@@ -13,6 +13,7 @@ use Yii;
  * @property string $order_payment_sn 支出合同订单号
  * @property int $order_purchase_id 采购订单ID
  * @property string $order_purchase_sn 采购订单号
+ * @property string $purchase_goods_id 支出合同单商品主键
  * @property string $serial 序号
  * @property int $goods_id 零件ID
  * @property int $type 关联类型  0询价  1库存

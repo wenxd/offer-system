@@ -60,7 +60,8 @@ $i = 0;
                     <th>未率总价</th>
                     <th>含率总价</th>
                     <th>数量</th>
-                    <th>采购状态</th>
+                    <th>审核状态</th>
+                    <th>驳回原因</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
                     <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
@@ -86,6 +87,7 @@ $i = 0;
                             <?php endforeach;?>
                         </select>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -140,7 +142,20 @@ $i = 0;
                     <td class="afterNumber">
                         <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
                     </td>
-                    <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
+                    <td><?php
+                            if ($item->apply_status == 0) {
+                                $status = '无';
+                            } elseif ($item->apply_status == 1) {
+                                $status = '审核中';
+                            } elseif ($item->apply_status == 2) {
+                                $status = '审核通过';
+                            } elseif ($item->apply_status == 3) {
+                                $status = '被驳回';
+                            }
+                            echo $status;
+                        ?>
+                    </td>
+                    <td><?=$item->reason?></td>
                 </tr>
             <?php endforeach;?>
             </tbody>

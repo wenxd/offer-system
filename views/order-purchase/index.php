@@ -111,7 +111,7 @@ $userId   = Yii::$app->user->identity->id;
                 'value'          => function ($model, $key, $index, $column){
                     $html = '';
                     if ($model->is_complete == 0) {
-                        $html .= Html::a('<i class="fa"></i> 生成支出合同', Url::to(['detail', 'id' => $model['id']]), [
+                        $html .= Html::a('<i class="fa"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]);

@@ -131,4 +131,34 @@ class OrderPurchaseVerifyController extends BaseController
             return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()], JSON_UNESCAPED_UNICODE);
         }
     }
+
+    /**
+     * 审核驳回
+     */
+    public function actionVerifyReject()
+    {
+        $params = Yii::$app->request->post();
+        try {
+            //循环支出合同零件ID
+            foreach ($params['goods_info'] as $paymentGoodsId) {
+                $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
+                if ($paymentGoods) {
+                    $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
+                    $purchaseGoods->reason = $params['reason'];
+                    $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_REJECT;
+                    $purchaseGoods->fixed_price = $purchaseGoods->price;
+                    $purchaseGoods->fixed_tax_price = $purchaseGoods->tax_price;
+                    $purchaseGoods->fixed_number = $purchaseGoods->number;
+                    $purchaseGoods->save();
+                }
+                $paymentGoods->delete();
+            }
+
+            $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+            $orderPayment->delete();
+        } catch (\Exception $e) {
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        }
+        return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
+    }
 }

@@ -111,11 +111,14 @@ $userId = Yii::$app->user->identity->id;
             goods_info.push(payment_goods_id);
         });
 
-        var reason = $('#orderpayment-reason').val();
-
         if (action) {
             urls = '?r=order-purchase-verify/verify-pass';
         } else {
+            var reason = $('#orderpayment-reason').val();
+            if (!reason) {
+                layer.msg('请填写驳回原因', {time:2000});
+                return false;
+            }
             urls = '?r=order-purchase-verify/verify-reject';
         }
 
