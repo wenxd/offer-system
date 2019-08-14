@@ -13,6 +13,10 @@ use app\models\PurchaseGoods;
 class PurchaseGoodsSearch extends PurchaseGoods
 {
     public $goods_number;
+    public $goods_number_b;
+    public $description;
+    public $description_en;
+    public $original_company;
     public $order_sn;
     /**
      * {@inheritdoc}
@@ -21,8 +25,8 @@ class PurchaseGoodsSearch extends PurchaseGoods
     {
         return [
             [['id', 'order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'is_purchase', 'number', 'is_deleted'], 'integer'],
-            [['order_purchase_id', 'order_purchase_sn', 'updated_at', 'created_at', 'goods_number', 'order_sn'], 'safe'],
-            [['id', 'order_purchase_sn', 'order_sn'], 'trim'],
+            [['order_purchase_id', 'order_purchase_sn', 'updated_at', 'created_at', 'goods_number', 'order_sn', 'goods_number_b'], 'safe'],
+            [['id', 'order_purchase_sn', 'order_sn', 'goods_number_b'], 'trim'],
         ];
     }
 
@@ -54,7 +58,7 @@ class PurchaseGoodsSearch extends PurchaseGoods
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'number', 'updated_at', 'created_at']
+                'attributes' => ['id', 'fixed_number', 'updated_at', 'created_at']
             ],
         ]);
 
