@@ -6,6 +6,7 @@ use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\PaymentGoods;
 use app\models\PurchaseGoods;
+use app\models\SystemNotice;
 use Yii;
 use yii\filters\VerbFilter;
 use app\models\OrderPaymentVerifySearch;
@@ -62,6 +63,7 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->order_purchase_sn = $orderPurchase->purchase_sn;
         $orderPayment->admin_id          = $params['admin_id'];
         if ($orderPayment->save()) {
+            $noticeOpen = false;
             //payment_goods保存
             foreach ($params['goods_info'] as $key => $value) {
                 $paymentGoods = new PaymentGoods();
@@ -96,7 +98,19 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->fixed_number         = $value['fix_number'];
                 $paymentGoods->inquiry_admin_id     = $params['admin_id'];
                 $paymentGoods->save();
+                if ($paymentGoods->price != $paymentGoods->fixed_price) {
+                    $noticeOpen = true;
+                }
             }
+            
+            if ($noticeOpen) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id = $params['admin_id'];
+                $systemNotice->content = '采购生成合同有价格修改';
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
