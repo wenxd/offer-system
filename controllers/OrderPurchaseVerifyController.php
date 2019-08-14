@@ -102,7 +102,7 @@ class OrderPurchaseVerifyController extends BaseController
                     $noticeOpen = true;
                 }
             }
-            
+
             if ($noticeOpen) {
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id = $params['admin_id'];

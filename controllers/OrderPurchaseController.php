@@ -197,6 +197,8 @@ class OrderPurchaseController extends BaseController
         }
         if (isset($request['original_company']) && $request['original_company']) {
             $purchaseQuery->where(['order_purchase_id' => $id])->andWhere(['like', 'original_company', $request['original_company']]);
+        } else {
+            $purchaseQuery->where(['order_purchase_id' => $id]);
         }
         $purchaseGoods         = $purchaseQuery->all();
 
