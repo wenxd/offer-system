@@ -1,10 +1,10 @@
 <?php
 
+use app\extend\widgets\Bar;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
-use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
@@ -24,10 +24,22 @@ $isShow = in_array($userId, $adminIds);
 
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
+
+    <div class="box-header">
+        <?= Html::button('批量入库', [
+                'class' => 'btn btn-success more-stock',
+                'name'  => 'submit-button']
+        )?>
+        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
+            'class' => 'btn btn-default btn-flat',
+        ])?>
+    </div>
+
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
+                <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>零件号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
@@ -55,7 +67,11 @@ $isShow = in_array($userId, $adminIds);
             </thead>
             <tbody>
             <?php foreach ($paymentGoods as $item):?>
-                <tr class="order_final_list">
+                <tr class="order_payment_list">
+                    <?php
+                        $str = "<input type='checkbox' class='select_id' value={$item->id}>";
+                    ?>
+                    <td class="id"><?=in_array($item->goods_id, $stock_goods_ids) ? '' : $str?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
@@ -94,7 +110,21 @@ $isShow = in_array($userId, $adminIds);
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
+
+        //全选
+        $('.select_all').click(function (e) {
+            $('.select_id').prop("checked",$(this).prop("checked"));
+        });
+
+        //子选择
+        $('.select_id').on('click',function (e) {
+            if ($('.select_id').length == $('.select_id:checked').length) {
+                $('.select_all').prop("checked",true);
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+        });
+
         $('.stock_in').click(function (e) {
             var order_payment_id = $('.data').data('order_payment_id');
             var goods_id          = $(this).data('goods_id');
@@ -121,5 +151,36 @@ $isShow = in_array($userId, $adminIds);
                 }
             });
         });
-    });
+
+        //批量入库
+        $('.more-stock').click(function () {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+            var paymentGoods_ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    var id = $(element).val();
+                    paymentGoods_ids.push(id);
+                }
+            });
+            $.ajax({
+                type:"post",
+                url:'?r=stock-in/more-in',
+                data:{ids:paymentGoods_ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
 </script>

@@ -85,7 +85,7 @@ class StockInController extends BaseController
             ]);
             if (!$stock) {
                 $inquiry = Inquiry::findOne($paymentGoods->relevance_id);
-                $stock = new Stock();
+                $stock   = new Stock();
                 $stock->good_id     = $params['goods_id'];
                 $stock->supplier_id = $inquiry->supplier_id;
                 $stock->price       = $paymentGoods->fixed_price;
@@ -115,10 +115,68 @@ class StockInController extends BaseController
                     $purchaseOrder->is_stock = OrderPurchase::IS_STOCK_YES;
                     $purchaseOrder->save();
                 }
-                return json_encode(['code' => 200, 'msg' => '入库成功']);
+                return json_encode(['code' => 200, 'msg' => '入库成功'], JSON_UNESCAPED_UNICODE);
             }
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 批量入库
+     */
+    public function actionMoreIn()
+    {
+        $ids = Yii::$app->request->post('ids');
+        try {
+            $paymentGoods = PaymentGoods::findAll(['id' => $ids]);
+            $orderPaymentId = $paymentGoods[0]->order_payment_id;
+            $orderPayment = OrderPayment::findOne($orderPaymentId);
+            foreach ($paymentGoods as $key => $paymentGood) {
+
+                $stockLog = StockLog::find()->where([
+                    'order_id' => $orderPayment['order_id'],
+                    'order_payment_id' => $orderPayment->id,
+                    'goods_id' => $paymentGood['goods_id'],
+                    'type' => StockLog::TYPE_IN,
+                ])->one();
+                if (!$stockLog) {
+                    $stockLog = new StockLog();
+                }
+                $stockLog->order_id = $orderPayment['order_id'];
+                $stockLog->order_payment_id = $orderPayment->id;
+                $stockLog->payment_sn = $orderPayment->payment_sn;
+                $stockLog->goods_id = $paymentGood['goods_id'];
+                $stockLog->number = $paymentGood['fixed_number'];
+                $stockLog->type = StockLog::TYPE_IN;
+                $stockLog->operate_time = date('Y-m-d H:i:s');
+                $stockLog->save();
+                $res = Stock::updateAllCounters(['number' => $paymentGood['fixed_number']], ['good_id' => $paymentGood['goods_id']]);
+                //对采购商品进行入库改变
+                $purchaseGoods = PurchaseGoods::findOne($paymentGood->purchase_goods_id);
+                $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
+                $purchaseGoods->save();
+            }
+
+            //判断是否全部入库
+            $paymentCount = count($paymentGoods);
+            $stockCount = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
+            if ($paymentCount == $stockCount) {
+                $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
+                $orderPayment->save();
+            }
+
+            //对采购单进行判断是否入库
+            $purchaseCount = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
+                ->andWhere(['is_stock' => PurchaseGoods::IS_STOCK_NO])->one();
+            if (!$purchaseCount) {
+                $purchaseOrder = OrderPurchase::findOne($orderPayment->order_purchase_id);
+                $purchaseOrder->is_stock = OrderPurchase::IS_STOCK_YES;
+                $purchaseOrder->save();
+            }
+            return json_encode(['code' => 200, 'msg' => '入库成功'], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     }
 }

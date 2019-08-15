@@ -61,14 +61,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('StockInLogSearch')['operate_time'],
                 ])
             ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'StockInLogSearch[created_at]',
-                    'value' => Yii::$app->request->get('StockInLogSearch')['created_at'],
-                ])
-            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
