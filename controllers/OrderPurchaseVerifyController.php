@@ -141,30 +141,29 @@ class OrderPurchaseVerifyController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
-        $orderPayment->purchase_status = OrderPayment::PURCHASE_STATUS_PASS;
-        $orderPayment->save();
+        $orderPayment->is_verify = 1;
+        try {
+            $orderPayment->save();
 
-        foreach ($params['goods_info'] as $paymentGoodsId) {
-            $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
-            if ($paymentGoods) {
-                $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
-                $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
-                $purchaseGoods->save();
+            foreach ($params['goods_info'] as $paymentGoodsId) {
+                $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
+                if ($paymentGoods) {
+                    $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
+                    $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
+                    $purchaseGoods->save();
+                }
             }
-        }
 
-        $hasNoApply = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
-            ->andWhere(['!=', 'apply_status', PurchaseGoods::APPLY_STATUS_PASS])->one();
-        if (!$hasNoApply) {
-            $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
-            $orderPurchase->is_complete = 1;
-            $orderPurchase->save();
-        }
-
-        if ($orderPayment->save()) {
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
-        } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()], JSON_UNESCAPED_UNICODE);
+            $hasNoApply = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
+                ->andWhere(['!=', 'apply_status', PurchaseGoods::APPLY_STATUS_PASS])->one();
+            if (!$hasNoApply) {
+                $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
+                $orderPurchase->is_complete = 1;
+                $orderPurchase->save();
+            }
+            return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     }
 

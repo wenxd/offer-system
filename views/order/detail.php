@@ -117,12 +117,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <thead>
             <tr>
                 <th>订单号</th>
-                <th>最终订单号</th>
+                <th>成本单号</th>
             </tr>
             <?php foreach ($orderFinal as $final):?>
                 <tr>
                     <td><?=$final->order_id?></td>
-                    <td><?=Html::a($final->final_sn, Url::to(['order-final/detail', 'id' => $final->id]))?></td>
+                    <td><?=Html::a($final->final_sn, Url::to(['order-final/view', 'id' => $final->id]))?></td>
                 </tr>
             <?php endforeach;?>
             </thead>
