@@ -21,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $tax_rate  税率
+ * @property string $tax_price  税率
  */
 class Stock extends ActiveRecord
 {

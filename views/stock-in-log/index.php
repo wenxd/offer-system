@@ -31,7 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'purchase_sn',
+            [
+                'attribute' => 'payment_sn',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->payment_sn;
+                }
+            ],
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',

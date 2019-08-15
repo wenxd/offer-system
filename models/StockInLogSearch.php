@@ -20,10 +20,8 @@ class StockInLogSearch extends StockLog
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_purchase_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'order_sn'], 'safe'],
-            [['order_sn', 'goods_number', 'purchase_sn'], 'string', 'max' => 255],
-            [['id', 'order_sn', 'goods_number', 'purchase_sn', 'number'], 'trim'],
+            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
+            [['operate_time', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -75,12 +73,12 @@ class StockInLogSearch extends StockLog
             $query->andFilterWhere(['like', 'b.goods_number', $this->goods_number]);
         }
 
-        $query->andFilterWhere(['like', 'stock_log.purchase_sn', $this->purchase_sn]);
+        $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn]);
         // grid filtering conditions
         $query->andFilterWhere([
             'stock_log.id'                => $this->id,
             'stock_log.order_id'          => $this->order_id,
-            'stock_log.order_purchase_id' => $this->order_purchase_id,
+            'stock_log.order_payment_id'  => $this->order_payment_id,
             'stock_log.goods_id'          => $this->goods_id,
             'stock_log.number'            => $this->number,
             'stock_log.type'              => StockLog::TYPE_IN,

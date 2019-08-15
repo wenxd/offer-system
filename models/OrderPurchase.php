@@ -19,6 +19,7 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $order_agreement_id 收入合同ID
+ * @property string $is_stock
  */
 class OrderPurchase extends \yii\db\ActiveRecord
 {

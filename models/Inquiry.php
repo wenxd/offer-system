@@ -21,7 +21,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at 创建时间
  * @property string $number  询价数量
  * @property string $all_price 未税总价
- * @property string $all_tax_rate 含税总价
+ * @property string $tax_price
+ * @property string $tax_rate
  */
 class Inquiry extends ActiveRecord
 {

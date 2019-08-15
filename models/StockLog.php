@@ -18,6 +18,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $payment_sn
  */
 class StockLog extends ActiveRecord
 {

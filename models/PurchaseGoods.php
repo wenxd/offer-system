@@ -32,11 +32,15 @@ use Yii;
  * @property string $inquiry_admin_id
  * @property string $agreement_sn
  * @property string $purchase_date
+ * @property string $is_stock
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
     public $goods_number;
     public $order_sn;
+
+    const IS_STOCK_NO     = '0';
+    const IS_STOCK_YES    = '1';
 
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
@@ -67,7 +71,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
-            , 'order_purchase_id'], 'integer'],
+            , 'order_purchase_id', 'is_stock'], 'integer'],
             [['updated_at', 'created_at', 'fixed_number'], 'safe'],
             [['order_purchase_sn', 'goods_number', 'order_sn', 'serial'], 'string', 'max' => 255],
         ];

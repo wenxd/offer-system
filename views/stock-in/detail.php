@@ -26,7 +26,7 @@ $isShow = in_array($userId, $adminIds);
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
-            <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
+            <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
                 <th>零件号</th>
                 <th>中文描述</th>
@@ -73,8 +73,8 @@ $isShow = in_array($userId, $adminIds);
                     <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
-                    <td class="all_price"></td>
-                    <td class="all_tax_price"></td>
+                    <td class="all_price"><?=$item->fixed_all_price?></td>
+                    <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
@@ -95,19 +95,8 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        init();
-        function init(){
-            $('.order_final_list').each(function (i, e) {
-                var price     = $(e).find('.price').text();
-                var tax_price = $(e).find('.tax_price').text();
-                var number    = $(e).find('.number').text();
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            });
-        }
-
         $('.stock_in').click(function (e) {
-            var order_purchase_id = $('.data').data('order_purchase_id');
+            var order_payment_id = $('.data').data('order_payment_id');
             var goods_id          = $(this).data('goods_id');
             var number            = $(this).parent().parent().find('.number').text();
 
@@ -119,7 +108,7 @@ $isShow = in_array($userId, $adminIds);
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/in',
-                data:{goods_id:goods_id, order_purchase_id:order_purchase_id, number:number},
+                data:{goods_id:goods_id, order_payment_id:order_payment_id, number:number},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
