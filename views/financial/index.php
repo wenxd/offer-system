@@ -71,9 +71,9 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderPurchase::$bill[$model->is_bill];
                 }
             ],
-            'purchase_sn',
             [
                 'attribute' => 'order_sn',
+                'label'     => '订单号',
                 'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
@@ -86,40 +86,22 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'order_agreement_sn',
+                'attribute' => 'order_purchase_sn',
+                'label'     => '采购单号',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_agreement_sn',['class'=>'form-control']),
+                'filter'    => Html::activeTextInput($searchModel, 'order_purchase_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->orderAgreement) {
-                        return Html::a($model->orderAgreement->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->order_agreement_id]));
-                    } else {
-                        return '';
-                    }
+                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
                 }
             ],
             [
-                'attribute' => 'end_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPurchaseSearch[end_date]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['end_date'],
-                ])
-            ],
-            [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPurchaseSearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderPurchaseSearch[created_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['created_at'],
-                ])
+                'attribute' => 'payment_sn',
+                'label'     => '采购单号',
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                }
             ],
             [
                 'attribute' => 'admin_id',

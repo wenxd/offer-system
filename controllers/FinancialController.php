@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\OrderPayment;
+use app\models\PaymentGoods;
 use Yii;
 use app\models\StockLog;
 use app\models\OrderPurchase;
@@ -33,18 +35,18 @@ class FinancialController extends BaseController
 
     public function actionDetail($id)
     {
-        $orderPurchase = OrderPurchase::findOne($id);
-        $purchaseGoods = PurchaseGoods::findAll(['order_purchase_id' => $id]);
+        $orderPayment = OrderPayment::findOne($id);
+        $paymentGoods = PaymentGoods::findAll(['order_payment_id' => $id]);
         $stockLog = StockLog::find()->where([
-            'order_id' => $orderPurchase->order_id,
-            'order_purchase_id' => $id,
-            'type' => StockLog::TYPE_IN
+            'order_id'          => $orderPayment->order_id,
+            'order_payment_id'  => $id,
+            'type'              => StockLog::TYPE_IN
         ])->all();
 
         $data = [];
-        $data['orderPurchase'] = $data['model'] = $orderPurchase;
-        $data['purchaseGoods'] = $purchaseGoods;
-        $data['stockLog']      = $stockLog;
+        $data['orderPayment'] = $data['model'] = $orderPayment;
+        $data['paymentGoods'] = $paymentGoods;
+        $data['stockLog']     = $stockLog;
 
         return $this->render('detail', $data);
     }

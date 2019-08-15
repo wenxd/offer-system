@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\PaymentGoods;
 use Yii;
 use app\models\OrderPayment;
 use app\models\OrderPaymentSearch;
@@ -123,5 +124,18 @@ class OrderPaymentController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionDetail($id)
+    {
+        $orderPayment = OrderPayment::findOne($id);
+
+        $paymentGoods = PaymentGoods::find()->where(['order_payment_id' => $id])->all();
+
+        return $this->render('detail', [
+            'model'        => $orderPayment,
+            'orderPayment' => $orderPayment,
+            'paymentGoods' => $paymentGoods,
+        ]);
     }
 }

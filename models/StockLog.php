@@ -10,7 +10,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id 自增id
  * @property int $order_id 订单ID
- * @property int $order_purchase_id 采购单ID
+ * @property int $order_payment_id 支出合同单ID
  * @property int $goods_id 零件编号
  * @property int $number 库存数量
  * @property int $type 入库出库 0入库  1出库
@@ -58,7 +58,7 @@ class StockLog extends ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_purchase_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
+            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
             [['operate_time', 'updated_at', 'created_at'], 'safe'],
         ];
     }
@@ -72,8 +72,8 @@ class StockLog extends ActiveRecord
             'id'                => '自增id',
             'order_id'          => '订单ID',
             'order_sn'          => '订单编号',
-            'order_purchase_id' => '采购单ID',
-            'purchase_sn'       => '采购单号',
+            'order_payment_id'  => '采购单ID',
+            'payment_sn'        => '采购单号',
             'goods_id'          => '零件ID',
             'goods_number'      => '零件编号',
             'number'            => '数量',
@@ -90,9 +90,9 @@ class StockLog extends ActiveRecord
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    public function getOrderPurchase()
+    public function getOrderPayment()
     {
-        return $this->hasOne(OrderPurchase::className(), ['id' => 'order_purchase_id']);
+        return $this->hasOne(OrderPayment::className(), ['id' => 'order_payment_id']);
     }
 
     public function getGoods()

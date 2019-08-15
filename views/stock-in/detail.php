@@ -49,13 +49,12 @@ $isShow = in_array($userId, $adminIds);
                 <th>含率总价</th>
                 <?php endif;?>
                 <th>数量</th>
-                <th>采购状态</th>
                 <th>入库</th>
                 <th>操作</th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($purchaseGoods as $item):?>
+            <?php foreach ($paymentGoods as $item):?>
                 <tr class="order_final_list">
                     <td><?=$item->goods->goods_number?></td>
                     <td><?=$item->goods->description?></td>
@@ -69,16 +68,15 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
-                    <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
-                    <td><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                    <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
-                    <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
-                    <td><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
+                    <td><?=$item->inquiry->supplier->name?></td>
+                    <td><?=$item->tax_rate?></td>
+                    <td class="price"><?=$item->fixed_price?></td>
+                    <td class="tax_price"><?=$item->fixed_tax_price?></td>
+                    <td><?=$item->inquiry->delivery_time?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <?php endif;?>
-                    <td class="number"><?=$item->number?></td>
-                    <td><?=$item->is_purchase ? '完成' : '未完成'?></td>
+                    <td class="number"><?=$item->fixed_number?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                     <td>
                         <?php if (!in_array($item->goods_id, $stock_goods_ids)):?>

@@ -19,9 +19,12 @@ class OrderPaymentSearch extends OrderPayment
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_purchase_id', 'is_payment', 'admin_id'], 'integer'],
-            [['payment_sn', 'order_purchase_sn', 'goods_info', 'payment_at', 'updated_at', 'created_at', 'order_sn'], 'safe'],
-            [['payment_sn', 'order_purchase_sn', 'goods_info', 'payment_at', 'updated_at', 'created_at', 'order_sn'], 'trim'],
+            [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
+                'is_advancecharge', 'is_bill'], 'integer'],
+            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at'], 'safe'],
+            [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
+            [['goods_info'], 'string', 'max' => 512],
+            [['order_sn'], 'trim'],
         ];
     }
 

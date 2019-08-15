@@ -616,4 +616,12 @@ CREATE TABLE `payment_goods` (
 ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
 ALTER TABLE `order_purchase` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
 
-ALTER TABLE `order_payment` ADD COLUMN `is_verify` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_verify`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预付款 0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否接收发票 0否  1是';
+ALTER TABLE `order_payment` ADD COLUMN `stock_at`          datetime  COMMENT '入库时间';
+ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预付款时间';
+ALTER TABLE `order_payment` ADD COLUMN `bill_at`           datetime  COMMENT '收到发票时间';
+ALTER TABLE `order_payment` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+

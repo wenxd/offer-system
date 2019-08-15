@@ -5,14 +5,14 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\OrderPurchase;
+use app\models\OrderPayment;
 use kartik\daterange\DateRangePicker;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OrderPurchaseSearch */
+/* @var $searchModel app\models\OrderPaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '入库管理列表';
@@ -36,14 +36,15 @@ foreach ($adminList as $key => $admin) {
         'columns' => [
             'id',
             [
-                'attribute' => 'purchase_sn',
+                'attribute' => 'payment_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
                 }
             ],
             [
                 'attribute' => 'order_sn',
+                'label'     => '订单号',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
@@ -53,42 +54,6 @@ foreach ($adminList as $key => $admin) {
                         return '';
                     }
                 }
-            ],
-            [
-                'attribute' => 'order_agreement_sn',
-                'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_agreement_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->orderAgreement) {
-                        return Html::a($model->orderAgreement->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->order_agreement_id]));
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
-                'attribute' => 'end_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPurchaseSearch[end_date]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['end_date'],
-                ])
-            ],
-            [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPurchaseSearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderPurchaseSearch[created_at]',
-                    'value' => Yii::$app->request->get('OrderPurchaseSearch')['created_at'],
-                ])
             ],
             [
                 'attribute' => 'admin_id',
@@ -103,9 +68,9 @@ foreach ($adminList as $key => $admin) {
             [
                 'attribute' => 'is_stock',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$stock,
+                'filter'    => OrderPayment::$stock,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$stock[$model->is_stock];
+                    return OrderPayment::$stock[$model->is_stock];
                 }
             ],
             [
