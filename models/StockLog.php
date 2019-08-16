@@ -74,21 +74,23 @@ class StockLog extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                => '自增id',
-            'order_id'          => '订单ID',
-            'order_sn'          => '订单编号',
-            'order_payment_id'  => '支出合同单ID',
-            'payment_sn'        => '支出合同单号',
-            'goods_id'          => '零件ID',
-            'goods_number'      => '零件编号',
-            'number'            => '数量',
-            'type'              => '入库出库 0入库  1出库',
-            'operate_time'      => '操作时间',
-            'is_deleted'        => '是否删除：0未删除 1已删除',
-            'updated_at'        => '更新时间',
-            'created_at'        => '创建时间',
-            'remark'            => '备注说明',
-            'price'             => '价格',
+            'id'                 => '自增id',
+            'order_id'           => '订单ID',
+            'order_sn'           => '订单编号',
+            'order_payment_id'   => '支出合同单ID',
+            'payment_sn'         => '支出合同单号',
+            'goods_id'           => '零件ID',
+            'goods_number'       => '零件号A',
+            'number'             => '数量',
+            'type'               => '入库出库 0入库  1出库',
+            'operate_time'       => '操作时间',
+            'is_deleted'         => '是否删除：0未删除 1已删除',
+            'updated_at'         => '更新时间',
+            'created_at'         => '创建时间',
+            'remark'             => '备注说明',
+            'price'              => '价格',
+            'order_agreement_id' => '收入合同单ID',
+            'agreement_sn'       => '收入合同单号',
         ];
     }
 
