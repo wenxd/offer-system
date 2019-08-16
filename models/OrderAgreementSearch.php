@@ -51,6 +51,12 @@ class OrderAgreementSearch extends OrderAgreement
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+                'attributes' => ['id', 'agreement_date']
+            ],
         ]);
 
         $this->load($params);
