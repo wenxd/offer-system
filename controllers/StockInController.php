@@ -55,6 +55,7 @@ class StockInController extends BaseController
         return $this->render('detail', $data);
     }
 
+    //单个入库
     public function actionIn()
     {
         $params = Yii::$app->request->post();
@@ -99,6 +100,7 @@ class StockInController extends BaseController
             $stockCount   = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
             if ($paymentCount == $stockCount) {
                 $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
+                $orderPayment->stock_at = date('Y-m-d H:i:s');
                 $orderPayment->save();
             }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
@@ -163,6 +165,7 @@ class StockInController extends BaseController
             $stockCount = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
             if ($paymentCount == $stockCount) {
                 $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
+                $orderPayment->stock_at = date('Y-m-d H:i:s');
                 $orderPayment->save();
             }
 

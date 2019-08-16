@@ -26,7 +26,7 @@ $isShow = in_array($userId, $adminIds);
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
-            <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
+            <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
                 <th>零件号</th>
                 <th>中文描述</th>
@@ -39,7 +39,6 @@ $isShow = in_array($userId, $adminIds);
                 <th>加工</th>
                 <th>特制</th>
                 <th>铭牌</th>
-                <th>图片</th>
                 <th>供应商</th>
                 <th>税率</th>
                 <th>未率单价</th>
@@ -66,14 +65,13 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
-                    <td class="all_price"></td>
-                    <td class="all_tax_price"></td>
+                    <td class="all_price"><?=$item->fixed_all_price?></td>
+                    <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
@@ -114,46 +112,9 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        init();
-        function init(){
-            $('.order_final_list').each(function (i, e) {
-                var price     = $(e).find('.price').text();
-                var tax_price = $(e).find('.tax_price').text();
-                var number    = $(e).find('.number').text();
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            });
-        }
-
-        $('.stock_in').click(function (e) {
-            var order_purchase_id = $('.data').data('order_purchase_id');
-            var goods_id          = $(this).data('goods_id');
-            var number            = $(this).parent().parent().find('.number').text();
-
-            var reg=/^\d{1,}$/;
-            if (!reg.test(number)) {
-                layer.msg('入库数量不能为空', {time:2000});
-            }
-
-            $.ajax({
-                type:"post",
-                url:'?r=stock-in/in',
-                data:{goods_id:goods_id, order_purchase_id:order_purchase_id, number:number},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        location.reload();
-                    } else {
-                        layer.msg(res.msg, {time:2000});
-                        return false;
-                    }
-                }
-            });
-        });
-        var id = $('.data').data('order_purchase_id');
+        var id = $('.data').data('order_payment_id');
         $('.save_remark').click(function (e) {
-            var remark = $('#orderpurchase-financial_remark').val();
+            var remark = $('#orderpayment-financial_remark').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial/add-remark',

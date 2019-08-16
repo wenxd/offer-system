@@ -25,6 +25,7 @@ use Yii;
  * @property string $advancecharge_at
  * @property string $stock_at
  * @property string $financial_remark
+ * @property string $bill_at
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {

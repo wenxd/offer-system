@@ -55,13 +55,13 @@ class FinancialController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderPurchase = OrderPurchase::findOne($params['id']);
-        $orderPurchase->financial_remark = $params['remark'];
+        $orderPayment = OrderPayment::findOne($params['id']);
+        $orderPayment->financial_remark = $params['remark'];
 
-        if ($orderPurchase->save()) {
+        if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
     }
 
@@ -69,13 +69,14 @@ class FinancialController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderPurchase = OrderPurchase::findOne($params['id']);
-        $orderPurchase->is_advancecharge = OrderPurchase::IS_ADVANCECHARGE_YES;
+        $orderPayment = OrderPayment::findOne($params['id']);
+        $orderPayment->is_advancecharge = $orderPayment::IS_ADVANCECHARGE_YES;
+        $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
 
-        if ($orderPurchase->save()) {
+        if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
     }
 
@@ -83,13 +84,14 @@ class FinancialController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderPurchase = OrderPurchase::findOne($params['id']);
-        $orderPurchase->is_payment = OrderPurchase::IS_PAYMENT_YES;
+        $orderPayment = OrderPayment::findOne($params['id']);
+        $orderPayment->is_payment = $orderPayment::IS_PAYMENT_YES;
+        $orderPayment->payment_at = date('Y-m-d H:i:s');
 
-        if ($orderPurchase->save()) {
+        if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
     }
 
@@ -97,13 +99,14 @@ class FinancialController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderPurchase = OrderPurchase::findOne($params['id']);
-        $orderPurchase->is_bill = OrderPurchase::IS_BILL_YES;
+        $orderPayment = OrderPayment::findOne($params['id']);
+        $orderPayment->is_bill = OrderPayment::IS_BILL_YES;
+        $orderPayment->bill_at = date('Y-m-d H:i:s');
 
-        if ($orderPurchase->save()) {
+        if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
     }
 }
