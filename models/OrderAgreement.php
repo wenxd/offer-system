@@ -19,10 +19,55 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $is_advancecharge
+ * @property string $is_payment
+ * @property string $is_bill
+ * @property string $is_stock
+ * @property string $advancecharge_at
+ * @property string $payment_at
+ * @property string $bill_at
+ * @property string $stock_at
+ * @property string $is_complete
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
     public $order_sn;
+
+    const IS_STOCK_NO     = '0';
+    const IS_STOCK_YES    = '1';
+
+    const IS_ADVANCECHARGE_NO  = '0';
+    const IS_ADVANCECHARGE_YES = '1';
+
+    const IS_PAYMENT_NO  = '0';
+    const IS_PAYMENT_YES = '1';
+
+    const IS_BILL_NO     = '0';
+    const IS_BILL_YES    = '1';
+
+    const IS_COMPLETE_NO  = '0';
+    const IS_COMPLETE_YES = '1';
+
+    public static $stock = [
+        self::IS_STOCK_NO   => '否',
+        self::IS_STOCK_YES  => '是',
+    ];
+
+    public static $advanceCharge = [
+        self::IS_ADVANCECHARGE_NO   => '否',
+        self::IS_ADVANCECHARGE_YES  => '是',
+    ];
+
+    public static $payment = [
+        self::IS_PAYMENT_NO   => '否',
+        self::IS_PAYMENT_YES  => '是',
+    ];
+
+    public static $bill = [
+        self::IS_BILL_NO   => '否',
+        self::IS_BILL_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +82,8 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
+            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
+                'is_payment', 'is_bill', 'is_stock', 'is_complete'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -50,19 +96,24 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'              => 'ID',
-            'agreement_sn'    => '收入合同单号',
-            'order_id'        => '订单ID',
-            'order_sn'        => '订单号',
-            'order_quote_id'  => '报价订单ID',
-            'order_quote_sn'  => '报价订单号',
-            'goods_info'      => '零件信息 json，包括ID',
-            'agreement_date'  => '合同交货时间',
-            'is_agreement'    => '是否报价：0未报价 1已报价',
-            'admin_id'        => '报价员ID',
-            'is_deleted'      => '是否删除：0未删除 1已删除',
-            'updated_at'      => '更新时间',
-            'created_at'      => '创建时间',
+            'id'                => 'ID',
+            'agreement_sn'      => '收入合同单号',
+            'order_id'          => '订单ID',
+            'order_sn'          => '订单号',
+            'order_quote_id'    => '报价订单ID',
+            'order_quote_sn'    => '报价订单号',
+            'goods_info'        => '零件信息 json，包括ID',
+            'agreement_date'    => '合同交货时间',
+            'is_agreement'      => '是否报价：0未报价 1已报价',
+            'admin_id'          => '报价员ID',
+            'is_deleted'        => '是否删除：0未删除 1已删除',
+            'updated_at'        => '更新时间',
+            'created_at'        => '创建时间',
+            'advancecharge_at'  => '预收款时间',
+            'payment_at'        => '收全款时间',
+            'bill_at'           => '开发票时间',
+            'stock_at'          => '出库时间',
+            'financial_remark'  => '财务备注',
         ];
     }
 

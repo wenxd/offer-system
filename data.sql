@@ -637,3 +637,9 @@ ALTER TABLE `order_agreement` ADD COLUMN `payment_at`        datetime  COMMENT '
 ALTER TABLE `order_agreement` ADD COLUMN `bill_at`           datetime  COMMENT '开发票时间';
 ALTER TABLE `order_agreement` ADD COLUMN `stock_at`          datetime  COMMENT '出库时间';
 ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',
+ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
+
+ALTER TABLE `stock_log` ADD COLUMN `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
+ALTER TABLE `stock_log` ADD COLUMN `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';
+
