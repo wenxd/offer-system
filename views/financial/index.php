@@ -97,7 +97,7 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'payment_sn',
-                'label'     => '采购单号',
+                'label'     => '支出合同单号',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
