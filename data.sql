@@ -624,6 +624,7 @@ ALTER TABLE `order_payment` ADD COLUMN `stock_at`          datetime  COMMENT '�
 ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预付款时间';
 ALTER TABLE `order_payment` ADD COLUMN `bill_at`           datetime  COMMENT '收到发票时间';
 ALTER TABLE `order_payment` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_payment` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
 
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 

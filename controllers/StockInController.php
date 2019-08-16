@@ -101,6 +101,9 @@ class StockInController extends BaseController
             if ($paymentCount == $stockCount) {
                 $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
                 $orderPayment->stock_at = date('Y-m-d H:i:s');
+                if ($orderPayment->is_advancecharge && $orderPayment->is_payment && $orderPayment->is_bill) {
+                    $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+                }
                 $orderPayment->save();
             }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
@@ -166,6 +169,9 @@ class StockInController extends BaseController
             if ($paymentCount == $stockCount) {
                 $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
                 $orderPayment->stock_at = date('Y-m-d H:i:s');
+                if ($orderPayment->is_advancecharge && $orderPayment->is_payment && $orderPayment->is_bill) {
+                    $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+                }
                 $orderPayment->save();
             }
 

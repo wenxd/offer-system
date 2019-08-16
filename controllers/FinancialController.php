@@ -70,9 +70,11 @@ class FinancialController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->is_advancecharge = $orderPayment::IS_ADVANCECHARGE_YES;
+        $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
-
+        if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_bill) {
+            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        }
         if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -85,8 +87,11 @@ class FinancialController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->is_payment = $orderPayment::IS_PAYMENT_YES;
+        $orderPayment->is_payment = OrderPayment::IS_PAYMENT_YES;
         $orderPayment->payment_at = date('Y-m-d H:i:s');
+        if ($orderPayment->is_stock && $orderPayment->is_advancecharge && $orderPayment->is_bill) {
+            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        }
 
         if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
@@ -102,6 +107,9 @@ class FinancialController extends BaseController
         $orderPayment = OrderPayment::findOne($params['id']);
         $orderPayment->is_bill = OrderPayment::IS_BILL_YES;
         $orderPayment->bill_at = date('Y-m-d H:i:s');
+        if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_advancecharge) {
+            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        }
 
         if ($orderPayment->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);

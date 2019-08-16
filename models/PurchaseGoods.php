@@ -56,6 +56,11 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         self::IS_PURCHASE_NO  => '否',
         self::IS_PURCHASE_YES => '是',
     ];
+
+    public static $stock = [
+        self::IS_STOCK_NO  => '否',
+        self::IS_STOCK_YES => '是',
+    ];
     /**
      * {@inheritdoc}
      */

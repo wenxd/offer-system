@@ -26,6 +26,7 @@ use Yii;
  * @property string $stock_at
  * @property string $financial_remark
  * @property string $bill_at
+ * @property string $is_complete
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -49,6 +50,9 @@ class OrderPayment extends \yii\db\ActiveRecord
 
     const IS_BILL_NO     = '0';
     const IS_BILL_YES    = '1';
+
+    const IS_COMPLETE_NO  = '0';
+    const IS_COMPLETE_YES = '1';
 
     public static $purchase = [
         self::IS_PURCHASE_NO   => '否',
@@ -90,7 +94,7 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill'], 'integer'],
+                'is_advancecharge', 'is_bill', 'is_complete'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],

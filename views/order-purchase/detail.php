@@ -53,6 +53,7 @@ $i = 0;
                     <th>铭牌</th>
                     <th>供应商</th>
                     <th>供应商缩写</th>
+                    <th width="80px;">是否入库</th>
                     <th>货期(天)</th>
                     <th>税率</th>
                     <th>未率单价</th>
@@ -88,6 +89,13 @@ $i = 0;
                         </select>
                     </td>
                     <td></td>
+                    <td>
+                        <select class="form-control" name="is_stock">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -133,6 +141,7 @@ $i = 0;
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td><?=$item->inquiry->supplier->short_name?></td>
+                    <td><?=$item::$stock[$item->is_stock]?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
