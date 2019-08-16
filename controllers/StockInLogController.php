@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Stock;
+use app\models\SystemConfig;
 use Yii;
 use app\models\StockLog;
 use app\models\StockInLogSearch;
@@ -123,5 +125,36 @@ class StockInLogController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionAdd()
+    {
+        $params = Yii::$app->request->post();
+        $stockLog = new StockLog();
+        $stockLog->goods_id     = $params['goods_id'];
+        $stockLog->number       = $params['number'];
+        $stockLog->type         = StockLog::TYPE_IN;
+        $stockLog->remark       = $params['remark'];
+        $stockLog->operate_time = date('Y-m-d H:i:s');
+        if ($stockLog->save()) {
+            $stock = Stock::find()->where(['good_id' => $params['goods_id']])->one();
+            if (!$stock) {
+                $stock   = new Stock();
+                $stock->good_id     = $params['goods_id'];
+                $stock->price       = $params['price'];
+                $tax = SystemConfig::find()->select('value')->where([
+                    'title'  => SystemConfig::TITLE_TAX,
+                    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+                $stock->tax_rate    = $tax;
+                $stock->tax_price   = $stock->price * (1 + $tax/100);
+                $stock->number      = $params['number'];
+                $stock->save();
+            }
+            $stock->number += $params['number'];
+            $stock->save();
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()]);
+        }
     }
 }

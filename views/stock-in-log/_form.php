@@ -41,11 +41,15 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
 
         <?= $form->field($model, 'goods_number')->textInput()->label('零件号A') ?>
+
         <div class="box-search-goods_number cancel-goods_number">
             <ul class="box-search-ul-goods_number">
 
             </ul>
         </div>
+
+        <?= $form->field($model, 'price')->textInput() ?>
+
         <?= $form->field($model, 'number')->textInput() ?>
 
         <?= $form->field($model, 'type')->dropDownList(['1' => '入库'])->label('入库') ?>
@@ -56,18 +60,16 @@ use yii\widgets\ActiveForm;
 
     <div class="box-footer">
         <?= Html::Button($model->isNewRecord ? '创建' :  '更新', [
-                'class' => 'btn btn-success created',
+                'class' => 'btn btn-success stock-created',
                 'name'  => 'submit-button']
         )?>
-        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
-            'class' => 'btn btn-default btn-flat',
-        ])?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     //零件A搜索
     $("#stocklog-goods_number").bind('input propertychange', function (e) {
@@ -105,5 +107,46 @@ use yii\widgets\ActiveForm;
         $('.box-search-goods_number').addClass('cancel-goods_number');
     }
 
+    $('.stock-created').click(function (e) {
+        var goods_id = $('#stocklog-goods_id').val();
+        if (!goods_id) {
+            layer.msg('请输入零件号', {time:2000});
+            return false;
+        }
 
+        var price = $('#stocklog-price').val();
+        if (!price) {
+            layer.msg('请输入价格', {time:2000});
+            return false;
+        }
+
+        var number = $('#stocklog-number').val();
+        var reg = /^\+?[1-9][0-9]*$/;
+        if (!reg.test(number)) {
+            layer.msg('请输入正整数', {time:2000});
+            return false;
+        }
+
+        var remark = $('#stocklog-remark').val();
+        if (!remark) {
+            layer.msg('请输入备注说明', {time:2000});
+            return false;
+        }
+
+        $.ajax({
+            type:"POST",
+            url:"?r=stock-in-log/add",
+            data:{goods_id:goods_id, number:number, remark:remark, price:price},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    location.replace("?r=stock-in-log");
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    });
 </script>
