@@ -642,4 +642,5 @@ ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL
 
 ALTER TABLE `stock_log` ADD COLUMN `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
 ALTER TABLE `stock_log` ADD COLUMN `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';
+ALTER TABLE `stock_log` ADD COLUMN `remark`             varchar(255) NOT NULL DEFAULT '' COMMENT '出入库备注';
 

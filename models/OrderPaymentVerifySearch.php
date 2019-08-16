@@ -18,7 +18,7 @@ class OrderPaymentVerifySearch extends OrderPayment
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_purchase_id', 'is_payment', 'admin_id'], 'integer'],
+            [['id', 'order_id', 'order_purchase_id', 'is_payment', 'admin_id', 'is_verify'], 'integer'],
             [['payment_sn', 'order_purchase_sn', 'goods_info', 'payment_at', 'updated_at', 'created_at'], 'safe'],
         ];
     }
@@ -41,7 +41,7 @@ class OrderPaymentVerifySearch extends OrderPayment
      */
     public function search($params)
     {
-        $query = OrderPayment::find()->where(['purchase_status' => self::PURCHASE_STATUS_CREATE]);
+        $query = OrderPayment::find();
 
         // add conditions that should always apply here
 
@@ -64,6 +64,7 @@ class OrderPaymentVerifySearch extends OrderPayment
             'order_purchase_id' => $this->order_purchase_id,
             'payment_at'        => $this->payment_at,
             'is_payment'        => $this->is_payment,
+            'is_verify'         => $this->is_verify,
             'admin_id'          => $this->admin_id,
             'updated_at'        => $this->updated_at,
             'created_at'        => $this->created_at,

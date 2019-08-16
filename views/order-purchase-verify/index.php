@@ -7,6 +7,8 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use app\models\OrderPayment;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderPaymentVerifySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -48,6 +50,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($model->admin) {
                         return $model->admin->username;
                     }
+                }
+            ],
+            [
+                'attribute' => 'is_verify',
+                'label'     => '审核',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$verify,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$verify[$model->is_verify];
                 }
             ],
             [

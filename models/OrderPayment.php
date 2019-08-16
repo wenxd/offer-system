@@ -54,6 +54,9 @@ class OrderPayment extends \yii\db\ActiveRecord
     const IS_COMPLETE_NO  = '0';
     const IS_COMPLETE_YES = '1';
 
+    const IS_VERIFY_NO    = '0';
+    const IS_VERIFY_YES   = '1';
+
     public static $purchase = [
         self::IS_PURCHASE_NO   => '否',
         self::IS_PURCHASE_YES  => '是',
@@ -77,6 +80,11 @@ class OrderPayment extends \yii\db\ActiveRecord
     public static $bill = [
         self::IS_BILL_NO   => '否',
         self::IS_BILL_YES  => '是',
+    ];
+
+    public static $verify = [
+        self::IS_VERIFY_NO   => '否',
+        self::IS_VERIFY_YES  => '是',
     ];
 
     /**

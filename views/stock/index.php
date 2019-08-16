@@ -27,7 +27,7 @@ if ($isShow) {
     $func = '{create} {gen}';
     $operate = '{view}';
 } else {
-    $func = '{create} {gen} {delete}';
+    $func = '{create} {gen} {delete} {stock_in} {stock_out}';
     $operate = '{view} {update} {delete}';
 }
 
@@ -47,7 +47,19 @@ if ($isShow) {
                         'data-pjax' => '0',
                         'class'     => 'btn btn-success btn-flat stock-move',
                     ]);
-                }
+                },
+                'stock_in' => function () {
+                    return Html::a('<i class="fa fa-sign-in"></i> 库存导入', Url::to(['stock-in-log/create']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+                'stock_out' => function () {
+                    return Html::a('<i class="fa fa-sign-out"></i> 库存导出', Url::to(['stock-out-log/create']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
             ]
         ])?>
     </div>
