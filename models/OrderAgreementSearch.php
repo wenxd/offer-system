@@ -67,7 +67,6 @@ class OrderAgreementSearch extends OrderAgreement
             'order_agreement.order_id'       => $this->order_id,
             'order_agreement.order_quote_id' => $this->order_quote_id,
             'order_agreement.order_quote_sn' => $this->order_quote_sn,
-            'order_agreement.agreement_date' => $this->agreement_date,
             'order_agreement.is_agreement'   => $this->is_agreement,
             'order_agreement.admin_id'       => $this->admin_id,
         ]);
