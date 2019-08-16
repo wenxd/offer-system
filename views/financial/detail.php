@@ -8,6 +8,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use yii\widgets\DetailView;
 
 $this->title = '待付款订单详情';
 $this->params['breadcrumbs'][] = $this->title;
@@ -80,6 +81,17 @@ $isShow = in_array($userId, $adminIds);
             </tbody>
         </table>
         <?= $form->field($model, 'financial_remark')->textInput(['maxlength' => true]) ?>
+        <div class="customer-view">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'stock_at',
+                    'advancecharge_at',
+                    'payment_at',
+                    'bill_at',
+                ],
+            ]) ?>
+        </div>
     </div>
     <div class="box-footer">
         <?= Html::button('保存备注', [
