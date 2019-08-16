@@ -74,27 +74,59 @@ $userId = Yii::$app->user->identity->id;
                     <td style="background-color: darkgrey" class="afterNumber"><?=$item->fixed_number?></td>
                 </tr>
             <?php endforeach;?>
+
+            <tr style="background-color: #acccb9">
+                <td colspan="16" rowspan="2">汇总统计</td>
+                <td>支出未税总价</td>
+                <td>支出含税总价</td>
+                <td rowspan="2"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="sta_quote_all_price"></td>
+                <td class="sta_quote_all_tax_price"></td>
+            </tr>
+
             </tbody>
         </table>
-
-        <?= $form->field($model, 'reason')->textInput(); ?>
-
+        <?php if (!$model->is_verify):?>
+            <?= $form->field($model, 'reason')->textInput(); ?>
+        <?php endif;?>
     </div>
-    <div class="box-footer">
-        <?= Html::button('审核通过', [
-                'class' => 'btn btn-success verify_save',
-                'name'  => 'submit-button']
-        )?>
-        <?= Html::button('驳回', [
-            'class' => 'btn btn-warning btn-flat verify_reject',
-        ])?>
-    </div>
+    <?php if (!$model->is_verify):?>
+        <div class="box-footer">
+            <?= Html::button('审核通过', [
+                    'class' => 'btn btn-success verify_save',
+                    'name'  => 'submit-button']
+            )?>
+            <?= Html::button('驳回', [
+                'class' => 'btn btn-warning btn-flat verify_reject',
+            ])?>
+        </div>
+    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    init();
+    function init() {
+        var sta_quote_all_price = 0;
+        var sta_quote_all_tax_price = 0;
+        $('.order_payment_list').each(function (i, e) {
+            var all_price = $(e).find('.all_price').text();
+            var all_tax_price = $(e).find('.all_tax_price').text();
+            if (all_price) {
+                sta_quote_all_price += parseFloat(all_price);
+            }
+            if (all_tax_price) {
+                sta_quote_all_tax_price += parseFloat(all_tax_price);
+            }
+        });
+        $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
+        $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+    }
+
     $('.verify_save').click(function (e) {
         verify(true);
     });
