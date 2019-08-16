@@ -12,7 +12,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\OrderAgreementSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '合同订单管理';
+$this->title = '收入合同订单管理';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();

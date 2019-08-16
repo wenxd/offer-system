@@ -51,7 +51,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
     {
         return [
             'id'              => 'ID',
-            'agreement_sn'    => '合同单号',
+            'agreement_sn'    => '收入合同单号',
             'order_id'        => '订单ID',
             'order_sn'        => '订单号',
             'order_quote_id'  => '报价订单ID',

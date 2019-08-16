@@ -36,14 +36,6 @@ $userId   = Yii::$app->user->identity->id;
         'columns' => [
             'id',
             [
-                'attribute' => 'is_purchase',
-                'format'    => 'raw',
-                'filter'    => OrderPurchase::$purchase,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$purchase[$model->is_purchase];
-                }
-            ],
-            [
                 'attribute' => 'is_stock',
                 'label'     => '完成入库',
                 'format'    => 'raw',
