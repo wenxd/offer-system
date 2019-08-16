@@ -64,25 +64,26 @@ $userId   = Yii::$app->user->identity->id;
             //'agreement_date',
             //'is_quote',
             [
-                'attribute' => 'updated_at',
+                'attribute' => 'agreement_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderAgreementSearch[updated_at]',
-                    'value' => Yii::$app->request->get('OrderAgreementSearch')['updated_at'],
+                    'name' => 'OrderAgreementSearch[agreement_date]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['agreement_date'],
                 ]),
                 'value'     => function($model){
-                    return substr($model->updated_at, 0, 10);
+                    return substr($model->agreement_date, 0, 10);
                 }
             ],
             [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderAgreementSearch[created_at]',
-                    'value' => Yii::$app->request->get('OrderAgreementSearch')['created_at'],
-                ]),
-                'value'     => function($model){
-                    return substr($model->created_at, 0, 10);
+                'attribute' => 'customer_name',
+                'label'     => '客户名称',
+                'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class' => 'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return $model->order->customer->name;
+                    } else {
+                        return '';
+                    }
                 }
             ],
             [
