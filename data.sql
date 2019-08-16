@@ -628,3 +628,12 @@ ALTER TABLE `order_payment` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT
 
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 
+ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_payment`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开发票 0否  1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否出库  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预收款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_at`        datetime  COMMENT '收全款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `bill_at`           datetime  COMMENT '开发票时间';
+ALTER TABLE `order_agreement` ADD COLUMN `stock_at`          datetime  COMMENT '出库时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',

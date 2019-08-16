@@ -19,10 +19,10 @@ class OrderFinancialCollectSearch extends OrderAgreement
     public function rules()
     {
         return [
-            [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill'], 'integer'],
-            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at'], 'safe'],
-            [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
+            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
+            [['agreement_date', 'updated_at', 'created_at'], 'safe'],
+            [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
+            [['goods_info'], 'string', 'max' => 512],
             [['id'], 'trim'],
         ];
     }
@@ -45,7 +45,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
      */
     public function search($params)
     {
-        $query = static::find()->where(['is_complete' => self::IS_COMPLETE_NO]);
+        $query = static::find();
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -76,10 +76,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
             'order_payment.id'               => $this->id,
             'order_payment.order_id'         => $this->order_id,
             'order_payment.admin_id'         => $this->admin_id,
-            'order_payment.is_stock'         => $this->is_stock,
-            'order_payment.is_advancecharge' => $this->is_advancecharge,
-            'order_payment.is_payment'       => $this->is_payment,
-            'order_payment.is_bill'          => $this->is_bill,
+
         ]);
 
 
@@ -97,8 +94,6 @@ class OrderFinancialCollectSearch extends OrderAgreement
             $query->andFilterWhere(['between', 'order_payment.created_at', $created_at_start, $created_at_end]);
         }
 
-        $query->andFilterWhere(['like', 'order_purchase_sn', $this->order_purchase_sn])
-            ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
 
         return $dataProvider;
     }
