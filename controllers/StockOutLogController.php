@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Stock;
+use app\models\SystemConfig;
 use Yii;
 use app\models\StockLog;
 use app\models\StockOutLogSearch;
@@ -123,5 +125,33 @@ class StockOutLogController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**手动添加出库记录
+     * @return false|string
+     */
+    public function actionAdd()
+    {
+        $params = Yii::$app->request->post();
+        $stock = Stock::findOne(['good_id' => $params['goods_id']]);
+        if (!$stock) {
+            return json_encode(['code' => 500, 'msg' => '没有此库存记录，不能出库']);
+        }
+        if ($params['number'] > $stock->number) {
+            return json_encode(['code' => 500, 'msg' => '库存数量不够，剩下' . $stock->number]);
+        }
+        $stockLog = new StockLog();
+        $stockLog->goods_id     = $params['goods_id'];
+        $stockLog->number       = $params['number'];
+        $stockLog->type         = StockLog::TYPE_OUT;
+        $stockLog->remark       = $params['remark'];
+        $stockLog->operate_time = date('Y-m-d H:i:s');
+        if ($stockLog->save()) {
+            $stock->number -= $params['number'];
+            $stock->save();
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()]);
+        }
     }
 }

@@ -127,6 +127,9 @@ class StockInLogController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**手动添加入库记录
+     * @return false|string
+     */
     public function actionAdd()
     {
         $params = Yii::$app->request->post();

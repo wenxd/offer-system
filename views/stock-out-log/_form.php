@@ -7,33 +7,136 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
-<div class="stock-log-form">
+<style>
+    /*零件号A*/
+    .box-search-goods_number li {
+        list-style: none;
+        padding-left: 10px;
+        line-height: 30px;
+    }
+    .box-search-ul-goods_number {
+        margin-left: -40px;
+    }
+    .box-search-goods_number {
+        width: 200px;
+        margin-top: -10px;
+        border: 1px solid black;
+        z-index: 10;
+    }
+    .box-search-goods_number li:hover {
+        background-color: #84b5bc;
+    }
+    .cancel-goods_number {
+        display: none;
+    }
+</style>
+<div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'order_id')->textInput() ?>
+    <div class="box-body">
 
-    <?= $form->field($model, 'order_purchase_id')->textInput() ?>
+        <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
 
-    <?= $form->field($model, 'goods_id')->textInput() ?>
+        <?= $form->field($model, 'goods_number')->textInput()->label('零件号A') ?>
 
-    <?= $form->field($model, 'number')->textInput() ?>
+        <div class="box-search-goods_number cancel-goods_number">
+            <ul class="box-search-ul-goods_number">
 
-    <?= $form->field($model, 'type')->textInput() ?>
+            </ul>
+        </div>
 
-    <?= $form->field($model, 'operate_time')->textInput() ?>
+        <?= $form->field($model, 'number')->textInput() ?>
 
-    <?= $form->field($model, 'is_deleted')->textInput() ?>
+        <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+        <?= $form->field($model, 'remark')->textInput() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <div class="box-footer">
+        <?= Html::Button($model->isNewRecord ? '添加' :  '更新', [
+                'class' => 'btn btn-success stock-created',
+                'name'  => 'submit-button']
+        )?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    //零件A搜索
+    $("#stocklog-goods_number").bind('input propertychange', function (e) {
+        var good_number = $('#stocklog-goods_number').val();
+        if (good_number === '') {
+            $('.box-search-goods_number').addClass('cancel-goods_number');
+            return;
+        }
+        $('.box-search-ul-goods_number').html("");
+        $('.box-search-goods_number').removeClass('cancel-goods_number');
+        $.ajax({
+            type:"GET",
+            url:"?r=search/get-new-good-number",
+            data:{good_number:good_number},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    var li = '';
+                    for (var i in res.data) {
+                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                    }
+                    if (li) {
+                        $('.box-search-ul-goods_number').append(li);
+                    } else {
+                        $('.box-search-goods_number').addClass('cancel-goods_number');
+                    }
+                }
+            }
+        })
+    });
+    //选择零件A
+    function selectGoodsA(obj, goods_id){
+        $("#stocklog-goods_id").val(goods_id);
+        $("#stocklog-goods_number").val($.trim(obj.html()));
+        $('.box-search-goods_number').addClass('cancel-goods_number');
+    }
+
+    $('.stock-created').click(function (e) {
+        var goods_id = $('#stocklog-goods_id').val();
+        if (!goods_id) {
+            layer.msg('请输入零件号', {time:2000});
+            return false;
+        }
+
+        var number = $('#stocklog-number').val();
+        var reg = /^\+?[1-9][0-9]*$/;
+        if (!reg.test(number)) {
+            layer.msg('请输入正整数', {time:2000});
+            return false;
+        }
+
+        var remark = $('#stocklog-remark').val();
+        if (!remark) {
+            layer.msg('请输入备注说明', {time:2000});
+            return false;
+        }
+
+        $.ajax({
+            type:"POST",
+            url:"?r=stock-out-log/add",
+            data:{goods_id:goods_id, number:number, remark:remark},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    location.replace("?r=stock-in-log");
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    });
+</script>

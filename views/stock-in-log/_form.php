@@ -59,7 +59,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="box-footer">
-        <?= Html::Button($model->isNewRecord ? '创建' :  '更新', [
+        <?= Html::Button($model->isNewRecord ? '添加' :  '更新', [
                 'class' => 'btn btn-success stock-created',
                 'name'  => 'submit-button']
         )?>
