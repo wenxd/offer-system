@@ -24,7 +24,8 @@
         "kartik-v/yii2-date-range": "~1.6",
         "kartik-v/yii2-widget-fileinput": "@dev",
         "qcloud/cos-sdk-v5": "1.*",
-        "phpoffice/phpspreadsheet": "^1.5"
+        "phpoffice/phpspreadsheet": "^1.5",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
