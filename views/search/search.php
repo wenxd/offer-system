@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th>零件号</th>
+                    <th>厂家号</th>
                     <th>描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>零件号</th>
+                        <th>厂家号</th>
                         <th>最新</th>
                         <th>优选</th>
                         <th>商品类型</th>

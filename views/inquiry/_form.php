@@ -82,7 +82,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         display: none;
     }
 
-    /*P/N*/
+    /*零件号*/
     .box-search-goods_number li {
         list-style: none;
         padding-left: 10px;
@@ -104,7 +104,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         display: none;
     }
 
-    /*零件号*/
+    /*厂家号*/
     .box-search-goods_number_b li {
         list-style: none;
         padding-left: 10px;
@@ -145,14 +145,14 @@ if (isset($_GET['inquiry_goods_id'])) {
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
 
         <?php if ($is_super):?>
-            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('P/N') ?>
+            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号') ?>
             <div class="box-search-goods_number cancel-goods_number">
                 <ul class="box-search-ul-goods_number">
 
                 </ul>
             </div>
         <?php endif;?>
-        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('零件号') ?>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('厂家号') ?>
         <div class="box-search-goods_number_b cancel-goods_number_b">
             <ul class="box-search-ul-goods_number_b">
 

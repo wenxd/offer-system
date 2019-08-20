@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "{{%inquiry}}".
  *
  * @property int $id 自增id
- * @property string $good_id 零件号
+ * @property string $good_id 厂家号
  * @property int $supplier_id 供应商ID
  * @property string $supplier_name 供应商名称
  * @property string $inquiry_price 咨询价格
@@ -49,7 +49,7 @@ class InquiryBetter extends Inquiry
         return [
             'id'               => '自增id',
             'good_id'          => '零件ID',
-            'goods_number'     => '零件号',
+            'goods_number'     => '厂家号',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',

@@ -33,9 +33,9 @@ $userId   = Yii::$app->user->identity->id;
                 <th>询价单号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>订单号</th>
-                <th>P/N</th>
-                <?php endif;?>
                 <th>零件号</th>
+                <?php endif;?>
+                <th>厂家号</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>中文描述</th>

@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <style>
-    /*P/N*/
+    /*零件号*/
     .box-search-goods_number li {
         list-style: none;
         padding-left: 10px;
@@ -40,7 +40,7 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
 
-        <?= $form->field($model, 'goods_number')->textInput()->label('P/N') ?>
+        <?= $form->field($model, 'goods_number')->textInput()->label('零件号') ?>
 
         <div class="box-search-goods_number cancel-goods_number">
             <ul class="box-search-ul-goods_number">
@@ -110,7 +110,7 @@ use yii\widgets\ActiveForm;
     $('.stock-created').click(function (e) {
         var goods_id = $('#stocklog-goods_id').val();
         if (!goods_id) {
-            layer.msg('请输入零件号', {time:2000});
+            layer.msg('请输入厂家号', {time:2000});
             return false;
         }
 

@@ -23,7 +23,7 @@ $model->tax_rate='10';
 
         <?= $form->field($model, 'good_id')
             ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
-            ->label('零件号') ?>
+            ->label('厂家号') ?>
 
         <?= $form->field($model, 'supplier_id')->dropDownList(Supplier::getCreateDropDown())
             ->label('供应商名称') ?>

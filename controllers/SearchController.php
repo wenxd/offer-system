@@ -30,7 +30,7 @@ class SearchController extends BaseController
         return $this->render('index');
     }
 
-    /**获取P/N
+    /**获取零件号
      * @return string
      */
     public function actionGetGoodNumber()
@@ -44,7 +44,7 @@ class SearchController extends BaseController
         return json_encode(['code' => 200, 'data' => $good_number_list]);
     }
 
-    /**获取零件号
+    /**获取厂家号
      * @return string
      */
     public function actionGetGoodNumberB()
@@ -57,7 +57,7 @@ class SearchController extends BaseController
         return json_encode(['code' => 200, 'data' => $good_number_list]);
     }
 
-    /**获取P/N新方法
+    /**获取零件号新方法
      * @return string
      */
     public function actionGetNewGoodNumber()
@@ -68,7 +68,7 @@ class SearchController extends BaseController
         return json_encode(['code' => 200, 'data' => $goodsList]);
     }
 
-    /**获取零件号新方法
+    /**获取厂家号新方法
      * @return string
      */
     public function actionGetNewGoodNumberB()

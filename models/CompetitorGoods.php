@@ -70,7 +70,7 @@ class CompetitorGoods extends ActiveRecord
         return [
             'id'               => '自增id',
             'goods_id'         => '零件ID',
-            'goods_number'     => 'P/N',
+            'goods_number'     => '零件号',
             'competitor_id'    => '竞争对手ID',
             'competitor_name'  => '竞争对手名称',
             'price'            => '未税价格',
@@ -89,12 +89,12 @@ class CompetitorGoods extends ActiveRecord
     public function beforeSave($insert)
     {
         if (!$this->goods_number) {
-            $this->addError('id', '请输入P/N');
+            $this->addError('id', '请输入零件号');
             return false;
         }
         $goods = Goods::findOne(['goods_number' => $this->goods_number, 'is_deleted' => Goods::IS_DELETED_NO]);
         if (!$goods) {
-            $this->addError('id', '没有此零件号');
+            $this->addError('id', '没有此厂家号');
             return false;
         }
         $this->goods_id = $goods->id;

@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                 <tr>
                     <th rowspan="2">零件基础数据</th>
-                    <th>零件号</th>
+                    <th>厂家号</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th rowspan="5"><?=Html::a('询价记录', Url::to(['inquiry/index', 'InquirySearch[good_id]' => $goods->id]))?></th>
                     <th></th>
                     <th>类型</th>
-                    <th>零件号</th>
+                    <th>厂家号</th>
                     <th>单位</th>
                     <th>供应商</th>
                     <th>数量</th>
@@ -198,7 +198,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th rowspan="2">库存记录</th>
                     <th></th>
                     <th>类型</th>
-                    <th>零件号</th>
+                    <th>厂家号</th>
                     <th>单位</th>
                     <th>供应商</th>
                     <th>数量</th>
@@ -243,7 +243,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
                     <th></th>
                     <th>类型</th>
-                    <th>零件号</th>
+                    <th>厂家号</th>
                     <th>单位</th>
                     <th>供应商</th>
                     <th>数量</th>

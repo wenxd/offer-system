@@ -28,7 +28,7 @@ foreach ($adminList as $key => $admin) {
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
-                <th>零件号</th>
+                <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>

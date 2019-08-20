@@ -18,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                 <tr class="goods">
                     <th>序号</th>
-                    <th>P/N</th>
                     <th>零件号</th>
+                    <th>厂家号</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>

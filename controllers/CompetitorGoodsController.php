@@ -88,7 +88,7 @@ class CompetitorGoodsController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F'];
-        $tableHeader = ['P/N', '竞争对手', '针对客户', '税率', '未税价格', '备注'];
+        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税价格', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -151,7 +151,7 @@ class CompetitorGoodsController extends BaseController
                     $date = date('Y-m-d H:i:s');
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            //P/N
+                            //零件号
                             $a = trim($value['A']);
                             if (empty($a)) {
                                 continue;
@@ -159,7 +159,7 @@ class CompetitorGoodsController extends BaseController
                             $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
                                 ->andWhere(['goods_number' => $a])->one();
                             if (!$goods) {
-                                return json_encode(['code' => 500, 'msg' => '在第' . $key . '行没有' . $a . '这个零件号，请添加零件信息']);
+                                return json_encode(['code' => 500, 'msg' => '在第' . $key . '行没有' . $a . '这个厂家号，请添加零件信息']);
                             }
                             //竞争对手
                             $b = trim($value['B']);

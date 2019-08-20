@@ -65,16 +65,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-header">
                 <form class="form-inline" method="get" action="" id="form">
                     <div class="form-group">
-                        <label for="good_number">零件号</label>
+                        <label for="good_number">厂家号</label>
                         <input type="text" class="form-control" id="good_number"
-                               placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off"
+                               placeholder="请输入厂家号，如：1001" name="good_number" autocomplete="off"
                                onkeydown="if(event.keyCode == 13){return false;}">
 
                     </div>
                     <div class="form-group good_number_b">
-                        <label for="good_number_b">零件号</label>
+                        <label for="good_number_b">厂家号</label>
                         <input type="text" class="form-control" id="good_number_b"
-                               placeholder="请输入零件号" autocomplete="off"
+                               placeholder="请输入厂家号" autocomplete="off"
                                onkeydown="if(event.keyCode == 13){return false;}">
                     </div>
                     <div class="form-group number">
@@ -108,8 +108,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead>
                     <tr>
                         <th>序号</th>
-                        <th>P/N</th>
                         <th>零件号</th>
+                        <th>厂家号</th>
                         <th>原厂家</th>
                         <th>单位</th>
                         <th>税率</th>
@@ -173,7 +173,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     });
 
-    //零件号搜索
+    //厂家号搜索
     $("#good_number_b").bind('input propertychange', function (e) {
         var good_number_b = $('#good_number_b').val();
         if (good_number_b === '') {
@@ -215,7 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
         var goods_id   = $('#good_number').val();
         var goods_id_b = $('#good_number_b').val();
         if (goods_id === '' && goods_id_b === '') {
-            layer.msg('输入零件号或者零件号', {time:2000});
+            layer.msg('输入厂家号或者厂家号', {time:2000});
             return false;
         }
 

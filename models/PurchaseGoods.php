@@ -95,7 +95,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
             'order_purchase_id' => '采购订单ID',
             'order_purchase_sn' => '采购订单号',
             'goods_id'          => '零件ID',
-            'goods_number'      => '零件号',
+            'goods_number'      => '厂家号',
             'type'              => '关联类型  0询价  1库存',
             'number'            => '采购数量',
             'relevance_id'      => '关联ID（询价或库存）',

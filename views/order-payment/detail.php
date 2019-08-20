@@ -29,9 +29,9 @@ $userId = Yii::$app->user->identity->id;
             <tr>
                 <th>序号</th>
                 <?php if(in_array($userId, $adminIds)):?>
-                <th>P/N</th>
-                <?php endif;?>
                 <th>零件号</th>
+                <?php endif;?>
+                <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>

@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tr>
                         <th><input type="checkbox" class="select_all"></th>
                         <th>零件ID</th>
-                        <th>零件号</th>
+                        <th>厂家号</th>
                         <th>最新</th>
                         <th>优选</th>
                         <th>供应商ID</th>

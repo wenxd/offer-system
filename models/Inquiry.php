@@ -9,7 +9,7 @@ use yii\behaviors\TimestampBehavior;
  * This is the model class for table "{{%inquiry}}".
  *
  * @property int $id 自增id
- * @property string $good_id 零件号
+ * @property string $good_id 厂家号
  * @property int $supplier_id 供应商ID
  * @property string $price 咨询价格
  * @property string $inquiry_datetime 咨询时间
@@ -104,8 +104,8 @@ class Inquiry extends ActiveRecord
         return [
             'id'               => '自增id',
             'good_id'          => '零件ID',
-            'goods_number'     => 'P/N',
-            'goods_number_b'   => '零件号',
+            'goods_number'     => '零件号',
+            'goods_number_b'   => '厂家号',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',
@@ -171,7 +171,7 @@ class Inquiry extends ActiveRecord
         }
 
         if (!$this->goods_number && !$this->goods_number_b) {
-            $this->addError('id', '零件号不能为空');
+            $this->addError('id', '厂家号不能为空');
             return false;
         }
 

@@ -24,8 +24,8 @@ $model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
                 <thead>
                     <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>" data-key="<?=$_GET['key']?>">
                         <th>序号</th>
-                        <th>P/N</th>
                         <th>零件号</th>
+                        <th>厂家号</th>
                         <th>中文描述</th>
                         <th>英文描述</th>
                         <th>原厂家</th>

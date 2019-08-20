@@ -13,7 +13,7 @@ use app\extend\tencent\Cos;
  * This is the model class for table "goods".
  *
  * @property int $id 自增id
- * @property string $goods_number 零件号
+ * @property string $goods_number 厂家号
  * @property string $description 中文描述
  * @property string $description_en 英文描述
  * @property string $original_company 原厂家
@@ -128,8 +128,8 @@ class Goods extends ActiveRecord
     {
         return [
             'id'                      => '序号',
-            'goods_number'            => 'P/N',
-            'goods_number_b'          => '零件号',
+            'goods_number'            => '零件号',
+            'goods_number_b'          => '厂家号',
             'description'             => '中文描述',
             'description_en'          => '英文描述',
             'original_company'        => '厂家',

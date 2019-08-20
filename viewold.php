@@ -35,9 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-header">
                     <form class="form-inline" method="get" action="" id="form">
                         <div class="form-group">
-                            <label for="good_number">零件号</label>
+                            <label for="good_number">厂家号</label>
                             <input type="text" class="form-control" id="good_number"
-                                   placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off"
+                                   placeholder="请输入厂家号，如：1001" name="good_number" autocomplete="off"
                                    onkeydown="if(event.keyCode == 13){return false;}">
                         </div>
                         <button type="button" class="btn btn-primary add_goods" style="float: right">添加</button>
@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead>
                         <tr>
                             <th><input type="checkbox" name="select_all" class="select_all"></th>
-                            <th>零件号</th>
+                            <th>厂家号</th>
                             <th>原厂家</th>
                             <th>单位</th>
                             <th>数量</th>
@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
     $('.add_goods').click(function(e){
         var goods_id = $('#good_number').val();
         if (goods_id === '') {
-            layer.msg('零件号不能为空', {time:2000});
+            layer.msg('厂家号不能为空', {time:2000});
             return false;
         }
         $.ajax({

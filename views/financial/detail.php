@@ -29,7 +29,7 @@ $isShow = in_array($userId, $adminIds);
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
-                <th>零件号</th>
+                <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
