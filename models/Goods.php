@@ -78,6 +78,8 @@ class Goods extends ActiveRecord
     
     public $img_url = '';
     public $nameplate_img_url = '';
+    public $is_inquiry;
+    public $is_better_inquiry;
 
     public function behaviors()
     {
@@ -109,7 +111,7 @@ class Goods extends ActiveRecord
     public function rules()
     {
         return [
-            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly'], 'integer'],
+            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en', 'material'], 'string', 'max' => 255],
@@ -259,5 +261,20 @@ class Goods extends ActiveRecord
     public function getInquirySn()
     {
         return $this->hasOne(InquiryGoods::className(), ['goods_id' => 'id']);
+    }
+
+    public function getInquiry()
+    {
+        return $this->hasOne(Inquiry::className(), ['good_id' => 'id']);
+    }
+
+    public function getInquiryNumber()
+    {
+        return $this->hasMany(Inquiry::className(), ['good_id' => 'id'])->count();
+    }
+
+    public function getInquiryBetter()
+    {
+        return $this->hasOne(Inquiry::className(), ['good_id' => 'id'])->where(['is_better' => 1]);
     }
 }

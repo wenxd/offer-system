@@ -149,9 +149,9 @@ class GoodsController extends BaseController
         $stockLog = StockLog::find()->where(['type' => StockLog::TYPE_IN, 'goods_id' => $goods_id])
             ->orderBy('operate_time Desc')->limit(3)->all();
         $order_ids = ArrayHelper::getColumn($stockLog, 'order_id');
-        $order_purchase_ids = ArrayHelper::getColumn($stockLog, 'order_purchase_id');
+        $order_payment_ids = ArrayHelper::getColumn($stockLog, 'order_payment_id');
 
-        $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $order_ids, 'order_purchase_id' => $order_purchase_ids, 'goods_id' => $goods_id])->all();
+        $purchaseGoods = PaymentGoods::find()->where(['order_id' => $order_ids, 'order_payment_id' => $order_payment_ids, 'goods_id' => $goods_id])->all();
 
         $inquiry_ids = [];
         $stock_ids   = [];

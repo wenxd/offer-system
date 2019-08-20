@@ -110,6 +110,63 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'technique_remark',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'device_info',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
+                'value'          => function($model){
+                    $text = '';
+                    if ($model->device_info) {
+                        foreach (json_decode($model->device_info, true) as $key => $device) {
+                            $text .= $key . ':' . $device . '<br/>';
+                        }
+                    }
+                    return $text;
+                }
+            ],
+            [
+                'attribute' => 'is_inquiry',
+                'label'     => '是否询价',
+                'format'    => 'raw',
+                'filter'    => ['0' => '否', '1' => '是'],
+                'value'     => function($model){
+                    if ($model->inquiry) {
+                        return '是';
+                    } else {
+                        return '否';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'inquiry_number',
+                'label'     => '询价数量',
+                'format'    => 'raw',
+                'value'     => function($model){
+                    return $model->inquiryNumber;
+                }
+            ],
+            [
+                'attribute' => 'is_inquiry_better',
+                'label'     => '是否优选',
+                'format'    => 'raw',
+                'filter'    => ['0' => '否', '1' => '是'],
+                'value'     => function($model){
+                    if ($model->inquiryBetter) {
+                        $v = Yii::$app->request->get('GoodsSearch')['is_inquiry_better'];
+                        if ($v === '0' || $v === '1') {
+                            return $v ? '是' : '否';
+                        } else {
+                            return '是';
+                        }
+                    } else {
+                        return '否';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
@@ -129,24 +186,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'value'     => function($model){
                     return substr($model->created_at, 0, 10);
-                }
-            ],
-            [
-                'attribute' => 'technique_remark',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute'      => 'device_info',
-                'format'         => 'raw',
-                'contentOptions' =>['style'=>'min-width: 200px;'],
-                'value'          => function($model){
-                    $text = '';
-                    if ($model->device_info) {
-                        foreach (json_decode($model->device_info, true) as $key => $device) {
-                            $text .= $key . ':' . $device . '<br/>';
-                        }
-                    }
-                    return $text;
                 }
             ],
         ],
