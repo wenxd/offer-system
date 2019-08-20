@@ -229,19 +229,13 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '设备信息用|分组'];
-        $tableValues = '设备1=3|设备2=4|设备5=5';
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '材质', '是否加工', '是否总成', '是否特制',
+            '是否铭牌', '是否紧急', '所属设备', '设备用量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            if ($i == 6) {
-                $excel->getColumnDimension($letter[$i])->setWidth(32);
-            }
             $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
-            if ($i == 6) {
-                $excel->setCellValue($letter[$i].'2',$tableValues);
-            }
         }
 
         $title = '零件上传模板';
@@ -326,13 +320,41 @@ class GoodsController extends BaseController
                                 $goods->original_company_remark = trim($value['F']);
                             }
                             if ($value['G']) {
-                                $deviceList = explode('|', trim($value['G']));
-                                $device_info = [];
-                                foreach ($deviceList as $device) {
-                                    list($name, $number) = explode('=', $device);
-                                    $device_info[$name] = $number;
+                                $goods->material = trim($value['G']);
+                            }
+                            if ($value['H'] && $value['H'] != '否') {
+                                $goods->is_process = Goods::IS_PROCESS_YES;
+                            }
+                            if ($value['I'] && $value['I'] != '否') {
+                                $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+                            }
+                            if ($value['J'] && $value['J'] != '否') {
+                                $goods->is_special = Goods::IS_SPECIAL_YES;
+                            }
+                            if ($value['K'] && $value['K'] != '否') {
+                                $goods->is_nameplate = Goods::IS_NAMEPLATE_YES;
+                            }
+                            if ($value['L'] && $value['L'] != '否') {
+                                $goods->is_emerg = Goods::IS_EMERG_YES;
+                            }
+                            if ($value['M'] && $value['N']) {
+                                $deviceName   = trim($value['M']);
+                                $deviceNumber = trim($value['N']);
+                                $device = [];
+                                $device[$deviceName] = $deviceNumber;
+                                $oldDevice = json_decode($goods->device_info, true);
+                                if ($goods->isNewRecord) {
+                                    $goods->device_info = json_encode($device, JSON_UNESCAPED_UNICODE);
+                                } else {
+                                    //存在某个key
+                                    if (array_key_exists($deviceName, $oldDevice)) {
+                                        $oldDevice[$deviceName] = $deviceNumber;
+                                        $newDevice = $oldDevice;
+                                    } else {
+                                        $newDevice = array_merge($oldDevice, $device);
+                                    }
+                                    $goods->device_info = json_encode($newDevice, JSON_UNESCAPED_UNICODE);
                                 }
-                                $goods->device_info = json_encode($device_info, JSON_UNESCAPED_UNICODE);
                             }
                             if ($goods->save()) {
                                 $num++;
