@@ -167,6 +167,67 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_stock',
+                'label'     => '是否有库存',
+                'format'    => 'raw',
+                'filter'    => ['0' => '否', '1' => '是'],
+                'value'     => function($model){
+                    if ($model->stockNumber) {
+                        return '是';
+                    } else {
+                        return '否';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'stock_number',
+                'label'     => '库存数量',
+                'format'    => 'raw',
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return $model->stock->number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'suggest_number',
+                'label'     => '建议库存',
+                'format'    => 'raw',
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return $model->stock->suggest_number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'high_number',
+                'label'     => '高储',
+                'format'    => 'raw',
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return $model->stock->high_number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'low_number',
+                'label'     => '低储',
+                'format'    => 'raw',
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return $model->stock->low_number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([

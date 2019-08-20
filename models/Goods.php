@@ -277,4 +277,14 @@ class Goods extends ActiveRecord
     {
         return $this->hasOne(Inquiry::className(), ['good_id' => 'id'])->where(['is_better' => 1]);
     }
+
+    public function getStockNumber()
+    {
+        return $this->hasOne(Stock::className(), ['good_id' => 'id'])->where(['>', 'number', 0]);
+    }
+
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['good_id' => 'id']);
+    }
 }

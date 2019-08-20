@@ -15,6 +15,7 @@ class GoodsSearch extends Goods
 {
     public $is_inquiry;
     public $is_inquiry_better;
+    public $is_stock;
     /**
      * {@inheritdoc}
      */
@@ -22,7 +23,7 @@ class GoodsSearch extends Goods
     {
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry'
-            , 'is_inquiry_better'], 'integer'],
+            , 'is_inquiry_better', 'is_stock'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info', 'material'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
@@ -95,17 +96,17 @@ class GoodsSearch extends Goods
             $inquiryGoodsIds = ArrayHelper::getColumn($inquiry, 'good_id');
             $query->andWhere(['id' => $inquiryGoodsIds]);
         }
-        if ($this->is_inquiry === '') {
-            $where = [];
-            if ($this->is_inquiry_better === '0') {
-                $where['is_better'] = 0;
-            }
-            if ($this->is_inquiry_better === '1') {
-                $where['is_better'] = 1;
-            }
-            $inquiry = Inquiry::find()->where($where)->andWhere(['good_id' => $goodsIds])->all();
-            $inquiryGoodsIds = ArrayHelper::getColumn($inquiry, 'good_id');
-            $query->andWhere(['id' => $inquiryGoodsIds]);
+
+        if ($this->is_stock === '0') {
+            $stockList = Stock::find()->where(['>', 'number', 0])->all();
+            $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
+            $query->andWhere(['not in', 'id', $goodsIds]);
+        }
+
+        if ($this->is_stock === '1') {
+            $stockList = Stock::find()->where(['>', 'number', 0])->all();
+            $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
+            $query->andWhere(['in', 'id', $goodsIds]);
         }
 
         // grid filtering conditions
