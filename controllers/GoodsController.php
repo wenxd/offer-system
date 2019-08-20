@@ -344,6 +344,7 @@ class GoodsController extends BaseController
                                 $device[$deviceName] = $deviceNumber;
                                 $oldDevice = json_decode($goods->device_info, true);
                                 if ($goods->isNewRecord) {
+                                    $goods->unit = '个';
                                     $goods->device_info = json_encode($device, JSON_UNESCAPED_UNICODE);
                                 } else {
                                     //存在某个key
