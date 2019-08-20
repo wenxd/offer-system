@@ -66,13 +66,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'goods_number_b',
+            'original_company',
             'description',
             'description_en',
             [
                 'attribute' => 'material',
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
-            'original_company',
             'original_company_remark',
             [
                 'attribute' => 'is_process',
