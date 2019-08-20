@@ -45,7 +45,7 @@ if (!$model->isNewRecord) {
 
     <div class="box-body">
 
-    <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号A') ?>
+    <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('P/N') ?>
     <div class="box-search cancel">
         <ul class="box-search-ul">
 

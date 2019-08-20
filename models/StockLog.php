@@ -80,7 +80,7 @@ class StockLog extends ActiveRecord
             'order_payment_id'   => '支出合同单ID',
             'payment_sn'         => '支出合同单号',
             'goods_id'           => '零件ID',
-            'goods_number'       => '零件号A',
+            'goods_number'       => 'P/N',
             'number'             => '数量',
             'type'               => '入库出库 0入库  1出库',
             'operate_time'       => '操作时间',

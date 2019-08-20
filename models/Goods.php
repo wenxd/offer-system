@@ -128,8 +128,8 @@ class Goods extends ActiveRecord
     {
         return [
             'id'                      => '序号',
-            'goods_number'            => '零件号A',
-            'goods_number_b'          => '零件号B',
+            'goods_number'            => 'P/N',
+            'goods_number_b'          => '零件号',
             'description'             => '中文描述',
             'description_en'          => '英文描述',
             'original_company'        => '厂家',

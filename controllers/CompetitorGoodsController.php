@@ -88,7 +88,7 @@ class CompetitorGoodsController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F'];
-        $tableHeader = ['零件号A', '竞争对手', '针对客户', '税率', '未税价格', '备注'];
+        $tableHeader = ['P/N', '竞争对手', '针对客户', '税率', '未税价格', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -151,7 +151,7 @@ class CompetitorGoodsController extends BaseController
                     $date = date('Y-m-d H:i:s');
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            //零件号A
+                            //P/N
                             $a = trim($value['A']);
                             if (empty($a)) {
                                 continue;

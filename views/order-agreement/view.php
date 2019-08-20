@@ -31,9 +31,9 @@ $userId   = Yii::$app->user->identity->id;
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
                 <?php if(!in_array($userId, $adminIds)):?>
-                    <th>零件号A</th>
+                    <th>P/N</th>
                 <?php endif;?>
-                <th>零件号B</th>
+                <th>零件号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>

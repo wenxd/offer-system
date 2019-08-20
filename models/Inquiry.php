@@ -104,8 +104,8 @@ class Inquiry extends ActiveRecord
         return [
             'id'               => '自增id',
             'good_id'          => '零件ID',
-            'goods_number'     => '零件号A',
-            'goods_number_b'   => '零件号B',
+            'goods_number'     => 'P/N',
+            'goods_number_b'   => '零件号',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税价格',

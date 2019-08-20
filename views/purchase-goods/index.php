@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
-                'label'     => '零件号A',
+                'label'     => 'P/N',
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'goods_number_b',
                 'format'    => 'raw',
-                'label'     => '零件号B',
+                'label'     => '零件号',
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {

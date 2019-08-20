@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <style>
-    /*零件号A*/
+    /*P/N*/
     .box-search-goods_number li {
         list-style: none;
         padding-left: 10px;
@@ -38,7 +38,7 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
 
-        <?= $form->field($model, 'goods_number')->textInput()->label('零件号A') ?>
+        <?= $form->field($model, 'goods_number')->textInput()->label('P/N') ?>
 
         <div class="box-search-goods_number cancel-goods_number">
             <ul class="box-search-ul-goods_number">

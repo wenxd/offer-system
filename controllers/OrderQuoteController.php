@@ -336,7 +336,7 @@ class OrderQuoteController extends Controller
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-        $tableHeader = ['序号', '零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '加工', '特质', '铭牌', '报价货期',
+        $tableHeader = ['序号', 'P/N', '零件号', '中文描述', '英文描述', '原厂家', '原厂家备注', '加工', '特质', '铭牌', '报价货期',
             '未税单价', '含税单价', '报价数量', '未税总价', '含税总价', '报价单号'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');

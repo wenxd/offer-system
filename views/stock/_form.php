@@ -25,7 +25,7 @@ if ($model->isNewRecord) {
 
     <?= $form->field($model, 'good_id')
         ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
-        ->label('零件号A') ?>
+        ->label('P/N') ?>
 
     <?= $form->field($model, 'supplier_id')
         ->dropDownList(Supplier::getCreateDropDown())->label('供应商名称') ?>

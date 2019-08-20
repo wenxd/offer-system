@@ -230,7 +230,7 @@ class GoodsController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
-        $tableHeader = ['零件号A', '零件号B', '中文描述', '英文描述', '原厂家', '原厂家备注', '材质', '是否加工', '是否总成', '是否特制',
+        $tableHeader = ['P/N', '零件号', '中文描述', '英文描述', '原厂家', '原厂家备注', '材质', '是否加工', '是否总成', '是否特制',
             '是否铭牌', '是否紧急', '所属设备', '设备用量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
