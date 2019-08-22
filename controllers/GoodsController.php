@@ -14,7 +14,8 @@ use app\models\{AgreementGoods,
     OrderGoods,
     OrderInquiry,
     PurchaseGoods,
-    StockLog};
+    StockLog,
+    TempOrderInquiry};
 use yii\helpers\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -366,6 +367,18 @@ class GoodsController extends BaseController
                 unlink('./' . $saveName);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
+        }
+    }
+
+    public function actionInquiryOrder()
+    {
+        $goodsIds = Yii::$app->request->post('goods_ids');
+        $temp = new TempOrderInquiry();
+        $temp->goods_ids = implode(',',$goodsIds);
+        if ($temp->save()) {
+            return json_encode(['code' => 200, 'msg' => '成功', 'data' => $temp->primaryKey], JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $temp->getErrors()], JSON_UNESCAPED_UNICODE);
         }
     }
 }

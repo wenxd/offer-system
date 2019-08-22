@@ -644,3 +644,10 @@ ALTER TABLE `stock_log` ADD COLUMN `order_agreement_id` int(11) NOT NULL DEFAULT
 ALTER TABLE `stock_log` ADD COLUMN `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';
 ALTER TABLE `stock_log` ADD COLUMN `remark`             varchar(255) NOT NULL DEFAULT '' COMMENT '出入库备注';
 
+CREATE TABLE `temp_order_inquiry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `goods_ids` TEXT     COMMENT '零件id 多个用,分开',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成询价单';

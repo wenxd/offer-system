@@ -55,12 +55,13 @@ class GoodsSearch extends Goods
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
                 'attributes' => ['id', 'updated_at', 'created_at']
             ],
+            'pagination' => ['pageSize' => 100]
         ]);
 
         $this->load($params);

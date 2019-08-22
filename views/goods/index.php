@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload}',
+            'template' => '{create} {delete} {download} {upload} {inquiry}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -32,7 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-pjax' => '0',
                         'class'     => 'btn btn-info btn-flat upload',
                     ]);
-                }
+                },
+                'inquiry' => function () {
+                    return Html::a('<i class="fa fa-plus-circle"></i> 生成询价单', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat add_inquiry',
+                    ]);
+                },
             ]
         ])?>
     </div>
@@ -293,5 +299,33 @@ $this->params['breadcrumbs'][] = $this->title;
                 layer.msg(data.msg,{icon:1});
             }
         }
+    });
+
+    //生成询价单
+    $('.add_inquiry').click(function () {
+        var goods_ids = [];
+        $("input[name='selection[]']").each(function (i, e) {
+            if ($(e).prop('checked')) {
+                goods_ids.push($(e).val())
+            }
+        });
+        if (!goods_ids.length) {
+            layer.msg('请选择要询价的商品', {icon:1});
+            return;
+        }
+        $.ajax({
+            type:"POST",
+            url:"?r=goods/inquiry-order",
+            data:{goods_ids:goods_ids},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    location.replace("?r=order/create&temp_id=" + res.data);
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
     });
 </script>
