@@ -21,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $provide_date 供货日期
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $goods_ids 创建时间
  */
 class Order extends ActiveRecord
 {
@@ -86,7 +87,7 @@ class Order extends ActiveRecord
             [['customer_id', 'type', 'status', 'is_deleted', 'order_type'], 'integer'],
             [['order_price'], 'number'],
             [['provide_date', 'updated_at', 'created_at'], 'safe'],
-            [['order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
+            [['goods_ids', 'order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
         ];
     }
 

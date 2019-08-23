@@ -9,6 +9,7 @@ use app\models\OrderFinal;
 use app\models\OrderGoods;
 use app\models\OrderInquiry;
 use app\models\OrderPurchase;
+use app\models\TempOrderInquiry;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -407,7 +408,6 @@ class OrderController extends BaseController
         $order->manage_name  = $params['manage_name'];
         $order->goods_ids    = json_encode($goods['goodsIds']);
         $order->order_type   = $params['order_type'];
-        $order->provide_date = $params['provide_date'];
         $order->created_at   = $params['created_at'];
 
         if ($order->save()) {
@@ -514,5 +514,54 @@ class OrderController extends BaseController
         $data['number']       = $number;
 
         return $this->render('create-final', $data);
+    }
+
+    /**
+     * 非项目订单
+     */
+    public function actionDirectInquiry()
+    {
+        $params = Yii::$app->request->get();
+        $tempOrder = TempOrderInquiry::findOne($params['temp_id']);
+        $goodsIds = explode(',', $tempOrder->goods_ids);
+        $goodsList = Goods::findAll(['id' => $goodsIds]);
+
+        return $this->render('add-goods-inquiry', [
+            'params'    => $params,
+            'goodsList' => $goodsList
+        ]);
+    }
+
+    /**
+     * 保存询价单
+     */
+    public function actionSaveInquiryOrder()
+    {
+        $params = Yii::$app->request->post();
+
+        $order               = new Order();
+        $order->customer_id  = $params['customer_id'];
+        $order->order_sn     = $params['order_sn'];
+        $order->manage_name  = $params['manage_name'];
+        $order->goods_ids    = json_encode($params['goodsIds']);
+        $order->order_type   = Order::ORDER_TYPE_PROJECT_NO;
+        $order->created_at   = $params['created_at'];
+
+        if ($order->save()) {
+            $data = [];
+            foreach ($params['goodsInfo'] as $item) {
+                $row = [];
+                $row[] = $order->primaryKey;
+                $row[] = $item['goods_id'];
+                $row[] = $item['number'];
+                $row[] = $item['serial'];
+                $data[] = $row;
+            }
+            $feild = ['order_id', 'goods_id', 'number', 'serial'];
+            $num = Yii::$app->db->createCommand()->batchInsert(OrderGoods::tableName(), $feild, $data)->execute();
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
+        }
     }
 }

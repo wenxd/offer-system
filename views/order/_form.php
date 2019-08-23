@@ -36,17 +36,6 @@ if ($model->isNewRecord) {
 
     <?= $form->field($model, 'manage_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'provide_date')->widget(DateTimePicker::className(), [
-        'removeButton'  => false,
-        'pluginOptions' => [
-            'autoclose' => true,
-            'format'    => 'yyyy-mm-dd',
-            'startView' =>2,  //其实范围（0：日  1：天 2：年）
-            'maxView'   =>2,  //最大选择范围（年）
-            'minView'   =>2,  //最小选择范围（年）
-        ]
-    ]);?>
-
     <?= $form->field($model, 'created_at')->textInput(['readonly' => true]) ?>
 
     </div>
@@ -70,6 +59,35 @@ if ($model->isNewRecord) {
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var base_order_sn = $('.base_order_sn').html();
+        $('input:radio').change(function (e) {
+            var short_name = $('#order-customer_short_name').val();
+            var first = base_order_sn.slice(0, 8);
+            var end = base_order_sn.slice(8);
+            var order_sn = first + short_name + end;
+            if ($("input:radio:checked").val() == 1) {
+                $('#order-order_sn').val(order_sn);
+            } else {
+                $('#order-order_sn').val('F' + order_sn.substring(1));
+            }
+        });
+
+        init();
+        function init() {
+            var temp_id = '<?=$_GET['temp_id'] ?? ''?>';
+            if (temp_id) {
+                $("input[type='radio']").eq(1).attr('checked', 'checked');
+                var short_name = $('#order-customer_short_name').val();
+                var first = base_order_sn.slice(0, 8);
+                var end = base_order_sn.slice(8);
+                var order_sn = first + short_name + end;
+                if ($("input:radio:checked").val() == 1) {
+                    $('#order-order_sn').val(order_sn);
+                } else {
+                    $('#order-order_sn').val('F' + order_sn.substring(1));
+                }
+            }
+        }
 
         $('#order-customer_id').change(function () {
             var id = $(this).val();
@@ -79,18 +97,16 @@ if ($model->isNewRecord) {
                 data:{id:id},
                 dataType:'JSON',
                 success:function(res){
-                    var base_order_sn = $('.base_order_sn').html();
+                    var base_order_sn = $('#order-order_sn').val();
                     if (res && res.code == 200) {
                         $('#order-customer_short_name').val(res.data.short_name);
-                        var first = base_order_sn.slice(0, 8);
-                        var end = base_order_sn.slice(8);
-                        var order_sn = first + res.data.short_name + end;
-                        console.log(order_sn);
-                        //$('#order-order_sn').attr("value",order_sn);
+                        base_order_sn = base_order_sn.split('_');
+                        var first = base_order_sn[0];
+                        var end   = base_order_sn[2];
+                        var order_sn = first + '_' + res.data.short_name + '_' + end;
                         $('#order-order_sn').val(order_sn);
                     } else {
                         $('#order-customer_short_name').val('');
-                        //$('#order-order_sn').attr("value",base_order_sn);
                         $('#order-order_sn').val(base_order_sn);
                     }
                 }
@@ -120,26 +136,21 @@ if ($model->isNewRecord) {
                 return false;
             }
             parameter += 'manage_name=' + manage_name + '&';
-            var provide_date = $('#order-provide_date').val();
-            if (provide_date === ''){
-                layer.msg('请输入报价截止日期', {time:2000});
-                return false;
-            }
+            // var provide_date = $('#order-provide_date').val();
+            // if (provide_date === ''){
+            //     layer.msg('请输入报价截止日期', {time:2000});
+            //     return false;
+            // }
+            // parameter += 'provide_date=' + provide_date + '&';
             var created_at = $('#order-created_at').val();
-            parameter += 'provide_date=' + provide_date + '&' + 'created_at=' + created_at;
-            location.replace("?r=order/generate&" + encodeURI(parameter));
-        });
+            parameter += 'created_at=' + created_at;
 
-        var base_order_sn = $('.base_order_sn').html();
-        $('input:radio').change(function (e) {
-            var short_name = $('#order-customer_short_name').val();
-            var first = base_order_sn.slice(0, 8);
-            var end = base_order_sn.slice(8);
-            var order_sn = first + short_name + end;
-            if ($("input:radio:checked").val() == 1) {
-                $('#order-order_sn').val(order_sn);
+            var temp_id = '<?=$_GET['temp_id'] ?? ''?>';
+            if (order_type == 0 && temp_id) {
+                parameter += '&temp_id=' + temp_id;
+                location.replace("?r=order/direct-inquiry&" + encodeURI(parameter));
             } else {
-                $('#order-order_sn').val('F' + order_sn.substring(1));
+                location.replace("?r=order/generate&" + encodeURI(parameter));
             }
         });
     });

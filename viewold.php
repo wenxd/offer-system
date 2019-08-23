@@ -92,6 +92,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- /.col -->
     </div>
     <!-- /.row -->
+
+    <?= $form->field($model, 'provide_date')->widget(DateTimePicker::className(), [
+        'removeButton'  => false,
+        'pluginOptions' => [
+            'autoclose' => true,
+            'format'    => 'yyyy-mm-dd',
+            'startView' =>2,  //其实范围（0：日  1：天 2：年）
+            'maxView'   =>2,  //最大选择范围（年）
+            'minView'   =>2,  //最小选择范围（年）
+        ]
+    ]);?>
+
+
 </section>
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>

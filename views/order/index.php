@@ -56,24 +56,6 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 ],
                 [
-                    'attribute' => 'provide_date',
-                    'filter'    => DateRangePicker::widget([
-                        'name'  => 'OrderSearch[provide_date]',
-                        'value' => Yii::$app->request->get('OrderSearch')['provide_date'],
-                    ])
-                ],
-                [
-                    'attribute' => 'updated_at',
-                    'contentOptions' =>['style'=>'min-width: 150px;'],
-                    'filter'    => DateRangePicker::widget([
-                        'name'  => 'OrderSearch[updated_at]',
-                        'value' => Yii::$app->request->get('OrderSearch')['updated_at'],
-                    ]),
-                    'value'     => function($model){
-                        return substr($model->updated_at, 0, 10);
-                    }
-                ],
-                [
                     'attribute' => 'created_at',
                     'contentOptions' =>['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
