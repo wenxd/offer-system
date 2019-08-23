@@ -59,7 +59,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= Html::a('新增零件', Url::to(['goods/create']), [
                         'class' => 'btn btn-success',
                         'name'  => 'submit-button',
-                        'target' => 'blank']
+                        'target' => 'blank',
+                    ]
+                )?>
+                <?= Html::button('导入零件', [
+                        'class' => 'btn btn-primary import',
+                        'name'  => 'submit-button',
+                    ]
                 )?>
             </div>
             <div class="box-header">
