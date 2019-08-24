@@ -651,3 +651,14 @@ CREATE TABLE `temp_order_inquiry` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成询价单';
+
+CREATE TABLE `temp_order_goods` (
+  `id`          int(11) NOT NULL AUTO_INCREMENT,
+  `serial`      varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
+  `goods_id`    int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `number`      int(11) NOT NULL DEFAULT '0' COMMENT '数量',
+  `token`       varchar(255) NOT NULL DEFAULT '' COMMENT '每次上传的一批零件统一为一个token',
+  `updated_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成订单';

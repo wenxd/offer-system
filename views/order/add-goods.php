@@ -60,13 +60,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'btn btn-success',
                         'name'  => 'submit-button',
                         'target' => 'blank',
-                    ]
-                )?>
+                ])?>
+                <?= Html::a('下载模板', Url::to(['download']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat',
+                ])?>
                 <?= Html::button('导入零件', [
-                        'class' => 'btn btn-primary import',
+                        'class' => 'btn btn-success upload',
                         'name'  => 'submit-button',
-                    ]
-                )?>
+                ])?>
             </div>
             <div class="box-header">
                 <form class="form-inline" method="get" action="" id="form">
@@ -148,6 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- /.row -->
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     //零件搜索
     $("#good_number").bind('input propertychange', function (e) {
@@ -337,4 +340,43 @@ $this->params['breadcrumbs'][] = $this->title;
     function deleted(obj) {
         $(obj).parent().parent().remove();
     }
+    //上传导入逻辑
+    //加载动画索引
+    var index;
+    //上传文件名称
+    $.ajaxUploadSettings.name = 'FileName';
+
+    //监听事件
+    $('.upload').ajaxUploadPrompt({
+        //上传地址
+        url : '?r=order/upload',
+        //上传文件类型
+        accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
+        //上传前加载动画
+        beforeSend : function () {
+            layer.msg('上传中。。。', {
+                icon: 16 ,shade: 0.01
+            });
+        },
+        onprogress : function (e) {},
+        error : function () {},
+        success : function (data) {
+            //关闭动画
+            window.top.layer.close(index);
+            //字符串转换json
+            var data = JSON.parse(data);
+            if(data.code == 200){
+                //导入成功
+                layer.msg(data.msg,{time:2000},function(){
+                    var url = window.location.href;
+                    url += '&token=' + data.data;
+                    window.location.href = url
+                });
+            }else{
+                //失败提示
+                layer.msg(data.msg,{icon:1});
+            }
+        }
+    });
+
 </script>
