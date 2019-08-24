@@ -1,8 +1,16 @@
 <?php
-use yii\helpers\Html;
+
 use yii\helpers\Url;
+use yii\helpers\Html;
+use app\models\Goods;
+use app\models\SystemConfig;
 $this->title = '订单添加零件';
 $this->params['breadcrumbs'][] = $this->title;
+
+//获取税率
+$tax_rate = SystemConfig::find()->select('value')->where([
+    'title'  => SystemConfig::TITLE_TAX,
+    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 ?>
 <style>
     .box-search li {
@@ -129,7 +137,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                     </thead>
                     <tbody class="goods_list">
-
+                        <?php foreach ($tempGoods as $item) :?>
+                            <tr class="goods_id" data-id="<?=$item->goods->id?>">
+                                <td class="serialNumber"><input type="text" style="width: 50px;" value="<?=$item->serial?>"></td>
+                                <td><?=$item->goods->goods_number?></td>
+                                <td><?=$item->goods->goods_number_b?></td>
+                                <td><?=$item->goods->original_company?></td>
+                                <td><?=$item->goods->unit?></td>
+                                <td><?=$tax_rate?>></td>
+                                <td><?=Goods::$process[$item->goods->is_process]?></td>
+                                <td><?=Goods::$special[$item->goods->is_special]?></td>
+                                <td><img src="<?=printf('%s/%s', Yii::$app->params['img_url_prefix'], $item->goods->img_id)?>" width="50px"></td>
+                                <td class="goodsNumber"><?=$item->number?></td>
+                                <td><button type="button" class="btn btn-danger" onclick="deleted(this)">删除</button></td>
+                            </tr>
+                        <?php endforeach;?>
                     </tbody>
                 </table>
             </div>

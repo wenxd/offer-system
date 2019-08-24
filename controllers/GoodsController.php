@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\actions;
 use app\models\{AgreementGoods,
@@ -235,6 +236,7 @@ class GoodsController extends BaseController
             '是否铭牌', '是否紧急', '所属设备', '设备用量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
             $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
         }

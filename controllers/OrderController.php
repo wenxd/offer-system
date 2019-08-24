@@ -14,6 +14,7 @@ use app\models\TempOrderInquiry;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -604,6 +605,7 @@ class OrderController extends BaseController
         $tableHeader = ['序号', '零件号', '数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
             $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
         }
@@ -667,12 +669,15 @@ class OrderController extends BaseController
                             if (empty($value['B'])) {
                                 continue;
                             }
-                            $item = [];
-                            $item[] = trim($value['A']);
-                            $item[] = trim($value['B']);
-                            $item[] = trim($value['C']);
-                            $item[] = $time;
-                            $data[] = $item;
+                            $goods = Goods::findOne(['goods_number' => trim($value['B'])]);
+                            if ($goods) {
+                                $item = [];
+                                $item[] = trim($value['A']);
+                                $item[] = $goods->id;
+                                $item[] = trim($value['C']);
+                                $item[] = $time;
+                                $data[] = $item;
+                            }
                         }
                     }
                     $num = Yii::$app->db->createCommand()->batchInsert(TempOrderGoods::tableName(), ['serial', 'goods_id', 'number', 'token'], $data)->execute();
