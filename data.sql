@@ -662,3 +662,11 @@ CREATE TABLE `temp_order_goods` (
   `created_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成订单';
+
+CREATE TABLE `temp_not_goods` (
+  `id` int(11)  NOT NULL AUTO_INCREMENT,
+  `goods_id`    int(11)    NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `updated_at`  datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`  datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';

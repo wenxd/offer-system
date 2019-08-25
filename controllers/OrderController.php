@@ -687,6 +687,8 @@ class OrderController extends BaseController
                                 $item[] = trim($value['C']);
                                 $item[] = $time;
                                 $data[] = $item;
+                            } else {
+
                             }
                         }
                     }
