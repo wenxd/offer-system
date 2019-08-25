@@ -9,6 +9,7 @@ use app\models\OrderFinal;
 use app\models\OrderGoods;
 use app\models\OrderInquiry;
 use app\models\OrderPurchase;
+use app\models\Stock;
 use app\models\TempOrderGoods;
 use app\models\TempOrderInquiry;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -478,6 +479,13 @@ class OrderController extends BaseController
         }
         $orderGoods           = $orderGoodsQuery->all();
 
+        //询价记录
+        $inquiryList = Inquiry::find()->all();
+        $inquiryList = ArrayHelper::index($inquiryList, null, 'good_id');
+
+        //库存数量
+        $stockList = Stock::find()->indexBy('good_id')->all();
+
         $date = date('ymd_');
         $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
@@ -493,6 +501,8 @@ class OrderController extends BaseController
         $data['order']        = $order;
         $data['orderGoods']   = $orderGoods;
         $data['number']       = $number;
+        $data['inquiryList']  = $inquiryList;
+        $data['stockList']    = $stockList;
 
         return $this->render('create-inquiry', $data);
     }

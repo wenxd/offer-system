@@ -67,6 +67,10 @@ foreach ($orderGoods as $v) {
                     <th style="width: 80px;">特制</th>
                     <th style="width: 80px;">铭牌</th>
                     <th style="width: 80px;">总成</th>
+                    <th>是否询价</th>
+                    <th>询价数量</th>
+                    <th>是否优选</th>
+                    <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
                 </tr>
@@ -149,6 +153,23 @@ foreach ($orderGoods as $v) {
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
+                    <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
+                    <td><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
+                    <td>
+                        <?php
+                            $is_better = '否';
+                            if (isset($inquiryList[$item->goods_id])) {
+                                foreach ($inquiryList[$item->goods_id] as $value) {
+                                    if ($value->is_better) {
+                                        $is_better = '是';
+                                        break;
+                                    }
+                                }
+                            }
+                            echo $is_better;
+                        ?>
+                    </td>
+                    <td><?=isset($stockList[$item->goods_id]) ? $stockList[$item->goods_id]->number : 0?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?= $open ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
                 </tr>
