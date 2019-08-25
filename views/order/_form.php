@@ -146,11 +146,7 @@ if ($model->isNewRecord) {
             parameter += 'created_at=' + created_at;
 
             var temp_id = '<?=$_GET['temp_id'] ?? ''?>';
-            if (order_type == 0) {
-                if (!temp_id) {
-                    layer.msg('请从零件列表生成非项目订单', {time:2000});
-                    return false;
-                }
+            if (order_type == 0 && temp_id) {
                 parameter += '&temp_id=' + temp_id;
                 location.replace("?r=order/direct-inquiry&" + encodeURI(parameter));
             } else {
