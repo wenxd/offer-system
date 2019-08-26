@@ -52,7 +52,7 @@ $userId    = Yii::$app->user->identity->id;
             </thead>
             <tbody>
                 <?php foreach ($inquiryGoods as $item):?>
-                    <?php if (!in_array($userId, $adminIds)):?>
+                    <?php if (!in_array($userId, $adminIds)): ?>
                         <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                             <td><?=$item->serial?></td>
                             <td><?=$orderInquiry->inquiry_sn?></td>
@@ -82,7 +82,39 @@ $userId    = Yii::$app->user->identity->id;
                                 <?php endif;?>
                             </td>
                         </tr>
-                    <?php endif;?>
+                    <?php else: ?>
+                        <?php if (!$item->is_inquiry):?>
+                            <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
+                                <td><?=$item->serial?></td>
+                                <td><?=$orderInquiry->inquiry_sn?></td>
+                                <?php if(!in_array($userId, $adminIds)):?>
+                                    <td><?=$orderInquiry->order->order_sn?></td>
+                                    <td><?=$item->goods->goods_number?><?=Html::a(' 询价记录', Url::to(['inquiry/index', 'InquirySearch[goods_number]' => $item->goods->goods_number]))?></td>
+                                <?php endif;?>
+                                <td><?=$item->goods->goods_number_b?></td>
+                                <td><?=$item->goods->original_company?></td>
+                                <td><?=$item->goods->original_company_remark?></td>
+                                <td><?=$item->goods->description?></td>
+                                <td><?=$item->goods->description_en?></td>
+                                <td><?=$item->goods->unit?></td>
+                                <td><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></td>
+                                <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
+                                <td><?=$item->number?></td>
+                                <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
+                                <td><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
+                                <td><?=$item->reason?></td>
+                                <td>
+                                    <?php if (!isset($inquiryList[$item->goods_id])):?>
+                                        <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
+                                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                                    <?php endif;?>
+                                    <?php if (!isset($inquiryList[$item->goods_id]) && !$item->is_result):?>
+                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                                    <?php endif;?>
+                                </td>
+                            </tr>
+                        <?php endif ;?>
+                    <?php endif; ?>
                 <?php endforeach;?>
             </tbody>
         </table>
