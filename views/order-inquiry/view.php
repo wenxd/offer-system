@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$userId   = Yii::$app->user->identity->id;
+$userId    = Yii::$app->user->identity->id;
 ?>
 <style>
     .alarm {
@@ -45,14 +45,14 @@ $userId   = Yii::$app->user->identity->id;
                 <th>加工照片</th>
                 <th>数量</th>
                 <th>询价</th>
+                <th>询价数量</th>
                 <th>寻不出原因</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
             <tbody>
                 <?php foreach ($inquiryGoods as $item):?>
-<!--                确认询价之后看不到-->
-                    <?php if (!$item->is_inquiry):?>
+                    <?php if (!in_array($userId, $adminIds)):?>
                         <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                             <td><?=$item->serial?></td>
                             <td><?=$orderInquiry->inquiry_sn?></td>
@@ -69,14 +69,15 @@ $userId   = Yii::$app->user->identity->id;
                             <td><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></td>
                             <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
                             <td><?=$item->number?></td>
-                            <td><?=$item::$Inquiry[$item->is_inquiry]?></td>
+                            <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
+                            <td><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                             <td><?=$item->reason?></td>
                             <td>
-                                <?php if (!$item->is_inquiry):?>
+                                <?php if (!isset($inquiryList[$item->goods_id])):?>
                                     <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                     <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                 <?php endif;?>
-                                <?php if (!$item->is_result):?>
+                                <?php if (!isset($inquiryList[$item->goods_id]) && !$item->is_result):?>
                                     <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                                 <?php endif;?>
                             </td>

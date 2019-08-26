@@ -173,6 +173,9 @@ class OrderInquiryController extends BaseController
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 
+        $inquiryList = Inquiry::find()->indexBy('good_id')->all();
+        $data['inquiryList']   = $inquiryList;
+
         return $this->render('view', $data);
     }
 
