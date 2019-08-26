@@ -675,6 +675,7 @@ class OrderController extends BaseController
                     $total = count($sheetData);
                     $data = [];
                     $time = time();
+                    TempNotGoods::deleteAll();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['B'])) {
