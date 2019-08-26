@@ -200,7 +200,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>类型</th>
                     <th>厂家号</th>
                     <th>单位</th>
-                    <th>供应商</th>
+<!--                    <th>供应商</th>-->
                     <th>数量</th>
                     <th>税率</th>
                     <th>未税单价</th>
@@ -219,7 +219,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td>库存记录</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
-                    <td><?= $stock ? $stock->supplier->name : '' ?></td>
                     <td class="number"><?= $stock ? $stock->number : 0 ?></td>
                     <td><?= $stock ? $stock->tax_rate : 0 ?></td>
                     <td class="price"><?= $stock ? $stock->price : 0 ?></td>
