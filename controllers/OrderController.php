@@ -517,8 +517,35 @@ class OrderController extends BaseController
         }
         $goods_ids     = json_decode($order->goods_ids, true);
         $goods         = Goods::find()->where(['id' => $goods_ids])->all();
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->all();
+
+        //订单零件生成成本零件记录
+        foreach ($orderGoods as $value) {
+            $isHaveFinalGoods = FinalGoods::find()->where([
+                'order_id'  => $id,
+                'key'       => $key,
+                'goods_id'  => $value->goods_id,
+                'serial'    => $value->serial,
+            ])->one();
+            if (!$isHaveFinalGoods) {
+                $inquiry = Inquiry::find()->where([
+                    'good_id'   => $value->goods_id,
+                    'is_better' => Inquiry::IS_BETTER_YES
+                ])->one();
+                if (!$inquiry) {
+                    continue;
+                }
+                $isHaveFinalGoods = new FinalGoods();
+                $isHaveFinalGoods->order_id     = $id;
+                $isHaveFinalGoods->goods_id     = $value->goods_id;
+                $isHaveFinalGoods->serial       = $value->serial;
+                $isHaveFinalGoods->relevance_id = $inquiry->id;
+                $isHaveFinalGoods->key          = $key;
+                $isHaveFinalGoods->save();
+            }
+        }
+
         $finalGoods    = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
-        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $date = date('ymd_');
         $orderI = OrderFinal::find()->where(['like', 'final_sn', $date])->orderBy('created_at Desc')->one();

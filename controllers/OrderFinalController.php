@@ -175,9 +175,14 @@ class OrderFinalController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        $order = Order::findOne($params['order_id']);
+
         $orderFinal                 = new OrderFinal();
         $orderFinal->final_sn       = $params['final_sn'];
         $orderFinal->order_id       = $params['order_id'];
+        if ($order) {
+            $orderFinal->customer_id = $order->customer_id;
+        }
         $orderFinal->goods_info     = json_encode($params['goods_ids']);
         if ($orderFinal->save()) {
             $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],

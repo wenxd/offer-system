@@ -15,6 +15,7 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $is_quote 是否生成报价单 0否 1是
+ * @property string $customer_id
  */
 class OrderFinal extends \yii\db\ActiveRecord
 {
@@ -41,7 +42,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_deleted', 'is_quote'], 'integer'],
+            [['order_id', 'is_deleted', 'is_quote', 'customer_id'], 'integer'],
             [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],

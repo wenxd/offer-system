@@ -670,3 +670,5 @@ CREATE TABLE `temp_not_goods` (
   `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
+
+ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
