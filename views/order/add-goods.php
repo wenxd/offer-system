@@ -81,9 +81,9 @@ $tax_rate = SystemConfig::find()->select('value')->where([
             <div class="box-header">
                 <form class="form-inline" method="get" action="" id="form">
                     <div class="form-group">
-                        <label for="good_number">厂家号</label>
+                        <label for="good_number">零件号</label>
                         <input type="text" class="form-control" id="good_number"
-                               placeholder="请输入厂家号，如：1001" name="good_number" autocomplete="off"
+                               placeholder="请输入零件号" name="good_number" autocomplete="off"
                                onkeydown="if(event.keyCode == 13){return false;}">
 
                     </div>

@@ -10,6 +10,7 @@ use app\models\OrderGoods;
 use app\models\OrderInquiry;
 use app\models\OrderPurchase;
 use app\models\Stock;
+use app\models\TempNotGoods;
 use app\models\TempOrderGoods;
 use app\models\TempOrderInquiry;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -688,7 +689,9 @@ class OrderController extends BaseController
                                 $item[] = $time;
                                 $data[] = $item;
                             } else {
-
+                                $temp = new TempNotGoods();
+                                $temp->goods_number = trim($value['B']);
+                                $temp->save();
                             }
                         }
                     }

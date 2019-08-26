@@ -372,6 +372,7 @@ class GoodsController extends BaseController
         }
     }
 
+    //零件直接生成询价单，进入询价临时零件库
     public function actionInquiryOrder()
     {
         $goodsIds = Yii::$app->request->post('goods_ids');

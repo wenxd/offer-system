@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "temp_not_goods".
  *
  * @property int $id
- * @property int $goods_id 零件ID
+ * @property int $goods_number 零件号
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */
@@ -28,8 +28,7 @@ class TempNotGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['updated_at', 'created_at', 'goods_number'], 'safe'],
         ];
     }
 
@@ -39,10 +38,10 @@ class TempNotGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'goods_id' => '零件ID',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'id'            => 'ID',
+            'goods_number'  => '零件号',
+            'updated_at'    => '更新时间',
+            'created_at'    => '创建时间',
         ];
     }
 }
