@@ -33,7 +33,8 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$model->end_date   = date('Y-m-d', (strtotime($order->provide_date) - 3600*24));
+$model->end_date   = date('Y-m-d');
+
 $model->inquiry_sn = 'X' . date('ymd_') . $number;
 
 $order_goods_ids = [];

@@ -70,7 +70,7 @@ $userId    = Yii::$app->user->identity->id;
                             <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
                             <td><?=$item->number?></td>
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
-                            <td><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
+                            <td class="inquiry_number"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                             <td><?=$item->reason?></td>
                             <td>
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
@@ -101,7 +101,7 @@ $userId    = Yii::$app->user->identity->id;
                                 <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
                                 <td><?=$item->number?></td>
                                 <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
-                                <td><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
+                                <td class="inquiry_number"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                                 <td><?=$item->reason?></td>
                                 <td>
                                     <?php if (!isset($inquiryList[$item->goods_id])):?>
@@ -126,6 +126,11 @@ $userId    = Yii::$app->user->identity->id;
 <script type="text/javascript">
     $(document).ready(function () {
         $('.confirm').click(function (e) {
+            var inquiry_number = $(this).parent().parent().find('.inquiry_number').text();
+            if (0 == Number(inquiry_number)) {
+                layer.msg('请先添加询价记录', {time:2000});
+                return;
+            }
             var id = $(this).data('id');
             $.ajax({
                 type:"get",
