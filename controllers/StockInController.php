@@ -188,4 +188,33 @@ class StockInController extends BaseController
             return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     }
+
+    /**
+     * 质检
+     */
+    public function actionQuality()
+    {
+        $id = Yii::$app->request->post('payment_goods_id');
+        $paymentGoods = PaymentGoods::findOne($id);
+        $paymentGoods->is_quality = PaymentGoods::IS_QUALITY_YES;
+        if ($paymentGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $paymentGoods->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 批量质检
+     */
+    public function actionMoreQuality()
+    {
+        $ids = Yii::$app->request->post('ids');
+        $num = PaymentGoods::updateAll(['is_quality' => PaymentGoods::IS_QUALITY_YES], ['id' => $ids]);
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '失败'], JSON_UNESCAPED_UNICODE);
+        }
+    }
 }

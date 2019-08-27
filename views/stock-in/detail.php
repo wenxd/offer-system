@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use app\models\Goods;
+use app\models\PaymentGoods;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -28,6 +29,10 @@ $isShow = in_array($userId, $adminIds);
     <div class="box-header">
         <?= Html::button('批量入库', [
                 'class' => 'btn btn-success more-stock',
+                'name'  => 'submit-button']
+        )?>
+        <?= Html::button('批量质检', [
+                'class' => 'btn btn-info more-quality',
                 'name'  => 'submit-button']
         )?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
@@ -62,6 +67,7 @@ $isShow = in_array($userId, $adminIds);
                 <?php endif;?>
                 <th>数量</th>
                 <th>入库</th>
+                <th>质检</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -94,8 +100,12 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
+                    <td class="quality_text"><?=PaymentGoods::$quality[$item->is_quality]?></td>
                     <td>
                         <?php if (!in_array($item->goods_id, $stock_goods_ids)):?>
+                            <?php if(!$item->is_quality):?>
+                                <a class="btn btn-success btn-xs btn-flat quality" href="javascript:void(0);" data-id="<?=$item->id?>">质检</a>
+                            <?php endif;?>
                             <a class="btn btn-success btn-xs btn-flat stock_in" href="javascript:void(0);" data-goods_id="<?=$item->goods_id?>">入库</a>
                         <?php endif;?>
                     </td>
@@ -125,7 +135,66 @@ $isShow = in_array($userId, $adminIds);
             }
         });
 
+
+        //质检
+        $('.quality').click(function (e) {
+            var payment_goods_id = $(this).data('id');
+
+            $.ajax({
+                type:"post",
+                url:'?r=stock-in/quality',
+                data:{payment_goods_id:payment_goods_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //批量质检
+        $('.more-quality').click(function () {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+            var paymentGoods_ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    var id = $(element).val();
+                    paymentGoods_ids.push(id);
+                }
+            });
+            $.ajax({
+                type:"post",
+                url:'?r=stock-in/more-quality',
+                data:{ids:paymentGoods_ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //入库
         $('.stock_in').click(function (e) {
+            var quality = $(this).parent().parent().find('.quality_text').text();
+            if (quality == '否') {
+                layer.msg('请先质检', {time:2000});
+                return false;
+            }
             var order_payment_id = $('.data').data('order_payment_id');
             var goods_id          = $(this).data('goods_id');
             var number            = $(this).parent().parent().find('.number').text();
@@ -133,6 +202,7 @@ $isShow = in_array($userId, $adminIds);
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('入库数量不能为空', {time:2000});
+                return;
             }
 
             $.ajax({

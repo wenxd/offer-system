@@ -35,6 +35,14 @@ use Yii;
  */
 class PaymentGoods extends \yii\db\ActiveRecord
 {
+    const IS_QUALITY_NO  = '0';
+    const IS_QUALITY_YES = '1';
+
+    public static $quality = [
+        self::IS_QUALITY_NO  => '否',
+        self::IS_QUALITY_YES => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
