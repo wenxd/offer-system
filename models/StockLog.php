@@ -87,7 +87,7 @@ class StockLog extends ActiveRecord
             'is_deleted'         => '是否删除：0未删除 1已删除',
             'updated_at'         => '更新时间',
             'created_at'         => '创建时间',
-            'remark'             => '备注说明',
+            'remark'             => '来源、备注',
             'price'              => '价格',
             'order_agreement_id' => '收入合同单ID',
             'agreement_sn'       => '收入合同单号',
