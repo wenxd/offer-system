@@ -47,19 +47,7 @@ if ($isShow) {
                         'data-pjax' => '0',
                         'class'     => 'btn btn-success btn-flat stock-move',
                     ]);
-                },
-                'stock_in' => function () {
-                    return Html::a('<i class="fa fa-sign-in"></i> 添加入库记录', Url::to(['stock-in-log/create']), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-success btn-flat',
-                    ]);
-                },
-                'stock_out' => function () {
-                    return Html::a('<i class="fa fa-sign-out"></i> 添加出库记录', Url::to(['stock-out-log/create']), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-success btn-flat',
-                    ]);
-                },
+                }
             ]
         ])?>
     </div>
