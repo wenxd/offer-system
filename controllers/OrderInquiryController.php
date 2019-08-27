@@ -184,6 +184,8 @@ class OrderInquiryController extends BaseController
     {
         $info = InquiryGoods::findOne($id);
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
+        $info->reason     = '';
+        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
         if ($info->save()) {
             //如果都询价了，本订单和询价单就是已询价
             $res = InquiryGoods::find()->where(['inquiry_sn' => $info->inquiry_sn, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
