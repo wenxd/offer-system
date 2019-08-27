@@ -672,3 +672,7 @@ CREATE TABLE `temp_not_goods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
 
 ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
+
+ALTER TABLE `stock_log` ADD COLUMN  `order_purchase_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
+ALTER TABLE `stock_log` ADD COLUMN  `purchase_sn` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
+

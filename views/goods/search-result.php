@@ -234,13 +234,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>最新</td>
                 <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                 <td><?= $goods ? $goods->unit : '' ?></td>
-                <td class="stressColor"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
+                <td class="stressColor"><?= $purchaseNew ? $purchaseNew->inquiry->supplier->name : '' ?></td>
                 <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
-                <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
-                <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
-                <td class="tax_price"><b class="color"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></b></td>
+                <td><?= $purchaseNew ? $purchaseNew->inquiry->tax_rate : 0 ?></td>
+                <td class="price"><?= $purchaseNew ? $purchaseNew->inquiry->price : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $purchaseNew ? $purchaseNew->inquiry->tax_price : 0 ?></b></td>
                 <td class="stressColor"><b class="color"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></b></td>
-                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td>
+                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td><?php var_dump($purchaseNew);die;?>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? ($purchaseNew->stockLog ? substr($purchaseNew->stockLog->operate_time, 0, 10) : '') : '' ?></td>
@@ -248,6 +248,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
+
             </tr>
             <tr class="inquiry_list">
                 <td>价格</td>
@@ -288,6 +289,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="all_tax_price"></td>
             </tr>
             </thead>
+
         </table>
         <table id="example2" class="table table-bordered table-hover">
             <thead>
