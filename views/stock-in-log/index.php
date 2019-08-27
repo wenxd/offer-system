@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => Yii::$app->request->get('StockInLogSearch')['operate_time'],
                 ])
             ],
+            'remark',
         ],
     ]); ?>
     <?php Pjax::end(); ?>

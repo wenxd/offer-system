@@ -21,7 +21,8 @@ class StockInLogSearch extends StockLog
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'remark'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'remark'], 'trim'],
         ];
     }
 
@@ -73,7 +74,8 @@ class StockInLogSearch extends StockLog
             $query->andFilterWhere(['like', 'b.goods_number', $this->goods_number]);
         }
 
-        $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn]);
+        $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn])
+              ->andFilterWhere(['like', 'stock_log.remark', $this->remark]);
         // grid filtering conditions
         $query->andFilterWhere([
             'stock_log.id'                => $this->id,
@@ -83,8 +85,14 @@ class StockInLogSearch extends StockLog
             'stock_log.number'            => $this->number,
             'stock_log.type'              => StockLog::TYPE_IN,
             'stock_log.is_deleted'        => $this->is_deleted,
-            'stock_log.updated_at'        => $this->updated_at,
         ]);
+
+        if ($this->operate_time && strpos($this->operate_time, ' - ')) {
+            list($operate_time_start, $operate_time_end) = explode(' - ', $this->operate_time);
+            $operate_time_start .= ' 00:00:00';
+            $operate_time_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'stock_log.operate_time', $operate_time_start, $operate_time_end]);
+        }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
