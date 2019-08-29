@@ -38,6 +38,9 @@ use Yii;
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
+    const IS_OUT_NO  = '0';
+    const IS_OUT_YES = '1';
+
     /**
      * {@inheritdoc}
      */

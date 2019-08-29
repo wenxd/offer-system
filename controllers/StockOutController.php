@@ -1,8 +1,11 @@
 <?php
 namespace app\controllers;
 
+use app\models\AgreementGoods;
 use app\models\Inquiry;
 use app\models\Order;
+use app\models\OrderAgreement;
+use app\models\OrderAgreementSearch;
 use app\models\OrderGoods;
 use app\models\OrderPurchase;
 use app\models\PurchaseGoods;
@@ -19,7 +22,7 @@ class StockOutController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new OrderSearch();
+        $searchModel = new OrderAgreementSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -32,20 +35,20 @@ class StockOutController extends BaseController
     {
         $data = [];
 
-        $order = Order::findOne($id);
-        if (!$order){
+        $orderAgreement = OrderAgreement::findOne($id);
+        if (!$orderAgreement){
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $orderGoods    = OrderGoods::findAll(['order_id' => $id]);
+        $agreementGoods    = AgreementGoods::findAll(['order_agreement_id' => $id]);
 
         $stockLog = StockLog::find()->where([
             'order_id' => $id,
             'type' => StockLog::TYPE_OUT
         ])->all();
 
-        $data['model']         = $order;
-        $data['orderGoods']    = $orderGoods;
+        $data['model']         = $orderAgreement;
+        $data['orderGoods']    = $agreementGoods;
         $data['stockLog']      = $stockLog;
 
         return $this->render('detail', $data);
@@ -55,15 +58,15 @@ class StockOutController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $orderGoods = OrderGoods::findOne($params['id']);
-        $orderGoods->is_out = OrderGoods::IS_OUT_YES;
-        $orderGoods->save();
+        $agreementGoods = AgreementGoods::findOne($params['id']);
+        $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
+        $agreementGoods->save();
 
-        $orderPurchase = OrderPurchase::findOne(['order_id' => $orderGoods->order_id]);
+        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
 
         $stockLog                    = new StockLog();
-        $stockLog->order_id          = $orderGoods['order_id'];
-        $stockLog->order_purchase_id = $orderPurchase['id'];
+        $stockLog->order_id          = $orderAgreement['order_id'];
+        $stockLog->order_purchase_id = $orderAgreement['id'];
         $stockLog->purchase_sn       = $orderPurchase['purchase_sn'];
         $stockLog->goods_id          = $orderGoods['goods_id'];
         $stockLog->number            = $orderGoods['number'];
