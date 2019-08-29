@@ -146,6 +146,7 @@ class StockOutLogController extends Controller
         $stockLog->type         = StockLog::TYPE_OUT;
         $stockLog->remark       = $params['remark'];
         $stockLog->operate_time = date('Y-m-d H:i:s');
+        $stockLog->admin_id     = Yii::$app->user->identity->id;
         if ($stockLog->save()) {
             $stock->number -= $params['number'];
             $stock->save();

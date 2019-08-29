@@ -675,5 +675,6 @@ ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' 
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_purchase_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
 ALTER TABLE `stock_log` ADD COLUMN  `purchase_sn` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
+ALTER TABLE `stock_log` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';

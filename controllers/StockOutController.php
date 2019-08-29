@@ -69,6 +69,7 @@ class StockOutController extends BaseController
         $stockLog->number            = $orderGoods['number'];
         $stockLog->type              = StockLog::TYPE_OUT;
         $stockLog->operate_time      = date('Y-m-d H:i:s');
+        $stockLog->admin_id          = Yii::$app->user->identity->id;
         if ($stockLog->save()) {
             $stock = Stock::findOne(['good_id' => $orderGoods['goods_id']]);
             if (!$stock) {
