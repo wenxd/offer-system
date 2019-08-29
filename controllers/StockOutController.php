@@ -63,13 +63,19 @@ class StockOutController extends BaseController
         $agreementGoods->save();
 
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
+        $order_id = $orderAgreement->order_id;
+
+        $orderPurchase = OrderAgreement::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
+
 
         $stockLog                    = new StockLog();
         $stockLog->order_id          = $orderAgreement['order_id'];
-        $stockLog->order_purchase_id = $orderAgreement['id'];
-        $stockLog->purchase_sn       = $orderPurchase['purchase_sn'];
-        $stockLog->goods_id          = $orderGoods['goods_id'];
-        $stockLog->number            = $orderGoods['number'];
+        $stockLog->order_purchase_id = $orderPurchase ? $orderPurchase : 0;
+        $stockLog->purchase_sn       = $orderPurchase ? $orderPurchase['purchase_sn'] : '';
+        $stockLog->order_payment_id  = $orderAgreement->id;
+        $stockLog->purchase_sn       = $orderAgreement->agreement_sn;
+        $stockLog->goods_id          = $agreementGoods['goods_id'];
+        $stockLog->number            = $agreementGoods['number'];
         $stockLog->type              = StockLog::TYPE_OUT;
         $stockLog->operate_time      = date('Y-m-d H:i:s');
         $stockLog->admin_id          = Yii::$app->user->identity->id;

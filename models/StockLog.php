@@ -108,4 +108,9 @@ class StockLog extends ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
+    }
 }
