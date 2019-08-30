@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\StockLog;
@@ -15,16 +14,17 @@ class StockInLogSearch extends StockLog
     public $order_sn;
     public $order_type;
     public $goods_number;
-    public $is_manual;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'remark', 'admin_id', 'admin_id', 'is_manual', 'order_type'], 'safe'],
-            [['operate_time', 'updated_at', 'created_at', 'remark'], 'trim'],
+            [['id', 'order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn',
+                'goods_id', 'number', 'type', 'is_deleted', 'admin_id', 'is_manual'], 'integer'],
+            [['payment_sn', 'agreement_sn', 'operate_time', 'updated_at', 'created_at', 'remark', 'order_sn',
+                'order_type', 'goods_number'], 'safe'],
         ];
     }
 
@@ -67,6 +67,7 @@ class StockInLogSearch extends StockLog
             // $query->where('0=1');
             return $dataProvider;
         }
+
         if ($this->order_sn || $this->order_type != '') {
             $query->leftJoin('order as a', 'a.id = stock_log.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
@@ -77,18 +78,20 @@ class StockInLogSearch extends StockLog
             $query->andFilterWhere(['like', 'b.goods_number', $this->goods_number]);
         }
 
-        $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn])
-              ->andFilterWhere(['like', 'stock_log.remark', $this->remark]);
         // grid filtering conditions
         $query->andFilterWhere([
-            'stock_log.id'                => $this->id,
-            'stock_log.order_id'          => $this->order_id,
-            'stock_log.order_payment_id'  => $this->order_payment_id,
-            'stock_log.goods_id'          => $this->goods_id,
-            'stock_log.number'            => $this->number,
-            'stock_log.type'              => StockLog::TYPE_IN,
-            'stock_log.is_deleted'        => $this->is_deleted,
-            'stock_log.is_manual'         => $this->is_manual,
+            'stock_log.id'                    => $this->id,
+            'stock_log.order_id'              => $this->order_id,
+            'stock_log.order_payment_id'      => $this->order_payment_id,
+            'stock_log.order_agreement_id'    => $this->order_agreement_id,
+            'stock_log.order_purchase_id'     => $this->order_purchase_id,
+            'stock_log.purchase_sn'           => $this->purchase_sn,
+            'stock_log.goods_id'              => $this->goods_id,
+            'stock_log.number'                => $this->number,
+            'stock_log.type'                  => StockLog::TYPE_IN,
+            'stock_log.is_deleted'            => $this->is_deleted,
+            'stock_log.admin_id'              => $this->admin_id,
+            'stock_log.is_manual'             => $this->is_manual,
         ]);
 
         if ($this->operate_time && strpos($this->operate_time, ' - ')) {
@@ -111,6 +114,10 @@ class StockInLogSearch extends StockLog
             $created_at_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'stock_log.created_at', $created_at_start, $created_at_end]);
         }
+
+        $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn])
+            ->andFilterWhere(['like', 'stock_log.agreement_sn', $this->agreement_sn])
+            ->andFilterWhere(['like', 'stock_log.remark', $this->remark]);
 
         return $dataProvider;
     }
