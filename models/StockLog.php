@@ -21,7 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $payment_sn
  * @property string $remark
  * @property string $admin_id
- * @property string $is_manual
+ * @property string $is_manual 是否手动
  */
 class StockLog extends ActiveRecord
 {

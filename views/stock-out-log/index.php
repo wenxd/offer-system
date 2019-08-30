@@ -83,7 +83,7 @@ foreach ($adminList as $key => $admin) {
                     'attribute' => 'is_manual',
                     'filter'    => StockLog::$manual,
                     'value'     => function ($model, $key, $index, $column) {
-                        return StockLog::$manual[$model->is_manual];
+                        return $model->is_manual ? StockLog::$manual[$model->is_manual] : '否';
                     }
                 ],
                 [
