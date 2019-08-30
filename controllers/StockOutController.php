@@ -54,6 +54,9 @@ class StockOutController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /**出库
+     * @return false|string
+     */
     public function actionOut()
     {
         $params = Yii::$app->request->post();
