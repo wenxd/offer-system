@@ -118,7 +118,7 @@ $isShow = in_array($userId, $adminIds);
 
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
-                layer.msg('入库数量不能为空', {time:2000});
+                layer.msg('出库数量不能为空', {time:2000});
             }
 
             $.ajax({

@@ -43,7 +43,7 @@ class StockOutController extends BaseController
         $agreementGoods    = AgreementGoods::findAll(['order_agreement_id' => $id]);
 
         $stockLog = StockLog::find()->where([
-            'order_id' => $id,
+            'order_id' => $orderAgreement->order_id,
             'type' => StockLog::TYPE_OUT
         ])->all();
 
@@ -65,8 +65,13 @@ class StockOutController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $order_id = $orderAgreement->order_id;
 
-        $orderPurchase = OrderAgreement::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
+        $orderPurchase = OrderPurchase::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
 
+        //判断库存是否够
+        $stock = Stock::findOne(['good_id' => $agreementGoods['goods_id']]);
+        if (!$stock || ($stock && $stock->number < $agreementGoods['number'])) {
+            return json_encode(['code' => 500, 'msg' => '库存不够了'], JSON_UNESCAPED_UNICODE);
+        }
 
         $stockLog                    = new StockLog();
         $stockLog->order_id          = $orderAgreement['order_id'];
@@ -80,25 +85,20 @@ class StockOutController extends BaseController
         $stockLog->operate_time      = date('Y-m-d H:i:s');
         $stockLog->admin_id          = Yii::$app->user->identity->id;
         if ($stockLog->save()) {
-            $stock = Stock::findOne(['good_id' => $orderGoods['goods_id']]);
             if (!$stock) {
-                $purchaseGoods = PurchaseGoods::findOne([
-                    'order_purchase_id' => $orderPurchase['id'],
-                    'order_id'          => $orderGoods->order_id
-                ]);
-                $inquiry = Inquiry::findOne($purchaseGoods->relevance_id);
+                $inquiry = Inquiry::findOne($agreementGoods->relevance_id);
                 $stock = new Stock();
-                $stock->good_id     = $params['goods_id'];
+                $stock->good_id     = $agreementGoods->goods_id;
                 $stock->supplier_id = $inquiry->supplier_id;
-                $stock->price       = $inquiry->price;
-                $stock->tax_price   = $inquiry->tax_price;
-                $stock->tax_rate    = $inquiry->tax_rate;
-                $stock->number      = $params['number'];
+                $stock->price       = $agreementGoods->quote_price;
+                $stock->tax_price   = $agreementGoods->quote_tax_price;
+                $stock->tax_rate    = $agreementGoods->tax_rate;
+                $stock->number      = $agreementGoods->number;
                 $stock->save();
             }
-            $res = Stock::updateAllCounters(['number' => -$orderGoods['number']], ['good_id' => $orderGoods['goods_id']]);
+            $res = Stock::updateAllCounters(['number' => -$agreementGoods->number], ['good_id' => $agreementGoods->goods_id]);
             if ($res) {
-                return json_encode(['code' => 200, 'msg' => '入库成功']);
+                return json_encode(['code' => 200, 'msg' => '出库成功']);
             }
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()], JSON_UNESCAPED_UNICODE);
