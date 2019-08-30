@@ -36,6 +36,7 @@ foreach ($adminList as $key => $admin) {
                 'id',
                 [
                     'attribute' => 'order_sn',
+                    'label'     => '订单号',
                     'format'    => 'raw',
                     'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                     'value'     => function ($model, $key, $index, $column) {
@@ -50,6 +51,7 @@ foreach ($adminList as $key => $admin) {
                 [
                     'attribute' => 'goods_number',
                     'format'    => 'raw',
+                    'label'     => '零件号',
                     'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->goods) {

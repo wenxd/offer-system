@@ -5,30 +5,31 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+
 /**
  * This is the model class for table "stock_log".
  *
  * @property int $id 自增id
  * @property int $order_id 订单ID
  * @property int $order_payment_id 支出合同单ID
+ * @property string $payment_sn 支出合同单号
+ * @property int $order_agreement_id 收入合同单ID
+ * @property string $agreement_sn 收入合同单号
+ * @property int $order_purchase_id 采购单ID
+ * @property int $purchase_sn 采购单号
  * @property int $goods_id 零件编号
  * @property int $number 库存数量
- * @property int $type 入库出库 0入库  1出库
+ * @property int $type 入库出库 1入库  2出库
  * @property string $operate_time 操作时间
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
- * @property string $payment_sn
- * @property string $remark
- * @property string $admin_id
- * @property string $is_manual 是否手动
+ * @property string $remark 出入库备注
+ * @property int $admin_id 操作人ID
+ * @property int $is_manual 是否手动出入库 0否 1是
  */
 class StockLog extends ActiveRecord
 {
-    public $price;
-    public $goods_number;
-    public $is_manual;
-
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
 
@@ -59,7 +60,6 @@ class StockLog extends ActiveRecord
             ]
         ];
     }
-    
     /**
      * {@inheritdoc}
      */
@@ -74,8 +74,9 @@ class StockLog extends ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted', 'is_manual'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'is_manual'], 'safe'],
+            [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn', 'goods_id', 'number', 'type', 'is_deleted', 'admin_id', 'is_manual'], 'integer'],
+            [['operate_time', 'updated_at', 'created_at', 'goods_number'], 'safe'],
+            [['payment_sn', 'agreement_sn', 'remark'], 'string', 'max' => 255],
         ];
     }
 
@@ -85,24 +86,24 @@ class StockLog extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                 => '自增id',
-            'order_id'           => '订单ID',
-            'order_sn'           => '订单编号',
-            'order_payment_id'   => '支出合同单ID',
-            'payment_sn'         => '支出合同单号',
-            'goods_id'           => '零件ID',
-            'goods_number'       => '零件号',
-            'number'             => '数量',
-            'type'               => '入库出库 0入库  1出库',
-            'operate_time'       => '操作时间',
-            'is_deleted'         => '是否删除：0未删除 1已删除',
-            'updated_at'         => '更新时间',
-            'created_at'         => '创建时间',
-            'remark'             => '来源、备注',
-            'price'              => '价格',
-            'order_agreement_id' => '收入合同单ID',
-            'agreement_sn'       => '收入合同单号',
-            'is_manual'          => '手动',
+            'id'                    => '自增id',
+            'order_id'              => '订单ID',
+            'order_payment_id'      => '支出合同单ID',
+            'payment_sn'            => '支出合同单号',
+            'order_agreement_id'    => '收入合同单ID',
+            'agreement_sn'          => '收入合同单号',
+            'order_purchase_id'     => '采购单ID',
+            'purchase_sn'           => '采购单号',
+            'goods_id'              => '零件编号',
+            'number'                => '库存数量',
+            'type'                  => '入库出库 1入库  2出库',
+            'operate_time'          => '操作时间',
+            'is_deleted'            => '是否删除：0未删除 1已删除',
+            'updated_at'            => '更新时间',
+            'created_at'            => '创建时间',
+            'remark'                => '出入库备注',
+            'admin_id'              => '操作人ID',
+            'is_manual'             => '手动',
         ];
     }
 
