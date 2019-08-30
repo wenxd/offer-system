@@ -59,8 +59,6 @@ class StockOutController extends BaseController
         $params = Yii::$app->request->post();
 
         $agreementGoods = AgreementGoods::findOne($params['id']);
-        $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
-        $agreementGoods->save();
 
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $order_id = $orderAgreement->order_id;
@@ -98,10 +96,64 @@ class StockOutController extends BaseController
             }
             $res = Stock::updateAllCounters(['number' => -$agreementGoods->number], ['good_id' => $agreementGoods->goods_id]);
             if ($res) {
+                $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
+                $agreementGoods->save();
                 return json_encode(['code' => 200, 'msg' => '出库成功']);
             }
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    /**
+     * 批量出库
+     */
+    public function actionMoreOut()
+    {
+        $params = Yii::$app->request->post();
+
+        $agreementGoods = AgreementGoods::findAll(['id' => $params['ids']]);
+
+        $orderAgreement = OrderAgreement::findOne($agreementGoods[0]->order_agreement_id);
+        $order_id = $orderAgreement->order_id;
+
+        foreach ($agreementGoods as $agreementGood) {
+            $stock = Stock::findOne(['good_id' => $agreementGood['goods_id']]);
+            if (!$stock || ($stock && $stock->number < $agreementGood['number'])) {
+                return json_encode(['code' => 500, 'msg' => $agreementGood->goods->goods_number . '库存不够了'], JSON_UNESCAPED_UNICODE);
+            }
+            $orderPurchase = OrderPurchase::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
+            $stockLog                    = new StockLog();
+            $stockLog->order_id          = $orderAgreement['order_id'];
+            $stockLog->order_purchase_id = $orderPurchase ? $orderPurchase : 0;
+            $stockLog->purchase_sn       = $orderPurchase ? $orderPurchase['purchase_sn'] : '';
+            $stockLog->order_payment_id  = $orderAgreement->id;
+            $stockLog->purchase_sn       = $orderAgreement->agreement_sn;
+            $stockLog->goods_id          = $agreementGood['goods_id'];
+            $stockLog->number            = $agreementGood['number'];
+            $stockLog->type              = StockLog::TYPE_OUT;
+            $stockLog->operate_time      = date('Y-m-d H:i:s');
+            $stockLog->admin_id          = Yii::$app->user->identity->id;
+            if ($stockLog->save()) {
+                if (!$stock) {
+                    $inquiry = Inquiry::findOne($agreementGood->relevance_id);
+                    $stock = new Stock();
+                    $stock->good_id = $agreementGood->goods_id;
+                    $stock->supplier_id = $inquiry->supplier_id;
+                    $stock->price = $agreementGood->quote_price;
+                    $stock->tax_price = $agreementGood->quote_tax_price;
+                    $stock->tax_rate = $agreementGood->tax_rate;
+                    $stock->number = $agreementGood->number;
+                    $stock->save();
+                }
+                $res = Stock::updateAllCounters(['number' => -$agreementGood->number], ['good_id' => $agreementGood->goods_id]);
+                if ($res) {
+                    $agreementGood->is_out = AgreementGoods::IS_OUT_YES;
+                    $agreementGood->save();
+                }
+            }
+        }
+
+        return json_encode(['code' => 200, 'msg' => '出库成功']);
     }
 }
