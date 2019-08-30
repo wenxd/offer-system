@@ -74,7 +74,7 @@ class StockLog extends ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
+            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted', 'is_manual'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'is_manual'], 'safe'],
         ];
     }
