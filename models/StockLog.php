@@ -30,6 +30,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class StockLog extends ActiveRecord
 {
+    public $goods_number;
+    
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
 
