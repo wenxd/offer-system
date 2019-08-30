@@ -62,7 +62,7 @@ foreach ($adminList as $key => $admin) {
             'number',
             [
                 'attribute' => 'admin_id',
-                'label'     => '采购员',
+                'label'     => '操作员',
                 'filter'    => $admins,
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
