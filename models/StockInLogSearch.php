@@ -15,6 +15,7 @@ class StockInLogSearch extends StockLog
     public $order_sn;
     public $order_type;
     public $goods_number;
+    public $is_manual;
     /**
      * {@inheritdoc}
      */

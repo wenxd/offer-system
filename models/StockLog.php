@@ -27,6 +27,7 @@ class StockLog extends ActiveRecord
 {
     public $price;
     public $goods_number;
+    public $is_manual;
 
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
