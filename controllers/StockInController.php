@@ -78,6 +78,7 @@ class StockInController extends BaseController
         $stockLog->type              = StockLog::TYPE_IN;
         $stockLog->operate_time      = date('Y-m-d H:i:s');
         $stockLog->admin_id          = Yii::$app->user->identity->id;
+        $stockLog->is_manual         = StockLog::IS_MANUAL_YES;
         if ($stockLog->save()) {
             $stock = Stock::findOne(['good_id' => $params['goods_id']]);
             $paymentGoods = PaymentGoods::findOne([
@@ -149,14 +150,15 @@ class StockInController extends BaseController
                 if (!$stockLog) {
                     $stockLog = new StockLog();
                 }
-                $stockLog->order_id     = $orderPayment['order_id'];
+                $stockLog->order_id         = $orderPayment['order_id'];
                 $stockLog->order_payment_id = $orderPayment->id;
-                $stockLog->payment_sn   = $orderPayment->payment_sn;
-                $stockLog->goods_id     = $paymentGood['goods_id'];
-                $stockLog->number       = $paymentGood['fixed_number'];
-                $stockLog->type         = StockLog::TYPE_IN;
-                $stockLog->operate_time = date('Y-m-d H:i:s');
-                $stockLog->admin_id     = Yii::$app->user->identity->id;
+                $stockLog->payment_sn       = $orderPayment->payment_sn;
+                $stockLog->goods_id         = $paymentGood['goods_id'];
+                $stockLog->number           = $paymentGood['fixed_number'];
+                $stockLog->type             = StockLog::TYPE_IN;
+                $stockLog->operate_time     = date('Y-m-d H:i:s');
+                $stockLog->admin_id         = Yii::$app->user->identity->id;
+                $stockLog->is_manual        = StockLog::IS_MANUAL_YES;
                 $stockLog->save();
                 $res = Stock::updateAllCounters(['number' => $paymentGood['fixed_number']], ['good_id' => $paymentGood['goods_id']]);
                 //对采购商品进行入库改变

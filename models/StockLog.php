@@ -20,6 +20,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at 创建时间
  * @property string $payment_sn
  * @property string $remark
+ * @property string $admin_id
+ * @property string $is_manual
  */
 class StockLog extends ActiveRecord
 {
@@ -31,6 +33,9 @@ class StockLog extends ActiveRecord
 
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
+
+    const IS_MANUAL_NO   = '0';
+    const IS_MANUAL_YES  = '1';
 
     public function behaviors()
     {
@@ -64,7 +69,7 @@ class StockLog extends ActiveRecord
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'is_manual'], 'safe'],
         ];
     }
 

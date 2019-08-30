@@ -140,6 +140,7 @@ class StockInLogController extends Controller
         $stockLog->remark       = $params['remark'];
         $stockLog->operate_time = date('Y-m-d H:i:s');
         $stockLog->admin_id     = Yii::$app->user->identity->id;
+        $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
         if ($stockLog->save()) {
             $stock = Stock::find()->where(['good_id' => $params['goods_id']])->one();
             if (!$stock) {

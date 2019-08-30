@@ -641,9 +641,14 @@ ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL
 ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
 ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
 
-ALTER TABLE `stock_log` ADD COLUMN `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
-ALTER TABLE `stock_log` ADD COLUMN `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';
-ALTER TABLE `stock_log` ADD COLUMN `remark`             varchar(255) NOT NULL DEFAULT '' COMMENT '出入库备注';
+ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
+ALTER TABLE `stock_log` ADD COLUMN  `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';
+ALTER TABLE `stock_log` ADD COLUMN  `remark`             varchar(255) NOT NULL DEFAULT '' COMMENT '出入库备注';
+ALTER TABLE `stock_log` ADD COLUMN  `order_purchase_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
+ALTER TABLE `stock_log` ADD COLUMN  `purchase_sn` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
+ALTER TABLE `stock_log` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
+ALTER TABLE `stock_log` ADD COLUMN  `is_manual` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否手动 0否 1是';
+
 
 CREATE TABLE `temp_order_inquiry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -673,9 +678,5 @@ CREATE TABLE `temp_not_goods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
 
 ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
-
-ALTER TABLE `stock_log` ADD COLUMN  `order_purchase_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
-ALTER TABLE `stock_log` ADD COLUMN  `purchase_sn` int(11) NOT NULL DEFAULT '0' COMMENT '采购单ID';
-ALTER TABLE `stock_log` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
