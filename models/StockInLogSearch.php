@@ -22,7 +22,7 @@ class StockInLogSearch extends StockLog
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'remark', 'admin_id', 'is_manual', 'order_type'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'remark', 'admin_id', 'admin_id', 'is_manual', 'order_type'], 'safe'],
             [['operate_time', 'updated_at', 'created_at', 'remark'], 'trim'],
         ];
     }

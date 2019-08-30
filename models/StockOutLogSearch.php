@@ -13,6 +13,7 @@ use app\models\StockLog;
 class StockOutLogSearch extends StockLog
 {
     public $order_sn;
+    public $order_type;
     public $goods_number;
     /**
      * {@inheritdoc}
@@ -21,7 +22,8 @@ class StockOutLogSearch extends StockLog
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn', 'admin_id'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn', 'admin_id',
+                'is_manual', 'order_type'], 'safe'],
             [['id', 'order_sn', 'goods_number', 'number', 'agreement_sn'], 'trim'],
         ];
     }
@@ -65,9 +67,10 @@ class StockOutLogSearch extends StockLog
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->order_sn) {
+        if ($this->order_sn || $this->order_type != '') {
             $query->leftJoin('order as a', 'a.id = stock_log.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+            $query->andFilterWhere(['a.order_type' => $this->order_type]);
         }
         if ($this->goods_number) {
             $query->leftJoin('goods as b', 'b.id = stock_log.goods_id');
@@ -83,6 +86,7 @@ class StockOutLogSearch extends StockLog
             'stock_log.type'              => StockLog::TYPE_OUT,
             'stock_log.agreement_sn'      => $this->agreement_sn,
             'stock_log.updated_at'        => $this->updated_at,
+            'stock_log.is_manual'         => $this->is_manual,
         ]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {

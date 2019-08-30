@@ -2,13 +2,15 @@
 
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\Order;
+use app\models\StockLog;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\StockInLogSearch */
+/* @var $searchModel app\models\StockOutLogSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '出库记录';
@@ -76,6 +78,25 @@ foreach ($adminList as $key => $admin) {
                         'name' => 'StockInLogSearch[operate_time]',
                         'value' => Yii::$app->request->get('StockInLogSearch')['operate_time'],
                     ])
+                ],
+                [
+                    'attribute' => 'is_manual',
+                    'filter'    => StockLog::$manual,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return StockLog::$manual[$model->is_manual];
+                    }
+                ],
+                [
+                    'attribute' => 'order_type',
+                    'label'     => '订单类型',
+                    'filter'    => Order::$orderType,
+                    'value'     => function ($model, $key, $index, $column) {
+                        if ($model->order) {
+                            return Order::$orderType[$model->order->order_type];
+                        } else {
+                            return '否';
+                        }
+                    }
                 ],
                 'remark',
             ],
