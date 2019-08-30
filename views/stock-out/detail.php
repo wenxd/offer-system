@@ -25,7 +25,7 @@ $isShow = in_array($userId, $adminIds);
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-header">
-        <?= Html::button('批量入库', [
+        <?= Html::button('批量出库', [
                 'class' => 'btn btn-success more-stock',
                 'name'  => 'submit-button']
         )?>

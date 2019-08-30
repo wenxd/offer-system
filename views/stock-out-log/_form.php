@@ -50,7 +50,7 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
 
-        <?= $form->field($model, 'remark')->textInput() ?>
+        <?= $form->field($model, 'remark')->textInput()->label('去向、备注') ?>
 
     </div>
 
