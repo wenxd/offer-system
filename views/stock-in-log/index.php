@@ -1,6 +1,8 @@
 <?php
 
 use app\models\Admin;
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -12,7 +14,10 @@ use kartik\daterange\DateRangePicker;
 $this->title = '入库记录';
 $this->params['breadcrumbs'][] = $this->title;
 
-$adminList = Admin::find()->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '系统管理员']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
