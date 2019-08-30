@@ -37,6 +37,11 @@ class StockLog extends ActiveRecord
     const IS_MANUAL_NO   = '0';
     const IS_MANUAL_YES  = '1';
 
+    public static $manual = [
+        self::IS_MANUAL_NO  => '否',
+        self::IS_MANUAL_YES => '是'
+    ];
+
     public function behaviors()
     {
         return [
@@ -96,6 +101,7 @@ class StockLog extends ActiveRecord
             'price'              => '价格',
             'order_agreement_id' => '收入合同单ID',
             'agreement_sn'       => '收入合同单号',
+            'is_manual'          => '手动',
         ];
     }
 

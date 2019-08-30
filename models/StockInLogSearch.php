@@ -13,6 +13,7 @@ use app\models\StockLog;
 class StockInLogSearch extends StockLog
 {
     public $order_sn;
+    public $order_type;
     public $goods_number;
     /**
      * {@inheritdoc}
@@ -21,7 +22,7 @@ class StockInLogSearch extends StockLog
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'remark', 'admin_id'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'remark', 'admin_id', 'is_manual', 'order_type'], 'safe'],
             [['operate_time', 'updated_at', 'created_at', 'remark'], 'trim'],
         ];
     }
@@ -65,9 +66,10 @@ class StockInLogSearch extends StockLog
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->order_sn) {
+        if ($this->order_sn || $this->order_type != '') {
             $query->leftJoin('order as a', 'a.id = stock_log.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+            $query->andFilterWhere(['a.order_type' => $this->order_type]);
         }
         if ($this->goods_number) {
             $query->leftJoin('goods as b', 'b.id = stock_log.goods_id');
@@ -85,6 +87,7 @@ class StockInLogSearch extends StockLog
             'stock_log.number'            => $this->number,
             'stock_log.type'              => StockLog::TYPE_IN,
             'stock_log.is_deleted'        => $this->is_deleted,
+            'stock_log.is_manual'         => $this->is_manual,
         ]);
 
         if ($this->operate_time && strpos($this->operate_time, ' - ')) {
