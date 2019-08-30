@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Admin;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -10,6 +11,13 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '入库记录';
 $this->params['breadcrumbs'][] = $this->title;
+
+$adminList = Admin::find()->all();
+$admins = [];
+foreach ($adminList as $key => $admin) {
+    $admins[$admin->id] = $admin->username;
+}
+
 ?>
 <div class="box table-responsive">
     <div class="box-body">
@@ -52,6 +60,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'number',
+            [
+                'attribute' => 'admin_id',
+                'label'     => '采购员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
             [
                 'attribute' => 'operate_time',
                 'format'    => 'raw',

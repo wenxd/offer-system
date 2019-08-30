@@ -21,7 +21,7 @@ class StockOutLogSearch extends StockLog
     {
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn', 'admin_id'], 'safe'],
             [['id', 'order_sn', 'goods_number', 'number', 'agreement_sn'], 'trim'],
         ];
     }
