@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\Admin;
+use app\models\AuthAssignment;
+use app\models\Order;
 use app\models\Stock;
 use app\models\SystemConfig;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -11,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\models\StockLog;
 use app\models\StockOutLogSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -164,6 +168,14 @@ class StockOutLogController extends Controller
 
     public function actionDownload()
     {
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '系统管理员']])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+        $adminList = Admin::find()->where(['id' => $adminIds])->all();
+        $admins = [];
+        foreach ($adminList as $key => $admin) {
+            $admins[$admin->id] = $admin->username;
+        }
         $helper = new Sample();
         if ($helper->isCli()) {
             $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
@@ -183,9 +195,9 @@ class StockOutLogController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['订单号', '收入合同单号', '零件号', '库存数量', '价格', '采购员', '出库时间', '手动',
-            '订单类型', '出入库备注'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $tableHeader = ['订单号', '收入合同单号', '零件号', '库存数量', '价格', '总价', '采购员', '出库时间', '手动',
+            '订单类型', '去向', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -193,7 +205,61 @@ class StockOutLogController extends Controller
             $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
         }
 
-        $title = '零件上传模板';
+        //获取数据
+        $params = Yii::$app->request->get('StockOutLogSearch');
+        $query = StockLog::find()->where(['stock_log.type' => StockLog::TYPE_OUT]);
+        if ((isset($params['order_sn']) && $params['order_sn']) ||
+            (isset($params['order_type']) && $params['order_type'] != '')) {
+            $query->leftJoin('order as a', 'a.id = stock_log.order_id');
+            $query->andFilterWhere(['like', 'a.order_sn', $params['order_sn']]);
+            $query->andFilterWhere(['a.order_type' => $params['order_type']]);
+        }
+        if (isset($params['goods_number']) && $params['goods_number']) {
+            $query->leftJoin('goods as b', 'b.id = stock_log.goods_id');
+            $query->andFilterWhere(['like', 'b.goods_number', $params['goods_number']]);
+        }
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'stock_log.id'                => $params['id'],
+            'stock_log.number'            => $params['number'],
+            'stock_log.agreement_sn'      => $params['agreement_sn'],
+            'stock_log.is_manual'         => $params['is_manual'],
+            'stock_log.direction'         => $params['direction'],
+        ]);
+        $stockLogList = $query->all();
+
+        foreach ($stockLogList as $key => $stockLog) {
+            for($i = 0; $i < count($letter); $i++) {
+                if ($stockLog->order) {
+                    $excel->setCellValue($letter[$i] . ($key + 2), $stockLog->order->order_sn);
+                } else {
+                    $excel->setCellValue($letter[$i] . ($key + 2), '');
+                }
+                $excel->setCellValue($letter[$i+1] . ($key + 2), $stockLog->agreement_sn);
+                if ($stockLog->goods) {
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $stockLog->goods->goods_number);
+                } else {
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), '');
+                }
+                $excel->setCellValue($letter[$i+3] . ($key + 2), $stockLog->number);
+                $excel->setCellValue($letter[$i+4] . ($key + 2), $stockLog->stock->price);
+                $excel->setCellValue($letter[$i+5] . ($key + 2), $stockLog->number * $stockLog->stock->price);
+                $excel->setCellValue($letter[$i+6] . ($key + 2), $admins[$stockLog->admin_id]);
+                $excel->setCellValue($letter[$i+7] . ($key + 2), $stockLog->operate_time);
+                $excel->setCellValue($letter[$i+8] . ($key + 2), StockLog::$manual[$stockLog->is_manual]);
+                if ($stockLog->order) {
+                    $excel->setCellValue($letter[$i+9] . ($key + 2), Order::$orderType[$stockLog->order->order_type]);
+                } else {
+                    $excel->setCellValue($letter[$i+9] . ($key + 2), '');
+                }
+                $excel->setCellValue($letter[$i+10] . ($key + 2), $stockLog->direction);
+                $excel->setCellValue($letter[$i+11] . ($key + 2), $stockLog->remark);
+                break;
+            }
+        }
+
+        $title = '出库记录' . date('ymd-His');
         // Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($title);
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet

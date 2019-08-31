@@ -25,7 +25,7 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
-    $admins[$admin->username] = $admin->username;
+    $admins[$admin->id] = $admin->username;
 }
 
 ?>
@@ -35,9 +35,9 @@ foreach ($adminList as $key => $admin) {
             'template' => '{download}',
             'buttons' => [
                 'download' => function () {
-                    return Html::a('<i class="fa fa-download"></i> 导出数据', Url::to(['download']), [
+                    return Html::a('<i class="fa fa-download"></i> 导出数据', 'javascript:void(0)', [
                         'data-pjax' => '0',
-                        'class'     => 'btn btn-primary btn-flat',
+                        'class'     => 'btn btn-primary btn-flat output',
                     ]);
                 }
             ]
@@ -137,3 +137,27 @@ foreach ($adminList as $key => $admin) {
         <?php Pjax::end(); ?>
     </div>
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.output').click(function (e) {
+            var url = decodeURI(window.location.search);
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for(var i = 0; i < strs.length; i ++) {
+                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                }
+            }
+            var parameter = '';
+            for(var j in theRequest){
+                if (j != 'r') {
+                    parameter += j + '=' + theRequest[j] + '&';
+                }
+            }
+            window.location.href = '?r=stock-out-log/download&' + parameter;
+        });
+    });
+</script>
