@@ -104,7 +104,7 @@ foreach ($adminList as $key => $admin) {
                     if ($model->order) {
                         return Order::$orderType[$model->order->order_type];
                     } else {
-                        return '否';
+                        return '';
                     }
                 }
             ],
