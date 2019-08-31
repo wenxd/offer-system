@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\Order;
@@ -7,6 +8,7 @@ use app\models\StockLog;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -27,6 +29,19 @@ foreach ($adminList as $key => $admin) {
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{download}',
+            'buttons' => [
+                'download' => function () {
+                    return Html::a('<i class="fa fa-download"></i> 导出数据', Url::to(['download']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
@@ -62,6 +77,15 @@ foreach ($adminList as $key => $admin) {
                     }
                 ],
                 'number',
+                [
+                    'attribute' => 'price',
+                    'label'     => '价格',
+                    'value'     => function ($model, $key, $index, $column) {
+                        if ($model->stock) {
+                            return $model->stock->price;
+                        }
+                    }
+                ],
                 [
                     'attribute' => 'admin_id',
                     'label'     => '采购员',

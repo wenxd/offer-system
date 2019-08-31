@@ -19,8 +19,9 @@ class SystemConfig extends \yii\db\ActiveRecord
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
 
-    const TITLE_TAX           = 'tax';
-    const TITLE_DELIVERY_TIME = 'delivery';
+    const TITLE_TAX             = 'tax';
+    const TITLE_DELIVERY_TIME   = 'delivery';
+    const TITLE_STOCK_DIRECTION = 'direction';
 
     /**
      * {@inheritdoc}
@@ -58,7 +59,8 @@ class SystemConfig extends \yii\db\ActiveRecord
     }
 
     public static $config = [
-        self::TITLE_TAX           => '税率',
-        self::TITLE_DELIVERY_TIME => '货期',
+        self::TITLE_TAX             => '税率',
+        self::TITLE_DELIVERY_TIME   => '货期',
+        self::TITLE_STOCK_DIRECTION => '出库去向',
     ];
 }
