@@ -152,6 +152,7 @@ class StockOutLogController extends Controller
         $stockLog->operate_time = date('Y-m-d H:i:s');
         $stockLog->admin_id     = Yii::$app->user->identity->id;
         $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
+        $stockLog->direction    = $params['direction'];
         if ($stockLog->save()) {
             $stock->number -= $params['number'];
             $stock->save();

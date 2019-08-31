@@ -25,13 +25,7 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-
-$directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
-$list = [];
-foreach ($directionList as $item) {
-    $list[$item->id] = $item['value'];
+    $admins[$admin->username] = $admin->username;
 }
 
 ?>
@@ -133,13 +127,8 @@ foreach ($directionList as $item) {
                 ],
                 [
                     'attribute' => 'direction',
-                    'filter'    => $list,
                     'value'     => function ($model, $key, $index, $column) {
-                        if ($model->system) {
-                            return  $model->system->value;
-                        } else {
-                            return '';
-                        }
+                        return  $model->direction;
                     }
                 ],
                 'remark',

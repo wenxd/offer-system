@@ -8,12 +8,6 @@ use app\models\SystemConfig;
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
 
-$directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
-$list = [];
-foreach ($directionList as $item) {
-    $list[$item->id] = $item['value'];
-}
-
 ?>
 <style>
     /*零件号*/
@@ -58,7 +52,7 @@ foreach ($directionList as $item) {
 
         <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
 
-        <?= $form->field($model, 'direction')->dropDownList($list)->label('去向') ?>
+        <?= $form->field($model, 'direction')->dropDownList(SystemConfig::getList())->label('去向') ?>
 
         <?= $form->field($model, 'remark')->textInput()->label('备注') ?>
 
@@ -127,6 +121,8 @@ foreach ($directionList as $item) {
             return false;
         }
 
+        var direction = $('#stocklog-direction').find("option:selected").text();
+
         var remark = $('#stocklog-remark').val();
         if (!remark) {
             layer.msg('请输入备注说明', {time:2000});
@@ -136,7 +132,7 @@ foreach ($directionList as $item) {
         $.ajax({
             type:"POST",
             url:"?r=stock-out-log/add",
-            data:{goods_id:goods_id, number:number, remark:remark},
+            data:{goods_id:goods_id, number:number, direction:direction, remark:remark},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

@@ -63,4 +63,14 @@ class SystemConfig extends \yii\db\ActiveRecord
         self::TITLE_DELIVERY_TIME   => '货期',
         self::TITLE_STOCK_DIRECTION => '出库去向',
     ];
+
+    public static function getList()
+    {
+        $directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
+        $list = [];
+        foreach ($directionList as $item) {
+            $list[$item->id] = $item['value'];
+        }
+        return $list;
+    }
 }

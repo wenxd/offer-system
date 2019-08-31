@@ -87,6 +87,7 @@ class StockOutLogSearch extends StockLog
             'stock_log.agreement_sn'      => $this->agreement_sn,
             'stock_log.updated_at'        => $this->updated_at,
             'stock_log.is_manual'         => $this->is_manual,
+            'stock_log.direction'         => $this->direction,
         ]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
