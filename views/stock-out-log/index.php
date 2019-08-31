@@ -5,6 +5,7 @@ use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\Order;
 use app\models\StockLog;
+use app\models\SystemConfig;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -25,6 +26,12 @@ $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
+}
+
+$directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
+$list = [];
+foreach ($directionList as $item) {
+    $list[$item->id] = $item['value'];
 }
 
 ?>
@@ -119,6 +126,17 @@ foreach ($adminList as $key => $admin) {
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->order) {
                             return Order::$orderType[$model->order->order_type];
+                        } else {
+                            return '';
+                        }
+                    }
+                ],
+                [
+                    'attribute' => 'direction',
+                    'filter'    => $list,
+                    'value'     => function ($model, $key, $index, $column) {
+                        if ($model->system) {
+                            return  $model->system->value;
                         } else {
                             return '';
                         }

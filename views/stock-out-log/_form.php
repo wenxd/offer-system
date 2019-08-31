@@ -2,10 +2,18 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\SystemConfig;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
+
+$directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
+$list = [];
+foreach ($directionList as $item) {
+    $list[$item->id] = $item['value'];
+}
+
 ?>
 <style>
     /*零件号*/
@@ -50,7 +58,9 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
 
-        <?= $form->field($model, 'remark')->textInput()->label('去向、备注') ?>
+        <?= $form->field($model, 'direction')->dropDownList($list)->label('去向') ?>
+
+        <?= $form->field($model, 'remark')->textInput()->label('备注') ?>
 
     </div>
 
@@ -131,7 +141,7 @@ use yii\widgets\ActiveForm;
             success:function(res){
                 if (res && res.code == 200){
                     layer.msg(res.msg, {time:2000});
-                    location.replace("?r=stock-in-log");
+                    location.replace("?r=stock-out-log");
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;

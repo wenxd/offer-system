@@ -77,7 +77,7 @@ class StockLog extends ActiveRecord
     {
         return [
             [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn', 'goods_id', 'number', 'type', 'is_deleted', 'admin_id', 'is_manual'], 'integer'],
-            [['operate_time', 'updated_at', 'created_at', 'goods_number'], 'safe'],
+            [['operate_time', 'updated_at', 'created_at', 'goods_number', 'direction'], 'safe'],
             [['payment_sn', 'agreement_sn', 'remark'], 'string', 'max' => 255],
         ];
     }
@@ -106,6 +106,7 @@ class StockLog extends ActiveRecord
             'remark'                => '出入库备注',
             'admin_id'              => '操作人ID',
             'is_manual'             => '手动',
+            'direction'             => '去向',
         ];
     }
 
@@ -132,5 +133,10 @@ class StockLog extends ActiveRecord
     public function getStock()
     {
         return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
+    }
+
+    public function getSystem()
+    {
+        return $this->hasOne(Stock::className(), ['id' => 'direction']);
     }
 }
