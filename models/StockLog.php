@@ -114,6 +114,9 @@ class StockLog extends ActiveRecord
             'is_manual'             => '手动',
             'direction'             => '去向',
             'price'                 => '价格',
+            'customer_id'           => '客户',
+            'region'                => '区块',
+            'plat_name'             => '平台名称',
         ];
     }
 
@@ -145,5 +148,10 @@ class StockLog extends ActiveRecord
     public function getSystem()
     {
         return $this->hasOne(Stock::className(), ['id' => 'direction']);
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }

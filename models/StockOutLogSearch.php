@@ -21,9 +21,9 @@ class StockOutLogSearch extends StockLog
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted'], 'integer'],
+            [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted', 'customer_id'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn', 'admin_id',
-                'is_manual', 'order_type', 'direction'], 'safe'],
+                'is_manual', 'order_type', 'direction', 'region', 'plat_name'], 'safe'],
             [['id', 'order_sn', 'goods_number', 'number', 'agreement_sn'], 'trim'],
         ];
     }
@@ -87,8 +87,11 @@ class StockOutLogSearch extends StockLog
             'stock_log.agreement_sn'      => $this->agreement_sn,
             'stock_log.updated_at'        => $this->updated_at,
             'stock_log.is_manual'         => $this->is_manual,
-            'stock_log.direction'         => $this->direction,
+            'stock_log.customer_id'       => $this->customer_id,
         ]);
+        $query->andFilterWhere(['like', 'stock_log.direction', $this->direction])
+            ->andFilterWhere(['like', 'stock_log.region', $this->region])
+            ->andFilterWhere(['like', 'stock_log.plat_name', $this->plat_name]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

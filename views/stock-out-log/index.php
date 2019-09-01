@@ -4,6 +4,7 @@ use app\extend\widgets\Bar;
 use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\Order;
+use app\models\Customer;
 use app\models\StockLog;
 use app\models\SystemConfig;
 use yii\helpers\ArrayHelper;
@@ -123,6 +124,29 @@ foreach ($adminList as $key => $admin) {
                         } else {
                             return '';
                         }
+                    }
+                ],
+                [
+                    'attribute' => 'customer_id',
+                    'filter'    => Customer::getSelectDropDown(),
+                    'value'     => function ($model, $key, $index, $column) {
+                        if ($model->customer) {
+                            return $model->customer->name;
+                        } else {
+                            return '';
+                        }
+                    }
+                ],
+                [
+                    'attribute' => 'region',
+                    'value'     => function ($model, $key, $index, $column) {
+                        return  $model->region;
+                    }
+                ],
+                [
+                    'attribute' => 'plat_name',
+                    'value'     => function ($model, $key, $index, $column) {
+                        return  $model->plat_name;
                     }
                 ],
                 [
