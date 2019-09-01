@@ -190,7 +190,7 @@ if (isset($_GET['inquiry_goods_id'])) {
             ]
         ]);?>
 
-        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(天)');?>
+        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('期货(周)');?>
 
         <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 

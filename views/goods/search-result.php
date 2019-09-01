@@ -240,7 +240,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="price"><?= $purchaseNew ? $purchaseNew->inquiry->price : 0 ?></td>
                 <td class="tax_price"><b class="color"><?= $purchaseNew ? $purchaseNew->inquiry->tax_price : 0 ?></b></td>
                 <td class="stressColor"><b class="color"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></b></td>
-                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td><?php var_dump($purchaseNew);die;?>
+                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td>
                 <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
                 <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
                 <td><?= $purchaseNew ? ($purchaseNew->stockLog ? substr($purchaseNew->stockLog->operate_time, 0, 10) : '') : '' ?></td>
