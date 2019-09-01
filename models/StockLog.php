@@ -27,11 +27,16 @@ use yii\behaviors\TimestampBehavior;
  * @property string $remark 出入库备注
  * @property int $admin_id 操作人ID
  * @property int $is_manual 是否手动出入库 0否 1是
+ * @property int $direction
+ * @property int $customer_id
+ * @property int $region
+ * @property int $plat_name
  */
 class StockLog extends ActiveRecord
 {
+    public $price;
     public $goods_number;
-    
+
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
 
@@ -76,9 +81,10 @@ class StockLog extends ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn', 'goods_id', 'number', 'type', 'is_deleted', 'admin_id', 'is_manual'], 'integer'],
+            [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn', 'goods_id',
+                'number', 'type', 'is_deleted', 'admin_id', 'is_manual', 'customer_id'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'direction'], 'safe'],
-            [['payment_sn', 'agreement_sn', 'remark'], 'string', 'max' => 255],
+            [['payment_sn', 'agreement_sn', 'remark', 'region', 'plat_name'], 'string', 'max' => 255],
         ];
     }
 
@@ -107,6 +113,7 @@ class StockLog extends ActiveRecord
             'admin_id'              => '操作人ID',
             'is_manual'             => '手动',
             'direction'             => '去向',
+            'price'                 => '价格',
         ];
     }
 

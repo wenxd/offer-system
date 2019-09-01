@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\SystemConfig;
+use app\models\Customer;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
@@ -51,6 +52,12 @@ use app\models\SystemConfig;
         <?= $form->field($model, 'number')->textInput() ?>
 
         <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
+
+        <?= $form->field($model, 'customer_id')->dropDownList(Customer::getSelectDropDown())->label('客户') ?>
+
+        <?= $form->field($model, 'region')->dropDownList(SystemConfig::getRegionList())->label('区块') ?>
+
+        <?= $form->field($model, 'plat_name')->textInput()->label('平台名称') ?>
 
         <?= $form->field($model, 'direction')->dropDownList(SystemConfig::getList())->label('去向') ?>
 
@@ -121,18 +128,21 @@ use app\models\SystemConfig;
             return false;
         }
 
+        var customer_id = $('#stocklog-customer_id').val();
+
+        var region    = $('#stocklog-region').find("option:selected").text();
+
+        var plat_name = $('#stocklog-plat_name').val();
+
         var direction = $('#stocklog-direction').find("option:selected").text();
 
-        var remark = $('#stocklog-remark').val();
-        if (!remark) {
-            layer.msg('请输入备注说明', {time:2000});
-            return false;
-        }
+        var remark    = $('#stocklog-remark').val();
 
         $.ajax({
             type:"POST",
             url:"?r=stock-out-log/add",
-            data:{goods_id:goods_id, number:number, direction:direction, remark:remark},
+            data:{goods_id:goods_id, number:number, customer_id:customer_id, region:region, plat_name:plat_name,
+                direction:direction, remark:remark},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

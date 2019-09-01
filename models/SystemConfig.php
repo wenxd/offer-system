@@ -22,6 +22,7 @@ class SystemConfig extends \yii\db\ActiveRecord
     const TITLE_TAX             = 'tax';
     const TITLE_DELIVERY_TIME   = 'delivery';
     const TITLE_STOCK_DIRECTION = 'direction';
+    const TITLE_REGION          = 'region';
 
     /**
      * {@inheritdoc}
@@ -62,11 +63,23 @@ class SystemConfig extends \yii\db\ActiveRecord
         self::TITLE_TAX             => '税率',
         self::TITLE_DELIVERY_TIME   => '货期',
         self::TITLE_STOCK_DIRECTION => '出库去向',
+        self::TITLE_REGION          => '区块',
     ];
 
     public static function getList()
     {
         $directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
+        $list = [];
+        foreach ($directionList as $item) {
+            $list[$item->id] = $item['value'];
+        }
+        return $list;
+    }
+
+    //获取区块
+    public static function getRegionList()
+    {
+        $directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_REGION])->all();
         $list = [];
         foreach ($directionList as $item) {
             $list[$item->id] = $item['value'];

@@ -649,6 +649,9 @@ ALTER TABLE `stock_log` ADD COLUMN  `purchase_sn` int(11) NOT NULL DEFAULT '0' C
 ALTER TABLE `stock_log` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
 ALTER TABLE `stock_log` ADD COLUMN  `is_manual` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否手动 0否 1是';
 ALTER TABLE `stock_log` ADD COLUMN  `direction` varchar(255) NOT NULL DEFAULT '' COMMENT '去向';
+ALTER TABLE `stock_log` ADD COLUMN  `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户id';
+ALTER TABLE `stock_log` ADD COLUMN  `region` varchar(255) NOT NULL DEFAULT ''COMMENT '区块';
+ALTER TABLE `stock_log` ADD COLUMN  `plat_name` varchar(255) NOT NULL DEFAULT ''COMMENT '平台名称';
 
 
 CREATE TABLE `temp_order_inquiry` (
