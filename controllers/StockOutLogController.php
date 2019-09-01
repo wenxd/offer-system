@@ -198,9 +198,9 @@ class StockOutLogController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
         $tableHeader = ['订单号', '收入合同单号', '零件号', '库存数量', '价格', '总价', '采购员', '出库时间', '手动',
-            '订单类型', '去向', '备注'];
+            '订单类型', '客户', '区块', '平台名称', '去向', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -210,6 +210,7 @@ class StockOutLogController extends Controller
 
         //获取数据
         $params = Yii::$app->request->get('StockOutLogSearch');
+        //var_dump($params);die;
         $query = StockLog::find()->where(['stock_log.type' => StockLog::TYPE_OUT]);
         if ((isset($params['order_sn']) && $params['order_sn']) ||
             (isset($params['order_type']) && $params['order_type'] != '')) {
@@ -222,13 +223,24 @@ class StockOutLogController extends Controller
             $query->andFilterWhere(['like', 'b.goods_number', $params['goods_number']]);
         }
 
+        if (isset($params['direction']) && $params['direction']) {
+            $query->andFilterWhere(['like', 'stock_log.direction', $params['direction']]);
+        }
+        if (isset($params['agreement_sn']) && $params['agreement_sn']) {
+            $query->andFilterWhere(['like', 'stock_log.agreement_sn', $params['agreement_sn']]);
+        }
+        if (isset($params['region']) && $params['region']) {
+            $query->andFilterWhere(['like', 'stock_log.region', $params['region']]);
+        }
+        if (isset($params['plat_name']) && $params['plat_name']) {
+            $query->andFilterWhere(['like', 'stock_log.plat_name', $params['plat_name']]);
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'stock_log.id'                => $params['id'],
             'stock_log.number'            => $params['number'],
-            'stock_log.agreement_sn'      => $params['agreement_sn'],
             'stock_log.is_manual'         => $params['is_manual'],
-            'stock_log.direction'         => $params['direction'],
+            'stock_log.customer_id'       => $params['customer_id'],
         ]);
         $stockLogList = $query->all();
 
@@ -256,8 +268,12 @@ class StockOutLogController extends Controller
                 } else {
                     $excel->setCellValue($letter[$i+9] . ($key + 2), '');
                 }
-                $excel->setCellValue($letter[$i+10] . ($key + 2), $stockLog->direction);
-                $excel->setCellValue($letter[$i+11] . ($key + 2), $stockLog->remark);
+
+                $excel->setCellValue($letter[$i+10] . ($key + 2), $stockLog->customer_id);
+                $excel->setCellValue($letter[$i+11] . ($key + 2), $stockLog->region);
+                $excel->setCellValue($letter[$i+12] . ($key + 2), $stockLog->plat_name);
+                $excel->setCellValue($letter[$i+13] . ($key + 2), $stockLog->direction);
+                $excel->setCellValue($letter[$i+14] . ($key + 2), $stockLog->remark);
                 break;
             }
         }
