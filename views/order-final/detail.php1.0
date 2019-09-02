@@ -44,11 +44,11 @@ foreach ($adminList as $key => $admin) {
                 <th>图片</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>未率单价</th>
+                <th>未税单价</th>
                 <th>含率单价</th>
                 <th>货期(周)</th>
                 <th>询价状态</th>
-                <th>未率总价</th>
+                <th>未税总价</th>
                 <th>含率总价</th>
                 <th>是否有采购单</th>
                 <th>采购单号</th>

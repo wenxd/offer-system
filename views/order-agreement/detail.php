@@ -54,9 +54,9 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th>询价状态</th>
                     <th>询价员</th>
                     <th>税率</th>
-                    <th>未率单价</th>
+                    <th>未税单价</th>
                     <th>含率单价</th>
-                    <th>未率总价</th>
+                    <th>未税总价</th>
                     <th>含率总价</th>
                     <th>期货(周)</th>
                     <th>是否有采购单</th>

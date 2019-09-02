@@ -38,9 +38,9 @@ $userId = Yii::$app->user->identity->id;
                 <th>供应商</th>
                 <th>期货(周)</th>
                 <th>税率</th>
-                <th>未率单价</th>
+                <th>未税单价</th>
                 <th>含率单价</th>
-                <th>未率总价</th>
+                <th>未税总价</th>
                 <th>含率总价</th>
                 <th>数量</th>
             </tr>
