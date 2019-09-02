@@ -29,6 +29,11 @@ class QuoteGoods extends \yii\db\ActiveRecord
     const IS_QUOTE_NO  = 0;
     const IS_QUOTE_YES = 1;
 
+    public static $quote = [
+        self::IS_QUOTE_NO  => '否',
+        self::IS_QUOTE_YES => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -55,22 +60,31 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'             => 'ID',
-            'order_id'       => '订单ID',
-            'order_final_id' => '最终订单ID',
-            'order_final_sn' => '最终订单号',
-            'order_quote_id' => '报价ID',
-            'order_quote_sn' => '报价单号',
-            'goods_id'       => '零件ID',
-            'type'           => '关联类型  0询价  1库存',
-            'relevance_id'   => '关联ID（询价或库存）',
-            'number'         => '数量',
-            'is_quote'       => '是否报价 0否 1是',
-            'is_deleted'     => '是否删除：0未删除 1已删除',
-            'updated_at'     => '更新时间',
-            'created_at'     => '创建时间',
-            'serial'         => '序号',
-            'tax_rate'       => '税率',
+            'id'                => 'ID',
+            'order_id'          => '订单ID',
+            'order_final_id'    => '成本订单ID',
+            'order_final_sn'    => '成本订单号',
+            'order_quote_id'    => '报价ID',
+            'order_quote_sn'    => '报价单号',
+            'goods_id'          => '零件ID',
+            'type'              => '关联类型  0询价  1库存',
+            'relevance_id'      => '询价ID',
+            'number'            => '数量',
+            'is_quote'          => '报价',
+            'is_deleted'        => '是否删除：0未删除 1已删除',
+            'updated_at'        => '更新时间',
+            'created_at'        => '创建时间',
+            'serial'            => '序号',
+            'tax_rate'          => '税率',
+            'price'             => '未税价格',
+            'tax_price'         => '含税价格',
+            'all_price'         => '未税总价',
+            'all_tax_price'     => '含税总价',
+            'quote_price'       => '报价未税价格',
+            'quote_tax_price'   => '报价含税价格',
+            'quote_all_price'   => '报价未税总价',
+            'quote_all_tax_price' => '报价含税总价',
+            'delivery_time'     => '货期(周)',
         ];
     }
 
