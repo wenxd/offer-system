@@ -3,7 +3,7 @@
 use kartik\daterange\DateRangePicker;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\QuoteGoods;
 
@@ -38,21 +38,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_rate',
             'quote_all_tax_price',
             'delivery_time',
+            
             [
-                'attribute'                       => 'customer_id',
-                'label'                           => '客户名称',
-                'format'                          => 'raw',
-                'filter'                          => \app\models\Customer::getAllDropDown(),
-//                'vAlign'                          => 'middle',
-//                'width'                           => '120px',
-//                'filterType'                      => GridView::FILTER_POS_BODY,
-//                'filterInputOptions'              => ['placeholder' => '全部'],
-//                'filterWidgetOptions'             => [
-//                    'pluginOptions'               => [
-//                        'allowClear'              => true,
-//                        'minimumResultsForSearch' => -1
-//                    ],
-//                ],
+                'attribute'  => 'customer_id',
+                'label'      => '客户名称',
+                'filter'     => \app\models\Customer::getAllDropDown(),
+                'filterType' => GridView::FILTER_SELECT2,
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
                         if($model->order->customer) {

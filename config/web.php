@@ -15,6 +15,7 @@ $config = [
             'layout' => 'left-menu',//yii2-admin的导航菜单
             'mainLayout' => '@app/views/layouts/main.php',
         ],
+        'gridview' => ['class' => 'kartik\grid\Module'],
     ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
