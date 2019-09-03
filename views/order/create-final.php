@@ -14,7 +14,7 @@ $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
 $customer_name = $order->customer ? $order->customer->short_name : '';
 
-$model->final_sn = 'Z' . date('ymd_') . $customer_name . '_' . $number;
+$model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
 ?>
 <section class="content">
     <div class="box table-responsive">

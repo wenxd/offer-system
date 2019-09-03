@@ -91,17 +91,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'provide_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderFinalSearch[provide_date]',
-                    'value' => Yii::$app->request->get('OrderFinalSearch')['provide_date'],
-                ]),
-                'value'     => function ($model, $key, $index, $column) {
-                    return $model->order->provide_date;
-                }
-            ],
-            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([

@@ -23,7 +23,7 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$model->quote_sn = 'B' . date('ymd__') . $number;
+$model->quote_sn = 'B' . date('ymd_') . $order->customer->short_name . '_' . $number;
 
 ?>
 <div class="box table-responsive">
@@ -96,7 +96,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
-                <td><?=$item->stockNumber->number?></td>
+                <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                 <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
                         '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $orderGoods[$item->goods_id]->number . '" 
     onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"

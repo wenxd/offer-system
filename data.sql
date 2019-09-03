@@ -540,7 +540,8 @@ ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAUL
 ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税价格';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` int(11) NOT NULL DEFAULT '0' COMMENT '货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
 
 ALTER TABLE `agreement_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';

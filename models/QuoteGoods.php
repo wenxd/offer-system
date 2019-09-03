@@ -23,6 +23,7 @@ use Yii;
  * @property string $created_at 创建时间
  * @property string $serial 序号
  * @property string $tax_rate 税率
+ * @property string $quote_delivery_time
  */
 class QuoteGoods extends \yii\db\ActiveRecord
 {
@@ -48,7 +49,8 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted'], 'integer'],
+            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted',
+                'quote_delivery_time'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['order_final_sn', 'order_quote_id', 'order_quote_sn'], 'string', 'max' => 255],
         ];
@@ -60,31 +62,32 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                => 'ID',
-            'order_id'          => '订单ID',
-            'order_final_id'    => '成本订单ID',
-            'order_final_sn'    => '成本订单号',
-            'order_quote_id'    => '报价ID',
-            'order_quote_sn'    => '报价单号',
-            'goods_id'          => '零件ID',
-            'type'              => '关联类型  0询价  1库存',
-            'relevance_id'      => '询价ID',
-            'number'            => '数量',
-            'is_quote'          => '报价',
-            'is_deleted'        => '是否删除：0未删除 1已删除',
-            'updated_at'        => '更新时间',
-            'created_at'        => '创建时间',
-            'serial'            => '序号',
-            'tax_rate'          => '税率',
-            'price'             => '未税价格',
-            'tax_price'         => '含税价格',
-            'all_price'         => '未税总价',
-            'all_tax_price'     => '含税总价',
-            'quote_price'       => '报价未税价格',
-            'quote_tax_price'   => '报价含税价格',
-            'quote_all_price'   => '报价未税总价',
+            'id'                  => 'ID',
+            'order_id'            => '订单ID',
+            'order_final_id'      => '成本订单ID',
+            'order_final_sn'      => '成本订单号',
+            'order_quote_id'      => '报价ID',
+            'order_quote_sn'      => '报价单号',
+            'goods_id'            => '零件ID',
+            'type'                => '关联类型  0询价  1库存',
+            'relevance_id'        => '询价ID',
+            'number'              => '数量',
+            'is_quote'            => '报价',
+            'is_deleted'          => '是否删除：0未删除 1已删除',
+            'updated_at'          => '更新时间',
+            'created_at'          => '创建时间',
+            'serial'              => '序号',
+            'tax_rate'            => '税率',
+            'price'               => '未税价格',
+            'tax_price'           => '含税价格',
+            'all_price'           => '未税总价',
+            'all_tax_price'       => '含税总价',
+            'quote_price'         => '报价未税价格',
+            'quote_tax_price'     => '报价含税价格',
+            'quote_all_price'     => '报价未税总价',
             'quote_all_tax_price' => '报价含税总价',
-            'delivery_time'     => '货期(周)',
+            'delivery_time'       => '货期(周)',
+            'quote_delivery_time' => '货期(周)',
         ];
     }
 
