@@ -12,6 +12,7 @@ use app\models\QuoteGoods;
 class QuoteGoodsSearch extends QuoteGoods
 {
     public $order_sn;
+    public $customer_id;
 
     /**
      * {@inheritdoc}
@@ -20,7 +21,7 @@ class QuoteGoodsSearch extends QuoteGoods
     {
         return [
             [['id', 'order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote',
-                'is_deleted', 'delivery_time'], 'integer'],
+                'is_deleted', 'delivery_time', 'customer_id'], 'integer'],
             [['order_final_sn', 'order_quote_id', 'order_quote_sn', 'updated_at', 'created_at', 'serial',
                 'order_sn'], 'safe'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
@@ -69,9 +70,10 @@ class QuoteGoodsSearch extends QuoteGoods
             return $dataProvider;
         }
 
-        if ($this->order_sn) {
+        if ($this->order_sn || $this->customer_id) {
             $query->leftJoin('order as a', 'a.id = quote_goods.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+            $query->andFilterWhere(['a.customer_id' => $this->customer_id]);
         }
 
         // grid filtering conditions
