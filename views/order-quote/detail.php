@@ -13,7 +13,8 @@ $this->title = '生成收入合同';
 $this->params['breadcrumbs'][] = $this->title;
 
 $model->agreement_date = date('Y-m-d');
-$model->agreement_sn = 'H' . date('ymd__') . $number;
+$customer_name = $order->customer ? $order->customer->short_name : '';
+$model->agreement_sn = 'S' . date('ymd_') . $customer_name . '_' . $number;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');

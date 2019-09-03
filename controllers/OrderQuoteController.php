@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
-use app\models\{Goods, Inquiry, InquiryGoods, OrderAgreement, OrderQuote, OrderFinal, QuoteGoods};
+use app\models\{Goods, Inquiry, InquiryGoods, Order, OrderAgreement, OrderQuote, OrderFinal, QuoteGoods};
 use app\models\OrderQuoteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -180,6 +180,7 @@ class OrderQuoteController extends Controller
                 $row[] = $item['quote_all_price'];
                 $row[] = $item['quote_all_tax_price'];
                 $row[] = $item['delivery_time'];
+                $row[] = $item['delivery_time'] * $params['delivery_ratio'];
 
                 $data[] = $row;
             }
@@ -195,7 +196,7 @@ class OrderQuoteController extends Controller
     {
         $feild = ['order_id', 'order_final_id', 'order_final_sn', 'order_quote_id', 'order_quote_sn', 'goods_id',
             'type', 'relevance_id', 'number', 'serial', 'tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price',
-             'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time'];
+             'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
 
@@ -216,6 +217,7 @@ class OrderQuoteController extends Controller
         }
 
         $data = [];
+        $data['order']      = Order::findOne($orderQuote->order_id);
         $data['orderQuote'] = $orderQuote;
         $data['quoteGoods'] = $quoteGoods;
         $data['model']      = new OrderAgreement();
@@ -295,6 +297,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->tax_price           = $quoteGoods->tax_price;
                 $agreementGoods->all_price           = $quoteGoods->all_price;
                 $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
+                $agreementGoods->quote_delivery_time = $quoteGoods->quote_delivery_time;
                 //用item的值
                 $agreementGoods->quote_price         = $item['price'];
                 $agreementGoods->quote_tax_price     = $item['tax_price'];

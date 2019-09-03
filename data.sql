@@ -553,6 +553,7 @@ ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NUL
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
 ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
 ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否出库';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
 
 ALTER TABLE `supplier` ADD COLUMN `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
 

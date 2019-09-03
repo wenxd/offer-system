@@ -49,9 +49,8 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted',
-                'quote_delivery_time'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted'], 'integer'],
+            [['updated_at', 'created_at', 'quote_delivery_time'], 'safe'],
             [['order_final_sn', 'order_quote_id', 'order_quote_sn'], 'string', 'max' => 255],
         ];
     }

@@ -23,7 +23,8 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$model->quote_sn = 'B' . date('ymd_') . $order->customer->short_name . '_' . $number;
+$customer_name = $order->customer ? $order->customer->short_name : '';
+$model->quote_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
 
 ?>
 <div class="box table-responsive">
