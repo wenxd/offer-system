@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'number',
             'tax_rate',
             'quote_all_tax_price',
-//            'delivery_time',
+            'quote_delivery_time',
             [
                 'attribute'  => 'customer_id',
                 'label'      => '客户名称',

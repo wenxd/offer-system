@@ -24,7 +24,7 @@ class AgreementGoodsSearch extends AgreementGoods
             [['id', 'order_id', 'order_agreement_id', 'order_quote_id', 'goods_id', 'type', 'relevance_id', 'number',
                 'is_agreement', 'is_deleted', 'inquiry_admin_id', 'is_out', 'customer_id'], 'integer'],
             [['order_agreement_sn', 'order_quote_sn', 'serial', 'agreement_sn', 'purchase_date', 'agreement_date',
-                'updated_at', 'created_at', 'goods_number'], 'safe'],
+                'updated_at', 'created_at', 'goods_number', 'quote_delivery_time'], 'safe'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
             [['goods_number'], 'trim'],
@@ -107,6 +107,7 @@ class AgreementGoodsSearch extends AgreementGoods
             'agreement_goods.created_at'            => $this->created_at,
             'agreement_goods.inquiry_admin_id'      => $this->inquiry_admin_id,
             'agreement_goods.is_out'                => $this->is_out,
+            'agreement_goods.quote_delivery_time'   => $this->quote_delivery_time,
         ]);
 
         $query->andFilterWhere(['like', 'agreement_goods.order_agreement_sn', $this->order_agreement_sn])
