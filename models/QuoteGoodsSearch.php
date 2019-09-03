@@ -82,7 +82,7 @@ class QuoteGoodsSearch extends QuoteGoods
             $query->leftJoin('goods as g', 'g.id = quote_goods.goods_id');
             $query->andFilterWhere(['like', 'g.goods_number', $this->goods_number]);
         }
-        
+
         // grid filtering conditions
         $query->andFilterWhere([
             'quote_goods.id' => $this->id,

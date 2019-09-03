@@ -91,6 +91,8 @@ class AgreementGoods extends \yii\db\ActiveRecord
             'is_deleted'         => '是否删除：0未删除 1已删除',
             'updated_at'         => '更新时间',
             'created_at'         => '创建时间',
+            'quote_tax_price'    => '报价含税单价',
+            'quote_all_tax_price'=> '报价含税总价',
         ];
     }
 
