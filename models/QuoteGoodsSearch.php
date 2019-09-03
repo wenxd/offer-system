@@ -13,6 +13,7 @@ class QuoteGoodsSearch extends QuoteGoods
 {
     public $order_sn;
     public $customer_id;
+    public $goods_number;
 
     /**
      * {@inheritdoc}
@@ -23,9 +24,10 @@ class QuoteGoodsSearch extends QuoteGoods
             [['id', 'order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote',
                 'is_deleted', 'delivery_time', 'customer_id'], 'integer'],
             [['order_final_sn', 'order_quote_id', 'order_quote_sn', 'updated_at', 'created_at', 'serial',
-                'order_sn'], 'safe'],
+                'order_sn', 'goods_number'], 'safe'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
+            [['goods_number'], 'trim'],
         ];
     }
 
@@ -76,6 +78,11 @@ class QuoteGoodsSearch extends QuoteGoods
             $query->andFilterWhere(['a.customer_id' => $this->customer_id]);
         }
 
+        if ($this->goods_number) {
+            $query->leftJoin('goods as g', 'g.id = quote_goods.goods_id');
+            $query->andFilterWhere(['like', 'g.goods_number', $this->goods_number]);
+        }
+        
         // grid filtering conditions
         $query->andFilterWhere([
             'quote_goods.id' => $this->id,

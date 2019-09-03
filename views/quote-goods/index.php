@@ -22,12 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
                 'attribute'      => 'goods_number',
-                'label'          => '零件号',
                 'format'         => 'raw',
-                'contentOptions' =>['style'=>'min-width: 60px;'],
+                'label'          => '零件号',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'          => function ($model, $key, $index, $column) {
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods_id]));
+                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
                     } else {
                         return '';
                     }
@@ -38,7 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_rate',
             'quote_all_tax_price',
             'delivery_time',
-            
             [
                 'attribute'  => 'customer_id',
                 'label'      => '客户名称',
