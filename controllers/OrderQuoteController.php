@@ -180,7 +180,7 @@ class OrderQuoteController extends Controller
                 $row[] = $item['quote_all_price'];
                 $row[] = $item['quote_all_tax_price'];
                 $row[] = $item['delivery_time'];
-                $row[] = $item['delivery_time'] * $params['delivery_ratio'];
+                $row[] = $item['quote_delivery_time'];
 
                 $data[] = $row;
             }

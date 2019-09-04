@@ -80,7 +80,7 @@ foreach ($adminList as $key => $admin) {
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
                     <td class="all_tax_price"><?=$item->all_tax_price?></td>
-                    <td class="quote_delivery_time"><?=$item->delivery_time?></td>
+                    <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
                     <td class="quote_price"><?=$item->quote_price?></td>
                     <td class="quote_tax_price"><?=$item->quote_tax_price?></td>
                     <td class="quote_all_price"><?=$item->quote_all_price?></td>
@@ -99,7 +99,7 @@ foreach ($adminList as $key => $admin) {
                     <td><?=$is_inquiry ?  '已询价' : '未询价'?></td>
                     <td><?=$item->order_quote_id ? '是' : '否'?></td>
                     <td><?=$item->order_quote_sn?></td>
-                    <td><?=$item->stockNumber->number?></td>
+                    <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                     <td class="afterNumber"><?=$item->number?></td>
                 </tr>
             <?php endforeach;?>
@@ -148,7 +148,7 @@ foreach ($adminList as $key => $admin) {
             var sta_quote_all_price     = 0;
             var sta_quote_all_tax_price = 0;
             $('.order_final_list').each(function (i, e) {
-                var delivery_time   = $(e).find('.delivery_time').text();
+                var delivery_time   = parseFloat($(e).find('.quote_delivery_time').text());
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }

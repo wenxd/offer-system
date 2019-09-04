@@ -89,7 +89,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
-                <td class="quote_delivery_time"></td>
+                <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
                 <td class="quote_price"><input type="text" style="width: 100px;"></td>
                 <td class="quote_tax_price"></td>
                 <td class="quote_all_price"></td>
@@ -316,7 +316,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var delivery_ratio = $(this).val();
             $('.order_final_list').each(function (i, e) {
                 var delivery_time = $(e).find('.delivery_time').text();
-                $(e).find('.quote_delivery_time').text((delivery_time * delivery_ratio).toFixed(2));
+                $(e).find('.quote_delivery_time input').val((delivery_time * delivery_ratio).toFixed(2));
             });
         });
 
@@ -352,6 +352,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     item.quote_tax_price     = $(element).parent().parent().find('.quote_tax_price').text();
                     item.quote_all_price     = $(element).parent().parent().find('.quote_all_price').text();
                     item.quote_all_tax_price = $(element).parent().parent().find('.quote_all_tax_price').text();
+                    item.quote_delivery_time = $(element).parent().parent().find('.quote_delivery_time input').val();
 
                     goods_info.push(item);
                 }
@@ -401,7 +402,5 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 }
             });
         });
-
-
     });
 </script>
