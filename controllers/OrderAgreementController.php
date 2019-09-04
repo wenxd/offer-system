@@ -3,9 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\{
-    OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods, PurchaseGoods
-};
+use app\models\{Order, OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods, PurchaseGoods};
 use app\models\OrderAgreementSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -180,6 +178,7 @@ class OrderAgreementController extends Controller
         $data['number']         = $number;
         $data['inquiryGoods']   = $inquiryGoods;
         $data['purchaseGoods']  = $purchaseGoods;
+        $data['order']          = Order::findOne($orderAgreement->order_id);
 
         return $this->render('detail', $data);
     }

@@ -25,7 +25,8 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$model->purchase_sn = 'C' . date('ymd__') . $number;
+$customer_name = $order->customer ? $order->customer->short_name : '';
+$model->purchase_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
 $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 ?>
 <style>
@@ -108,7 +109,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
-                <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
+                <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                 <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
                 <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
                 <td><?=$item->tax_rate?></td>
@@ -208,8 +209,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
                 purchase_price     += parseFloat(all_price);
                 purchase_all_price += parseFloat(all_tax_price);
-                console.log(purchase_price);
-                console.log(purchase_all_price);
             });
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
@@ -254,8 +253,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             $('.order_agreement_list').each(function (i, e) {
                 var all_price       = $(e).find('.all_price').text();
                 var all_tax_price   = $(e).find('.all_tax_price').text();
-                console.log(all_price);
-                console.log(all_tax_price);
                 purchase_price      += parseFloat(all_price);
                 purchase_all_price  += parseFloat(all_tax_price);
             });
@@ -273,9 +270,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
             var goods_info = [];
             var number_flag = false;
+            var supplier_flag = false;
+            var supplier_name = '';
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
+                    var s_name = $(element).parent().parent().find('.supplier_name').text();
+                    if (!supplier_name) {
+                        supplier_name = s_name;
+                    } else {
+                        if (supplier_name != s_name) {
+                            supplier_flag = true;
+                        }
+                    }
                     if (!$(element).parent().parent().find('.number').val()){
                         number_flag  = true;
                     }
@@ -287,6 +294,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     goods_info.push(item);
                 }
             });
+
+            // if (supplier_flag) {
+            //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
+            //     return false;
+            // }
 
             if (number_flag) {
                 layer.msg('请给选中的行输入数量', {time:2000});
