@@ -44,7 +44,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>税率</th>
                 <th>未税单价</th>
                 <th>含率单价</th>
-                <th>期货(周)</th>
+                <th>货期(周)</th>
                 <th>未税总价</th>
                 <th>含率总价</th>
                 <?php endif;?>
