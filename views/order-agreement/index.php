@@ -75,6 +75,17 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'sign_date',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderAgreementSearch[sign_date]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['sign_date'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->sign_date, 0, 10);
+                }
+            ],
+            [
                 'attribute' => 'customer_name',
                 'label'     => '客户名称',
                 'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class' => 'form-control']),

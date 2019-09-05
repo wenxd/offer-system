@@ -28,6 +28,7 @@ use Yii;
  * @property string $bill_at
  * @property string $stock_at
  * @property string $is_complete
+ * @property string $sign_date
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -84,7 +85,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
                 'is_payment', 'is_bill', 'is_stock', 'is_complete'], 'integer'],
-            [['agreement_date', 'updated_at', 'created_at'], 'safe'],
+            [['agreement_date', 'updated_at', 'created_at', 'sign_date'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -114,6 +115,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'bill_at'           => '开发票时间',
             'stock_at'          => '出库时间',
             'financial_remark'  => '财务备注',
+            'sign_date'         => '合同签订时间',
         ];
     }
 

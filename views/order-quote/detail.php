@@ -13,6 +13,7 @@ $this->title = '生成收入合同';
 $this->params['breadcrumbs'][] = $this->title;
 
 $model->agreement_date = date('Y-m-d');
+$model->sign_date = date('Y-m-d');
 $customer_name = $order->customer ? $order->customer->short_name : '';
 $model->agreement_sn = 'S' . date('ymd_') . $customer_name . '_' . $number;
 
@@ -92,6 +93,17 @@ $userId   = Yii::$app->user->identity->id;
         </table>
 
         <?= $form->field($model, 'agreement_sn')->textInput() ?>
+
+        <?= $form->field($model, 'sign_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -185,6 +197,12 @@ $userId   = Yii::$app->user->identity->id;
                 return false;
             }
 
+            var sign_date = $('#orderagreement-sign_date').val();
+            if (!sign_date) {
+                layer.msg('请输入合同签订日期', {time:2000});
+                return false;
+            }
+
             var agreement_date = $('#orderagreement-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入合同交货日期', {time:2000});
@@ -201,7 +219,7 @@ $userId   = Yii::$app->user->identity->id;
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/create-agreement',
-                data:{id:id, agreement_sn:agreement_sn, agreement_date:agreement_date, goods_info:goods_info},
+                data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

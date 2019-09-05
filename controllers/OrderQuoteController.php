@@ -270,6 +270,7 @@ class OrderQuoteController extends Controller
 
         $orderAgreement->goods_info      = json_encode($json, JSON_UNESCAPED_UNICODE);
         $orderAgreement->agreement_date  = $params['agreement_date'];
+        $orderAgreement->sign_date       = $params['sign_date'];
         $orderAgreement->admin_id        = Yii::$app->user->identity->id;
         if ($orderAgreement->save()) {
             //更新其他的报价单为不可生成合同单
