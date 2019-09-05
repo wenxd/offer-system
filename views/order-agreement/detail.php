@@ -64,6 +64,10 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th>采购单号</th>
                     <th>合同需求数量</th>
                     <th>数量</th>
+                    <th>库存数量</th>
+                    <th>建议库存</th>
+                    <th>高储</th>
+                    <th>低储</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
                     <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
@@ -85,6 +89,10 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                             <?php endforeach;?>
                         </select>
                     </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -124,6 +132,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="afterNumber">
                     <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number : $item->number?>">
                 </td>
+                <td><?=$item->stock ? $item->stock->number : 0?></td>
+                <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
+                <td><?=$item->stock ? $item->stock->high_number : 0?></td>
+                <td><?=$item->stock ? $item->stock->low_number : 0?></td>
             </tr>
             <?php endforeach;?>
                 <tr style="background-color: #acccb9">
@@ -133,7 +145,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td>最长货期</td>
                     <td>采购未税总价</td>
                     <td>采购含税总价</td>
-                    <td colspan="5"></td>
+                    <td colspan="9"></td>
                 </tr>
                 <tr style="background-color: #acccb9">
                     <td class="sta_all_price"></td>
@@ -141,7 +153,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td class="mostLongTime"></td>
                     <td class="purchase_price"></td>
                     <td class="purchase_all_price"></td>
-                    <td colspan="5"></td>
+                    <td colspan="9"></td>
                 </tr>
             </tbody>
         </table>
