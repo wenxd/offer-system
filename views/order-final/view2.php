@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
         var sta_all_tax_price = 0;
         var mostLongTime      = 0;
         $('.goods_list').each(function (i, e) {
-            var delivery_time = $(e).find('.delivery_time').text();
+            var delivery_time = parseFloat($(e).find('.delivery_time').text());
             var number = $(e).find('.number').text();
             var price = $(e).find('.price').text();
             var tax_price = $(e).find('.tax_price').text();

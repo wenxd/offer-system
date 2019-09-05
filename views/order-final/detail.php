@@ -157,10 +157,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $('.field-orderpurchase-end_date').hide();
             }
             var mostLongTime        = 0;
-            var sta_all_price           = 0;
-            var sta_all_tax_price       = 0;
+            var sta_all_price       = 0;
+            var sta_all_tax_price   = 0;
             $('.order_final_list').each(function (i, e) {
-                var delivery_time   = $(e).find('.delivery_time').text();
+                var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }
