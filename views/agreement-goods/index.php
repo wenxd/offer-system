@@ -58,15 +58,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'created_at',
-                'label'     => '报价时间',
+                'attribute' => 'sign_date',
+                'label'     => '签订时间',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name'  => 'QuoteGoodsSearch[created_at]',
-                    'value' => Yii::$app->request->get('QuoteGoodsSearch')['created_at'],
+                    'name'  => 'AgreementGoodsSearch[sign_date]',
+                    'value' => Yii::$app->request->get('AgreementGoodsSearch')['sign_date'],
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
-                    return substr($model->created_at, 0, 10);
+                    return substr($model->orderAgreement->sign_date, 0, 10);
                 }
             ],
             [

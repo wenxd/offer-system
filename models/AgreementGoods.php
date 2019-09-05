@@ -117,4 +117,9 @@ class AgreementGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
+
+    public function getOrderAgreement()
+    {
+        return $this->hasOne(OrderAgreement::className(), ['id' => 'order_agreement_id']);
+    }
 }
