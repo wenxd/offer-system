@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Order;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\PaymentGoods;
@@ -142,6 +143,7 @@ class OrderPurchaseVerifyController extends BaseController
 
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
         $orderPayment->is_verify = 1;
+        $orderPayment->purchase_status = OrderPayment::PURCHASE_STATUS_PASS;
         try {
             $orderPayment->save();
 

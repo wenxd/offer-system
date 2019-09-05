@@ -27,6 +27,7 @@ use Yii;
  * @property string $financial_remark
  * @property string $bill_at
  * @property string $is_complete
+ * @property string $purchase_status
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
