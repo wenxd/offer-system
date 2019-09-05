@@ -142,7 +142,7 @@ class OrderPurchaseController extends BaseController
         $orderPurchase->purchase_sn        = $params['purchase_sn'];
         $orderPurchase->order_id           = $orderAgreement->order_id;
         $orderPurchase->order_agreement_id = $params['order_agreement_id'];
-        $orderPurchase->goods_info         = json_encode($params['goods_info'], JSON_UNESCAPED_UNICODE);
+        $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
         $orderPurchase->end_date           = $params['end_date'];
         $orderPurchase->admin_id           = $params['admin_id'];
         if ($orderPurchase->save()) {
