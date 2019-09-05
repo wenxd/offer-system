@@ -159,7 +159,7 @@ class OrderPurchaseController extends BaseController
                     $purchaseGoods->goods_id            = $agreementGoods->goods_id;
                     $purchaseGoods->type                = $agreementGoods->type;
                     $purchaseGoods->relevance_id        = $agreementGoods->relevance_id;
-                    $purchaseGoods->number              = $item['number'];
+                    $purchaseGoods->number              = $agreementGoods->number;
                     $purchaseGoods->tax_rate            = $agreementGoods->tax_rate;
                     $purchaseGoods->price               = $agreementGoods->price;
                     $purchaseGoods->tax_price           = $agreementGoods->tax_price;
@@ -167,7 +167,7 @@ class OrderPurchaseController extends BaseController
                     $purchaseGoods->all_tax_price       = $agreementGoods->all_tax_price;
                     $purchaseGoods->fixed_price         = $agreementGoods->price;
                     $purchaseGoods->fixed_tax_price     = $agreementGoods->tax_price;
-                    $purchaseGoods->fixed_number        = $agreementGoods->number;
+                    $purchaseGoods->fixed_number        = $item['number'];
                     $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
 
                     //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
