@@ -139,7 +139,7 @@ $i = 0;
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=$item->inquiry->supplier->name?></td>
+                    <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=$item->inquiry->supplier->short_name?></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
@@ -298,8 +298,18 @@ $i = 0;
                 return false;
             }
             var goods_info = [];
+            var supplier_flag = false;
+            var supplier_name = '';
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
+                    var s_name = $(element).parent().parent().find('.supplier_name').text();
+                    if (!supplier_name) {
+                        supplier_name = s_name;
+                    } else {
+                        if (supplier_name != s_name) {
+                            supplier_flag = true;
+                        }
+                    }
                     var item = {};
                     item.purchase_goods_id = $(element).parent().parent().find('.purchase_detail').data('purchase_goods_id');
                     item.goods_id          = $(element).val();
@@ -308,6 +318,11 @@ $i = 0;
                     goods_info.push(item);
                 }
             });
+
+            if (supplier_flag) {
+                layer.msg('一个支出合同不能有多个供应商', {time:2000});
+                return false;
+            }
 
             var order_purchase_id = $('.data').data('order_purchase_id');
             var admin_id = $('#orderpurchase-admin_id').val();
