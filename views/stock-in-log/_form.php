@@ -50,6 +50,10 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'number')->textInput() ?>
 
+        <?= $form->field($model, 'position')->textInput() ?>
+
+        <?= $form->field($model, 'suggest_number')->textInput() ?>
+
         <?= $form->field($model, 'type')->dropDownList(['1' => '入库'])->label('入库') ?>
 
         <?= $form->field($model, 'remark')->textInput() ?>
@@ -119,6 +123,18 @@ use yii\widgets\ActiveForm;
             return false;
         }
 
+        var position = $('#stocklog-position').val();
+        if (!position) {
+            layer.msg('请输入库存位置', {time:2000});
+            return false;
+        }
+
+        var suggest_number = $('#stocklog-suggest_number').val();
+        if (!suggest_number) {
+            layer.msg('请输入库存位置', {time:2000});
+            return false;
+        }
+
         var remark = $('#stocklog-remark').val();
         if (!remark) {
             layer.msg('请输入备注说明', {time:2000});
@@ -128,7 +144,7 @@ use yii\widgets\ActiveForm;
         $.ajax({
             type:"POST",
             url:"?r=stock-in-log/add",
-            data:{goods_id:goods_id, number:number, remark:remark, price:price},
+            data:{goods_id:goods_id, number:number, position:position, suggest_number:suggest_number, remark:remark},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

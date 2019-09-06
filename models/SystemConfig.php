@@ -16,13 +16,15 @@ use Yii;
  */
 class SystemConfig extends \yii\db\ActiveRecord
 {
-    const IS_DELETED_NO    = '0';
-    const IS_DELETED_YES   = '1';
+    const IS_DELETED_NO          = '0';
+    const IS_DELETED_YES         = '1';
 
-    const TITLE_TAX             = 'tax';
-    const TITLE_DELIVERY_TIME   = 'delivery';
-    const TITLE_STOCK_DIRECTION = 'direction';
-    const TITLE_REGION          = 'region';
+    const TITLE_TAX              = 'tax';
+    const TITLE_DELIVERY_TIME    = 'delivery';
+    const TITLE_STOCK_DIRECTION  = 'direction';
+    const TITLE_REGION           = 'region';
+    const TITLE_HIGH_STOCK_RATIO = 'high_stock_ratio';
+    const TITLE_LOW_STOCK_RATIO  = 'low_stock_ratio';
 
     /**
      * {@inheritdoc}
@@ -60,10 +62,12 @@ class SystemConfig extends \yii\db\ActiveRecord
     }
 
     public static $config = [
-        self::TITLE_TAX             => '税率',
-        self::TITLE_DELIVERY_TIME   => '货期',
-        self::TITLE_STOCK_DIRECTION => '出库去向',
-        self::TITLE_REGION          => '区块',
+        self::TITLE_TAX              => '税率',
+        self::TITLE_DELIVERY_TIME    => '货期',
+        self::TITLE_STOCK_DIRECTION  => '出库去向',
+        self::TITLE_REGION           => '区块',
+        self::TITLE_HIGH_STOCK_RATIO => '高储系数',
+        self::TITLE_LOW_STOCK_RATIO  => '低储系数',
     ];
 
     public static function getList()

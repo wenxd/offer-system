@@ -36,6 +36,8 @@ class StockLog extends ActiveRecord
 {
     public $price;
     public $goods_number;
+    public $suggest_number;
+    public $position;
 
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
@@ -117,6 +119,8 @@ class StockLog extends ActiveRecord
             'customer_id'           => '客户',
             'region'                => '区块',
             'plat_name'             => '平台名称',
+            'suggest_number'        => '建议库存',
+            'position'              => '库存位置',
         ];
     }
 

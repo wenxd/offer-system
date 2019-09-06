@@ -142,19 +142,43 @@ class StockInLogController extends Controller
         $stockLog->admin_id     = Yii::$app->user->identity->id;
         $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
         if ($stockLog->save()) {
-            $tax = SystemConfig::find()->select('value')->where([
-                'title'  => SystemConfig::TITLE_TAX,
-                'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+            $systemList = SystemConfig::find()->where([
+                'title'  => [SystemConfig::TITLE_TAX, SystemConfig::TITLE_HIGH_STOCK_RATIO, SystemConfig::TITLE_LOW_STOCK_RATIO],
+                'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->all();
+
+            foreach ($systemList as $key => $value) {
+                if ($value['title'] == SystemConfig::TITLE_TAX) {
+                    $tax = $value['value'];
+                }
+                if ($value['title'] == SystemConfig::TITLE_HIGH_STOCK_RATIO) {
+                    $highRatio = $value['value'];
+                }
+                if ($value['title'] == SystemConfig::TITLE_LOW_STOCK_RATIO) {
+                    $lowRatio = $value['value'];
+                }
+            }
             $stock = Stock::find()->where(['good_id' => $params['goods_id']])->one();
             if (!$stock) {
                 $stock   = new Stock();
-                $stock->good_id     = $params['goods_id'];
-                $stock->price       = 0;
-                $stock->tax_rate    = $tax;
-                $stock->tax_price   = $stock->price * (1 + $tax / 100);
-                $stock->number      = $params['number'];
+                $stock->good_id         = $params['goods_id'];
+                $stock->price           = 0;
+                $stock->tax_rate        = $tax;
+                $stock->tax_price       = $stock->price * (1 + $tax / 100);
+                $stock->number          = $params['number'];
+                $stock->position        = $params['position'];
+                $stock->suggest_number  = $params['suggest_number'];
+                $stock->high_number     = $params['suggest_number'] * $highRatio;
+                $stock->low_number      = $params['suggest_number'] * $lowRatio;
                 $stock->save();
             } else {
+                if ($params['position']) {
+                    $stock->position        = $params['position'];
+                }
+                if ($params['suggest_number']) {
+                    $stock->suggest_number  = $params['suggest_number'];
+                    $stock->high_number     = $params['suggest_number'] * $highRatio;
+                    $stock->low_number      = $params['suggest_number'] * $lowRatio;
+                }
                 $stock->number   += $params['number'];
                 $stock->save();
             }
