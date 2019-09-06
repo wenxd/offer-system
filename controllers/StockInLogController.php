@@ -149,15 +149,12 @@ class StockInLogController extends Controller
             if (!$stock) {
                 $stock   = new Stock();
                 $stock->good_id     = $params['goods_id'];
-                $stock->price       = $params['price'];
+                $stock->price       = 0;
                 $stock->tax_rate    = $tax;
                 $stock->tax_price   = $stock->price * (1 + $tax / 100);
                 $stock->number      = $params['number'];
                 $stock->save();
             } else {
-                $stock->price     = $params['price'];
-                $stock->tax_rate  = $tax;
-                $stock->tax_price = $stock->price * (1 + $tax / 100);
                 $stock->number   += $params['number'];
                 $stock->save();
             }
