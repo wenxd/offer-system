@@ -95,6 +95,11 @@ class StockInController extends BaseController
                 $stock->tax_rate    = $paymentGoods->tax_rate;
                 $stock->number      = 0;
                 $stock->save();
+            } else {
+                $stock->price       = $paymentGoods->fixed_price;
+                $stock->tax_price   = $paymentGoods->fixed_tax_price;
+                $stock->tax_rate    = $paymentGoods->tax_rate;
+                $stock->save();
             }
             //判断是否全部入库
             $paymentCount = PaymentGoods::find()->where(['order_payment_id' => $orderPayment->id])->count();
