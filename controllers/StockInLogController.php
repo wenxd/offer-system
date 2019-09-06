@@ -142,21 +142,25 @@ class StockInLogController extends Controller
         $stockLog->admin_id     = Yii::$app->user->identity->id;
         $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
         if ($stockLog->save()) {
+            $tax = SystemConfig::find()->select('value')->where([
+                'title'  => SystemConfig::TITLE_TAX,
+                'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
             $stock = Stock::find()->where(['good_id' => $params['goods_id']])->one();
             if (!$stock) {
                 $stock   = new Stock();
                 $stock->good_id     = $params['goods_id'];
                 $stock->price       = $params['price'];
-                $tax = SystemConfig::find()->select('value')->where([
-                    'title'  => SystemConfig::TITLE_TAX,
-                    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
                 $stock->tax_rate    = $tax;
-                $stock->tax_price   = $stock->price * (1 + $tax/100);
+                $stock->tax_price   = $stock->price * (1 + $tax / 100);
                 $stock->number      = $params['number'];
                 $stock->save();
+            } else {
+                $stock->price     = $params['price'];
+                $stock->tax_rate  = $tax;
+                $stock->tax_price = $stock->price * (1 + $tax / 100);
+                $stock->number   += $params['number'];
+                $stock->save();
             }
-            $stock->number += $params['number'];
-            $stock->save();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()]);

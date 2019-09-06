@@ -82,14 +82,14 @@ use yii\widgets\ActiveForm;
         $('.box-search-goods_number').removeClass('cancel-goods_number');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-new-good-number",
+            url:"?r=search/get-good-number-in-stock",
             data:{good_number:good_number},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ', ' + res.data[i]['price'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -101,10 +101,11 @@ use yii\widgets\ActiveForm;
         })
     });
     //选择零件A
-    function selectGoodsA(obj, goods_id){
+    function selectGoodsA(obj, goods_id, price){
         $("#stocklog-goods_id").val(goods_id);
         $("#stocklog-goods_number").val($.trim(obj.html()));
         $('.box-search-goods_number').addClass('cancel-goods_number');
+        $('#stocklog-price').val(price);
     }
 
     $('.stock-created').click(function (e) {

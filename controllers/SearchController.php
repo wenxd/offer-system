@@ -9,6 +9,7 @@ namespace app\controllers;
 
 
 use app\models\Goods;
+use app\models\PaymentGoods;
 use app\models\Supplier;
 use Yii;
 use yii\data\Pagination;
@@ -66,6 +67,36 @@ class SearchController extends BaseController
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
         return json_encode(['code' => 200, 'data' => $goodsList]);
+    }
+
+    /**获取零件号并带上最后一次采购价格
+     * @return string
+     */
+    public function actionGetGoodNumberInStock()
+    {
+        $good_number = (string)Yii::$app->request->get('good_number');
+        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->all();
+        //获取最后一次采购单
+        $goodsId = implode(',', ArrayHelper::getColumn($goodsList, 'id'));
+        $paymentGoods = Yii::$app->db->createCommand("SELECT a.* FROM payment_goods AS a INNER JOIN (SELECT max(created_at) AS created_at FROM payment_goods WHERE goods_id in ($goodsId) GROUP BY  goods_id) AS b ON a.created_at = b.created_at GROUP BY  a.goods_id  ORDER BY   a.created_at DESC")->queryAll();
+
+        $paymentGoodsList = [];
+        foreach ($paymentGoods as $k => $v) {
+            $paymentGoodsList[$v['goods_id']] = $v;
+        }
+
+        $data = [];
+        foreach ($goodsList as $key => $value) {
+            $item = $value->toArray();
+            $item['price'] = 0;
+            if (isset($paymentGoodsList[$value->id])) {
+                $item['price'] = $paymentGoodsList[$value->id]['fixed_price'];
+            }
+            $data[] = $item;
+        }
+
+        return json_encode(['code' => 200, 'data' => $data]);
     }
 
     /**获取厂家号新方法
