@@ -36,6 +36,17 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <div class="box-header">
+        <?= Html::a('下载模板', Url::to(['download']), [
+            'data-pjax' => '0',
+            'class'     => 'btn btn-primary btn-flat',
+        ])?>
+        <?= Html::button('批量入库', [
+            'class' => 'btn btn-success upload',
+            'name'  => 'submit-button',
+        ])?>
+    </div>
+
     <div class="box-body">
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
@@ -72,6 +83,7 @@ use yii\widgets\ActiveForm;
 </div>
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     //零件A搜索
     $("#stocklog-goods_number").bind('input propertychange', function (e) {
@@ -156,5 +168,42 @@ use yii\widgets\ActiveForm;
                 }
             }
         });
+    });
+
+    //上传导入逻辑
+    //加载动画索引
+    var index;
+    //上传文件名称
+    $.ajaxUploadSettings.name = 'FileName';
+
+    //监听事件
+    $('.upload').ajaxUploadPrompt({
+        //上传地址
+        url : '?r=stock-in-log/upload',
+        //上传文件类型
+        accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
+        //上传前加载动画
+        beforeSend : function () {
+            layer.msg('上传中。。。', {
+                icon: 16, shade: 0.01
+            });
+        },
+        onprogress : function (e) {},
+        error : function () {},
+        success : function (data) {
+            //关闭动画
+            window.top.layer.close(index);
+            //字符串转换json
+            var data = JSON.parse(data);
+            if(data.code == 200){
+                //导入成功
+                layer.msg(data.msg,{time:2000},function(){
+                    window.location.reload();
+                });
+            }else{
+                //失败提示
+                layer.msg(data.msg,{icon:1});
+            }
+        }
     });
 </script>
