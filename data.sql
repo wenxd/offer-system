@@ -687,3 +687,11 @@ CREATE TABLE `temp_not_goods` (
 ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
+
+CREATE TABLE `temp_not_stock` (
+  `id`           int(11)  NOT NULL AUTO_INCREMENT,
+  `goods_id`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
+  `updated_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手动出库库存不够的零件';
