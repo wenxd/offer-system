@@ -2,25 +2,16 @@
 
 namespace app\controllers;
 
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\actions;
-use app\models\{AgreementGoods,
-    PaymentGoods,
-    Stock,
-    Goods,
-    GoodsSearch,
-    Inquiry,
-    CompetitorGoods,
-    OrderGoods,
-    OrderInquiry,
-    PurchaseGoods,
-    StockLog,
-    TempOrderInquiry};
+use app\models\{AgreementGoods, PaymentGoods, Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods,
+    OrderInquiry, PurchaseGoods, StockLog, TempOrderInquiry};
 use yii\helpers\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
 /**
  * GoodsController implements the CRUD actions for Goods model.
  */

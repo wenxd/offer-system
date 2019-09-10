@@ -143,38 +143,42 @@ class Inquiry extends ActiveRecord
             $this->is_newest = self::IS_NEWEST_YES;
         }
 
-        $supplier = Supplier::find()->where(['name' => trim($this->supplier_name)])->one();
-        if (!$supplier) {
-            $this->addError('supplier_name', '此供应商不存在');
-            return false;
-        }
-        $this->supplier_id = $supplier->id;
+        $action = urldecode(Yii::$app->request->getQueryParam('r'));
+        list($controller, $function) = explode('/', $action);
 
-        if ($this->goods_number) {
-            $goods = Goods::find()->where(['goods_number' => $this->goods_number])->one();
-            if ($goods) {
-                $this->goods_number_b = $goods->goods_number_b;
-            } else {
-                $this->addError('goods_number', '此零件A不存在');
+        if ($function == 'create' || $function == 'update') {
+            $supplier = Supplier::find()->where(['name' => trim($this->supplier_name)])->one();
+            if (!$supplier) {
+                $this->addError('supplier_name', '此供应商不存在');
+                return false;
+            }
+            $this->supplier_id = $supplier->id;
+
+            if ($this->goods_number) {
+                $goods = Goods::find()->where(['goods_number' => $this->goods_number])->one();
+                if ($goods) {
+                    $this->goods_number_b = $goods->goods_number_b;
+                } else {
+                    $this->addError('goods_number', '此零件A不存在');
+                    return false;
+                }
+            }
+
+            if ($this->goods_number_b) {
+                $goods = Goods::find()->where(['goods_number_b' => $this->goods_number_b])->one();
+                if ($goods) {
+                    $this->goods_number = $goods->goods_number;
+                } else {
+                    $this->addError('goods_number_b', '此零件B不存在');
+                    return false;
+                }
+            }
+
+            if (!$this->goods_number && !$this->goods_number_b) {
+                $this->addError('id', '厂家号不能为空');
                 return false;
             }
         }
-
-        if ($this->goods_number_b) {
-            $goods = Goods::find()->where(['goods_number_b' => $this->goods_number_b])->one();
-            if ($goods) {
-                $this->goods_number = $goods->goods_number;
-            } else {
-                $this->addError('goods_number_b', '此零件B不存在');
-                return false;
-            }
-        }
-
-        if (!$this->goods_number && !$this->goods_number_b) {
-            $this->addError('id', '厂家号不能为空');
-            return false;
-        }
-
         return parent::beforeSave($insert);
     }
 
