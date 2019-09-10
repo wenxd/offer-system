@@ -43,10 +43,10 @@ $isShow = in_array($userId, $adminIds);
                 <th>供应商</th>
                 <th>税率</th>
                 <th>未税单价</th>
-                <th>含率单价</th>
+                <th>含税单价</th>
                 <th>货期(周)</th>
                 <th>未税总价</th>
-                <th>含率总价</th>
+                <th>含税总价</th>
                 <?php endif;?>
                 <th>数量</th>
                 <th>入库</th>
@@ -70,7 +70,7 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
-                    <td><?=$item->inquiry->delivery_time?></td>
+                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                     <td class="all_price"><?=$item->fixed_all_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
@@ -78,6 +78,22 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                 </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="12" rowspan="2">汇总统计</td>
+                <td>合计</td>
+                <td>合计</td>
+                <td>最长货期</td>
+                <td>合计</td>
+                <td>合计</td>
+                <td colspan="2" rowspan="2"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="sta_price"></td>
+                <td class="sta_tax_price"></td>
+                <td class="mostLongTime"></td>
+                <td class="sta_all_price"></td>
+                <td class="sta_all_tax_price"></td>
+            </tr>
             </tbody>
         </table>
         <?= $form->field($model, 'financial_remark')->textInput(['maxlength' => true]) ?>
@@ -124,6 +140,51 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        init();
+
+        function init() {
+
+            var sta_price           = 0;
+            var sta_tax_price       = 0;
+            var mostLongTime        = 0;
+            var sta_all_price       = 0;
+            var sta_all_tax_price   = 0;
+
+            $('.order_final_list').each(function (i, e) {
+                var delivery_time   = parseFloat($(e).find('.delivery_time').text());
+                if (delivery_time > mostLongTime) {
+                    mostLongTime = delivery_time;
+                }
+
+                var price       = $(e).find('.price').text();
+                if (price) {
+                    sta_price += parseFloat(price);
+                }
+
+                var tax_price   = $(e).find('.tax_price').text();
+                if (tax_price) {
+                    sta_tax_price      += parseFloat(tax_price);
+                }
+
+
+                var all_price   = $(e).find('.all_price').text();
+                if (all_price) {
+                    sta_all_price      += parseFloat(all_price);
+                }
+
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+                if (all_tax_price) {
+                    sta_all_tax_price      += parseFloat(all_tax_price);
+                }
+            });
+
+            $('.mostLongTime').text(mostLongTime);
+            $('.sta_price').text(sta_price.toFixed(2));
+            $('.sta_tax_price').text(sta_tax_price.toFixed(2));
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        }
+
         var id = $('.data').data('order_payment_id');
         $('.save_remark').click(function (e) {
             var remark = $('#orderpayment-financial_remark').val();

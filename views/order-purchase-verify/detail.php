@@ -39,14 +39,14 @@ $userId = Yii::$app->user->identity->id;
                     <th>货期(周)</th>
                     <th>税率</th>
                     <th>未税单价</th>
-                    <th>含率单价</th>
+                    <th>含税单价</th>
                     <th>未税总价</th>
-                    <th>含率总价</th>
+                    <th>含税总价</th>
                     <th>数量</th>
                     <th>修改后未税单价</th>
-                    <th>修改后含率单价</th>
+                    <th>修改后含税单价</th>
                     <th>修改后未税总价</th>
-                    <th>修改后含率总价</th>
+                    <th>修改后含税总价</th>
                     <th>修改后数量</th>
                 </tr>
             </thead>
