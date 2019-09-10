@@ -397,11 +397,6 @@ class StockOutLogController extends Controller
                     //总数
                     $total = count($sheetData);
                     $num = 0;
-
-                    $systemList = SystemConfig::find()->where([
-                        'title'  => [SystemConfig::TITLE_TAX, SystemConfig::TITLE_HIGH_STOCK_RATIO, SystemConfig::TITLE_LOW_STOCK_RATIO],
-                        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->all();
-
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['A'])) {
@@ -415,9 +410,9 @@ class StockOutLogController extends Controller
                                 $temp->save();
                             } else {
                                 $stock = Stock::find()->where(['good_id' => $goods->id])->one();
-                                if (!$stock) {
+                                if (!$stock || $stock->number < trim($value['B'])) {
                                     $notStock = new TempNotStock();
-                                    $notStock->goods_id = $goods->id;
+                                    $notStock->goods_number = trim($value['A']);
                                     $notStock->save();
                                 } else {
                                     $stockLog = new StockLog();
@@ -433,6 +428,9 @@ class StockOutLogController extends Controller
                                     $stockLog->remark       = $value['G'] ? trim($value['G']) : '';
                                     $stockLog->operate_time = date('Y-m-d H:i:s');
                                     $stockLog->save();
+                                    $num++;
+                                    $stock->number -= $stockLog->number;
+                                    $stock->save();
                                 }
                             }
                         }

@@ -18,7 +18,7 @@ class NotStockSearch extends TempNotStock
     {
         return [
             [['id'], 'integer'],
-            [['goods_id', 'updated_at', 'created_at'], 'safe'],
+            [['goods_number', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class NotStockSearch extends TempNotStock
             'created_at' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'goods_id', $this->goods_id]);
+        $query->andFilterWhere(['like', 'goods_number', $this->goods_number]);
 
         return $dataProvider;
     }

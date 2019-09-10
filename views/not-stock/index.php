@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            'goods_id',
+            'goods_number',
             [
                 'class' => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 200px;'],

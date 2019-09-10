@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "temp_not_stock".
  *
  * @property int $id
- * @property string $goods_id 零件号
+ * @property string $goods_number 零件号
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  */
@@ -29,7 +29,7 @@ class TempNotStock extends \yii\db\ActiveRecord
     {
         return [
             [['updated_at', 'created_at'], 'safe'],
-            [['goods_id'], 'string', 'max' => 255],
+            [['goods_number'], 'string', 'max' => 255],
         ];
     }
 
@@ -39,8 +39,8 @@ class TempNotStock extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'goods_id' => '零件号',
+            'id'         => 'ID',
+            'goods_number'   => '零件号',
             'updated_at' => '更新时间',
             'created_at' => '创建时间',
         ];
