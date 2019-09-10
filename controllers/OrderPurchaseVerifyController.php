@@ -66,6 +66,7 @@ class OrderPurchaseVerifyController extends BaseController
         if ($orderPayment->save()) {
             $noticeOpen = false;
             //payment_goods保存
+            $money = 0;
             foreach ($params['goods_info'] as $key => $value) {
                 $paymentGoods = new PaymentGoods();
                 $paymentGoods->order_id             = $orderPurchase->order_id;
@@ -102,7 +103,11 @@ class OrderPurchaseVerifyController extends BaseController
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;
                 }
+                $money += $paymentGoods->fixed_all_tax_price;
             }
+
+            $orderPayment->payment_price = $money;
+            $orderPayment->save();
 
             if ($noticeOpen) {
                 $systemNotice = new SystemNotice();

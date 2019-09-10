@@ -25,6 +25,7 @@ class SystemConfig extends \yii\db\ActiveRecord
     const TITLE_REGION           = 'region';
     const TITLE_HIGH_STOCK_RATIO = 'high_stock_ratio';
     const TITLE_LOW_STOCK_RATIO  = 'low_stock_ratio';
+    const TITLE_PAYMENT_RATIO    = 'payment_ratio';
 
     /**
      * {@inheritdoc}
@@ -68,6 +69,7 @@ class SystemConfig extends \yii\db\ActiveRecord
         self::TITLE_REGION           => '区块',
         self::TITLE_HIGH_STOCK_RATIO => '高储系数',
         self::TITLE_LOW_STOCK_RATIO  => '低储系数',
+        self::TITLE_PAYMENT_RATIO    => '预付款比例',
     ];
 
     public static function getList()
