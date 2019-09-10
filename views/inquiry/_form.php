@@ -139,6 +139,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
         ])?>
+        <?php if ($is_super) :?>
         <?= Html::a('下载模板', Url::to(['download']), [
             'data-pjax' => '0',
             'class'     => 'btn btn-primary btn-flat',
@@ -147,6 +148,7 @@ if (isset($_GET['inquiry_goods_id'])) {
             'class' => 'btn btn-success upload',
             'name'  => 'submit-button',
         ])?>
+        <?php endif; ?>
     </div>
 
     <div class="box-body">
