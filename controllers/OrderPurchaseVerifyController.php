@@ -58,11 +58,12 @@ class OrderPurchaseVerifyController extends BaseController
 
         //保存支出单
         $orderPayment = new OrderPayment();
-        $orderPayment->payment_sn        = $params['payment_sn'];
-        $orderPayment->order_id          = $orderPurchase->order_id;
-        $orderPayment->order_purchase_id = $orderPurchase->id;
-        $orderPayment->order_purchase_sn = $orderPurchase->purchase_sn;
-        $orderPayment->admin_id          = $params['admin_id'];
+        $orderPayment->payment_sn           = $params['payment_sn'];
+        $orderPayment->order_id             = $orderPurchase->order_id;
+        $orderPayment->order_purchase_id    = $orderPurchase->id;
+        $orderPayment->order_purchase_sn    = $orderPurchase->purchase_sn;
+        $orderPayment->admin_id             = $params['admin_id'];
+        $orderPayment->take_time            = date('Y-m-d H:i:s', (time() + $params['long_delivery_time'] * 7 * 3600 * 24));
         if ($orderPayment->save()) {
             $noticeOpen = false;
             //payment_goods保存

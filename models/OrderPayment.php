@@ -29,6 +29,9 @@ use Yii;
  * @property string $is_complete
  * @property string $purchase_status
  * @property string $payment_ratio
+ * @property string $take_time
+ * @property string $remain_price
+ * @property string $payment_price
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -105,7 +108,8 @@ class OrderPayment extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
                 'is_advancecharge', 'is_bill', 'is_complete'], 'integer'],
-            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'payment_ratio'], 'safe'],
+            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
+                'payment_ratio', 'payment_price', 'remain_price'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -139,6 +143,9 @@ class OrderPayment extends \yii\db\ActiveRecord
             'bill_at'           => '收到发票时间',
             'financial_remark'  => '财务备注',
             'payment_ratio'     => '预付款比例',
+            'payment_price'     => '总金额',
+            'remain_price'      => '待付款金额',
+            'take_time'         => '合同尾款付款时间',
         ];
     }
 

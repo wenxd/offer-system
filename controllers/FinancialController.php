@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
+use app\models\PaymentSearch;
 use app\models\StockLog;
 use app\models\OrderFinancialSearch;
 
@@ -46,6 +47,9 @@ class FinancialController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /**添加备注
+     * @return false|string
+     */
     public function actionAddRemark()
     {
         $params = Yii::$app->request->post();
@@ -60,12 +64,16 @@ class FinancialController extends BaseController
         }
     }
 
+    /**改变预付款
+     * @return false|string
+     */
     public function actionChangeAdvance()
     {
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['id']);
         $orderPayment->payment_ratio    = $params['payment_ratio'];
+        $orderPayment->remain_price     = (100 - $params['payment_ratio'])/100 * $orderPayment->payment_price ;
         $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
         if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_bill) {
@@ -78,6 +86,9 @@ class FinancialController extends BaseController
         }
     }
 
+    /**收全款
+     * @return false|string
+     */
     public function actionChangePayment()
     {
         $params = Yii::$app->request->post();
@@ -96,6 +107,9 @@ class FinancialController extends BaseController
         }
     }
 
+    /**收到发票
+     * @return false|string
+     */
     public function actionChangeBill()
     {
         $params = Yii::$app->request->post();
@@ -112,5 +126,19 @@ class FinancialController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
+    }
+
+    /**
+     * 待付款汇总
+     */
+    public function actionPaymentList()
+    {
+        $searchModel = new PaymentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('payment-list', [
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

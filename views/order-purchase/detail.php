@@ -142,7 +142,7 @@ $i = 0;
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=$item->inquiry->supplier->short_name?></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
-                    <td><?=$item->inquiry->delivery_time?></td>
+                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -297,9 +297,10 @@ $i = 0;
                 layer.msg('请最少选择一个零件', {time:2000});
                 return false;
             }
-            var goods_info = [];
-            var supplier_flag = false;
-            var supplier_name = '';
+            var goods_info          = [];
+            var supplier_flag       = false;
+            var supplier_name       = '';
+            var long_delivery_time  = 0;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var s_name = $(element).parent().parent().find('.supplier_name').text();
@@ -316,6 +317,10 @@ $i = 0;
                     item.fix_price         = $(element).parent().parent().find('.price input').val();
                     item.fix_number        = $(element).parent().parent().find('.afterNumber input').val();
                     goods_info.push(item);
+                    var delivery_time = parseFloat($(element).parent().parent().find('.delivery_time').text());
+                    if (delivery_time > long_delivery_time) {
+                        long_delivery_time = delivery_time;
+                    }
                 }
             });
 
@@ -333,7 +338,8 @@ $i = 0;
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase-verify/save-order',
-                data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn, goods_info:goods_info},
+                data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
+                    goods_info:goods_info, long_delivery_time:long_delivery_time},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
