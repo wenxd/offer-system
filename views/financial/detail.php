@@ -8,6 +8,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\SystemConfig;
 use yii\widgets\DetailView;
 
 $this->title = '待付款订单详情';
@@ -20,6 +21,14 @@ $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
 $userId   = Yii::$app->user->identity->id;
 
 $isShow = in_array($userId, $adminIds);
+
+$payment_ratio = SystemConfig::find()->select('value')->where([
+        'title' => SystemConfig::TITLE_PAYMENT_RATIO
+])->scalar();
+
+if (!$model->payment_ratio) {
+    $model->payment_ratio = $payment_ratio;
+}
 
 ?>
 
@@ -96,18 +105,24 @@ $isShow = in_array($userId, $adminIds);
             </tr>
             </tbody>
         </table>
+
         <?= $form->field($model, 'financial_remark')->textInput(['maxlength' => true]) ?>
+
         <div class="customer-view">
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
                     'stock_at',
+                    'payment_ratio',
                     'advancecharge_at',
                     'payment_at',
                     'bill_at',
                 ],
             ]) ?>
         </div>
+        <?php if(!$model->is_advancecharge):?>
+        <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true]) ?>
+        <?php endif;?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存备注', [
@@ -206,10 +221,11 @@ $isShow = in_array($userId, $adminIds);
         });
 
         $('.save_advance').click(function (e) {
+            var payment_ratio = $('#orderpayment-payment_ratio').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial/change-advance',
-                data:{id:id},
+                data:{id:id, payment_ratio:payment_ratio},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

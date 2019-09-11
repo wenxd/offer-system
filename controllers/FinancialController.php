@@ -65,6 +65,7 @@ class FinancialController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['id']);
+        $orderPayment->payment_ratio    = $params['payment_ratio'];
         $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
         if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_bill) {

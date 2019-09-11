@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\PaymentGoods;
 use Yii;
 use app\models\OrderPayment;
+use app\models\PaymentGoods;
 use app\models\OrderPaymentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
