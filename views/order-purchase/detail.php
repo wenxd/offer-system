@@ -13,7 +13,7 @@ $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->agreement_date) {
-    $model->agreement_date = substr($model->orderAgreement->agreement_date, 0, 10);
+    $model->agreement_date = $model->orderAgreement ? substr($model->orderAgreement->agreement_date, 0, 10) : date('Y-m-d');
 }
 
 $model->payment_sn = 'Z' . date('ymd_') . '_' . $number;

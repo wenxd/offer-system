@@ -97,7 +97,7 @@ $userId   = Yii::$app->user->identity->id;
             }
         });
 
-        $('.sta_price').text(sta_price);
-        $('.sta_tax_price').text(sta_tax_price);
+        $('.sta_price').text(sta_price.toFixed(2));
+        $('.sta_tax_price').text(sta_tax_price.toFixed(2));
     }
 </script>

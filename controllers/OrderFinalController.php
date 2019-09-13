@@ -300,6 +300,7 @@ class OrderFinalController extends BaseController
                     $purchaseGoods = new PurchaseGoods();
 
                     $purchaseGoods->order_id            = $orderFinal->order_id;
+                    $purchaseGoods->order_final_id      = $orderFinal->id;
                     $purchaseGoods->order_agreement_id  = 0;
                     $purchaseGoods->order_purchase_id   = $orderPurchase->primaryKey;
                     $purchaseGoods->order_purchase_sn   = $orderPurchase->purchase_sn;

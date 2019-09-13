@@ -108,6 +108,7 @@ class OrderPurchaseVerifyController extends BaseController
             }
 
             $orderPayment->payment_price = $money;
+            $orderPayment->remain_price  = $money;
             $orderPayment->save();
 
             if ($noticeOpen) {
