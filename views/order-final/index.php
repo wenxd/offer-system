@@ -7,6 +7,7 @@ use yii\widgets\Pjax;
 use yii\grid\CheckboxColumn;
 use kartik\daterange\DateRangePicker;
 use app\models\OrderFinal;
+use app\models\Order;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderFinalSearch */
@@ -41,6 +42,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
                         return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'order_type',
+                'label'     => '订单类型',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+                'format'    => 'raw',
+                'filter'    => Order::$orderType,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Order::$orderType[$model->order->order_type];
                     } else {
                         return '';
                     }
@@ -116,10 +131,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
+                    if ($model->order->order_type == Order::ORDER_TYPE_PROJECT_YES) {
+                        return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-primary btn-xs btn-flat',
                         ]);
+                    } else {
+                        return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-success btn-xs btn-flat',
+                        ]);
+                    }
                 }
             ],
         ],

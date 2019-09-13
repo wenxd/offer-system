@@ -70,10 +70,6 @@ $userId    = Yii::$app->user->identity->id;
                             <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
                             <td><?=$item->number?></td>
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
-                            <?php
-//                                var_dump($inquiryList[$item->goods_id]);
-//                                echo isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0;die;
-                            ?>
                             <td class="inquiry_number"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                             <td><?=$item->reason?></td>
                             <td>

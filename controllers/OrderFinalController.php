@@ -224,4 +224,40 @@ class OrderFinalController extends BaseController
 
         return $this->render('detail', $data);
     }
+
+    /**成本单直接生成采购单
+     * @param $id
+     * @return string
+     */
+    public function actionCreatePurchase($id)
+    {
+        $orderFinal    = OrderFinal::findOne($id);
+        $order         = Order::findOne($orderFinal->order_id);
+        $finalGoods    = FinalGoods::findAll(['order_final_id' => $id]);
+        $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+        $quoteGoods    = QuoteGoods::find()->where(['order_id' => $order->id, 'order_final_id' => $id])->indexBy('goods_id')->all();
+        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+
+        $date = date('ymd_');
+        $orderI = OrderQuote::find()->where(['like', 'quote_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $num = strrpos($orderI->quote_sn, '_');
+            $str = substr($orderI->quote_sn, $num+1);
+            $number = sprintf("%02d", $str+1);
+        } else {
+            $number = '01';
+        }
+
+        $data = [];
+        $data['order']         = $order;
+        $data['orderGoods']    = $orderGoods;
+        $data['orderFinal']    = $orderFinal;
+        $data['finalGoods']    = $finalGoods;
+        $data['inquiryGoods']  = $inquiryGoods;
+        $data['quoteGoods']    = $quoteGoods;
+        $data['model']         = new OrderQuote();
+        $data['number']        = $number;
+
+        return $this->render('create-purchase', $data);
+    }
 }

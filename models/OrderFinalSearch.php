@@ -13,6 +13,7 @@ use app\models\OrderFinal;
 class OrderFinalSearch extends OrderFinal
 {
     public $order_sn;
+    public $order_type;
     public $customer;
     public $short_name;
     public $manage_name;
@@ -24,7 +25,8 @@ class OrderFinalSearch extends OrderFinal
     {
         return [
             [['id', 'order_id', 'is_deleted', 'is_quote'], 'integer'],
-            [['final_sn', 'goods_info', 'updated_at', 'created_at', 'order_sn', 'customer', 'short_name', 'manage_name', 'provide_date'], 'safe'],
+            [['final_sn', 'goods_info', 'updated_at', 'created_at', 'order_sn', 'customer', 'short_name',
+                'manage_name', 'provide_date', 'order_type'], 'safe'],
         ];
     }
 
@@ -68,9 +70,10 @@ class OrderFinalSearch extends OrderFinal
             return $dataProvider;
         }
 
-        if ($this->order_sn || $this->customer || $this->short_name || $this->manage_name || $this->provide_date) {
+        if ($this->order_type !== '' || $this->order_sn || $this->customer || $this->short_name || $this->manage_name || $this->provide_date) {
             $query->leftJoin('order as a', 'a.id = order_final.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+            $query->andFilterWhere(['like', 'a.order_type', $this->order_type]);
             if ($this->customer) {
                 $customer_ids = Customer::find()->where(['like', 'name', $this->customer])->column();
                 $query->andWhere(['a.customer_id' => $customer_ids]);
