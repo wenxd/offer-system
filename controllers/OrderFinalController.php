@@ -231,33 +231,101 @@ class OrderFinalController extends BaseController
      */
     public function actionCreatePurchase($id)
     {
-        $orderFinal    = OrderFinal::findOne($id);
-        $order         = Order::findOne($orderFinal->order_id);
-        $finalGoods    = FinalGoods::findAll(['order_final_id' => $id]);
+        $request = Yii::$app->request->get();
+        $orderFinal      = OrderFinal::findOne($id);
+        $order           = Order::findOne($orderFinal->order_id);
+        $finalGoodsQuery = FinalGoods::find()
+            ->from('final_goods fg')
+            ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
+            ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
+            ->where(['order_final_id' => $id]);
+        if (isset($request['admin_id'])) {
+            $finalGoodsQuery->andFilterWhere(['i.admin_id' => $request['admin_id']]);
+        }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $finalGoodsQuery->andWhere(['like', 'g.original_company', $request['original_company']]);
+        }
+        $finalGoodsQuery = $finalGoodsQuery->all();
+
         $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
-        $quoteGoods    = QuoteGoods::find()->where(['order_id' => $order->id, 'order_final_id' => $id])->indexBy('goods_id')->all();
+        $purchaseGoods  = PurchaseGoods::find()
+            ->where(['order_id' => $orderFinal->order_id])
+            ->indexBy('goods_id')
+            ->all();
+
         $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $date = date('ymd_');
-        $orderI = OrderQuote::find()->where(['like', 'quote_sn', $date])->orderBy('created_at Desc')->one();
+        $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
-            $num = strrpos($orderI->quote_sn, '_');
-            $str = substr($orderI->quote_sn, $num+1);
-            $number = sprintf("%02d", $str+1);
+            $num = strrpos($orderI->purchase_sn, '_');
+            $str = substr($orderI->purchase_sn, $num + 1);
+            $number = sprintf("%02d", $str + 1);
         } else {
             $number = '01';
         }
 
         $data = [];
-        $data['order']         = $order;
-        $data['orderGoods']    = $orderGoods;
-        $data['orderFinal']    = $orderFinal;
-        $data['finalGoods']    = $finalGoods;
-        $data['inquiryGoods']  = $inquiryGoods;
-        $data['quoteGoods']    = $quoteGoods;
-        $data['model']         = new OrderQuote();
-        $data['number']        = $number;
+        $data['orderFinal']     = $orderFinal;
+        $data['finalGoods']     = $finalGoodsQuery;
+        $data['model']          = new OrderPurchase();
+        $data['number']         = $number;
+        $data['inquiryGoods']   = $inquiryGoods;
+        $data['purchaseGoods']  = $purchaseGoods;
+        $data['order']          =   $order;
 
         return $this->render('create-purchase', $data);
+    }
+
+    /**保存为采购单
+     * @return false|string
+     */
+    public function actionSavePurchase()
+    {
+        $params = Yii::$app->request->post();
+
+        $orderFinal = OrderFinal::findOne($params['order_final_id']);
+
+        $orderPurchase                     = new OrderPurchase();
+        $orderPurchase->purchase_sn        = $params['purchase_sn'];
+        $orderPurchase->order_id           = $orderFinal->order_id;
+        $orderPurchase->order_agreement_id = 0;
+        $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
+        $orderPurchase->end_date           = $params['end_date'];
+        $orderPurchase->admin_id           = $params['admin_id'];
+        if ($orderPurchase->save()) {
+            foreach ($params['goods_info'] as $item) {
+                $finalGoods = FinalGoods::findOne($item['final_goods_id']);
+                if ($finalGoods) {
+                    $purchaseGoods = new PurchaseGoods();
+
+                    $purchaseGoods->order_id            = $orderFinal->order_id;
+                    $purchaseGoods->order_agreement_id  = 0;
+                    $purchaseGoods->order_purchase_id   = $orderPurchase->primaryKey;
+                    $purchaseGoods->order_purchase_sn   = $orderPurchase->purchase_sn;
+                    $purchaseGoods->serial              = $finalGoods->serial;
+                    $purchaseGoods->goods_id            = $finalGoods->goods_id;
+                    $purchaseGoods->type                = $finalGoods->type;
+                    $purchaseGoods->relevance_id        = $finalGoods->relevance_id;
+                    $purchaseGoods->number              = $finalGoods->inquiry->number;
+                    $purchaseGoods->tax_rate            = $finalGoods->inquiry->tax_rate;
+                    $purchaseGoods->price               = $finalGoods->inquiry->price;
+                    $purchaseGoods->tax_price           = $finalGoods->inquiry->tax_price;
+                    $purchaseGoods->all_price           = $finalGoods->inquiry->number * $finalGoods->inquiry->price;
+                    $purchaseGoods->all_tax_price       = $finalGoods->inquiry->number * $finalGoods->inquiry->tax_price;
+                    $purchaseGoods->fixed_price         = $finalGoods->inquiry->price;
+                    $purchaseGoods->fixed_tax_price     = $finalGoods->inquiry->tax_price;
+                    $purchaseGoods->fixed_number        = $item['number'];
+                    $purchaseGoods->inquiry_admin_id    = $finalGoods->inquiry->admin_id;
+
+                    //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
+                    $purchaseGoods->purchase_date       = $params['end_date'];
+                    $purchaseGoods->save();
+                }
+            }
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
     }
 }

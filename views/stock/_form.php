@@ -9,7 +9,7 @@ use app\models\Stock;
 /* @var $this yii\web\View */
 /* @var $model app\models\Stock */
 /* @var $form yii\widgets\ActiveForm */
-$model->tax_rate='16';
+
 if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];

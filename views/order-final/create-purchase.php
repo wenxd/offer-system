@@ -14,8 +14,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 //同一个订单询价商品的IDs
 $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
+//采购商品IDs
+$purchaseGoods_ids = ArrayHelper::getColumn($purchaseGoods, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -24,9 +26,18 @@ foreach ($adminList as $key => $admin) {
 }
 
 $customer_name = $order->customer ? $order->customer->short_name : '';
-$model->quote_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
-
+$model->purchase_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
+$model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 ?>
+<style>
+    #example2 {
+        position: relative;
+        clear: both;
+        zoom: 1;
+        overflow-x: auto;
+    }
+
+</style>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
@@ -35,109 +46,131 @@ $model->quote_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
-                <th>厂家号</th>
+                <th>零件号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
-                <th>单位</th>
-                <th>技术备注</th>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
                 <th>供应商</th>
+                <th>询价状态</th>
+                <th>询价员</th>
                 <th>税率</th>
-                <th>货期(周)</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>未税总价</th>
                 <th>含税总价</th>
-                <th>报价货期(周)</th>
-                <th>报价未税单价</th>
-                <th>报价含税单价</th>
-                <th>报价未税总价</th>
-                <th>报价含税总价</th>
-                <th>询价状态</th>
-                <th>是否有报价单</th>
-                <th>报价单号</th>
+                <th>货期(周)</th>
+                <th>是否有采购单</th>
+                <th>采购单号</th>
+                <th>合同需求数量</th>
+                <th>数量</th>
                 <th>库存数量</th>
-                <th>订单需求数量</th>
+                <th>建议库存</th>
+                <th>高储</th>
+                <th>低储</th>
+            </tr>
+            <tr id="w3-filters" class="filters">
+                <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="width:100px">
+                    <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <select class="form-control" name="admin_id">
+                        <option value=""></option>
+                        <?php foreach ($admins as $key => $value) :?>
+                            <option value="<?=$key?>" <?=isset($_GET['admin_id']) ? ($_GET['admin_id'] === (string)$key ? 'selected' : '') : ''?>><?=$value?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($finalGoods as $item):?>
-            <tr class="order_final_list">
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
-data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
-                <td class="serial"><?=$item->serial?></td>
-                <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
-                <td><?=$item->goods->description?></td>
-                <td><?=$item->goods->description_en?></td>
-                <td><?=$item->goods->original_company?></td>
-                <td><?=$item->goods->original_company_remark?></td>
-                <td><?=$item->goods->unit?></td>
-                <td><?=$item->goods->technique_remark?></td>
-                <td><?=Goods::$process[$item->goods->is_process]?></td>
-                <td><?=Goods::$special[$item->goods->is_special]?></td>
-                <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
-                <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
-                <td class="ratio"><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                <td class="delivery_time"><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
-                <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
-                <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
-                <td class="all_price"></td>
-                <td class="all_tax_price"></td>
-                <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
-                <td class="quote_price"><input type="text" style="width: 100px;"></td>
-                <td class="quote_tax_price"></td>
-                <td class="quote_all_price"></td>
-                <td class="quote_all_tax_price"></td>
-                <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
-                <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
-                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
-                        '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $orderGoods[$item->goods_id]->number . '" 
-    onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
-    onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?>
-                </td>
-            </tr>
+                <tr class="order_agreement_list">
+                    <td>
+                        <?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
+data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods_id={$item->id} value={$item->goods_id} class='select_id'>"?>
+                    </td>
+                    <td><?=$item->serial?></td>
+                    <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <td><?=$item->goods->description?></td>
+                    <td><?=$item->goods->description_en?></td>
+                    <td><?=$item->goods->original_company?></td>
+                    <td><?=$item->goods->original_company_remark?></td>
+                    <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
+                    <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
+                    <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
+                    <td><?=$item->inquiry->tax_rate?></td>
+                    <td class="price"><?=$item->inquiry->price?></td>
+                    <td class="tax_price"><?=$item->inquiry->tax_price?></td>
+                    <td class="all_price"><?=$item->inquiry->price * $item->inquiry->number?></td>
+                    <td class="all_tax_price"><?=$item->inquiry->tax_price * $item->inquiry->number?></td>
+                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
+                    <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
+                    <td class="oldNumber"><?=$item->inquiry->number?></td>
+                    <td class="afterNumber">
+                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->inquiry->number?>">
+                    </td>
+                    <td><?=$item->stock ? $item->stock->number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->high_number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->low_number : 0?></td>
+                </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="16" rowspan="2">汇总统计</td>
-                <td rowspan="2">成本单</td>
+                <td colspan="12" rowspan="2">汇总统计</td>
                 <td>最长货期</td>
-                <td>未税总价</td>
-                <td>含税总价</td>
-                <td colspan="2" rowspan="2"></td>
-                <td rowspan="2">报价单</td>
-                <td>报价未税总价</td>
-                <td>报价含税总价</td>
-                <td colspan="5" rowspan="2"></td>
+                <td>采购未税总价</td>
+                <td>采购含税总价</td>
+                <td colspan="9"></td>
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="mostLongTime"></td>
-                <td class="sta_all_price"></td>
-                <td class="sta_all_tax_price"></td>
-                <td class="sta_quote_all_price"></td>
-                <td class="sta_quote_all_tax_price"></td>
+                <td class="purchase_price"></td>
+                <td class="purchase_all_price"></td>
+                <td colspan="9"></td>
             </tr>
             </tbody>
         </table>
+        <?= $form->field($model, 'purchase_sn')->textInput() ?>
 
-        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择报价员') ?>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
 
-        <?= $form->field($model, 'quote_sn')->textInput() ?>
-
-        <?= $form->field($model, 'quote_ratio')->textInput() ?>
-
-        <?= $form->field($model, 'delivery_ratio')->textInput() ?>
+        <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
     </div>
     <div class="box-footer">
-        <?= Html::button('保存报价单', [
-                'class' => 'btn btn-success quote_save',
+        <?= Html::button('保存采购单', [
+                'class' => 'btn btn-success purchase_save',
                 'name'  => 'submit-button']
         )?>
     </div>
@@ -149,39 +182,45 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 <script type="text/javascript">
     $(document).ready(function () {
         init();
+
         function init(){
             if (!$('.select_id').length) {
                 $('.select_all').hide();
-                $('.quote_save').hide();
+                $('.purchase_save').hide();
+                $('.field-orderpurchase-purchase_sn').hide();
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
-            var mostLongTime        = 0;
             var sta_all_price       = 0;
             var sta_all_tax_price   = 0;
-            $('.order_final_list').each(function (i, e) {
+            var mostLongTime        = 0;
+            var purchase_price      = 0;
+            var purchase_all_price  = 0;
+            $('.order_agreement_list').each(function (i, e) {
+                var price           = $(e).find('.price').text();
+                var tax_price       = $(e).find('.tax_price').text();
+                var number          = $(e).find('.oldNumber').text();
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
+                var purchase_number = $(e).find('.number').val();
+
+                sta_all_price += parseFloat(price * number);
+                sta_all_tax_price += parseFloat(tax_price * number);
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }
-                var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
-                var number          = $(e).find('.afterNumber input').val();
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
 
-                var all_price           = parseFloat(price * number).toFixed(2);
-                var all_tax_price       = parseFloat(tax_price * number).toFixed(2);
-                if (all_price) {
-                    sta_all_price      += parseFloat(all_price);
-                }
-                if (all_tax_price) {
-                    sta_all_tax_price  += parseFloat(all_tax_price);
-                }
+                $(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
+                $(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
+
+                var all_price     = parseFloat(price * purchase_number);
+                var all_tax_price = parseFloat(tax_price* purchase_number);
+
+                purchase_price     += parseFloat(all_price);
+                purchase_all_price += parseFloat(all_tax_price);
             });
             $('.mostLongTime').text(mostLongTime);
-            $('.sta_all_price').text(sta_all_price.toFixed(2));
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            $('.purchase_price').text(purchase_price.toFixed(2));
+            $('.purchase_all_price').text(purchase_all_price.toFixed(2));
         }
 
         //全选
@@ -198,130 +237,37 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             }
         });
 
-        //输入报价未税单价
-        $(".quote_price input").bind('input propertychange', function (e) {
-            var quote_price = $(this).val();
-            var number      = $(this).parent().parent().find('.number').val();
-            var ratio       = 1 + $(this).parent().parent().find('.ratio').text() / 100;
-
-            var quote_tax_price     = (quote_price * ratio).toFixed(2);
-            var quote_all_price     = (quote_price * number).toFixed(2);
-            var quote_all_tax_price = (quote_price * ratio * number).toFixed(2);
-
-            $(this).parent().parent().find('.quote_tax_price').text(quote_tax_price);
-            $(this).parent().parent().find('.quote_all_price').text(quote_all_price);
-            $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
-
-            //统计报价
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            $('.order_final_list').each(function (i, e) {
-                var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
-            });
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
-        });
-
         //输入数量
         $(".number").bind('input propertychange', function (e) {
+
             var number = $(this).val();
             if (number == 0) {
                 layer.msg('数量最少为1', {time:2000});
                 return false;
             }
-            var a = number.replace(/[\D]/g,'');
+            var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
             var price = $(this).parent().parent().find('.price').text();
             var tax_price = $(this).parent().parent().find('.tax_price').text();
-            var quote_price = $(this).parent().parent().find('.quote_price input').val();
-            var quote_tax_price = $(this).parent().parent().find('.quote_tax_price').text();
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            $(this).parent().parent().find('.quote_all_price').text(parseFloat(quote_price * number).toFixed(2));
-            $(this).parent().parent().find('.quote_all_tax_price').text(parseFloat(quote_tax_price * number).toFixed(2));
 
-            var sta_all_price           = 0;
-            var sta_all_tax_price       = 0;
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            $('.order_final_list').each(function (i, e) {
-                var all_price           = $(e).find('.all_price').text();
-                var all_tax_price       = $(e).find('.all_tax_price').text();
-                var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
-                if (all_price) {
-                    sta_all_price      += parseFloat(all_price);
-                }
-                if (all_tax_price) {
-                    sta_all_tax_price  += parseFloat(all_tax_price);
-                }
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
+            var purchase_price     = 0;
+            var purchase_all_price = 0;
+            $('.order_agreement_list').each(function (i, e) {
+                var all_price       = $(e).find('.all_price').text();
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+                purchase_price      += parseFloat(all_price);
+                purchase_all_price  += parseFloat(all_tax_price);
             });
-            $('.sta_all_price').text(sta_all_price.toFixed(2));
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
-        });
-
-        //输入报价系数
-        $('#orderquote-quote_ratio').bind('input propertychange', function (e) {
-            var quote_ratio = $(this).val();
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            $('.order_final_list').each(function (i, e) {
-                //成本价
-                var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
-                var number          = $(e).find('.afterNumber input').val();
-                var all_price       = parseFloat(price * number).toFixed(2);
-                var all_tax_price   = parseFloat(tax_price * number).toFixed(2);
-                //报价
-                var quote_price         = (price * quote_ratio).toFixed(2);
-                var quote_tax_price     = (tax_price * quote_ratio).toFixed(2);
-                var quote_all_price     = (all_price * quote_ratio).toFixed(2);
-                var quote_all_tax_price = (all_tax_price * quote_ratio).toFixed(2);
-
-                $(e).find('.quote_price input').val(quote_price);
-                $(e).find('.quote_tax_price').text(quote_tax_price);
-                $(e).find('.quote_all_price').text(quote_all_price);
-                $(e).find('.quote_all_tax_price').text(quote_all_tax_price);
-
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
-            });
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
-        });
-
-        //输入货期系数
-        $('#orderquote-delivery_ratio').bind('input propertychange', function (e) {
-            var delivery_ratio = $(this).val();
-            $('.order_final_list').each(function (i, e) {
-                var delivery_time = $(e).find('.delivery_time').text();
-                $(e).find('.quote_delivery_time input').val((delivery_time * delivery_ratio).toFixed(2));
-            });
+            $('.purchase_price').text(purchase_price.toFixed(2));
+            $('.purchase_all_price').text(purchase_all_price.toFixed(2));
         });
 
         //保存
-        $('.quote_save').click(function (e) {
+        $('.purchase_save').click(function (e) {
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
@@ -330,56 +276,55 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             var goods_info = [];
             var number_flag = false;
+            var supplier_flag = false;
+            var supplier_name = '';
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
-                    item.goods_id    = $(element).val();
+                    var s_name = $(element).parent().parent().find('.supplier_name').text();
+                    if (!supplier_name) {
+                        supplier_name = s_name;
+                    } else {
+                        if (supplier_name != s_name) {
+                            supplier_flag = true;
+                        }
+                    }
                     if (!$(element).parent().parent().find('.number').val()){
                         number_flag  = true;
                     }
-                    item.number              = $(element).parent().parent().find('.number').val();
-                    item.type                = $(element).data('type');
-                    item.relevance_id        = $(element).data('relevance_id');
-
-                    item.serial              = $(element).parent().parent().find('.serial').text();
-                    item.tax_rate            = $(element).parent().parent().find('.ratio').text();
-                    item.delivery_time       = $(element).parent().parent().find('.delivery_time').text();
-                    item.price               = $(element).parent().parent().find('.price').text();
-                    item.tax_price           = $(element).parent().parent().find('.tax_price').text();
-                    item.all_price           = $(element).parent().parent().find('.all_price').text();
-                    item.all_tax_price       = $(element).parent().parent().find('.all_tax_price').text();
-                    item.quote_price         = $(element).parent().parent().find('.quote_price input').val();
-                    item.quote_tax_price     = $(element).parent().parent().find('.quote_tax_price').text();
-                    item.quote_all_price     = $(element).parent().parent().find('.quote_all_price').text();
-                    item.quote_all_tax_price = $(element).parent().parent().find('.quote_all_tax_price').text();
-                    item.quote_delivery_time = $(element).parent().parent().find('.quote_delivery_time input').val();
-
+                    item.final_goods_id     = $(element).data('final_goods_id');
+                    item.goods_id           = $(element).val();
+                    item.number             = $(element).parent().parent().find('.number').val();
+                    item.type               = $(element).data('type');
+                    item.relevance_id       = $(element).data('relevance_id');
                     goods_info.push(item);
                 }
             });
+
+            // if (supplier_flag) {
+            //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
+            //     return false;
+            // }
 
             if (number_flag) {
                 layer.msg('请给选中的行输入数量', {time:2000});
                 return false;
             }
-            var admin_id = $('#orderquote-admin_id').val();
+            var purchase_sn = $('#orderpurchase-purchase_sn').val();
+            if (!purchase_sn) {
+                layer.msg('请输入采购单号', {time:2000});
+                return false;
+            }
+
+            var admin_id = $('#orderpurchase-admin_id').val();
             if (!admin_id) {
                 layer.msg('请选择采购员', {time:2000});
                 return false;
             }
-            var quote_sn = $('#orderquote-quote_sn').val();
-            if (!quote_sn) {
-                layer.msg('请填写报价单号', {time:2000});
-                return false;
-            }
-            var quote_ratio = $('#orderquote-quote_ratio').val();
-            if (!quote_ratio) {
-                layer.msg('请填写报价系数', {time:2000});
-                return false;
-            }
-            var delivery_ratio = $('#orderquote-delivery_ratio').val();
-            if (!delivery_ratio) {
-                layer.msg('请填写货期系数', {time:2000});
+
+            var end_date = $('#orderpurchase-end_date').val();
+            if (!end_date) {
+                layer.msg('请输入采购截止时间', {time:2000});
                 return false;
             }
 
@@ -387,20 +332,51 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             $.ajax({
                 type:"post",
-                url:'?r=order-quote/save-order',
-                data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
-                    delivery_ratio:delivery_ratio, goods_info:goods_info},
+                url:'?r=order-final/save-purchase',
+                data:{order_final_id:order_final_id, purchase_sn:purchase_sn, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-quote/index");
+                        window.location.reload();
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
                     }
                 }
             });
+        });
+
+        //搜索功能
+        $('.inquiry_search').click(function (e) {
+            var search = $('#w3-filters').find('td input');
+            var parameter = '';
+            search.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'goods_number':
+                        parameter += '&goods_number=' + $(e).val();
+                        break;
+                    case 'goods_number_b':
+                        parameter += '&goods_number_b=' + $(e).val();
+                        break;
+                    case 'original_company':
+                        parameter += '&original_company=' + $(e).val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            var searchOption = $('#w3-filters').find('td select');
+            searchOption.each(function (i, e) {
+                switch ($(e).attr('name')) {
+                    case 'admin_id':
+                        parameter += '&admin_id=' + $(e).find("option:selected").val();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            location.replace("?r=order-final/create-purchase&id=<?=$_GET['id']?>" + encodeURI(parameter));
         });
     });
 </script>

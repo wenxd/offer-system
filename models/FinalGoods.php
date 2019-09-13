@@ -19,6 +19,7 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $serial
  */
 class FinalGoods extends \yii\db\ActiveRecord
 {
@@ -75,7 +76,7 @@ class FinalGoods extends \yii\db\ActiveRecord
 
     public function getStock()
     {
-        return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
+        return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
     }
 
     public function getStockNumber()
