@@ -166,8 +166,8 @@ class InquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '未税价格', '询价数量', '询价备注', '是否优选', '优选理由'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        $tableHeader = ['零件号', '厂家号', '供应商', '未税价格', '询价数量', '货期', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);

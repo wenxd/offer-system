@@ -4,9 +4,10 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'basic',
-    'name' => '订单管理系统',
-    'language' => 'zh-CN',
+    'id'        => 'basic',
+    'name'      => '订单管理系统',
+    'language'  => 'zh-CN',
+    'timeZone'  => 'Asia/Shanghai',
     'defaultRoute' => 'site/index',
     'basePath' => dirname(__DIR__),
     'modules' => [
