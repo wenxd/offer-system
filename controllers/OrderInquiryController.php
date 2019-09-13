@@ -163,6 +163,7 @@ class OrderInquiryController extends BaseController
         }
 
         $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->all();
+        $goods_ids = ArrayHelper::getColumn($orderGoods, 'goods_id');
 
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
@@ -173,7 +174,9 @@ class OrderInquiryController extends BaseController
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 
-        $inquiryList = Inquiry::find()->indexBy('good_id')->all();
+        $inquiryList = Inquiry::find()->where(['good_id' => $goods_ids])->asArray()->all();
+        $inquiryList = ArrayHelper::index($inquiryList, null, 'good_id');
+
         $data['inquiryList']   = $inquiryList;
 
         return $this->render('view', $data);
