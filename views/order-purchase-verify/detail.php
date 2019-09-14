@@ -59,7 +59,7 @@ $userId = Yii::$app->user->identity->id;
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->inquiry->supplier->name?></td>
+                    <td><?=$item->supplier->name?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td><?=$item->price?></td>
