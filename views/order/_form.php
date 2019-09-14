@@ -30,9 +30,9 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'order_sn')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'customer_id')->dropDownList(Customer::getAllDropDown())->label('客户名称') ?>
+        <?= $form->field($model, 'customer_id')->dropDownList(Customer::getAllDropDown())->label('客户名称/用途') ?>
 
-        <?= $form->field($model, 'customer_short_name')->textInput(['readonly' => true])->label('客户缩写') ?>
+        <?= $form->field($model, 'customer_short_name')->textInput(['readonly' => true])->label('客户缩写/用途缩写') ?>
 
     <?= $form->field($model, 'manage_name')->textInput(['maxlength' => true]) ?>
 
