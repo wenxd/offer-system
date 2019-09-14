@@ -34,22 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'company_telephone',
             'company_fax',
             'company_address',
-            [
-                'attribute' => 'updated_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'CustomerSearch[updated_at]',
-                    'value' => Yii::$app->request->get('CustomerSearch')['updated_at'],
-                ])
-            ],
-            [
-                'attribute' => 'created_at',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'CustomerSearch[created_at]',
-                    'value' => Yii::$app->request->get('CustomerSearch')['created_at'],
-                ])
-            ],
             'company_email',
             'company_contacts',
             [

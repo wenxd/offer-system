@@ -29,12 +29,10 @@ class CustomerController extends BaseController
             'create' => [
                 'class'      => actions\CreateAction::className(),
                 'modelClass' => Customer::className(),
-                'scenario'   => 'customer',
             ],
             'update' => [
                 'class'      => actions\UpdateAction::className(),
                 'modelClass' => Customer::className(),
-                'scenario'   => 'customer',
             ],
             'delete' => [
                 'class'      => actions\DeleteAction::className(),

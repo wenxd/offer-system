@@ -61,11 +61,7 @@ class Customer extends ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'string', 'max' => 255],
             ['company_email', 'email'],
-            [
-                ['name', 'mobile'],
-                'required',
-                'on' => 'customer'
-            ]
+            [['name'], 'required'],
         ];
     }
 
