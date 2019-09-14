@@ -62,6 +62,7 @@ $i = 0;
                     <th>未税总价</th>
                     <th>含税总价</th>
                     <th>数量</th>
+                    <th>使用库存数</th>
                     <th>审核状态</th>
                     <th>驳回原因</th>
                 </tr>
@@ -97,6 +98,7 @@ $i = 0;
                             <option value="1" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -152,6 +154,7 @@ $i = 0;
                     <td class="afterNumber">
                         <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
                     </td>
+                    <td><?=$item->number - $item->fixed_number?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
                                 $status = '无';
