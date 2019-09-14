@@ -47,7 +47,10 @@ class OrderFinancialSearch extends OrderPayment
      */
     public function search($params)
     {
-        $query = static::find()->where(['is_complete' => self::IS_COMPLETE_NO]);
+        $query = static::find()->where([
+            'is_complete'  => self::IS_COMPLETE_NO,
+            'is_agreement' => self::IS_ADVANCECHARGE_YES,
+        ]);
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

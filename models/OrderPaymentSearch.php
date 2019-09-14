@@ -46,7 +46,10 @@ class OrderPaymentSearch extends OrderPayment
      */
     public function search($params)
     {
-        $query = OrderPayment::find()->where(['purchase_status' => self::PURCHASE_STATUS_PASS]);
+        $query = OrderPayment::find()->where([
+            'purchase_status' => self::PURCHASE_STATUS_PASS,
+            'is_agreement'    => self::IS_ADVANCECHARGE_YES,
+        ]);
 
         // add conditions that should always apply here
 

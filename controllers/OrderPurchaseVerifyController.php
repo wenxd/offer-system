@@ -112,10 +112,19 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPayment->remain_price  = $money;
             $orderPayment->save();
 
+            //是否全部生成了支出合同
+            $paymentGoodsCount  = PaymentGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
+            $purchaseGoodsCount = PurchaseGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
+            if ($purchaseGoodsCount == $paymentGoodsCount) {
+                $orderPurchase->is_complete = 1;
+                $orderPurchase->save();
+            }
+
+            //给管理员发送系统消息
             if ($noticeOpen) {
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id = $params['admin_id'];
-                $systemNotice->content = '采购生成合同有价格修改';
+                $systemNotice->content = '采购生成支出合同有价格修改,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
@@ -150,7 +159,8 @@ class OrderPurchaseVerifyController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
-        $orderPayment->is_verify = 1;
+        $orderPayment->is_verify = OrderPayment::IS_VERIFY_YES;
+        $orderPayment->purchase_status = OrderPayment::PURCHASE_STATUS_PASS;
         try {
             $orderPayment->save();
 
@@ -163,13 +173,13 @@ class OrderPurchaseVerifyController extends BaseController
                 }
             }
 
-            $hasNoApply = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
-                ->andWhere(['!=', 'apply_status', PurchaseGoods::APPLY_STATUS_PASS])->one();
-            if (!$hasNoApply) {
-                $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
-                $orderPurchase->is_complete = 1;
-                $orderPurchase->save();
-            }
+//            $hasNoApply = PurchaseGoods::find()->where(['order_purchase_id' => $orderPayment->order_purchase_id])
+//                ->andWhere(['!=', 'apply_status', PurchaseGoods::APPLY_STATUS_PASS])->one();
+//            if (!$hasNoApply) {
+//                $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
+//                $orderPurchase->is_complete = 1;
+//                $orderPurchase->save();
+//            }
             return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);

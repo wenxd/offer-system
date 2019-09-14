@@ -96,27 +96,7 @@ $userId   = Yii::$app->user->identity->id;
                         return $model->admin->username;
                     }
                 }
-            ],
-            [
-                'attribute'      => '操作',
-                'format'         => 'raw',
-                'value'          => function ($model, $key, $index, $column){
-                    $html = '';
-                    if ($model->is_complete == 0) {
-                        $html .= Html::a('<i class="fa"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
-                        ]);
-                    }
-                    if ($model->is_complete == 1) {
-                        $html .= ' ' . Html::a('<i class="fa"></i> 生成合同', Url::to(['complete', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-primary btn-xs btn-flat',
-                        ]);
-                    }
-                    return $html;
-                }
-            ],
+            ]
         ],
     ]); ?>
     <?php Pjax::end(); ?>
