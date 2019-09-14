@@ -350,6 +350,7 @@ class OrderQuoteController extends Controller
         }
 
         $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $id])->all();
+        $name = date('Ymd');
         foreach ($quoteGoods as $key => $value) {
             $excel->setCellValue('A'.($key + 2), $value->serial);
             $excel->setCellValue('B'.($key + 2), $value->goods->goods_number);
@@ -368,9 +369,10 @@ class OrderQuoteController extends Controller
             $excel->setCellValue('O'.($key + 2), $value->quote_all_price);
             $excel->setCellValue('P'.($key + 2), $value->quote_all_tax_price);
             $excel->setCellValue('Q'.($key + 2), $value->order_quote_sn);
+            $name = $value->order_quote_sn;
         }
 
-        $title = '报价单';
+        $title = $name;
         // Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($title);
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
