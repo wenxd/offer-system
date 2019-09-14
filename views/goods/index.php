@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                 },
                 'inquiry' => function () {
-                    return Html::a('<i class="fa fa-plus-circle"></i> 生成询价单', 'Javascript: void(0)', [
+                    return Html::a('<i class="fa fa-plus-circle"></i> 生成非项目订单', 'Javascript: void(0)', [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat add_inquiry',
                     ]);
