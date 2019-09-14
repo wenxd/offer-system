@@ -5,9 +5,11 @@ namespace app\controllers;
 use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
+use app\models\OrderAgreement;
 use app\models\OrderFinal;
 use app\models\OrderGoods;
 use app\models\OrderInquiry;
+use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\Stock;
 use app\models\TempNotGoods;
@@ -208,16 +210,20 @@ class OrderController extends BaseController
             return $this->redirect(yii::$app->request->headers['referer']);
         }
 
-        $orderInquiry  = OrderInquiry::findAll(['order_id' => $id]);
-        $orderFinal    = OrderFinal::findAll(['order_id' => $id]);
-        $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
-        $orderGoods    = OrderGoods::find()->where(['order_id' => $id])->all();
+        $orderGoods     = OrderGoods::find()->where(['order_id' => $id])->all();
+        $orderInquiry   = OrderInquiry::findAll(['order_id' => $id]);
+        $orderFinal     = OrderFinal::findAll(['order_id' => $id]);
+        $orderPurchase  = OrderPurchase::findAll(['order_id' => $id]);
+        $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
+        $orderPayment   = OrderPayment::findAll(['order_id' => $id]);
 
-        $data['model']         = $order;
-        $data['orderInquiry']  = $orderInquiry;
-        $data['orderFinal']    = $orderFinal;
-        $data['orderPurchase'] = $orderPurchase;
-        $data['orderGoods']    = $orderGoods;
+        $data['model']          = $order;
+        $data['orderGoods']     = $orderGoods;
+        $data['orderInquiry']   = $orderInquiry;
+        $data['orderFinal']     = $orderFinal;
+        $data['orderPurchase']  = $orderPurchase;
+        $data['orderAgreement'] = $orderAgreement;
+        $data['orderPayment']   = $orderPayment;
 
         return $this->render('detail', $data);
     }

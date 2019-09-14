@@ -138,6 +138,30 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach;?>
             </thead>
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>收入合同单号</th>
+            </tr>
+            <?php foreach ($orderAgreement as $agreement):?>
+                <tr>
+                    <td><?=$agreement->order_id?></td>
+                    <td><?=Html::a($agreement->agreement_sn, Url::to(['order-agreement/view', 'id' => $agreement->id]))?></td>
+                </tr>
+            <?php endforeach;?>
+            </thead>
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>支出合同单号</th>
+            </tr>
+            <?php foreach ($orderPayment as $payment):?>
+                <tr>
+                    <td><?=$payment->order_id?></td>
+                    <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
+                </tr>
+            <?php endforeach;?>
+            </thead>
         </table>
     </div>
 </div>
