@@ -309,6 +309,11 @@ class OrderQuoteController extends Controller
                 $agreementGoods->save();
             }
 
+            //改变生成了收入合同的成本单
+            $orderFinal = OrderFinal::findOne($orderQuote->order_final_id);
+            $orderFinal->is_agreement = OrderFinal::IS_AGREEMENT_YES;
+            $orderFinal->save();
+
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);

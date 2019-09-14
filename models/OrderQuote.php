@@ -22,6 +22,7 @@ use Yii;
  * @property string $quote_at 报价时间
  * @property string $quote_only_one 报价状态
  * @property string $is_send 报价状态
+ * @property string $order_final_id
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {

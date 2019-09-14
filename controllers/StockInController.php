@@ -111,6 +111,8 @@ class StockInController extends BaseController
                     $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
                 }
                 $orderPayment->save();
+                //进行对收入合同的入库字段更改
+
             }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
             if ($res) {

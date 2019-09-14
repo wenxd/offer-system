@@ -5,7 +5,7 @@ use app\models\AgreementGoods;
 use app\models\Inquiry;
 use app\models\Order;
 use app\models\OrderAgreement;
-use app\models\OrderAgreementSearch;
+use app\models\OrderAgreementStockOutSearch;
 use app\models\OrderGoods;
 use app\models\OrderPurchase;
 use app\models\PurchaseGoods;
@@ -22,7 +22,7 @@ class StockOutController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new OrderAgreementSearch();
+        $searchModel = new OrderAgreementStockOutSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

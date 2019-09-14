@@ -29,6 +29,7 @@ use Yii;
  * @property string $stock_at
  * @property string $is_complete
  * @property string $sign_date
+ * @property string $is_instock
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -48,6 +49,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
 
     const IS_COMPLETE_NO  = '0';
     const IS_COMPLETE_YES = '1';
+
+    const IS_INSTOCK_NO  = '0';
+    const IS_INSTOCK_YES = '1';
 
     public static $stock = [
         self::IS_STOCK_NO   => '否',
@@ -84,7 +88,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
-                'is_payment', 'is_bill', 'is_stock', 'is_complete'], 'integer'],
+                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at', 'sign_date'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -116,6 +120,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'stock_at'          => '出库时间',
             'financial_remark'  => '财务备注',
             'sign_date'         => '合同签订时间',
+            'is_instock'        => '是否入库',
         ];
     }
 

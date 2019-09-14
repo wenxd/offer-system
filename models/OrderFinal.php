@@ -22,6 +22,9 @@ class OrderFinal extends \yii\db\ActiveRecord
     const IS_QUOTE_NO  = '0';
     const IS_QUOTE_YES = '1';
 
+    const IS_AGREEMENT_NO  = '0';
+    const IS_AGREEMENT_YES = '1';
+
     public static $quote = [
         self::IS_QUOTE_NO  => '否',
         self::IS_QUOTE_YES => '是'
