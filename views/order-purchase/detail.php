@@ -3,9 +3,10 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use \app\models\Supplier;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -185,6 +186,13 @@ $i = 0;
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
 
+        <?= $form->field($model, 'supplier_id')->widget(\kartik\select2\Select2::classname(), [
+            'data' => Supplier::getCreateDropDown(),
+            'options' => ['placeholder' => '选择供应商'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('供应商')?>
         <?php if (!$model->is_complete):?>
             <?= $form->field($model, 'payment_sn')->textInput(); ?>
         <?php endif;?>
@@ -291,6 +299,30 @@ $i = 0;
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
         });
 
+        $('#orderpurchase-supplier_id').change(function(e){
+            var supplier_id = $(this).val();
+            $.ajax({
+                type:"get",
+                url:'?r=supplier/detail',
+                data:{id:supplier_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        var payment_sn = $('#orderpurchase-payment_sn').val();
+                        payment_sn = payment_sn.split('_');
+                        var first = payment_sn[0];
+                        var end   = payment_sn[2];
+                        var after_payment_sn = first + '_' + res.data.short_name + '_' + end;
+                        $('#orderpurchase-payment_sn').val(after_payment_sn);
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //保存支出合同
         $(".payment_save").click(function () {
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
@@ -324,22 +356,23 @@ $i = 0;
                 }
             });
 
-            if (supplier_flag) {
-                layer.msg('一个支出合同不能有多个供应商', {time:2000});
-                return false;
-            }
+            // if (supplier_flag) {
+            //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
+            //     return false;
+            // }
 
             var order_purchase_id = $('.data').data('order_purchase_id');
-            var admin_id = $('#orderpurchase-admin_id').val();
-            var end_date = $('#orderpurchase-end_date').val();
-            var payment_sn = $('#orderpurchase-payment_sn').val();
+            var admin_id    = $('#orderpurchase-admin_id').val();
+            var end_date    = $('#orderpurchase-end_date').val();
+            var payment_sn  = $('#orderpurchase-payment_sn').val();
+            var supplier_id = $('#orderpurchase-supplier_id option:selected').val();
 
-            //创建审核
+            //创建支出合同
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase-verify/save-order',
                 data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
-                    goods_info:goods_info, long_delivery_time:long_delivery_time},
+                    goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

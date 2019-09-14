@@ -100,6 +100,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->fixed_all_tax_price  = $paymentGoods->fixed_tax_price * $value['fix_number'];
                 $paymentGoods->fixed_number         = $value['fix_number'];
                 $paymentGoods->inquiry_admin_id     = $params['admin_id'];
+                $paymentGoods->supplier_id          = $params['supplier_id'];
                 $paymentGoods->save();
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;

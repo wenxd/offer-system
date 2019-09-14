@@ -23,6 +23,8 @@ use Yii;
  */
 class OrderPurchase extends \yii\db\ActiveRecord
 {
+    public $supplier_id;
+
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
 

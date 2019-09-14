@@ -691,6 +691,7 @@ CREATE TABLE `temp_not_goods` (
 ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
+ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
 
 CREATE TABLE `temp_not_stock` (
   `id`           int(11)  NOT NULL AUTO_INCREMENT,

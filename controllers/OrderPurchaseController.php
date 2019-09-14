@@ -217,7 +217,7 @@ class OrderPurchaseController extends BaseController
         }
         $data['number'] = $number;
         //供应商列表
-        $supplier = Supplier::find()->all();
+        $supplier = Supplier::find()->where(['is_deleted' => Supplier::IS_DELETED_NO])->all();
         $data['supplier'] = $supplier;
         //获取生成了支出合同商品的列表
         $purchaseGoodsIds = ArrayHelper::getColumn($purchaseGoods, 'id');

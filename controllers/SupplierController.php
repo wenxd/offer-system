@@ -54,4 +54,12 @@ class SupplierController extends BaseController
             ],
         ];
     }
+
+    public function actionDetail()
+    {
+        $id = Yii::$app->request->get('id');
+        $supplier = Supplier::find()->where(['id' => $id])->asArray()->one();
+
+        return json_encode(['code' => 200, 'data' => $supplier]);
+    }
 }

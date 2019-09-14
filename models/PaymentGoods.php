@@ -32,6 +32,7 @@ use Yii;
  * @property int $inquiry_admin_id 询价员ID
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $supplier_id
  */
 class PaymentGoods extends \yii\db\ActiveRecord
 {
@@ -57,7 +58,8 @@ class PaymentGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'order_purchase_id', 'goods_id', 'type', 'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id'], 'integer'],
+            [['order_id', 'order_payment_id', 'order_purchase_id', 'goods_id', 'type', 'relevance_id', 'number',
+                'fixed_number', 'inquiry_admin_id', 'supplier_id'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price', 'fixed_all_price', 'fixed_all_tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['order_payment_sn', 'order_purchase_sn', 'serial'], 'string', 'max' => 255],
@@ -70,30 +72,31 @@ class PaymentGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
-            'order_payment_id' => '支出合同订单ID',
-            'order_payment_sn' => '支出合同订单号',
-            'order_purchase_id' => '采购订单ID',
-            'order_purchase_sn' => '采购订单号',
-            'serial' => '序号',
-            'goods_id' => '零件ID',
-            'type' => '关联类型  0询价  1库存',
-            'relevance_id' => '关联ID（询价或库存）',
-            'number' => '采购数量',
-            'tax_rate' => '税率',
-            'price' => '未税单价',
-            'tax_price' => '含税总价',
-            'all_price' => '未税总价',
-            'all_tax_price' => '含税总价',
-            'fixed_price' => '修改后的未税单价',
-            'fixed_tax_price' => '修改后的含税单价',
-            'fixed_all_price' => '修改后的未税总价',
-            'fixed_all_tax_price' => '修改后的含税总价',
-            'fixed_number' => '修改后的数量',
-            'inquiry_admin_id' => '询价员ID',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'id'                    => 'ID',
+            'order_id'              => '订单ID',
+            'order_payment_id'      => '支出合同订单ID',
+            'order_payment_sn'      => '支出合同订单号',
+            'order_purchase_id'     => '采购订单ID',
+            'order_purchase_sn'     => '采购订单号',
+            'serial'                => '序号',
+            'goods_id'              => '零件ID',
+            'type'                  => '关联类型  0询价  1库存',
+            'relevance_id'          => '关联ID（询价或库存）',
+            'number'                => '采购数量',
+            'tax_rate'              => '税率',
+            'price'                 => '未税单价',
+            'tax_price'             => '含税总价',
+            'all_price'             => '未税总价',
+            'all_tax_price'         => '含税总价',
+            'fixed_price'           => '修改后的未税单价',
+            'fixed_tax_price'       => '修改后的含税单价',
+            'fixed_all_price'       => '修改后的未税总价',
+            'fixed_all_tax_price'   => '修改后的含税总价',
+            'fixed_number'          => '修改后的数量',
+            'inquiry_admin_id'      => '询价员ID',
+            'updated_at'            => '更新时间',
+            'created_at'            => '创建时间',
+            'supplier_id'           => '供应商ID',
         ];
     }
 
@@ -105,5 +108,10 @@ class PaymentGoods extends \yii\db\ActiveRecord
     public function getGoods()
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
+
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
 }
