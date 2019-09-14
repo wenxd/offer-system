@@ -33,6 +33,7 @@ use Yii;
  * @property string $remain_price
  * @property string $payment_price
  * @property string $is_agreement
+ * @property string $apply_reason
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -119,7 +120,7 @@ class OrderPayment extends \yii\db\ActiveRecord
                 'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'payment_ratio', 'payment_price', 'remain_price'], 'safe'],
-            [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
+            [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
     }
@@ -156,6 +157,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'remain_price'      => '待付款金额',
             'take_time'         => '合同尾款付款时间',
             'is_agreement'      => '是否生成合同',
+            'apply_reason'      => '采购审核支出备注',
         ];
     }
 

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Inquiry;
 use app\models\InquiryGoods;
+use app\models\OrderAgreement;
 use app\models\OrderPayment;
 use app\models\OrderPaymentSearch;
 use app\models\PaymentGoods;
@@ -112,7 +113,7 @@ class StockInController extends BaseController
                 }
                 $orderPayment->save();
                 //进行对收入合同的入库字段更改
-
+                //TODO $orderAgreement = OrderAgreement::findOne();
             }
             $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
             if ($res) {

@@ -64,6 +64,7 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->order_purchase_sn    = $orderPurchase->purchase_sn;
         $orderPayment->admin_id             = $params['admin_id'];
         $orderPayment->take_time            = date('Y-m-d H:i:s', (time() + $params['long_delivery_time'] * 7 * 3600 * 24));
+        $orderPayment->apply_reason         = trim($params['apply_reason']);
         if ($orderPayment->save()) {
             $noticeOpen = false;
             //payment_goods保存

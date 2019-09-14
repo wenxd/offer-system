@@ -193,6 +193,9 @@ $i = 0;
                 'allowClear' => true
             ],
         ])->label('供应商')?>
+
+        <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
+
         <?php if (!$model->is_complete):?>
             <?= $form->field($model, 'payment_sn')->textInput(); ?>
         <?php endif;?>
@@ -362,17 +365,19 @@ $i = 0;
             // }
 
             var order_purchase_id = $('.data').data('order_purchase_id');
-            var admin_id    = $('#orderpurchase-admin_id').val();
-            var end_date    = $('#orderpurchase-end_date').val();
-            var payment_sn  = $('#orderpurchase-payment_sn').val();
-            var supplier_id = $('#orderpurchase-supplier_id option:selected').val();
+            var admin_id     = $('#orderpurchase-admin_id').val();
+            var end_date     = $('#orderpurchase-end_date').val();
+            var payment_sn   = $('#orderpurchase-payment_sn').val();
+            var supplier_id  = $('#orderpurchase-supplier_id option:selected').val();
+            var apply_reason = $('#orderpurchase-apply_reason').val();
 
             //创建支出合同
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase-verify/save-order',
                 data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
-                    goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id},
+                    goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
+                    apply_reason:apply_reason},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

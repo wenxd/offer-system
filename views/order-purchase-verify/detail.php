@@ -88,6 +88,9 @@ $userId = Yii::$app->user->identity->id;
 
             </tbody>
         </table>
+
+        <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('采购申请备注'); ?>
+
         <?php if (!$model->is_verify):?>
             <?= $form->field($model, 'reason')->textInput(); ?>
         <?php endif;?>
