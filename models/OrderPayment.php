@@ -32,6 +32,7 @@ use Yii;
  * @property string $take_time
  * @property string $remain_price
  * @property string $payment_price
+ * @property string $is_agreement
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -61,6 +62,9 @@ class OrderPayment extends \yii\db\ActiveRecord
 
     const IS_VERIFY_NO    = '0';
     const IS_VERIFY_YES   = '1';
+
+    const IS_AGREEMENT_NO  = '0';
+    const IS_AGREEMENT_YES = '1';
 
     public static $purchase = [
         self::IS_PURCHASE_NO   => '否',
@@ -92,6 +96,11 @@ class OrderPayment extends \yii\db\ActiveRecord
         self::IS_VERIFY_YES  => '是',
     ];
 
+    public static $agreement = [
+        self::IS_ADVANCECHARGE_NO   => '否',
+        self::IS_ADVANCECHARGE_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -107,7 +116,7 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill', 'is_complete'], 'integer'],
+                'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'payment_ratio', 'payment_price', 'remain_price'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
@@ -146,6 +155,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'payment_price'     => '总金额',
             'remain_price'      => '待付款金额',
             'take_time'         => '合同尾款付款时间',
+            'is_agreement'      => '是否生成合同',
         ];
     }
 

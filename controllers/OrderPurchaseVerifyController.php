@@ -205,4 +205,13 @@ class OrderPurchaseVerifyController extends BaseController
         }
         return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
+
+    public function actionComplete($id)
+    {
+        $orderPayment = OrderPayment::findOne($id);
+        $orderPayment->is_agreement = OrderPayment::IS_ADVANCECHARGE_YES;
+        $orderPayment->save();
+
+        return $this->redirect(['index']);
+    }
 }

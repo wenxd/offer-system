@@ -632,6 +632,7 @@ ALTER TABLE `order_payment` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL D
 ALTER TABLE `order_payment` ADD COLUMN `remain_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单剩余金额 总金额减去预付款金额';
 ALTER TABLE `order_payment` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预付款比例';
 ALTER TABLE `order_payment` ADD COLUMN `take_time`      datetime  COMMENT '收货时间 = 支出合同签订日加最长货期';
+ALTER TABLE `order_payment` ADD COLUMN `is_agreement`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
 
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 
