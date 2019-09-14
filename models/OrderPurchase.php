@@ -20,6 +20,7 @@ use Yii;
  * @property string $created_at 创建时间
  * @property string $order_agreement_id 收入合同ID
  * @property string $is_stock
+ * @property string $is_complete
  */
 class OrderPurchase extends \yii\db\ActiveRecord
 {
@@ -39,6 +40,9 @@ class OrderPurchase extends \yii\db\ActiveRecord
 
     const IS_BILL_NO     = '0';
     const IS_BILL_YES    = '1';
+
+    const IS_COMPLETE_NO  = '0';
+    const IS_COMPLETE_YES = '1';
 
     public static $purchase = [
         self::IS_PURCHASE_NO   => '否',
@@ -63,6 +67,11 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public static $bill = [
         self::IS_BILL_NO   => '否',
         self::IS_BILL_YES  => '是',
+    ];
+
+    public static $complete = [
+        self::IS_COMPLETE_NO   => '否',
+        self::IS_COMPLETE_YES  => '是',
     ];
 
     /**

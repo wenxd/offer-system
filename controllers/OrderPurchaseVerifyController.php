@@ -209,6 +209,12 @@ class OrderPurchaseVerifyController extends BaseController
             }
 
             $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+
+            //恢复重新提出支出合同
+            $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
+            $orderPurchase->is_complete = OrderPurchase::IS_COMPLETE_NO;
+            $orderPurchase->save();
+
             $orderPayment->delete();
         } catch (\Exception $e) {
             return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);

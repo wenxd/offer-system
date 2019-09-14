@@ -21,7 +21,7 @@ class OrderPurchaseSearch extends OrderPurchase
     public function rules()
     {
         return [
-            [['id', 'order_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'admin_id', 'is_purchase', 'is_stock', 'is_deleted', 'is_complete'], 'integer'],
             [['purchase_sn', 'goods_info', 'end_date', 'updated_at', 'created_at', 'order_sn', 'order_agreement_sn'], 'safe'],
             [['id', 'purchase_sn', 'order_sn', 'order_agreement_sn'], 'trim'],
         ];
@@ -92,6 +92,7 @@ class OrderPurchaseSearch extends OrderPurchase
             'order_purchase.is_purchase'        => $this->is_purchase,
             'order_purchase.is_stock'           => $this->is_stock,
             'order_purchase.is_deleted'         => $this->is_deleted,
+            'order_purchase.is_complete'        => $this->is_complete,
         ]);
 
         if ($this->end_date && strpos($this->end_date, ' - ')) {

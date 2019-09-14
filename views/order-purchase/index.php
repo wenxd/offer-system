@@ -96,6 +96,14 @@ $userId   = Yii::$app->user->identity->id;
                         return $model->admin->username;
                     }
                 }
+            ],
+            [
+                'attribute' => 'is_complete',
+                'label'     => '是否全部生成了支出合同',
+                'filter'    => OrderPurchase::$complete,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPurchase::$complete[$model->is_complete];
+                }
             ]
         ],
     ]); ?>
