@@ -132,10 +132,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
                     if ($model->order->order_type == Order::ORDER_TYPE_PROJECT_YES) {
-                        return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-primary btn-xs btn-flat',
-                        ]);
+                        if (!$model->is_agreement) {
+                            return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        } else {
+                            return '';
+                        }
                     } else {
                         return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
                             'data-pjax' => '0',
