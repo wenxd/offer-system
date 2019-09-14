@@ -167,7 +167,7 @@ class InquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '未税价格', '询价数量', '货期', '询价备注', '是否优选', '优选理由'];
+        $tableHeader = ['零件号', '厂家号', '供应商', '未税价格', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -253,12 +253,14 @@ class InquiryController extends BaseController
                                 $inquiry->tax_price         = $inquiry->price * (1 + $tax/100);
                                 $inquiry->tax_rate          = $tax;
                                 $inquiry->number            = $value['E'] ? trim($value['E']) : 0;
+                                $inquiry->delivery_time     = $value['F'] ? trim($value['F']) : $delivery;
                                 $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
                                 $inquiry->all_price         = $inquiry->number * $inquiry->price;
                                 $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
-                                $inquiry->is_better         = (trim($value['G']) == '是') ? 1 : 0;
-                                $inquiry->better_reason     = $value['H'] ? trim($value['H']) : '';
-                                $inquiry->remark            = $value['F'] ? trim($value['F']) : '';
+                                $inquiry->is_better         = (trim($value['H']) == '是') ? 1 : 0;
+                                $inquiry->better_reason     = $value['I'] ? trim($value['I']) : '';
+                                $inquiry->remark            = $value['G'] ? trim($value['G']) : '';
+                                $inquiry->admin_id          = Yii::$app->user->identity->id;
                                 if ($inquiry->save()) {
                                     $num++;
                                 }
