@@ -92,11 +92,16 @@ class OrderController extends BaseController
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $date = date('ymd_');
-        $orderI = Order::find()->where(['like', 'order_sn', $date])->orderBy('created_at Desc')->one();
+        $orderI = Order::find()->where(['like', 'order_sn', $date])
+            ->andWhere(['order_type' => order::ORDER_TYPE_PROJECT_YES])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $num = strrpos($orderI->order_sn, '_');
-            $str = substr($orderI->order_sn, $num+1);
-            $number = sprintf("%02d", $str+1);
+            $str    = substr($orderI->order_sn, $num+1);
+            if (is_numeric($str)) {
+                $number = sprintf("%02d", $str + 1);
+            } else {
+                $number = '01';
+            }
         } else {
             $number = '01';
         }
