@@ -87,8 +87,8 @@ class CompetitorGoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F'];
-        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税单价', '备注'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税单价', '数量', '货期', '库存数量', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -201,9 +201,14 @@ class CompetitorGoodsController extends BaseController
                             $competitorGoods->tax_rate      = $d;
                             $competitorGoods->price         = $e;
                             $competitorGoods->tax_price     = $tax_price;
+                            $competitorGoods->number        = $value['F'] ? trim($value['F']) : 0;
+                            $competitorGoods->all_price     = $competitorGoods->price * $competitorGoods->number;
+                            $competitorGoods->all_tax_price = $competitorGoods->tax_price * $competitorGoods->number;
+                            $competitorGoods->delivery_time = $value['G'] ? trim($value['G']) : 0;
+                            $competitorGoods->stock_number  = $value['H'] ? trim($value['H']) : 0;
                             $competitorGoods->offer_date    = $date;
-                            if ($value['F']) {
-                                $competitorGoods->remark = trim($value['F']);
+                            if ($value['I']) {
+                                $competitorGoods->remark = trim($value['I']);
                             }
                             if ($competitorGoods->save()) {
                                 $num++;

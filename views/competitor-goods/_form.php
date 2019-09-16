@@ -58,6 +58,9 @@ if (!$model->isNewRecord) {
     <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'stock_number')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'offer_date')->widget(DateTimePicker::className(), [
         'removeButton'  => false,

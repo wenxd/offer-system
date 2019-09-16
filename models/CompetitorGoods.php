@@ -16,6 +16,13 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $delivery_time
+ * @property string $stock_number
+ * @property string $all_price
+ * @property string $all_tax_price
+ * @property string $number
+ * @property string $tax_price
+ * @property string $price
  */
 class CompetitorGoods extends ActiveRecord
 {
@@ -54,7 +61,7 @@ class CompetitorGoods extends ActiveRecord
     {
         return [
             [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
-            [['tax_rate', 'price', 'tax_price'], 'number'],
+            [['tax_rate', 'price', 'tax_price', 'delivery_time', 'all_price', 'all_tax_price', 'stock_number'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
             [['competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
@@ -83,6 +90,10 @@ class CompetitorGoods extends ActiveRecord
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',
+            'delivery_time'    => '货期',
+            'stock_number'     => '库存数量',
+            'all_price'        => '未税总价',
+            'all_tax_price'    => '含税总价',
         ];
     }
 
@@ -98,6 +109,10 @@ class CompetitorGoods extends ActiveRecord
             return false;
         }
         $this->goods_id = $goods->id;
+
+        $this->all_price     = $this->number *  $this->price;
+        $this->all_tax_price = $this->number *  $this->tax_price;
+
         return parent::beforeSave($insert);
     }
     public function afterFind()

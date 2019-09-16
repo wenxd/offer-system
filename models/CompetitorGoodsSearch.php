@@ -21,9 +21,10 @@ class CompetitorGoodsSearch extends CompetitorGoods
     {
         return [
             [['id', 'goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
-            [['tax_rate', 'price', 'tax_price'], 'number'],
+            [['tax_rate', 'price', 'tax_price', 'delivery_time', 'all_price', 'all_tax_price', 'stock_number'], 'number'],
             [['offer_date', 'updated_at', 'created_at', 'goods_number', 'competitor_name', 'unit', 'remark'], 'safe'],
-            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price', 'unit', 'remark'], 'trim'],
+            [['id', 'goods_id', 'goods_number', 'competitor_id', 'competitor_name', 'price', 'unit', 'remark',
+                'delivery_time', 'all_price', 'all_tax_price', 'stock_number'], 'trim'],
         ];
     }
 
@@ -87,6 +88,10 @@ class CompetitorGoodsSearch extends CompetitorGoods
             'competitor_goods.number'           => $this->number,
             'competitor_goods.unit'             => $this->unit,
             'competitor_goods.is_deleted'       => self::IS_DELETED_NO,
+            'competitor_goods.delivery_time'    => $this->delivery_time,
+            'competitor_goods.all_price'        => $this->all_price,
+            'competitor_goods.all_tax_price'    => $this->all_tax_price,
+            'competitor_goods.stock_number'     => $this->stock_number,
         ]);
 
         if ($this->offer_date && strpos($this->offer_date, ' - ')) {

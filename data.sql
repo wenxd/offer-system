@@ -704,3 +704,9 @@ CREATE TABLE `temp_not_stock` (
   `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手动出库库存不够的零件';
+
+
+ALTER TABLE `competitor_goods` ADD COLUMN  `stock_number`   int(11) NOT NULL DEFAULT '0' COMMENT '库存数量';
+ALTER TABLE `competitor_goods` ADD COLUMN  `delivery_time`  int(11) NOT NULL DEFAULT '0' COMMENT '货期（周）'
+ALTER TABLE `competitor_goods` ADD COLUMN  `all_price`      decimal(10,2) NOT NULL DEFAULT '0' COMMENT '未税总价'
+ALTER TABLE `competitor_goods` ADD COLUMN  `all_tax_price`      decimal(10,2) NOT NULL DEFAULT '0' COMMENT '含税总价'
