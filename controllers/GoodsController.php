@@ -4,8 +4,19 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{AgreementGoods, PaymentGoods, Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods,
-    OrderInquiry, PurchaseGoods, StockLog, TempOrderInquiry};
+use app\models\{AgreementGoods,
+    PaymentGoods,
+    Stock,
+    Goods,
+    GoodsSearch,
+    Inquiry,
+    CompetitorGoods,
+    OrderGoods,
+    OrderInquiry,
+    PurchaseGoods,
+    StockLog,
+    SystemConfig,
+    TempOrderInquiry};
 use yii\helpers\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -222,9 +233,9 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
-        $tableHeader = ['零件号', '厂家号', '中文描述', '英文描述', '原厂家', '原厂家备注', '材质', '是否加工', '是否总成', '是否特制',
-            '是否铭牌', '是否紧急', '所属设备', '设备用量'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
+        $tableHeader = ['零件号', '厂家号', '中文描述', '英文描述', '原厂家', '原厂家备注', '材质', '技术', '建议库存',
+            '是否加工', '是否总成', '是否特制', '是否铭牌', '是否紧急', '所属设备', '设备用量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -285,6 +296,10 @@ class GoodsController extends BaseController
                     //总数
                     $total = count($sheetData);
                     $num = 0;
+
+                    $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
+                    $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
+
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['A']) && empty($value['B'])) {
@@ -316,24 +331,28 @@ class GoodsController extends BaseController
                             if ($value['G']) {
                                 $goods->material = trim($value['G']);
                             }
-                            if ($value['H'] && $value['H'] != '否') {
-                                $goods->is_process = Goods::IS_PROCESS_YES;
-                            }
-                            if ($value['I'] && $value['I'] != '否') {
-                                $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+                            //技术
+                            if ($value['H']) {
+                                $goods->technique_remark = trim($value['H']);
                             }
                             if ($value['J'] && $value['J'] != '否') {
-                                $goods->is_special = Goods::IS_SPECIAL_YES;
+                                $goods->is_process = Goods::IS_PROCESS_YES;
                             }
                             if ($value['K'] && $value['K'] != '否') {
-                                $goods->is_nameplate = Goods::IS_NAMEPLATE_YES;
+                                $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
                             }
                             if ($value['L'] && $value['L'] != '否') {
+                                $goods->is_special = Goods::IS_SPECIAL_YES;
+                            }
+                            if ($value['M'] && $value['M'] != '否') {
+                                $goods->is_nameplate = Goods::IS_NAMEPLATE_YES;
+                            }
+                            if ($value['N'] && $value['N'] != '否') {
                                 $goods->is_emerg = Goods::IS_EMERG_YES;
                             }
-                            if ($value['M'] && $value['N']) {
-                                $deviceName   = trim($value['M']);
-                                $deviceNumber = trim($value['N']);
+                            if ($value['O'] && $value['P']) {
+                                $deviceName   = trim($value['O']);
+                                $deviceNumber = trim($value['P']);
                                 $device = [];
                                 $device[$deviceName] = $deviceNumber;
                                 $oldDevice = json_decode($goods->device_info, true);
@@ -353,6 +372,18 @@ class GoodsController extends BaseController
                             }
                             if ($goods->save()) {
                                 $num++;
+                            }
+                            //建议库存
+                            if ($value['I']) {
+                                $stock = Stock::find()->where(['good_id' => $goods->id])->one();
+                                if (!$stock) {
+                                    $stock = new Stock();
+                                    $stock->good_id         = $goods->id;
+                                }
+                                $stock->suggest_number  = trim($value['I']);
+                                $stock->high_number     = $high_stock_ratio * trim($value['I']);
+                                $stock->low_number      = $low_stock_ratio * trim($value['I']);
+                                $stock->save();
                             }
                         }
                     }
