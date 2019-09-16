@@ -174,10 +174,20 @@ class OrderInquiryController extends BaseController
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 
+        //总询价数
         $inquiryList = Inquiry::find()->where(['good_id' => $goods_ids])->asArray()->all();
         $inquiryList = ArrayHelper::index($inquiryList, null, 'good_id');
 
-        $data['inquiryList']   = $inquiryList;
+        //我的询价数
+        $inquiryMyList = Inquiry::find()->where([
+            'good_id'           => $goods_ids,
+            'order_inquiry_id'  => $id,
+            'admin_id'          => Yii::$app->user->identity->id,
+        ])->asArray()->all();
+        $inquiryMyList = ArrayHelper::index($inquiryMyList, null, 'good_id');
+
+        $data['inquiryList']    = $inquiryList;
+        $data['inquiryMyList']  = $inquiryMyList;
 
         return $this->render('view', $data);
     }
