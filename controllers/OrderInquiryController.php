@@ -33,6 +33,8 @@ use yii\web\BadRequestHttpException;
 
 class OrderInquiryController extends BaseController
 {
+    public $enableCsrfValidation = false;
+
     public function actions()
     {
         return [
@@ -176,10 +178,13 @@ class OrderInquiryController extends BaseController
 
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
-        $inquiryGoods = InquiryGoods::find()->where([
-            'inquiry_sn' => $orderInquiry->inquiry_sn,
-            'order_id'   => $orderInquiry->order_id,
-            'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
+        $inquiryGoods = InquiryGoods::find()->from('inquiry_goods as i')->select('i.*')
+            ->where([
+            'i.inquiry_sn' => $orderInquiry->inquiry_sn,
+            'i.order_id'   => $orderInquiry->order_id,
+            'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
+            'g.is_deleted' => Goods::IS_DELETED_NO,
+            ])->leftJoin('goods as g', 'g.id = i.goods_id')->all();
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 
@@ -259,10 +264,13 @@ class OrderInquiryController extends BaseController
             return $this->redirect(['index']);
         }
 
-        $inquiryGoods = InquiryGoods::find()->where([
-            'inquiry_sn' => $orderInquiry->inquiry_sn,
-            'order_id'   => $orderInquiry->order_id,
-            'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
+        $inquiryGoods = InquiryGoods::find()->from('inquiry_goods as i')->select('i.*')
+            ->where([
+                'i.inquiry_sn' => $orderInquiry->inquiry_sn,
+                'i.order_id'   => $orderInquiry->order_id,
+                'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
+                'g.is_deleted' => Goods::IS_DELETED_NO,
+            ])->leftJoin('goods as g', 'g.id = i.goods_id')->all();
 
         $helper = new Sample();
         if ($helper->isCli()) {
@@ -384,33 +392,37 @@ class OrderInquiryController extends BaseController
                         ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->all();
                     foreach ($sheetData as $key => $value) {
                         if ($key == 2) {
-                            $orderInquiry = OrderInquiry::findOne(trim($value['B']));
+                            $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                         }
                         if ($key > 1) {
-                            if (empty($value['A']) || empty($value['B'])) {
+                            if (empty($value['B']) || empty($value['C'])) {
                                 continue;
                             }
-                            $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
-                                ->andWhere(['goods_number_b' => trim($value['B'])])->one();
-                            if (isset($supplierList[trim($value['L'])])) {
-                                $inquiry = new Inquiry();
-                                $inquiry->inquiry_goods_id  = trim($value['A']);
-                                $inquiry->order_inquiry_id  = trim($value['B']);
-                                $inquiry->tax_rate          = trim($value['G']);
-                                $inquiry->price             = trim($value['H']) / ((100 + $inquiry->tax_rate)/100);
-                                $inquiry->number            = trim($value['I']);
-                                $inquiry->tax_price         = trim($value['H']);
-                                $inquiry->good_id           = $goods->id;
-                                $inquiry->supplier_id       = $supplierList[trim($value['L'])]->id;
-                                $inquiry->all_price         = $inquiry->price * $inquiry->number;
-                                $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
-                                $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                $inquiry->remark            = trim($value['M']);
-                                $inquiry->delivery_time     = trim($value['K']);
-                                $inquiry->admin_id          = Yii::$app->user->identity->id;
-                                $inquiry->order_id          = $orderInquiry->order_id;
-                                if ($inquiry->save()) {
-                                    $num++;
+                            $goods = Goods::find()->where([
+                                'goods_number_b' => trim($value['C']),
+                                'is_deleted'     => Goods::IS_DELETED_NO
+                            ])->one();
+                            if ($goods) {
+                                if (isset($supplierList[trim($value['L'])])) {
+                                    $inquiry = new Inquiry();
+                                    $inquiry->inquiry_goods_id = trim($value['A']);
+                                    $inquiry->order_inquiry_id = $orderInquiry->id;
+                                    $inquiry->tax_rate = trim($value['G']);
+                                    $inquiry->price = trim($value['H']) / ((100 + $inquiry->tax_rate) / 100);
+                                    $inquiry->number = trim($value['I']);
+                                    $inquiry->tax_price = trim($value['H']);
+                                    $inquiry->good_id = $goods->id;
+                                    $inquiry->supplier_id = $supplierList[trim($value['L'])]->id;
+                                    $inquiry->all_price = $inquiry->price * $inquiry->number;
+                                    $inquiry->all_tax_price = $inquiry->tax_price * $inquiry->number;
+                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
+                                    $inquiry->remark = trim($value['M']);
+                                    $inquiry->delivery_time = trim($value['K']);
+                                    $inquiry->admin_id = Yii::$app->user->identity->id;
+                                    $inquiry->order_id = $orderInquiry->order_id;
+                                    if ($inquiry->save()) {
+                                        $num++;
+                                    }
                                 }
                             }
                         }

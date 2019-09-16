@@ -32,7 +32,7 @@ $userId    = Yii::$app->user->identity->id;
                         'class'     => 'btn btn-primary btn-flat',
         ]);?>
         <?= Html::button('询价导入', [
-                'class' => 'btn btn-success import',
+                'class' => 'btn btn-success upload',
                 'name'  => 'submit-button']
         )?>
     </div>
