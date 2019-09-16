@@ -45,8 +45,8 @@ $adminList = Admin::find()->where(['id' => $adminIds])->all();
                         <th>商品类型</th>
                         <th>询价时间</th>
                         <th>税率</th>
-                        <th>未税价格</th>
-                        <th>含税价格</th>
+                        <th>未税单价</th>
+                        <th>含税单价</th>
                         <th>交货期</th>
                         <th>询价备注</th>
                         <th>金额</th>

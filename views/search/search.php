@@ -60,8 +60,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>优选</th>
                         <th>商品类型</th>
                         <th>税率</th>
-                        <th>未税价格</th>
-                        <th>含税价格</th>
+                        <th>未税单价</th>
+                        <th>含税单价</th>
                         <th>库存数量</th>
                         <th>询价时间</th>
                         <th>供应商ID</th>

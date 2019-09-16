@@ -102,8 +102,8 @@ class QuoteRecord extends ActiveRecord
             'created_at'       => '创建时间',
 
             'tax_rate'         => '税率',
-            'price'            => '未税价格',
-            'tax_price'        => '含税价格',
+            'price'            => '未税单价',
+            'tax_price'        => '含税单价',
 
         ];
     }

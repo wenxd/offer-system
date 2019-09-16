@@ -532,12 +532,12 @@ ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMM
 
 ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
-ALTER TABLE `quote_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税价格';
-ALTER TABLE `quote_goods` ADD COLUMN `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税单价';
 ALTER TABLE `quote_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税价格';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税价格';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '货期（周）';
@@ -547,8 +547,8 @@ ALTER TABLE `agreement_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT 
 ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
 ALTER TABLE `agreement_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
 ALTER TABLE `agreement_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税价格';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税价格';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
 ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
