@@ -113,13 +113,23 @@ class GoodsSearch extends Goods
         }
 
         if ($this->stock_low !== NULL && $this->stock_low !== '') {
-            $stockList = Stock::find()->where('number < low_number')->all();
+            if ($this->stock_low == 0) {
+                $stockList = Stock::find()->where('number >= low_number')->all();
+            }
+            if ($this->stock_low == 1) {
+                $stockList = Stock::find()->where('number < low_number')->all();
+            }
             $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
             $query->andWhere(['in', 'id', $goodsIds]);
         }
 
         if ($this->stock_high !== NULL && $this->stock_high !== '') {
-            $stockList = Stock::find()->where('number > high_number')->all();
+            if ($this->stock_high == 0) {
+                $stockList = Stock::find()->where('number <= high_number')->all();
+            }
+            if ($this->stock_high == 1) {
+                $stockList = Stock::find()->where('number > high_number')->all();
+            }
             $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
             $query->andWhere(['in', 'id', $goodsIds]);
         }
