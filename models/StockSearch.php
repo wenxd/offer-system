@@ -4,8 +4,9 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\Stock;
+use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
 /**
  * StockSearch represents the model behind the search form of `backend\models\Stock`.
@@ -17,14 +18,19 @@ class StockSearch extends Stock
     public $description_en;
     public $supplier_name;
     public $is_zero;
+    public $stock_low;
+    public $stock_high;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero'], 'integer'],
-            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number', 'description', 'description_en'], 'safe'],
+            [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero',
+                'stock_low', 'stock_high'], 'integer'],
+            [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number', 'description',
+                'description_en'], 'safe'],
             [['price', 'tax_price'], 'number'],
             [['number', 'suggest_number', 'high_number', 'low_number'], 'integer', 'min' => 0],
         ];
@@ -80,6 +86,25 @@ class StockSearch extends Stock
             $query->leftJoin('supplier as s', 's.id = stock.supplier_id');
             $query->andFilterWhere(['like', 's.name', $this->supplier_name]);
         }
+
+        if ($this->stock_low !== NULL && $this->stock_low !== '') {
+            if ($this->stock_low == 0) {
+                $query->andWhere('number >= low_number');
+            }
+            if ($this->stock_low == 1) {
+                $query->andWhere('number < low_number');
+            }
+        }
+
+        if ($this->stock_high !== NULL && $this->stock_high !== '') {
+            if ($this->stock_high == 0) {
+                $query->andWhere('number <= high_number');
+            }
+            if ($this->stock_high == 1) {
+                $query->andWhere('number > high_number');
+            }
+        }
+
         // grid filtering conditions
         $query->andFilterWhere([
             'stock.id'                  => $this->id,

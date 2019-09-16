@@ -132,10 +132,28 @@ if ($isShow) {
             'low_number',
             [
                 'attribute' => 'is_zero',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'contentOptions'=>['style'=>'min-width: 60px;'],
                 'filter'    => Stock::$zero,
                 'value'     => function($model){
                     return $model->number ? '否' : '是';
+                }
+            ],
+            [
+                'attribute' => 'stock_low',
+                'contentOptions'=>['style'=>'min-width: 60px;'],
+                'filter'    => ['0' => '否', '1' => '是'],
+                'label'     => '库存不足',
+                'value'     => function($model){
+                    return ($model->number < $model->low_number) ? '是' : '否';
+                }
+            ],
+            [
+                'attribute' => 'stock_high',
+                'contentOptions'=>['style'=>'min-width: 60px;'],
+                'filter'    => ['0' => '否', '1' => '是'],
+                'label'     => '库存超量',
+                'value'     => function($model){
+                    return ($model->number > $model->high_number) ? '是' : '否';
                 }
             ],
             [
