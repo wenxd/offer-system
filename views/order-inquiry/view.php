@@ -221,7 +221,7 @@ $userId    = Yii::$app->user->identity->id;
     //监听事件
     $('.upload').ajaxUploadPrompt({
         //上传地址
-        url : '?r=inquiry/upload',
+        url : '?r=order-inquiry/upload',
         //上传文件类型
         accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
         //上传前加载动画

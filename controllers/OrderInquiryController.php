@@ -9,10 +9,12 @@ namespace app\controllers;
 
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\Goods;
 use app\models\InquiryGoods;
 use app\models\OrderGoods;
 use app\models\QuoteRecord;
 use app\models\StockLog;
+use app\models\Supplier;
 use app\models\SystemConfig;
 use app\models\SystemNotice;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -281,8 +283,8 @@ class OrderInquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-        $tableHeader = ['询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '含税总价',
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '含税总价',
             '货期(周)', '供应商', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -294,30 +296,32 @@ class OrderInquiryController extends BaseController
         $deliver = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_DELIVERY_TIME])->scalar();
         foreach ($inquiryGoods as $key => $inquiry) {
             for($i = 0; $i < count($letter); $i++) {
+                //ID
+                $excel->setCellValue($letter[$i] . ($key + 2), $inquiry->id);
                 //询价单号
-                $excel->setCellValue($letter[$i] . ($key + 2), $inquiry->inquiry_sn);
+                $excel->setCellValue($letter[$i+1] . ($key + 2), $inquiry->inquiry_sn);
                 if ($inquiry->goods) {
                     //厂家号
-                    $excel->setCellValue($letter[$i+1] . ($key + 2), $inquiry->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->goods_number_b);
                     //原厂家
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->original_company);
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->original_company);
                     //中文描述
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->description);
+                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description);
                     //英文描述
-                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description_en);
+                    $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->goods->description_en);
                 }
                 //税率
-                $excel->setCellValue($letter[$i+5] . ($key + 2), $tax);
+                $excel->setCellValue($letter[$i+6] . ($key + 2), $tax);
                 //含税单价
-                //$excel->setCellValue($letter[$i+6] . ($key + 2), '');
+                //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
-                $excel->setCellValue($letter[$i+7] . ($key + 2), $inquiry->number);
+                $excel->setCellValue($letter[$i+8] . ($key + 2), $inquiry->number);
                 //含税总价
-                //$excel->setCellValue($letter[$i+8] . ($key + 2), '');
+                //$excel->setCellValue($letter[$i+9] . ($key + 2), '');
                 //货期(周)
-                //$excel->setCellValue($letter[$i+9] . ($key + 2), $deliver);
+                //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
-                //$excel->setCellValue($letter[$i+10] . ($key + 2), '');
+                //$excel->setCellValue($letter[$i+11] . ($key + 2), '');
                 //备注
                 break;
             }
@@ -346,4 +350,75 @@ class OrderInquiryController extends BaseController
         exit;
     }
 
+    /**
+     * 上传导入
+     */
+    public function actionUpload()
+    {
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件']);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } //导入文件类型
+            else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' ||
+                $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                $_FILES['FileName']['type'] == 'application/octet-stream'
+            ) {
+                //获取文件名称
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+                //保存文件
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    //总数
+                    $total = count($sheetData);
+                    $num = 0;
+                    $supplierList = Supplier::find()->select('id, name')
+                        ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->all();
+                    foreach ($sheetData as $key => $value) {
+                        if ($key == 2) {
+                            $orderInquiry = OrderInquiry::findOne(trim($value['B']));
+                        }
+                        if ($key > 1) {
+                            if (empty($value['A']) || empty($value['B'])) {
+                                continue;
+                            }
+                            $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
+                                ->andWhere(['goods_number_b' => trim($value['B'])])->one();
+                            if (isset($supplierList[trim($value['L'])])) {
+                                $inquiry = new Inquiry();
+                                $inquiry->inquiry_goods_id  = trim($value['A']);
+                                $inquiry->order_inquiry_id  = trim($value['B']);
+                                $inquiry->tax_rate          = trim($value['G']);
+                                $inquiry->price             = trim($value['H']) / ((100 + $inquiry->tax_rate)/100);
+                                $inquiry->number            = trim($value['I']);
+                                $inquiry->tax_price         = trim($value['H']);
+                                $inquiry->good_id           = $goods->id;
+                                $inquiry->supplier_id       = $supplierList[trim($value['L'])]->id;
+                                $inquiry->all_price         = $inquiry->price * $inquiry->number;
+                                $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
+                                $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
+                                $inquiry->remark            = trim($value['M']);
+                                $inquiry->delivery_time     = trim($value['K']);
+                                $inquiry->admin_id          = Yii::$app->user->identity->id;
+                                $inquiry->order_id          = $orderInquiry->order_id;
+                                if ($inquiry->save()) {
+                                    $num++;
+                                }
+                            }
+                        }
+                    }
+                }
+                unlink('./' . $saveName);
+                return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
+            }
+        }
+    }
 }
