@@ -7,11 +7,18 @@
  */
 namespace app\controllers;
 
+use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\InquiryGoods;
 use app\models\OrderGoods;
 use app\models\QuoteRecord;
+use app\models\StockLog;
+use app\models\SystemConfig;
 use app\models\SystemNotice;
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\actions;
 use app\models\Cart;
@@ -240,4 +247,103 @@ class OrderInquiryController extends BaseController
             return json_encode(['code' => 500, 'msg' => $inquiryGoods->getErrors()]);
         }
     }
+
+    //下载询价单详情
+    public function actionDownload($id)
+    {
+        $orderInquiry = OrderInquiry::findOne($id);
+        if (!$orderInquiry) {
+            yii::$app->getSession()->setFlash('error', '没有此询价单');
+            return $this->redirect(['index']);
+        }
+
+        $inquiryGoods = InquiryGoods::find()->where([
+            'inquiry_sn' => $orderInquiry->inquiry_sn,
+            'order_id'   => $orderInquiry->order_id,
+            'is_deleted' => InquiryGoods::IS_DELETED_NO])->all();
+
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel=$spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $tableHeader = ['询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '含税总价',
+            '货期(周)', '供应商', '备注'];
+        for($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+        }
+        $tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
+        $deliver = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_DELIVERY_TIME])->scalar();
+        foreach ($inquiryGoods as $key => $inquiry) {
+            for($i = 0; $i < count($letter); $i++) {
+                //询价单号
+                $excel->setCellValue($letter[$i] . ($key + 2), $inquiry->inquiry_sn);
+                if ($inquiry->goods) {
+                    //厂家号
+                    $excel->setCellValue($letter[$i+1] . ($key + 2), $inquiry->goods->goods_number_b);
+                    //原厂家
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->original_company);
+                    //中文描述
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->description);
+                    //英文描述
+                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description_en);
+                }
+                //税率
+                $excel->setCellValue($letter[$i+5] . ($key + 2), $tax);
+                //含税单价
+                //$excel->setCellValue($letter[$i+6] . ($key + 2), '');
+                //询价数量
+                $excel->setCellValue($letter[$i+7] . ($key + 2), $inquiry->number);
+                //含税总价
+                //$excel->setCellValue($letter[$i+8] . ($key + 2), '');
+                //货期(周)
+                //$excel->setCellValue($letter[$i+9] . ($key + 2), $deliver);
+                //供应商
+                //$excel->setCellValue($letter[$i+10] . ($key + 2), '');
+                //备注
+                break;
+            }
+        }
+
+        $title = '询价单' . $orderInquiry->inquiry_sn . date('His') . Yii::$app->user->identity->username;
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
+    }
+
 }
