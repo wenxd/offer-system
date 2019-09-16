@@ -16,6 +16,8 @@ class GoodsSearch extends Goods
     public $is_inquiry;
     public $is_inquiry_better;
     public $is_stock;
+    public $stock_low;
+    public $stock_high;
     /**
      * {@inheritdoc}
      */
@@ -23,7 +25,7 @@ class GoodsSearch extends Goods
     {
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry'
-            , 'is_inquiry_better', 'is_stock'], 'integer'],
+            , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info', 'material'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
@@ -110,9 +112,21 @@ class GoodsSearch extends Goods
             $query->andWhere(['in', 'id', $goodsIds]);
         }
 
+        if ($this->stock_low !== NULL && $this->stock_low !== '') {
+            $stockList = Stock::find()->where('number < low_number')->all();
+            $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
+            $query->andWhere(['in', 'id', $goodsIds]);
+        }
+
+        if ($this->stock_high !== NULL && $this->stock_high !== '') {
+            $stockList = Stock::find()->where('number > high_number')->all();
+            $goodsIds  = ArrayHelper::getColumn($stockList, 'good_id');
+            $query->andWhere(['in', 'id', $goodsIds]);
+        }
+
         // grid filtering conditions
         $query->andFilterWhere([
-            'goods.id' => $this->id,
+            'goods.id'           => $this->id,
             'goods.is_process'   => $this->is_process,
             'goods.is_special'   => $this->is_special,
             'goods.is_nameplate' => $this->is_nameplate,
@@ -122,16 +136,16 @@ class GoodsSearch extends Goods
         ]);
 
         $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
-            ->andFilterWhere(['like', 'goods.goods_number_b', $this->goods_number_b])
-            ->andFilterWhere(['like', 'goods.description', $this->description])
-            ->andFilterWhere(['like', 'goods.description_en', $this->description_en])
-            ->andFilterWhere(['like', 'goods.original_company', $this->original_company])
-            ->andFilterWhere(['like', 'goods.original_company_remark', $this->original_company_remark])
-            ->andFilterWhere(['like', 'goods.unit', $this->unit])
-            ->andFilterWhere(['like', 'goods.technique_remark', $this->technique_remark])
-            ->andFilterWhere(['like', 'goods.img_id', $this->img_id])
-            ->andFilterWhere(['like', 'goods.material', $this->material])
-            ->andFilterWhere(['like', 'goods.device_info', $this->device_info]);
+              ->andFilterWhere(['like', 'goods.goods_number_b', $this->goods_number_b])
+              ->andFilterWhere(['like', 'goods.description', $this->description])
+              ->andFilterWhere(['like', 'goods.description_en', $this->description_en])
+              ->andFilterWhere(['like', 'goods.original_company', $this->original_company])
+              ->andFilterWhere(['like', 'goods.original_company_remark', $this->original_company_remark])
+              ->andFilterWhere(['like', 'goods.unit', $this->unit])
+              ->andFilterWhere(['like', 'goods.technique_remark', $this->technique_remark])
+              ->andFilterWhere(['like', 'goods.img_id', $this->img_id])
+              ->andFilterWhere(['like', 'goods.material', $this->material])
+              ->andFilterWhere(['like', 'goods.device_info', $this->device_info]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
@@ -146,7 +160,7 @@ class GoodsSearch extends Goods
             $created_at_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'goods.created_at', $created_at_start, $created_at_end]);
         }
-
+//        var_dump($query->createCommand()->getRawSql());die;
         return $dataProvider;
     }
 }

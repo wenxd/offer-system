@@ -234,6 +234,32 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'stock_low',
+                'label'     => '库存不足',
+                'format'    => 'raw',
+                'filter'    => ['0' => '否', '1' => '是'],
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return ($model->stock->number < $model->stock->low_number) ? '是' : '否';
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'stock_high',
+                'label'     => '库存超量',
+                'format'    => 'raw',
+                'filter'    => ['0' => '否', '1' => '是'],
+                'value'     => function($model){
+                    if ($model->stock) {
+                        return ($model->stock->number > $model->stock->high_number) ? '是' : '否';
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
