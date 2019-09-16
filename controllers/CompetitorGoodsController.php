@@ -95,7 +95,7 @@ class CompetitorGoodsController extends BaseController
             $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
         }
 
-        $title = '竞争对手价格上传模板';
+        $title = '竞争对手价格上传模板' . date('ymd-His');
         // Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($title);
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
