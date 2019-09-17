@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{AgreementGoods,
+use app\models\{Admin,
+    AgreementGoods,
     PaymentGoods,
     Stock,
     Goods,
@@ -118,11 +119,11 @@ class GoodsController extends BaseController
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
         //采购记录  最新采购
-        $purchaseNew = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        $paymentNew = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //价格最低采购
         $purchasePrice = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
         //货期采购
-        $purchaseDay = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
+        $purchaseDay = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
 
         //竞争对手
         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
@@ -159,7 +160,7 @@ class GoodsController extends BaseController
         $data['inquiryNew']       = $inquiryNewQuery;
         $data['inquiryBetter']    = $inquiryBetterQuery;
 
-        $data['purchaseNew']      = $purchaseNew;
+        $data['paymentNew']      = $paymentNew;
         $data['purchasePrice']    = $purchasePrice;
         $data['purchaseDay']      = $purchaseDay;
 
@@ -171,6 +172,10 @@ class GoodsController extends BaseController
         //增加零件的收入记录
         $agreementGoods = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->limit(3)->all();
         $data['agreementGoods'] = $agreementGoods;
+
+        //所有用户
+        $adminList = Admin::find()->indexBy('id')->all();
+        $data['adminList'] = $adminList;
 
         return $this->render('search-result', $data);
     }

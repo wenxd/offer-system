@@ -192,18 +192,15 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             <tr class="inquiry_list">
                 <td>最新</td>
-                <td class="stressColor"><?= $purchaseNew ? $purchaseNew->inquiry->supplier->name : '' ?></td>
-                <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->inquiry->tax_rate : 0 ?></td>
-                <td class="price"><?= $purchaseNew ? $purchaseNew->inquiry->price : 0 ?></td>
-                <td class="tax_price"><b class="color"><?= $purchaseNew ? $purchaseNew->inquiry->tax_price : 0 ?></b></td>
-                <td class="stressColor"><b class="color"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></b></td>
-                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td>
-                <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
-                <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
-                <td><?= $purchaseNew ? ($purchaseNew->stockLog ? substr($purchaseNew->stockLog->operate_time, 0, 10) : '') : '' ?></td>
-                <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
-                <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
+                <td class="stressColor"><?= $paymentNew ? $paymentNew->supplier->name : '' ?></td>
+                <td class="number"><?= $paymentNew ? $paymentNew->number : 0 ?></td>
+                <td><?= $paymentNew ? $paymentNew->inquiry->tax_rate : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $paymentNew ? $paymentNew->fixed_tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
+                <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentNew ? substr($paymentNew->created_at, 0, 10) : '' ?></td>
+                <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
+                <td><?= $paymentNew ? Html::a($paymentNew->agreement_sn, Url::to(['order-purchase/detail', 'id' => $paymentNew->order_agreement_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
 
