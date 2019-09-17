@@ -33,6 +33,7 @@ use Yii;
  * @property string $agreement_sn
  * @property string $purchase_date
  * @property string $is_stock
+ * @property string $delivery_time
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
@@ -77,7 +78,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
             , 'order_purchase_id', 'is_stock'], 'integer'],
-            [['updated_at', 'created_at', 'fixed_number'], 'safe'],
+            [['updated_at', 'created_at', 'fixed_number', 'delivery_time'], 'safe'],
             [['order_purchase_sn', 'goods_number', 'order_sn', 'serial'], 'string', 'max' => 255],
         ];
     }
@@ -103,6 +104,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
             'is_deleted'        => '是否删除：0未删除 1已删除',
             'updated_at'        => '更新时间',
             'created_at'        => '创建时间',
+            'delivery_time'     => '货期',
         ];
     }
 

@@ -33,6 +33,7 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $supplier_id
+ * @property string $delivery_time
  */
 class PaymentGoods extends \yii\db\ActiveRecord
 {
@@ -60,7 +61,8 @@ class PaymentGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_payment_id', 'order_purchase_id', 'goods_id', 'type', 'relevance_id', 'number',
                 'fixed_number', 'inquiry_admin_id', 'supplier_id'], 'integer'],
-            [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price', 'fixed_all_price', 'fixed_all_tax_price'], 'number'],
+            [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price',
+                'fixed_all_price', 'fixed_all_tax_price', 'delivery_time'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['order_payment_sn', 'order_purchase_sn', 'serial'], 'string', 'max' => 255],
         ];
@@ -97,6 +99,7 @@ class PaymentGoods extends \yii\db\ActiveRecord
             'updated_at'            => '更新时间',
             'created_at'            => '创建时间',
             'supplier_id'           => '供应商ID',
+            'delivery_time'         => '货期',
         ];
     }
 

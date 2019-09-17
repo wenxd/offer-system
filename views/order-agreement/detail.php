@@ -125,7 +125,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"><?=$item->all_price?></td>
                 <td class="all_tax_price"><?=$item->all_tax_price?></td>
-                <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                <td class="delivery_time"><?=$item->quote_delivery_time?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td class="oldNumber"><?=$item->number?></td>
@@ -303,6 +303,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     item.number             = $(element).parent().parent().find('.number').val();
                     item.type               = $(element).data('type');
                     item.relevance_id       = $(element).data('relevance_id');
+                    item.delivery_time      = $(element).parent().parent().find('.delivery_time').text();
                     goods_info.push(item);
                 }
             });

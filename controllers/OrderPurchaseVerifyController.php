@@ -84,6 +84,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $purchaseGoods->fixed_number     = $value['fix_number'];
                 $purchaseGoods->reason           = '';
                 $purchaseGoods->apply_status     = PurchaseGoods::APPLY_STATUS_CREATE;
+                $purchaseGoods->delivery_time    = $value['delivery_time'];
                 $purchaseGoods->save();
 
                 $paymentGoods->serial               = $purchaseGoods->serial;
@@ -102,6 +103,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->fixed_number         = $value['fix_number'];
                 $paymentGoods->inquiry_admin_id     = $params['admin_id'];
                 $paymentGoods->supplier_id          = $params['supplier_id'];
+                $paymentGoods->delivery_time        = $value['delivery_time'];
                 $paymentGoods->save();
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;

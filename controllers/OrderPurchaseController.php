@@ -140,6 +140,7 @@ class OrderPurchaseController extends BaseController
 
         $orderPurchase                     = new OrderPurchase();
         $orderPurchase->purchase_sn        = $params['purchase_sn'];
+        $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
         $orderPurchase->order_id           = $orderAgreement->order_id;
         $orderPurchase->order_agreement_id = $params['order_agreement_id'];
         $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
@@ -169,9 +170,9 @@ class OrderPurchaseController extends BaseController
                     $purchaseGoods->fixed_tax_price     = $agreementGoods->tax_price;
                     $purchaseGoods->fixed_number        = $item['number'];
                     $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
-
-                    //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
+                    $purchaseGoods->agreement_sn        = $orderAgreement->agreement_sn;
                     $purchaseGoods->purchase_date       = $params['end_date'];
+                    $purchaseGoods->delivery_time       = $item['delivery_time'];
                     $purchaseGoods->save();
                 }
             }

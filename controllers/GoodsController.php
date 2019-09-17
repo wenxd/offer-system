@@ -117,32 +117,12 @@ class GoodsController extends BaseController
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
-        //采购记录
-        $purchaseInquiry = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_INQUIRY])->all();
-        $price = 100000000;
-        $offerDay = 10000000;
-        $purchasePrice = '';
-        $purchaseDay = '';
-        foreach ($purchaseInquiry as $item) {
-            if ($item->inquiry->price < $price) {
-                $price = $item->inquiry->price;
-                $purchasePrice = $item;
-            }
-            if ($item->inquiry->delivery_time < $offerDay) {
-                $offerDay = $item->inquiry->delivery_time;
-                $purchaseDay = $item;
-            }
-        }
-        $purchaseStock = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_STOCK])->all();
-        foreach ($purchaseStock as $item) {
-            if ($item->stock->price < $price) {
-                $price = $item->stock->price;
-                $purchasePrice = $item;
-            }
-        }
-
-        //最新采购
+        //采购记录  最新采购
         $purchaseNew = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        //价格最低采购
+        $purchasePrice = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
+        //货期采购
+        $purchaseDay = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
 
         //竞争对手
         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
@@ -171,15 +151,17 @@ class GoodsController extends BaseController
 
         $data = [];
         $data['goods']            = $goods ? $goods : [];
+
+        $data['stock']            = $stockQuery;
+
         $data['inquiryPrice']     = $inquiryPriceQuery;
         $data['inquiryTime']      = $inquiryTimeQuery;
         $data['inquiryNew']       = $inquiryNewQuery;
         $data['inquiryBetter']    = $inquiryBetterQuery;
-        $data['stock']            = $stockQuery;
 
+        $data['purchaseNew']      = $purchaseNew;
         $data['purchasePrice']    = $purchasePrice;
         $data['purchaseDay']      = $purchaseDay;
-        $data['purchaseNew']      = $purchaseNew;
 
         $data['competitorGoods']  = $competitorGoods;
         $data['competitorGoods']  = $competitorGoods;

@@ -145,7 +145,7 @@ $i = 0;
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=$item->inquiry->supplier->short_name?></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
-                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -354,11 +354,12 @@ $i = 0;
                     item.goods_id          = $(element).val();
                     item.fix_price         = $(element).parent().parent().find('.price input').val();
                     item.fix_number        = $(element).parent().parent().find('.afterNumber input').val();
-                    goods_info.push(item);
-                    var delivery_time = parseFloat($(element).parent().parent().find('.delivery_time').text());
+                    var delivery_time = parseFloat($(element).parent().parent().find('.delivery_time input').val());
                     if (delivery_time > long_delivery_time) {
                         long_delivery_time = delivery_time;
                     }
+                    item.delivery_time     = delivery_time;
+                    goods_info.push(item);
                 }
             });
 

@@ -570,6 +570,7 @@ ALTER TABLE `purchase_goods` ADD COLUMN `fixed_number` int(11) NOT NULL DEFAULT 
 ALTER TABLE `purchase_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
 ALTER TABLE `purchase_goods` ADD COLUMN `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '驳回原因';
 ALTER TABLE `purchase_goods` ADD COLUMN `apply_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '审核状态 0无 1审核中 2审核通过 3被驳回';
+ALTER TABLE `purchase_goods` ADD COLUMN `delivery_time`decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 
 CREATE TABLE `order_payment` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT,
@@ -696,6 +697,7 @@ ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT 
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
+ALTER TABLE `payment_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 
 CREATE TABLE `temp_not_stock` (
   `id`           int(11)  NOT NULL AUTO_INCREMENT,
