@@ -122,4 +122,9 @@ class PaymentGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
+
+    public function getOrderPayment()
+    {
+        return $this->hasOne(OrderPayment::className(), ['id' => 'order_payment_id']);
+    }
 }

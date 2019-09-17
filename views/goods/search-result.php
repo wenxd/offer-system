@@ -199,8 +199,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
                 <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
                 <td><?= $paymentNew ? substr($paymentNew->created_at, 0, 10) : '' ?></td>
+                <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
                 <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
-                <td><?= $paymentNew ? Html::a($paymentNew->agreement_sn, Url::to(['order-purchase/detail', 'id' => $paymentNew->order_agreement_id])) : ''?></td>
+                <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
 
