@@ -34,6 +34,7 @@ use Yii;
  * @property string $payment_price
  * @property string $is_agreement
  * @property string $apply_reason
+ * @property string $agreement_at
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {

@@ -229,6 +229,7 @@ class OrderPurchaseVerifyController extends BaseController
     {
         $orderPayment = OrderPayment::findOne($id);
         $orderPayment->is_agreement = OrderPayment::IS_ADVANCECHARGE_YES;
+        $orderPayment->agreement_at = date('Y-m-d H:i:s');
         $orderPayment->save();
 
         return $this->redirect(['index']);
