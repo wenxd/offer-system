@@ -106,8 +106,11 @@ class GoodsController extends BaseController
         }
         $goods_id = $goods->id;
 
-        //价格最优
-        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
+        //库存记录
+        $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
+
+        //询价记录 价格最优
+        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('tax_price asc')->one();
         //同期最短(货期)
         $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
         //最新报价
@@ -115,15 +118,19 @@ class GoodsController extends BaseController
         //优选记录
         $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES])->orderBy('updated_at Desc')->one();
 
-        //库存记录
-        $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
-
         //采购记录  最新采购
         $paymentNew = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //价格最低采购
-        $purchasePrice = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
+        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_tax_price asc')->one();
         //货期采购
-        $purchaseDay = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
+        $paymentDay = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
+
+        //收入记录 最新
+        $agreementGoodsNew  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        //最高价
+        $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price Desc')->one();
+        //最低价
+        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price asc')->one();
 
         //竞争对手
         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
@@ -160,18 +167,19 @@ class GoodsController extends BaseController
         $data['inquiryNew']       = $inquiryNewQuery;
         $data['inquiryBetter']    = $inquiryBetterQuery;
 
-        $data['paymentNew']      = $paymentNew;
-        $data['purchasePrice']    = $purchasePrice;
-        $data['purchaseDay']      = $purchaseDay;
+        $data['paymentNew']       = $paymentNew;
+        $data['paymentPrice']     = $paymentPrice;
+        $data['paymentDay']       = $paymentDay;
 
         $data['competitorGoods']  = $competitorGoods;
         $data['competitorGoods']  = $competitorGoods;
 
         $data['average']          = $average;
 
-        //增加零件的收入记录
-        $agreementGoods = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->limit(3)->all();
-        $data['agreementGoods'] = $agreementGoods;
+
+        $data['agreementGoodsNew']  = $agreementGoodsNew;
+        $data['agreementGoodsHigh'] = $agreementGoodsHigh;
+        $data['agreementGoodsLow']  = $agreementGoodsLow;
 
         //所有用户
         $adminList = Admin::find()->indexBy('id')->all();

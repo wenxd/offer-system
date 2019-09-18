@@ -151,6 +151,7 @@ class OrderQuoteController extends Controller
         $orderQuote->admin_id       = $params['admin_id'];
         $orderQuote->quote_ratio    = $params['quote_ratio'];
         $orderQuote->delivery_ratio = $params['delivery_ratio'];
+        $orderQuote->customer_id    = $orderFinal->customer_id;
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;

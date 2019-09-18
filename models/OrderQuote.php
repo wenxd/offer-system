@@ -23,6 +23,7 @@ use Yii;
  * @property string $quote_only_one 报价状态
  * @property string $is_send 报价状态
  * @property string $order_final_id
+ * @property string $customer_id
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
@@ -56,7 +57,7 @@ class OrderQuote extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one'], 'integer'],
-            [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio'], 'safe'],
+            [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio', 'customer_id'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string'],
         ];
@@ -84,6 +85,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             'quote_at'       => '报价时间',
             'quote_only_one' => '是否唯一',
             'is_send'        => '是否发送',
+            'customer_id'    => '客户ID',
         ];
     }
 

@@ -198,38 +198,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
                 <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
                 <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td></td>
+                <td><?=$paymentNew ? number_format((strtotime($paymentNew->orderPayment->agreement_at) - strtotime($paymentNew->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
                 <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
                 <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
                 <td><?=$paymentNew ? $paymentNew->number * $paymentNew->fixed_tax_price : 0 ?></td>
             </tr>
             <tr class="inquiry_list">
                 <td>价格</td>
-                <td class="stressColor"><?= $paymentNew ? $paymentNew->supplier->name : '' ?></td>
-                <td class="number"><?= $paymentNew ? $paymentNew->number : 0 ?></td>
-                <td><?= $paymentNew ? $paymentNew->tax_rate : 0 ?></td>
-                <td class="tax_price"><b class="color"><?= $paymentNew ? $paymentNew->fixed_tax_price : 0 ?></b></td>
-                <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
-                <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
-                <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td></td>
-                <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
-                <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
-                <td><?=$paymentNew ? $paymentNew->number * $paymentNew->fixed_tax_price : 0 ?></td>
+                <td class="stressColor"><?= $paymentPrice ? $paymentPrice->supplier->name : '' ?></td>
+                <td class="number"><?= $paymentPrice ? $paymentPrice->number : 0 ?></td>
+                <td><?= $paymentPrice ? $paymentPrice->tax_rate : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $paymentPrice ? $paymentPrice->fixed_tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $paymentPrice ? $paymentPrice->delivery_time : 0 ?></b></td>
+                <td><?= $paymentPrice ? (isset($adminList[$paymentPrice->inquiry_admin_id]) ? $adminList[$paymentPrice->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentPrice ? ($paymentPrice->orderPayment ?  substr($paymentPrice->orderPayment->stock_at, 0, 10): '') : '' ?></td>
+                <td><?=$paymentPrice ? number_format((strtotime($paymentPrice->orderPayment->agreement_at) - strtotime($paymentPrice->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
+                <td><?= $paymentPrice ? Html::a($paymentPrice->order->order_sn, Url::to(['order/detail', 'id' => $paymentPrice->order_id])) : ''?></td>
+                <td><?= $paymentPrice ? Html::a($paymentPrice->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentPrice->order_payment_id])) : ''?></td>
+                <td><?=$paymentPrice ? $paymentPrice->number * $paymentPrice->fixed_tax_price : 0 ?></td>
             </tr>
             <tr class="inquiry_list">
                 <td>货期</td>
-                <td class="stressColor"><?= $paymentNew ? $paymentNew->supplier->name : '' ?></td>
-                <td class="number"><?= $paymentNew ? $paymentNew->number : 0 ?></td>
-                <td><?= $paymentNew ? $paymentNew->tax_rate : 0 ?></td>
-                <td class="tax_price"><b class="color"><?= $paymentNew ? $paymentNew->fixed_tax_price : 0 ?></b></td>
-                <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
-                <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
-                <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td></td>
-                <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
-                <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
-                <td><?=$paymentNew ? $paymentNew->number * $paymentNew->fixed_tax_price : 0 ?></td>
+                <td class="stressColor"><?= $paymentDay ? $paymentDay->supplier->name : '' ?></td>
+                <td class="number"><?= $paymentDay ? $paymentDay->number : 0 ?></td>
+                <td><?= $paymentDay ? $paymentDay->tax_rate : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $paymentDay ? $paymentDay->fixed_tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $paymentDay ? $paymentDay->delivery_time : 0 ?></b></td>
+                <td><?= $paymentDay ? (isset($adminList[$paymentDay->inquiry_admin_id]) ? $adminList[$paymentDay->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->stock_at, 0, 10): '') : '' ?></td>
+                <td><?= $paymentDay ? number_format((strtotime($paymentDay->orderPayment->agreement_at) - strtotime($paymentDay->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
+                <td><?= $paymentDay ? Html::a($paymentDay->order->order_sn, Url::to(['order/detail', 'id' => $paymentDay->order_id])) : ''?></td>
+                <td><?= $paymentDay ? Html::a($paymentDay->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentDay->order_payment_id])) : ''?></td>
+                <td><?= $paymentDay ? $paymentDay->number * $paymentDay->fixed_tax_price : 0 ?></td>
             </tr>
             </thead>
 
@@ -238,33 +238,26 @@ $this->params['breadcrumbs'][] = $this->title;
             <thead>
             <tr>
                 <th rowspan="4">收入记录</th>
-                <th>厂家号</th>
-                <th>单位</th>
-                <th>供应商</th>
+                <th>类型</th>
+                <th>客户名称</th>
+                <th>数量</th>
                 <th>税率</th>
-                <th>报价未税单价</th>
-                <th>报价含税单价</th>
-                <th>报价未税总价</th>
-                <th>报价含税总价</th>
-                <th>卖出数量</th>
-                <th>收入合同单号</th>
+                <th>含税单价</th>
+                <th>货期</th>
+                <th>合同签订日期</th>
                 <th>订单号</th>
+                <th>收入合同单号</th>
             </tr>
-            <?php foreach ($agreementGoods as $key => $agreementGood):?>
-                <tr class="agreement_list">
-                    <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                    <td><?= $goods ? $goods->unit : '' ?></td>
-                    <td class="stressColor"><?= $agreementGood ? $agreementGood->inquiry->supplier->name : '' ?></td>
-                    <td><?= $agreementGood->tax_rate?></td>
-                    <td class="price"><?=$agreementGood->quote_price?></td></td>
-                    <td class="tax_price"><b class="color"><?=$agreementGood->quote_tax_price?></b></td>
-                    <td><?=$agreementGood->quote_all_price?></td>
-                    <td><?=$agreementGood->quote_all_tax_price?></td>
-                    <td class="number"><?= $agreementGood ? $agreementGood->number : 0 ?></td>
-                    <td><?=Html::a($agreementGood->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGood->order_agreement_id]))?></td>
-                    <td><?=Html::a($agreementGood->order->order_sn, Url::to(['order/detail', 'id' => $agreementGood->order_id]))?></td>
-                </tr>
-            <?php endforeach;?>
+            <tr>
+                <td>最新</td>
+                <td><?=$agreementGoodsNew ? ?></td>
+            </tr>
+            <tr>
+                <td>最高价</td>
+            </tr>
+            <tr>
+                <td>最低价</td>
+            </tr>
             </thead>
         </table>
         <table id="example2" class="table table-bordered table-hover">
