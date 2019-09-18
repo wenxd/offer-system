@@ -250,42 +250,85 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             <tr>
                 <td>最新</td>
-                <td><?=$agreementGoodsNew ? ?></td>
+                <td><?=$agreementGoodsNew ? (isset($agreementGoodsNew->orderAgreement->customer) ? $agreementGoodsNew->orderAgreement->customer->name : '') : ''?></td>
+                <td><?=$agreementGoodsNew ? $agreementGoodsNew->number : 0 ?></td>
+                <td><?=$agreementGoodsNew ? $agreementGoodsNew->tax_rate : 0 ?></td>
+                <td><?=$agreementGoodsNew ? $agreementGoodsNew->tax_price : 0 ?></td>
+                <td><?=$agreementGoodsNew ? $agreementGoodsNew->quote_delivery_time : 0 ?></td>
+                <td><?=$agreementGoodsNew ? substr($agreementGoodsNew->orderAgreement->sign_date, 0, 10) : 0 ?></td>
+                <td><?=$agreementGoodsNew ? Html::a($agreementGoodsNew->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsNew->order_id])) : ''?></td>
+                <td><?=$agreementGoodsNew ? Html::a($agreementGoodsNew->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsNew->order_agreement_id])) : '' ?></td>
             </tr>
             <tr>
                 <td>最高价</td>
+                <td><?=$agreementGoodsHigh ? (isset($agreementGoodsHigh->orderAgreement->customer) ? $agreementGoodsHigh->orderAgreement->customer->name : '') : ''?></td>
+                <td><?=$agreementGoodsHigh ? $agreementGoodsHigh->number : 0 ?></td>
+                <td><?=$agreementGoodsHigh ? $agreementGoodsHigh->tax_rate : 0 ?></td>
+                <td><?=$agreementGoodsHigh ? $agreementGoodsHigh->tax_price : 0 ?></td>
+                <td><?=$agreementGoodsHigh ? $agreementGoodsHigh->quote_delivery_time : 0 ?></td>
+                <td><?=$agreementGoodsHigh ? substr($agreementGoodsHigh->orderAgreement->sign_date, 0, 10) : 0 ?></td>
+                <td><?=$agreementGoodsHigh ? Html::a($agreementGoodsHigh->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsHigh->order_id])) : ''?></td>
+                <td><?=$agreementGoodsHigh ? Html::a($agreementGoodsHigh->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsHigh->order_agreement_id])) : '' ?></td>
             </tr>
             <tr>
                 <td>最低价</td>
+                <td><?=$agreementGoodsLow ? (isset($agreementGoodsLow->orderAgreement->customer) ? $agreementGoodsLow->orderAgreement->customer->name : '') : ''?></td>
+                <td><?=$agreementGoodsLow ? $agreementGoodsLow->number : 0 ?></td>
+                <td><?=$agreementGoodsLow ? $agreementGoodsLow->tax_rate : 0 ?></td>
+                <td><?=$agreementGoodsLow ? $agreementGoodsLow->tax_price : 0 ?></td>
+                <td><?=$agreementGoodsLow ? $agreementGoodsLow->quote_delivery_time : 0 ?></td>
+                <td><?=$agreementGoodsLow ? substr($agreementGoodsLow->orderAgreement->sign_date, 0, 10) : 0 ?></td>
+                <td><?=$agreementGoodsLow ? Html::a($agreementGoodsLow->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsLow->order_id])) : ''?></td>
+                <td><?=$agreementGoodsLow ? Html::a($agreementGoodsLow->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsLow->order_agreement_id])) : '' ?></td>
             </tr>
             </thead>
         </table>
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="2"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
+                <th rowspan="4"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
-                <th>厂家号</th>
                 <th>竞争对手</th>
                 <th>针对客户</th>
+                <th>数量</th>
                 <th>税率</th>
-                <th>未税单价</th>
                 <th>含税单价</th>
                 <th>货期</th>
                 <th>报价时间</th>
                 <th>备注</th>
             </tr>
             <tr>
-                <td>对手记录</td>
-                <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
-                <td><?=($competitorGoods && $competitorGoods->customer) ? $competitorGoods->customers->name : ''?></td>
-                <td><?=$competitorGoods ? $competitorGoods->tax_rate : ''?></td>
-                <td><?=$competitorGoods ? $competitorGoods->price : ''?></td>
-                <td><?=$competitorGoods ? $competitorGoods->tax_price : ''?></td>
-                <td></td>
-                <td><?=$competitorGoods ? substr($competitorGoods->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoods ? $competitorGoods->remark : ''?></td>
+                <td>最新</td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->competitor->name : ''?></td>
+                <td><?=($competitorGoodsNew && $competitorGoodsNew->customer) ? $competitorGoodsNew->customers->name : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->number : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_rate : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
+                <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
+            </tr>
+            <tr>
+                <td>最高价</td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->competitor->name : ''?></td>
+                <td><?=($competitorGoodsNew && $competitorGoodsNew->customer) ? $competitorGoodsNew->customers->name : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->number : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_rate : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
+                <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
+            </tr>
+            <tr>
+                <td>最低价</td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->competitor->name : ''?></td>
+                <td><?=($competitorGoodsNew && $competitorGoodsNew->customer) ? $competitorGoodsNew->customers->name : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->number : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_rate : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
+                <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
             </tr>
             </thead>
         </table>

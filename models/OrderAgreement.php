@@ -135,4 +135,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
 }

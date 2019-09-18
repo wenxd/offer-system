@@ -132,30 +132,12 @@ class GoodsController extends BaseController
         //最低价
         $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price asc')->one();
 
-        //竞争对手
-        $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
-
-
-        //最后三条入库的
-
-        $stockLog = StockLog::find()->where(['type' => StockLog::TYPE_IN, 'goods_id' => $goods_id])
-            ->orderBy('operate_time Desc')->limit(3)->all();
-        $order_ids = ArrayHelper::getColumn($stockLog, 'order_id');
-        $order_payment_ids = ArrayHelper::getColumn($stockLog, 'order_payment_id');
-
-        $purchaseGoods = PaymentGoods::find()->where(['order_id' => $order_ids, 'order_payment_id' => $order_payment_ids, 'goods_id' => $goods_id])->all();
-
-        $inquiry_ids = [];
-        $stock_ids   = [];
-        foreach ($purchaseGoods as $key => $item) {
-            if ($item->type) {
-                $stock_ids[] = $item->relevance_id;
-            } else {
-                $inquiry_ids[] = $item->relevance_id;
-            }
-        }
-
-        $average = Inquiry::find()->where(['id' => $inquiry_ids])->average('price');
+        //竞争对手 最新
+        $competitorGoodsNew  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
+        //最高价
+        $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price Desc')->one();
+        //最低价
+        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price asc')->one();
 
         $data = [];
         $data['goods']            = $goods ? $goods : [];
@@ -171,15 +153,13 @@ class GoodsController extends BaseController
         $data['paymentPrice']     = $paymentPrice;
         $data['paymentDay']       = $paymentDay;
 
-        $data['competitorGoods']  = $competitorGoods;
-        $data['competitorGoods']  = $competitorGoods;
-
-        $data['average']          = $average;
-
-
         $data['agreementGoodsNew']  = $agreementGoodsNew;
         $data['agreementGoodsHigh'] = $agreementGoodsHigh;
         $data['agreementGoodsLow']  = $agreementGoodsLow;
+
+        $data['competitorGoodsNew']  = $competitorGoodsNew;
+        $data['competitorGoodsHigh'] = $competitorGoodsHigh;
+        $data['competitorGoodsLow']  = $competitorGoodsLow;
 
         //所有用户
         $adminList = Admin::find()->indexBy('id')->all();
