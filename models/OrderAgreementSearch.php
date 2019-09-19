@@ -23,8 +23,9 @@ class OrderAgreementSearch extends OrderAgreement
         return [
             [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
-                'customer_name', 'sign_date'], 'safe'],
+                'customer_name', 'sign_date', 'stock_at'], 'safe'],
             [['id', 'order_quote_sn', 'order_sn', 'customer_name'], 'trim'],
+            [['payment_price'], 'number'],
         ];
     }
 
@@ -76,6 +77,7 @@ class OrderAgreementSearch extends OrderAgreement
             'order_agreement.order_quote_sn' => $this->order_quote_sn,
             'order_agreement.is_agreement'   => $this->is_agreement,
             'order_agreement.admin_id'       => $this->admin_id,
+            'order_agreement.payment_price'  => $this->payment_price,
         ]);
 
         if ($this->order_sn || $this->customer_name) {
@@ -115,6 +117,13 @@ class OrderAgreementSearch extends OrderAgreement
             $sign_date_start .= ' 00:00:00';
             $sign_date_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'order_agreement.agreement_date', $sign_date_start, $sign_date_end]);
+        }
+
+        if ($this->stock_at && strpos($this->stock_at, ' - ')) {
+            list($stock_at_start, $stock_at_end) = explode(' - ', $this->stock_at);
+            $stock_at_start .= ' 00:00:00';
+            $stock_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_agreement.stock_at', $stock_at_start, $stock_at_end]);
         }
 
         return $dataProvider;

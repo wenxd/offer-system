@@ -128,7 +128,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'is_instock'        => '是否入库',
             'customer_id'       => '客户ID',
             'payment_ratio'     => '预收款比例',
-            'payment_price'     => '收入合同价格',
+            'payment_price'     => '收入合同金额',
             'remain_price'      => '收入订单剩余金额',
         ];
     }

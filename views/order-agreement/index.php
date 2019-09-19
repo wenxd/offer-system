@@ -40,6 +40,7 @@ $userId   = Yii::$app->user->identity->id;
                     return Html::a($model->agreement_sn, Url::to(['view', 'id' => $model->id]));
                 }
             ],
+            'payment_price',
             [
                 'attribute' => 'order_sn',
                 'visible'   => !in_array($userId, $adminIds),
@@ -54,15 +55,16 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'order_quote_sn',
-                'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_quote_sn, Url::to(['order-quote/detail', 'id' => $model->order_quote_id]));
+                'attribute' => 'sign_date',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderAgreementSearch[sign_date]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['sign_date'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->sign_date, 0, 10);
                 }
             ],
-            //'goods_info',
-            //'agreement_date',
-            //'is_quote',
             [
                 'attribute' => 'agreement_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -75,14 +77,15 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'sign_date',
+                'attribute' => 'stock_at',
+                'label'     => '合同实际交货日期',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderAgreementSearch[sign_date]',
-                    'value' => Yii::$app->request->get('OrderAgreementSearch')['sign_date'],
+                    'name' => 'OrderAgreementSearch[stock_at]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['stock_at'],
                 ]),
                 'value'     => function($model){
-                    return substr($model->sign_date, 0, 10);
+                    return substr($model->stock_at, 0, 10);
                 }
             ],
             [
@@ -94,16 +97,6 @@ $userId   = Yii::$app->user->identity->id;
                         return $model->order->customer->name;
                     } else {
                         return '';
-                    }
-                }
-            ],
-            [
-                'attribute' => 'admin_id',
-                'label'     => '采购员',
-                'filter'    => $admins,
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->admin) {
-                        return $model->admin->username;
                     }
                 }
             ],
