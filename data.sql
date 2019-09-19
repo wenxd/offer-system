@@ -637,6 +637,7 @@ ALTER TABLE `order_payment` ADD COLUMN `take_time`      datetime  COMMENT '收�
 ALTER TABLE `order_payment` ADD COLUMN `is_agreement`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
 ALTER TABLE `order_payment` ADD COLUMN `apply_reason`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购申请支出备注';
 ALTER TABLE `order_payment` ADD COLUMN `agreement_at`   datetime  COMMENT '生成支出合同的时间 支出合同签订时间';
+ALTER TABLE `order_payment` ADD COLUMN `delivery_date`  datetime  COMMENT '支出合同交货时间';
 
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 

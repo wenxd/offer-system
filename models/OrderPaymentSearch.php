@@ -21,7 +21,9 @@ class OrderPaymentSearch extends OrderPayment
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
                 'is_advancecharge', 'is_bill'], 'integer'],
-            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'agreement_at'], 'safe'],
+            [['payment_price'], 'number'],
+            [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
+                'agreement_at'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
             [['order_sn'], 'trim'],
@@ -97,6 +99,13 @@ class OrderPaymentSearch extends OrderPayment
             $agreement_at_start .= ' 00:00:00';
             $agreement_at_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'order_payment.agreement_at', $agreement_at_start, $agreement_at_end]);
+        }
+
+        if ($this->take_time && strpos($this->take_time, ' - ')) {
+            list($take_time_start, $take_time_end) = explode(' - ', $this->take_time);
+            $take_time_start .= ' 00:00:00';
+            $take_time_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_payment.take_time', $take_time_start, $take_time_end]);
         }
 
         return $dataProvider;

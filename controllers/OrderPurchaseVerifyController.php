@@ -66,6 +66,7 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->take_time            = date('Y-m-d H:i:s', (time() + $params['long_delivery_time'] * 7 * 3600 * 24));
         $orderPayment->apply_reason         = trim($params['apply_reason']);
         $orderPayment->agreement_at         = $params['agreement_date'];
+        $orderPayment->delivery_date        = $params['delivery_date'];
         if ($orderPayment->save()) {
             $noticeOpen = false;
             //payment_goods保存

@@ -35,6 +35,7 @@ use Yii;
  * @property string $is_agreement
  * @property string $apply_reason
  * @property string $agreement_at
+ * @property string $delivery_date
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -120,7 +121,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
                 'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
-                'payment_ratio', 'payment_price', 'remain_price'], 'safe'],
+                'payment_ratio', 'payment_price', 'remain_price', 'delivery_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -154,12 +155,13 @@ class OrderPayment extends \yii\db\ActiveRecord
             'bill_at'           => '收到发票时间',
             'financial_remark'  => '财务备注',
             'payment_ratio'     => '预付款比例',
-            'payment_price'     => '总金额',
+            'payment_price'     => '合同金额',
             'remain_price'      => '待付款金额',
             'take_time'         => '合同尾款付款时间',
             'is_agreement'      => '是否生成合同',
             'apply_reason'      => '采购审核支出备注',
             'agreement_at'      => '支出合同签订时间',
+            'delivery_date'     => '支出合同交货时间',
         ];
     }
 

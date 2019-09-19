@@ -29,6 +29,8 @@ $userId = Yii::$app->user->identity->id;
 
 //显示按钮开关
 $i = 0;
+
+$model->delivery_date = date('Y-m-d');
 ?>
 
 <div class="box table-responsive">
@@ -196,6 +198,17 @@ $i = 0;
                 'minView'   => 2,  //最小选择范围（年）
             ]
         ])->label('支出合同签订时间');?>
+
+        <?= $form->field($model, 'delivery_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ])->label('合同交货时间');?>
 
         <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
 
@@ -375,6 +388,8 @@ $i = 0;
             var supplier_id       = $('#orderpurchase-supplier_id option:selected').val();
             var apply_reason      = $('#orderpurchase-apply_reason').val();
             var agreement_date    = $('#orderpurchase-agreement_date').val();
+            //合同交货日期
+            var delivery_date     = $('#orderpurchase-delivery_date').val();
 
             //创建支出合同
             $.ajax({
@@ -382,7 +397,7 @@ $i = 0;
                 url:'?r=order-purchase-verify/save-order',
                 data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
                     goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
-                    apply_reason:apply_reason, agreement_date:agreement_date},
+                    apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
