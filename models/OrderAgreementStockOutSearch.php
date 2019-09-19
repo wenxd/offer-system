@@ -46,7 +46,7 @@ class OrderAgreementStockOutSearch extends OrderAgreement
      */
     public function search($params)
     {
-        $query = OrderAgreement::find()->where(['order_agreement.is_instock' => self::IS_INSTOCK_YES]);
+        $query = OrderAgreement::find();
 
         // add conditions that should always apply here
 
