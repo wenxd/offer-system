@@ -75,7 +75,7 @@ if (!$model->payment_ratio) {
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=$item->orderAgreement->customer->name?></td>
+                    <td><?=isset($item->orderAgreement) ? (isset($item->orderAgreement->customer) ? $item->orderAgreement->customer->name : '') : ''?></td>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->quote_price?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
