@@ -282,7 +282,7 @@ class OrderQuoteController extends Controller
                 $quote->quote_only_one = 0;
                 $quote->save();
             }
-
+            $money = 0;
             foreach ($params['goods_info'] as $item) {
                 $quoteGoods = QuoteGoods::findOne($item['quote_goods_id']);
                 $agreementGoods = new AgreementGoods();
@@ -309,7 +309,13 @@ class OrderQuoteController extends Controller
                 $agreementGoods->number              = $item['number'];
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->save();
+
+                $money += $agreementGoods->quote_all_tax_price;
             }
+
+            $orderAgreement->payment_price = $money;
+            $orderAgreement->remain_price  = $money;
+            $orderAgreement->save();
 
             //改变生成了收入合同的成本单
             $orderFinal = OrderFinal::findOne($orderQuote->order_final_id);
