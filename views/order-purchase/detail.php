@@ -374,6 +374,7 @@ $i = 0;
             var payment_sn   = $('#orderpurchase-payment_sn').val();
             var supplier_id  = $('#orderpurchase-supplier_id option:selected').val();
             var apply_reason = $('#orderpurchase-apply_reason').val();
+            var agreement_at = $('#orderpurchase-agreement_at').val();
 
             //创建支出合同
             $.ajax({

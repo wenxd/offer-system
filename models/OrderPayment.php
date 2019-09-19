@@ -159,6 +159,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'take_time'         => '合同尾款付款时间',
             'is_agreement'      => '是否生成合同',
             'apply_reason'      => '采购审核支出备注',
+            'agreement_at'      => '支出合同签订时间',
         ];
     }
 

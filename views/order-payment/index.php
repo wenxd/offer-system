@@ -1,5 +1,6 @@
 <?php
 
+use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -41,6 +42,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'order_purchase_sn',
+            [
+                'attribute' => 'agreement_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderPaymentSearch[agreement_at]',
+                    'value' => Yii::$app->request->get('OrderPaymentSearch')['agreement_at'],
+                ]),
+                'value'     => function ($model, $key, $index, $column) {
+                    return substr($model->agreement_at, 0, 10);
+                }
+            ],
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
