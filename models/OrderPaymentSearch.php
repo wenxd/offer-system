@@ -20,7 +20,7 @@ class OrderPaymentSearch extends OrderPayment
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill'], 'integer'],
+                'is_advancecharge', 'is_bill', 'supplier_id'], 'integer'],
             [['payment_price'], 'number'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'agreement_at'], 'safe'],
@@ -83,6 +83,7 @@ class OrderPaymentSearch extends OrderPayment
             'order_payment.admin_id'          => $this->admin_id,
             'order_payment.updated_at'        => $this->updated_at,
             'order_payment.created_at'        => $this->created_at,
+            'order_payment.supplier_id'       => $this->supplier_id,
         ]);
 
         if ($this->order_sn) {

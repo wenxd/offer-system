@@ -36,6 +36,7 @@ use Yii;
  * @property string $apply_reason
  * @property string $agreement_at
  * @property string $delivery_date
+ * @property string $supplier_id
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -119,7 +120,7 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement'], 'integer'],
+                'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement', 'supplier_id'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'payment_ratio', 'payment_price', 'remain_price', 'delivery_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
@@ -162,6 +163,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'apply_reason'      => '采购审核支出备注',
             'agreement_at'      => '支出合同签订时间',
             'delivery_date'     => '支出合同交货时间',
+            'supplier_id'       => '供应商',
         ];
     }
 
@@ -173,5 +175,15 @@ class OrderPayment extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
 }

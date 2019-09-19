@@ -1,8 +1,10 @@
 <?php
 
+use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
@@ -11,6 +13,15 @@ use yii\widgets\Pjax;
 
 $this->title = '支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '询价员', '系统管理员']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminList = \app\models\Admin::find()->where(['id' => $adminIds])->all();
+$admins = [];
+foreach ($adminList as $key => $value) {
+    $admins[$value->id] = $value->username;
+}
+
 ?>
 <div class="box table-responsive">
 
@@ -74,6 +85,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
                     return substr($model->stock_at, 0, 10);
+                }
+            ],
+            [
+                'attribute'  => 'supplier_id',
+                'filter'     => \app\models\Customer::getAllDropDown(),
+                'filterType' => GridView::FILTER_SELECT2,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'admin_id',
+                'label'     => '采购员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
                 }
             ],
             [
