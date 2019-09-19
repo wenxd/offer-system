@@ -39,16 +39,10 @@ $userId   = Yii::$app->user->identity->id;
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>单位</th>
-                <th>技术备注</th>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
+                <th>货期</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>未税单价</th>
                 <th>含税单价</th>
-                <th>未税总价</th>
                 <th>含税总价</th>
                 <th>数量</th>
             </tr>
@@ -68,22 +62,18 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
+                    <td><?=$item->quote_delivery_time?></td>
                     <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td class="price"><?=$item->quote_price?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
-                    <td class="all_price"><?=$item->quote_all_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->number?></td>
                 </tr>
             <?php endforeach;?>
             </tbody>
         </table>
+
+        <?= $form->field($model, 'payment_price')->textInput(['readonly' => true])->label('收入合同单含税总价') ?>
 
         <?= $form->field($model, 'agreement_sn')->textInput(['readonly' => true]) ?>
 
