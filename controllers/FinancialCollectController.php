@@ -48,70 +48,84 @@ class FinancialCollectController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /**保存备注
+     * @return false|string
+     */
     public function actionAddRemark()
     {
         $params = Yii::$app->request->post();
 
-        $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->financial_remark = $params['remark'];
+        $orderAgreement = OrderAgreement::findOne($params['id']);
+        $orderAgreement->financial_remark = $params['remark'];
 
-        if ($orderPayment->save()) {
+        if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
         }
     }
 
+    /**预收款
+     * @return false|string
+     */
     public function actionChangeAdvance()
     {
         $params = Yii::$app->request->post();
 
-        $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
-        $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
-        if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_bill) {
-            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        $orderAgreement = OrderAgreement::findOne($params['id']);
+        $orderAgreement->payment_ratio    = $params['payment_ratio'];
+        $orderAgreement->remain_price     = (100 - $params['payment_ratio'])/100 * $orderAgreement->payment_price ;
+        $orderAgreement->is_advancecharge = $orderAgreement::IS_ADVANCECHARGE_YES;
+        $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
+        if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
+            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
         }
-        if ($orderPayment->save()) {
+        if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
     }
 
+    /**收全款
+     * @return false|string
+     */
     public function actionChangePayment()
     {
         $params = Yii::$app->request->post();
 
-        $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->is_payment = OrderPayment::IS_PAYMENT_YES;
-        $orderPayment->payment_at = date('Y-m-d H:i:s');
-        if ($orderPayment->is_stock && $orderPayment->is_advancecharge && $orderPayment->is_bill) {
-            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        $orderAgreement = OrderAgreement::findOne($params['id']);
+        $orderAgreement->is_payment = OrderPayment::IS_PAYMENT_YES;
+        $orderAgreement->payment_at = date('Y-m-d H:i:s');
+        if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
+            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
         }
 
-        if ($orderPayment->save()) {
+        if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
     }
 
+    /**开发票
+     * @return false|string
+     */
     public function actionChangeBill()
     {
         $params = Yii::$app->request->post();
 
-        $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->is_bill = OrderPayment::IS_BILL_YES;
-        $orderPayment->bill_at = date('Y-m-d H:i:s');
-        if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_advancecharge) {
-            $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+        $orderAgreement = OrderAgreement::findOne($params['id']);
+        $orderAgreement->is_bill = OrderPayment::IS_BILL_YES;
+        $orderAgreement->bill_at = date('Y-m-d H:i:s');
+        if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
+            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
         }
 
-        if ($orderPayment->save()) {
+        if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use app\models\SystemConfig;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -21,6 +22,14 @@ $userId   = Yii::$app->user->identity->id;
 
 $isShow = in_array($userId, $adminIds);
 
+$payment_ratio = SystemConfig::find()->select('value')->where([
+    'title' => SystemConfig::TITLE_PAYMENT_RATIO
+])->scalar();
+
+if (!$model->payment_ratio) {
+    $model->payment_ratio = $payment_ratio;
+}
+
 ?>
 
 <div class="box table-responsive">
@@ -40,7 +49,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>加工</th>
                 <th>特制</th>
                 <th>铭牌</th>
-                <th>供应商</th>
+                <th>客户</th>
                 <th>税率</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
@@ -66,11 +75,11 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=Goods::$process[$item->goods->is_process]?></td>
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=$item->inquiry->supplier->name?></td>
-                    <td><?=$item->inquiry->delivery_time?></td>
+                    <td><?=$item->orderAgreement->customer->name?></td>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->quote_price?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
+                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                     <td class="all_price"><?=$item->quote_all_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <?php endif;?>
@@ -78,20 +87,42 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                 </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="12" rowspan="2">汇总统计</td>
+                <td>合计</td>
+                <td>合计</td>
+                <td>最长货期</td>
+                <td>合计</td>
+                <td>合计</td>
+                <td colspan="2" rowspan="2"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="sta_price"></td>
+                <td class="sta_tax_price"></td>
+                <td class="mostLongTime"></td>
+                <td class="sta_all_price"></td>
+                <td class="sta_all_tax_price"></td>
+            </tr>
             </tbody>
         </table>
+
         <?= $form->field($model, 'financial_remark')->textInput(['maxlength' => true]) ?>
+
         <div class="customer-view">
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    'advancecharge_at',
                     'stock_at',
+                    'payment_ratio',
+                    'advancecharge_at',
                     'payment_at',
                     'bill_at',
                 ],
             ]) ?>
         </div>
+        <?php if(!$model->is_advancecharge):?>
+            <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true]) ?>
+        <?php endif;?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存备注', [
@@ -124,9 +155,54 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var id = $('.data').data('order_payment_id');
+        init();
+
+        function init() {
+
+            var sta_price           = 0;
+            var sta_tax_price       = 0;
+            var mostLongTime        = 0;
+            var sta_all_price       = 0;
+            var sta_all_tax_price   = 0;
+
+            $('.order_final_list').each(function (i, e) {
+                var delivery_time   = parseFloat($(e).find('.delivery_time').text());
+                if (delivery_time > mostLongTime) {
+                    mostLongTime = delivery_time;
+                }
+
+                var price       = $(e).find('.price').text();
+                if (price) {
+                    sta_price += parseFloat(price);
+                }
+
+                var tax_price   = $(e).find('.tax_price').text();
+                if (tax_price) {
+                    sta_tax_price      += parseFloat(tax_price);
+                }
+
+
+                var all_price   = $(e).find('.all_price').text();
+                if (all_price) {
+                    sta_all_price      += parseFloat(all_price);
+                }
+
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+                if (all_tax_price) {
+                    sta_all_tax_price      += parseFloat(all_tax_price);
+                }
+            });
+
+            $('.mostLongTime').text(mostLongTime);
+            $('.sta_price').text(sta_price.toFixed(2));
+            $('.sta_tax_price').text(sta_tax_price.toFixed(2));
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        }
+
+        var id = $('.data').data('order_agreement_id');
         $('.save_remark').click(function (e) {
-            var remark = $('#orderpayment-financial_remark').val();
+            var remark = $('#orderagreement-financial_remark').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/add-remark',
@@ -145,10 +221,11 @@ $isShow = in_array($userId, $adminIds);
         });
 
         $('.save_advance').click(function (e) {
+            var payment_ratio = $('#orderagreement-payment_ratio').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-advance',
-                data:{id:id},
+                data:{id:id, payment_ratio:payment_ratio},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

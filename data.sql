@@ -658,6 +658,10 @@ ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL
 ALTER TABLE `order_agreement` ADD COLUMN `sign_date`         datetime  COMMENT '合同签订时间';
 ALTER TABLE `order_agreement` ADD COLUMN `is_instock`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 ALTER TABLE `order_agreement` ADD COLUMN `customer_id`       int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单总金额';
+ALTER TABLE `order_agreement` ADD COLUMN `remain_price`   decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单剩余金额 总金额减去预收款金额';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预收款比例';
+
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
 ALTER TABLE `stock_log` ADD COLUMN  `agreement_sn`       varchar(255) NOT NULL DEFAULT '' COMMENT '收入合同单号';

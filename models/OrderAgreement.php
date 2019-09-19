@@ -31,6 +31,9 @@ use Yii;
  * @property string $sign_date
  * @property string $is_instock
  * @property string $customer_id
+ * @property string $payment_price
+ * @property string $payment_ratio
+ * @property string $remain_price
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -89,10 +92,11 @@ class OrderAgreement extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
-                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id'], 'integer'],
+                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'payment_ratio'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at', 'sign_date'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
+            [['payment_price', 'remain_price'], 'number'],
         ];
     }
 
@@ -123,6 +127,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'sign_date'         => '合同签订时间',
             'is_instock'        => '是否入库',
             'customer_id'       => '客户ID',
+            'payment_ratio'     => '预收款比例',
+            'payment_price'     => '收入合同价格',
+            'remain_price'      => '收入订单剩余金额',
         ];
     }
 
