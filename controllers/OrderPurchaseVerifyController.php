@@ -65,6 +65,7 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->admin_id             = $params['admin_id'];
         $orderPayment->take_time            = date('Y-m-d H:i:s', (time() + $params['long_delivery_time'] * 7 * 3600 * 24));
         $orderPayment->apply_reason         = trim($params['apply_reason']);
+        $orderPayment->agreement_at         = $params['agreement_date'];
         if ($orderPayment->save()) {
             $noticeOpen = false;
             //payment_goods保存
@@ -229,7 +230,6 @@ class OrderPurchaseVerifyController extends BaseController
     {
         $orderPayment = OrderPayment::findOne($id);
         $orderPayment->is_agreement = OrderPayment::IS_ADVANCECHARGE_YES;
-        $orderPayment->agreement_at = date('Y-m-d H:i:s');
         $orderPayment->save();
 
         return $this->redirect(['index']);

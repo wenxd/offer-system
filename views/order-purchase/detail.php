@@ -14,7 +14,7 @@ $this->title = '采购单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->agreement_date) {
-    $model->agreement_date = $model->orderAgreement ? substr($model->orderAgreement->agreement_date, 0, 10) : date('Y-m-d');
+    $model->agreement_date = date('Y-m-d');
 }
 
 $model->payment_sn = 'Z' . date('ymd_') . '_' . $number;
@@ -174,17 +174,6 @@ $i = 0;
             </tbody>
         </table>
 
-        <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
-            'removeButton'  => false,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format'    => 'yyyy-mm-dd',
-                'startView' => 2,  //其实范围（0：日  1：天 2：年）
-                'maxView'   => 2,  //最大选择范围（年）
-                'minView'   => 2,  //最小选择范围（年）
-            ]
-        ])->hiddenInput()->label(false);?>
-
         <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
@@ -196,6 +185,17 @@ $i = 0;
                 'allowClear' => true
             ],
         ])->label('供应商')?>
+
+        <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ])->label('支出合同签订时间');?>
 
         <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
 
@@ -369,12 +369,12 @@ $i = 0;
             // }
 
             var order_purchase_id = $('.data').data('order_purchase_id');
-            var admin_id     = $('#orderpurchase-admin_id').val();
-            var end_date     = $('#orderpurchase-end_date').val();
-            var payment_sn   = $('#orderpurchase-payment_sn').val();
-            var supplier_id  = $('#orderpurchase-supplier_id option:selected').val();
-            var apply_reason = $('#orderpurchase-apply_reason').val();
-            var agreement_at = $('#orderpurchase-agreement_at').val();
+            var admin_id          = $('#orderpurchase-admin_id').val();
+            var end_date          = $('#orderpurchase-end_date').val();
+            var payment_sn        = $('#orderpurchase-payment_sn').val();
+            var supplier_id       = $('#orderpurchase-supplier_id option:selected').val();
+            var apply_reason      = $('#orderpurchase-apply_reason').val();
+            var agreement_date    = $('#orderpurchase-agreement_date').val();
 
             //创建支出合同
             $.ajax({
@@ -382,7 +382,7 @@ $i = 0;
                 url:'?r=order-purchase-verify/save-order',
                 data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
                     goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
-                    apply_reason:apply_reason},
+                    apply_reason:apply_reason, agreement_date:agreement_date},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
