@@ -25,7 +25,8 @@ class PurchaseGoodsSearch extends PurchaseGoods
     {
         return [
             [['id', 'order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'is_purchase', 'number', 'is_deleted'], 'integer'],
-            [['order_purchase_id', 'order_purchase_sn', 'updated_at', 'created_at', 'goods_number', 'order_sn', 'goods_number_b'], 'safe'],
+            [['order_purchase_id', 'order_purchase_sn', 'updated_at', 'created_at', 'goods_number', 'order_sn',
+                'goods_number_b', 'delivery_time'], 'safe'],
             [['id', 'order_purchase_sn', 'order_sn', 'goods_number_b'], 'trim'],
         ];
     }
@@ -80,15 +81,16 @@ class PurchaseGoodsSearch extends PurchaseGoods
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'purchase_goods.id' => $this->id,
-            'purchase_goods.order_id' => $this->order_id,
+            'purchase_goods.id'             => $this->id,
+            'purchase_goods.order_id'       => $this->order_id,
             'purchase_goods.order_final_id' => $this->order_final_id,
-            'purchase_goods.goods_id' => $this->goods_id,
-            'purchase_goods.type' => $this->type,
-            'purchase_goods.relevance_id' => $this->relevance_id,
-            'purchase_goods.is_purchase' => $this->is_purchase,
-            'purchase_goods.number' => $this->number,
-            'purchase_goods.is_deleted' => $this->is_deleted,
+            'purchase_goods.goods_id'       => $this->goods_id,
+            'purchase_goods.type'           => $this->type,
+            'purchase_goods.relevance_id'   => $this->relevance_id,
+            'purchase_goods.is_purchase'    => $this->is_purchase,
+            'purchase_goods.number'         => $this->number,
+            'purchase_goods.is_deleted'     => $this->is_deleted,
+            'purchase_goods.delivery_time'  => $this->delivery_time,
         ]);
 
         $query->andFilterWhere(['like', 'order_purchase_id', $this->order_purchase_id])

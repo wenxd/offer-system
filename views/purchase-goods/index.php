@@ -87,6 +87,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'delivery_time',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->delivery_time;
+                }
+            ],
+            [
                 'attribute' => 'tax_rate',
                 'format'    => 'raw',
                 'label'     => '税率',
@@ -120,6 +127,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Html::activeTextInput($searchModel, 'fixed_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     return $model->fixed_number;
+                }
+            ],
+            [
+                'attribute' => 'unit',
+                'format'    => 'raw',
+                'label'     => '单位',
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->goods->unit;
                 }
             ],
             [
