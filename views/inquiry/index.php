@@ -185,6 +185,14 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'is_upload',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$upload,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Inquiry::$upload[$model->is_upload];
+                }
+            ],
+            [
                 'attribute' => 'supplier_name',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'supplier_name',['class'=>'form-control']),

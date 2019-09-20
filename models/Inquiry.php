@@ -23,6 +23,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $all_price 未税总价
  * @property string $tax_price
  * @property string $tax_rate
+ * @property string $is_upload
  */
 class Inquiry extends ActiveRecord
 {
@@ -38,6 +39,9 @@ class Inquiry extends ActiveRecord
     const IS_PRIORITY_NO  = '0';
     const IS_PRIORITY_YES = '1';
 
+    const IS_UPLOAD_NO     = '0';
+    const IS_UPLOAD_YES    = '1';
+
     public static $newest = [
         self::IS_NEWEST_NO   => '否',
         self::IS_NEWEST_YES  => '是',
@@ -50,6 +54,11 @@ class Inquiry extends ActiveRecord
 
     public static $priority = [
         self::IS_PRIORITY_NO   => '否',
+        self::IS_UPLOAD_YES  => '是',
+    ];
+
+    public static $upload = [
+        self::IS_UPLOAD_NO   => '否',
         self::IS_PRIORITY_YES  => '是',
     ];
 
@@ -87,7 +96,7 @@ class Inquiry extends ActiveRecord
     {
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
-                 'order_id', 'order_inquiry_id'], 'integer'],
+                 'order_id', 'order_inquiry_id', 'is_upload'], 'integer'],
             [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b'], 'safe'],
             [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
@@ -126,6 +135,7 @@ class Inquiry extends ActiveRecord
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',
+            'is_upload'        => '是否导入',
         ];
     }
 
