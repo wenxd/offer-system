@@ -352,9 +352,9 @@ class OrderQuoteController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-        $tableHeader = ['序号', '零件号', '厂家号', '中文描述', '英文描述', '原厂家', '原厂家备注', '加工', '特质', '铭牌', '报价货期',
-            '未税单价', '含税单价', '报价数量', '未税总价', '含税总价', '报价单号'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        $tableHeader = ['序号', '零件号', '中文描述', '英文描述', '订单数量', '单位', '含税单价', '含税总价', '税率', '货期',
+             '库存数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -367,21 +367,15 @@ class OrderQuoteController extends Controller
         foreach ($quoteGoods as $key => $value) {
             $excel->setCellValue('A'.($key + 2), $value->serial);
             $excel->setCellValue('B'.($key + 2), $value->goods->goods_number);
-            $excel->setCellValue('C'.($key + 2), $value->goods->goods_number_b);
-            $excel->setCellValue('D'.($key + 2), $value->goods->description);
-            $excel->setCellValue('E'.($key + 2), $value->goods->description_en);
-            $excel->setCellValue('F'.($key + 2), $value->goods->original_company);
-            $excel->setCellValue('G'.($key + 2), $value->goods->original_company_remark);
-            $excel->setCellValue('H'.($key + 2), Goods::$process[$value->goods->is_process]);
-            $excel->setCellValue('I'.($key + 2), Goods::$special[$value->goods->is_special]);
-            $excel->setCellValue('J'.($key + 2), Goods::$nameplate[$value->goods->is_nameplate]);
-            $excel->setCellValue('K'.($key + 2), $value->delivery_time);
-            $excel->setCellValue('L'.($key + 2), $value->quote_price);
-            $excel->setCellValue('M'.($key + 2), $value->quote_tax_price);
-            $excel->setCellValue('N'.($key + 2), $value->number);
-            $excel->setCellValue('O'.($key + 2), $value->quote_all_price);
-            $excel->setCellValue('P'.($key + 2), $value->quote_all_tax_price);
-            $excel->setCellValue('Q'.($key + 2), $value->order_quote_sn);
+            $excel->setCellValue('C'.($key + 2), $value->goods->description);
+            $excel->setCellValue('D'.($key + 2), $value->goods->description_en);
+            $excel->setCellValue('E'.($key + 2), $value->number);
+            $excel->setCellValue('F'.($key + 2), $value->goods->unit);
+            $excel->setCellValue('G'.($key + 2), $value->quote_tax_price);
+            $excel->setCellValue('H'.($key + 2), $value->quote_all_tax_price);
+            $excel->setCellValue('I'.($key + 2), $value->tax_rate);
+            $excel->setCellValue('J'.($key + 2), $value->delivery_time);
+            $excel->setCellValue('K'.($key + 2), $value->stockNumber->number);
             $name = $value->order_quote_sn;
         }
 
