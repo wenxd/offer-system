@@ -42,7 +42,7 @@ $userId   = Yii::$app->user->identity->id;
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>单位</th>
-                <th>货期</th>
+                <th>报价货期</th>
                 <th>供应商</th>
                 <th>税率</th>
                 <th>未税单价</th>

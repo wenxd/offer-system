@@ -59,7 +59,7 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th>含税单价</th>
                     <th>未税总价</th>
                     <th>含税总价</th>
-                    <th>货期(周)</th>
+                    <th>报价货期(周)</th>
                     <th>是否有采购单</th>
                     <th>采购单号</th>
                     <th>合同需求数量</th>
