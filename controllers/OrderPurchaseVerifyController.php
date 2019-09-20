@@ -69,7 +69,10 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->delivery_date        = $params['delivery_date'];
         $orderPayment->supplier_id          = $params['supplier_id'];
         if ($orderPayment->save()) {
-            $noticeOpen = false;
+            $noticeOpen         = false;
+            $noticeDeliveryOpen = false;
+            $noticeSupplierOpen = false;
+            $noticeNumberOpen   = false;
             //payment_goods保存
             $money = 0;
             foreach ($params['goods_info'] as $key => $value) {
@@ -111,9 +114,23 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->delivery_time        = $value['delivery_time'];
                 $paymentGoods->before_delivery_time = $before_delivery_time;
                 $paymentGoods->save();
+
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;
                 }
+
+                if ($paymentGoods->before_delivery_time != $paymentGoods->delivery_time) {
+                    $noticeDeliveryOpen = true;
+                }
+
+                if ($paymentGoods->before_supplier_id != $paymentGoods->supplier_id) {
+                    $noticeSupplierOpen = true;
+                }
+
+                if ($paymentGoods->number != $paymentGoods->fixed_number) {
+                    $noticeNumberOpen = true;
+                }
+
                 $money += $paymentGoods->fixed_all_tax_price;
             }
 
@@ -132,12 +149,35 @@ class OrderPurchaseVerifyController extends BaseController
             //给管理员发送系统消息
             if ($noticeOpen) {
                 $systemNotice = new SystemNotice();
-                $systemNotice->admin_id = $params['admin_id'];
-                $systemNotice->content = '采购生成支出合同有价格修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->admin_id  = $params['admin_id'];
+                $systemNotice->content   = '采购生成支出合同有价格修改,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
-
+            //给管理员发送系统消息(货期修改)
+            if ($noticeDeliveryOpen) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $params['admin_id'];
+                $systemNotice->content   = '采购生成支出合同有货期修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+            //给管理员发送系统消息(供应商修改)
+            if ($noticeSupplierOpen) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $params['admin_id'];
+                $systemNotice->content   = '采购生成支出合同有供应商修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+            //给管理员发送系统消息(数量修改)
+            if ($noticeNumberOpen) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $params['admin_id'];
+                $systemNotice->content   = '采购生成支出合同有数量修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
