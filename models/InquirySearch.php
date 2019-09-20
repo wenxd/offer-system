@@ -13,6 +13,7 @@ use app\models\Inquiry;
 class InquirySearch extends Inquiry
 {
     public $goods_number;
+    public $goods_number_b;
     public $original_company;
     public $original_company_remark;
     public $unit;
@@ -30,7 +31,7 @@ class InquirySearch extends Inquiry
             [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number', 'admin_id'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
-                'is_process'], 'safe'],
+                'is_process', 'goods_number_b'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['id', 'good_id', 'supplier_id', 'supplier_name', 'price', 'tax_price', 'all_price', 'all_tax_price', 'remark'], 'trim']
         ];
@@ -76,9 +77,10 @@ class InquirySearch extends Inquiry
             return $dataProvider;
         }
         if ($this->goods_number || $this->original_company || $this->original_company_remark || $this->unit
-            || $this->technique_remark || $this->is_process) {
+            || $this->technique_remark || $this->is_process || $this->goods_number_b) {
             $query->leftJoin('goods as a', 'a.id = inquiry.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
+            $query->andFilterWhere(['like', 'a.goods_number_b', $this->goods_number_b]);
             $query->andFilterWhere(['like', 'a.original_company', $this->original_company]);
             $query->andFilterWhere(['like', 'a.original_company_remark', $this->original_company_remark]);
             $query->andFilterWhere(['like', 'a.unit', $this->unit]);

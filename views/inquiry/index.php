@@ -92,6 +92,19 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute'      => 'goods_number_b',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
+                'value'          => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute'      => 'original_company',
                 'label'          => '原厂家',
                 'contentOptions' =>['style'=>'min-width: 100px;'],
