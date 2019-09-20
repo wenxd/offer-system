@@ -352,8 +352,8 @@ class OrderQuoteController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-        $tableHeader = ['序号', '零件号', '中文描述', '英文描述', '订单数量', '单位', '含税单价', '含税总价', '税率', '货期',
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        $tableHeader = ['序号', '零件号', '中文描述', '英文描述', '订单数量', '单位', '未税单价', '含税单价', '未税总价', '含税总价', '税率', '货期',
              '库存数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -371,11 +371,13 @@ class OrderQuoteController extends Controller
             $excel->setCellValue('D'.($key + 2), $value->goods->description_en);
             $excel->setCellValue('E'.($key + 2), $value->number);
             $excel->setCellValue('F'.($key + 2), $value->goods->unit);
-            $excel->setCellValue('G'.($key + 2), $value->quote_tax_price);
-            $excel->setCellValue('H'.($key + 2), $value->quote_all_tax_price);
-            $excel->setCellValue('I'.($key + 2), $value->tax_rate);
-            $excel->setCellValue('J'.($key + 2), $value->delivery_time);
-            $excel->setCellValue('K'.($key + 2), $value->stockNumber->number);
+            $excel->setCellValue('G'.($key + 2), $value->tax_price);
+            $excel->setCellValue('H'.($key + 2), $value->quote_tax_price);
+            $excel->setCellValue('I'.($key + 2), $value->all_tax_price);
+            $excel->setCellValue('J'.($key + 2), $value->quote_all_tax_price);
+            $excel->setCellValue('K'.($key + 2), $value->tax_rate);
+            $excel->setCellValue('L'.($key + 2), $value->delivery_time);
+            $excel->setCellValue('M'.($key + 2), $value->stockNumber->number);
             $name = $value->order_quote_sn;
         }
 
