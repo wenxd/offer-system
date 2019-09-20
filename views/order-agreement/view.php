@@ -30,46 +30,49 @@ $userId   = Yii::$app->user->identity->id;
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
+                <th>序号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>零件号</th>
                 <?php endif;?>
-                <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
-                <th>原厂家</th>
-                <th>原厂家备注</th>
+                <th>数量</th>
                 <th>单位</th>
-                <th>货期</th>
-                <th>供应商</th>
-                <th>税率</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
-                <th>数量</th>
+                <th>税率</th>
+                <th>货期</th>
+                <th>库存数量</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_quote_list">
+                    <td><?=$item->serial?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                         <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
-                    <td><?=$item->goods->goods_number_b?></td>
                     <td class="goods_id" data-goods_id="<?=$item->goods_id?>" data-goods_type="<?=$item->type?>"
                         data-relevance_id="<?=$item->relevance_id?>" data-quote_goods_id="<?=$item->id?>">
                         <?=$item->goods->description?>
                     </td>
                     <td><?=$item->goods->description_en?></td>
-                    <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
+                    <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td><?=$item->quote_delivery_time?></td>
-                    <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
-                    <td class="tax"><?=$item->tax_rate?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
-                    <td class="afterNumber"><?=$item->number?></td>
+                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td><?=$item->quote_delivery_time?></td>
+                    <td><?=isset($item->stock) ? $item->stock->number : 0?></td>
                 </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="10" rowspan="2">汇总统计</td>
+                <td>收入合同金额</td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="sta_all_price"></td>
+            </tr>
             </tbody>
         </table>
 
@@ -91,3 +94,19 @@ $userId   = Yii::$app->user->identity->id;
     </div>
     <?php ActiveForm::end(); ?>
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        init();
+        function init(){
+            var sta_all_price           = 0;
+            $('.order_quote_list').each(function (i, e) {
+                var all_price      = $(e).find('.all_tax_price').text();
+                if (all_price) {
+                    sta_all_price  += parseFloat(all_price);
+                }
+            });
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+        }
+    });
+</script>
