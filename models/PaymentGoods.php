@@ -122,6 +122,11 @@ class PaymentGoods extends \yii\db\ActiveRecord
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
 
+    public function getBeforeSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'before_supplier_id']);
+    }
+
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
