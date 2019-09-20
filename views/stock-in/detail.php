@@ -90,11 +90,11 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=Goods::$special[$item->goods->is_special]?></td>
                     <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
-                    <td><?=$item->inquiry->supplier->name?></td>
+                    <td><?=$item->supplier->name?></td>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
-                    <td><?=$item->inquiry->delivery_time?></td>
+                    <td><?=$item->delivery_time?></td>
                     <td class="all_price"><?=$item->fixed_all_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
