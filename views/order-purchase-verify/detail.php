@@ -43,9 +43,7 @@ $userId = Yii::$app->user->identity->id;
                     <th>数量</th>
                     <th style="background-color: darkgrey">修改后供应商</th>
                     <th style="background-color: darkgrey">修改后货期(周)</th>
-                    <th style="background-color: darkgrey">修改后未税单价</th>
                     <th style="background-color: darkgrey">修改后含税单价</th>
-                    <th style="background-color: darkgrey">修改后未税总价</th>
                     <th style="background-color: darkgrey">修改后含税总价</th>
                     <th style="background-color: darkgrey">修改后数量</th>
                 </tr>
@@ -62,29 +60,25 @@ $userId = Yii::$app->user->identity->id;
                     <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
                     <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td><?=$item->tax_price?></td>
-                    <td class="before_tax_price"><?=$item->all_tax_price?></td>
-                    <td><?=$item->number?></td>
+                    <td class="before_tax_price"><?=$item->tax_price?></td>
+                    <td class="before_all_tax_price"><?=$item->all_tax_price?></td>
+                    <td class="before_number"><?=$item->number?></td>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
-                    <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
-                    <td class="all_price"><?=$item->fixed_all_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
                 </tr>
             <?php endforeach;?>
 
             <tr style="background-color: #acccb9">
-                <td colspan="15" rowspan="2">汇总统计</td>
+                <td colspan="14" rowspan="2">汇总统计</td>
                 <td>修改前含税总价</td>
-                <td>支出未税总价</td>
                 <td>支出含税总价</td>
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="sta_all_tax_price"></td>
-                <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
             </tr>
 
@@ -128,20 +122,34 @@ $userId = Yii::$app->user->identity->id;
             if (all_tax_price) {
                 sta_quote_all_tax_price += parseFloat(all_tax_price);
             }
-            var before_tax_price = parseFloat($(e).find('.before_tax_price').text());
-            if (before_tax_price) {
-                sta_all_tax_price += before_tax_price;
+            var before_all_tax_price = parseFloat($(e).find('.before_all_tax_price').text());
+            if (before_all_tax_price) {
+                sta_all_tax_price += before_all_tax_price;
             }
+            //供应商
             var supplier = $(e).find('.supplier').text();
             var before_supplier = $(e).find('.before_supplier').text();
             if (supplier !== before_supplier) {
                 $(e).find('.supplier').css({"background": "#58a95d"});
             }
-
+            //货期
             var delivery_time = parseFloat($(e).find('.delivery_time').text());
             var before_delivery_time = parseFloat($(e).find('.before_delivery_time').text());
             if (delivery_time !== before_delivery_time) {
                 $(e).find('.delivery_time').css({"background": "#58a95d"});
+            }
+            //含税单价
+            var before_tax_price = parseFloat($(e).find('.before_tax_price').text());
+            var tax_price = parseFloat($(e).find('.tax_price').text());
+            if (tax_price !== before_tax_price) {
+                $(e).find('.tax_price').css({"background": "#58a95d"});
+            }
+
+            //数量
+            var before_number = parseFloat($(e).find('.before_number').text());
+            var afterNumber = parseFloat($(e).find('.afterNumber').text());
+            if (afterNumber !== before_number) {
+                $(e).find('.afterNumber').css({"background": "#58a95d"});
             }
         });
         $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
