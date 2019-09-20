@@ -82,6 +82,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->purchase_goods_id    = $value['purchase_goods_id'];
 
                 $purchaseGoods = PurchaseGoods::findOne($value['purchase_goods_id']);
+                $before_delivery_time = $purchaseGoods->delivery_time;
                 $purchaseGoods->fixed_price      = $value['fix_price'];
                 $purchaseGoods->fixed_tax_price  = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
                 $purchaseGoods->fixed_number     = $value['fix_number'];
@@ -106,7 +107,9 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->fixed_number         = $value['fix_number'];
                 $paymentGoods->inquiry_admin_id     = $params['admin_id'];
                 $paymentGoods->supplier_id          = $params['supplier_id'];
+                $paymentGoods->before_supplier_id   = $purchaseGoods->inquiry->supplier_id;
                 $paymentGoods->delivery_time        = $value['delivery_time'];
+                $paymentGoods->before_delivery_time = $before_delivery_time;
                 $paymentGoods->save();
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;
