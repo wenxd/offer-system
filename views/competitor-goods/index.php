@@ -5,10 +5,12 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use app\models\Customer;
+use app\models\CompetitorGoods;
 use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
 use kartik\daterange\DateRangePicker;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CompetitorGoodsSearch */
@@ -96,6 +98,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'tax_rate',
             'price',
             'tax_price',
+            [
+                'attribute' => 'is_issue',
+                'filter'    => CompetitorGoods::$issue,
+                'value'     => function ($model, $key, $index, $column) {
+                    return CompetitorGoods::$issue[$model->is_issue];
+                }
+            ],
             'number',
             'all_price',
             'all_tax_price',

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
-use app\models\{Competitor, Customer, SystemConfig};
+use app\models\{CompetitorGoods, Competitor, Customer, SystemConfig};
 
 /* @var $this yii\web\View */
 /* @var $model app\models\CompetitorGoods */
@@ -58,6 +58,7 @@ if (!$model->isNewRecord) {
     <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'is_issue')->dropDownList(CompetitorGoods::$issue) ?>
     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'stock_number')->textInput(['maxlength' => true]) ?>

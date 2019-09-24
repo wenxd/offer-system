@@ -23,13 +23,24 @@ use yii\behaviors\TimestampBehavior;
  * @property string $number
  * @property string $tax_price
  * @property string $price
+ * @property string $is_issue
  */
 class CompetitorGoods extends ActiveRecord
 {
     const IS_DELETED_NO    = '0';
     const IS_DELETED_YES   = '1';
 
+    const IS_ISSUE_NO  = '0';
+    const IS_ISSUE_YES = '1';
+
     public $goods_number;
+
+    public static $issue = [
+        self::IS_ISSUE_NO  => '否',
+        self::IS_ISSUE_YES => '是',
+    ];
+
+
     public function behaviors()
     {
         return [
@@ -60,7 +71,7 @@ class CompetitorGoods extends ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'number'], 'integer'],
+            [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'number', 'is_issue'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'delivery_time', 'all_price', 'all_tax_price', 'stock_number'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
@@ -94,6 +105,7 @@ class CompetitorGoods extends ActiveRecord
             'stock_number'     => '库存数量',
             'all_price'        => '未税总价',
             'all_tax_price'    => '含税总价',
+            'is_issue'         => '是否发行价',
         ];
     }
 
@@ -112,6 +124,10 @@ class CompetitorGoods extends ActiveRecord
 
         $this->all_price     = $this->number *  $this->price;
         $this->all_tax_price = $this->number *  $this->tax_price;
+
+        if ($this->is_issue) {
+            self::updateAll(['is_issue' => self::IS_ISSUE_NO], ['is_issue' => self::IS_ISSUE_YES, 'goods_id' => $goods->id]);
+        }
 
         return parent::beforeSave($insert);
     }
