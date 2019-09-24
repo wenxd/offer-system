@@ -196,8 +196,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                 <tr>
                     <th rowspan="2">库存记录</th>
-                    <th></th>
-                    <th>类型</th>
                     <th>厂家号</th>
                     <th>单位</th>
 <!--                    <th>供应商</th>-->
@@ -215,8 +213,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>操作</th>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="1" data-select_id="<?=$stock ? $stock->id : ''?>"></td>
-                    <td>库存记录</td>
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
                     <td class="number"><?= $stock ? $stock->number : 0 ?></td>
@@ -240,7 +236,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                 <tr>
                     <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
-                    <th></th>
                     <th>类型</th>
                     <th>厂家号</th>
                     <th>单位</th>
@@ -260,7 +255,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>含税总价</th>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$purchaseNew ? $purchaseNew->id : ''?>"></td>
                     <td>最新</td>
                     <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -280,7 +274,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_tax_price"></td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$purchasePrice ? $purchasePrice->id : ''?>"></td>
                     <td>价格</td>
                     <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>
@@ -300,7 +293,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="all_tax_price"></td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$purchaseDay ? $purchaseDay->id : ''?>"></td>
                     <td>货期</td>
                     <td><?= $goods ? $goods->goods_number_b : '' ?></td>
                     <td><?= $goods ? $goods->unit : '' ?></td>

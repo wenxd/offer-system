@@ -72,6 +72,6 @@ class OrderGoods extends \yii\db\ActiveRecord
 
     public function getFinalGoods()
     {
-        return $this->hasOne(FinalGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id']);
+        return $this->hasOne(FinalGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id', 'serial' => 'serial']);
     }
 }
