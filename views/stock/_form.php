@@ -1,5 +1,6 @@
 <?php
 
+use app\models\SystemConfig;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
@@ -14,6 +15,9 @@ if ($model->isNewRecord) {
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
     }
+    $model->tax_rate = SystemConfig::find()->select('value')->where([
+        'title'  => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 }
 ?>
 
