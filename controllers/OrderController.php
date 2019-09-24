@@ -530,6 +530,9 @@ class OrderController extends BaseController
         $goods         = Goods::find()->where(['id' => $goods_ids])->all();
         $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->all();
 
+        //先删除库里的垃圾数据
+        FinalGoods::deleteAll(['and', ['order_id'  => $id], ['!=', 'key', $key]]);
+
         //订单零件生成成本零件记录
         foreach ($orderGoods as $value) {
             $isHaveFinalGoods = FinalGoods::find()->where([
