@@ -189,17 +189,14 @@ class OrderPurchaseController extends BaseController
         $orderPurchase = OrderPurchase::findOne($id);
 
         $purchaseQuery = PurchaseGoods::find()->from('purchase_goods pg')->select('pg.*')
-            ->leftJoin('goods g', 'pg.goods_id=g.id');
+            ->leftJoin('goods g', 'pg.goods_id=g.id')
+            ->leftJoin('inquiry i', 'pg.relevance_id=i.id')
+            ->where(['pg.order_purchase_id' => $id]);
         if (isset($request['supplier_id']) && $request['supplier_id']) {
-            $purchaseQuery->leftJoin('inquiry i', 'pg.relevance_id=i.id')->where([
-                'i.supplier_id'     => $request['supplier_id'],
-                'order_purchase_id' => $id,
-            ])->andWhere(['like', 'original_company', $request['original_company']]);
+            $purchaseQuery->andWhere(['i.supplier_id' => $request['supplier_id']]);
         }
         if (isset($request['original_company']) && $request['original_company']) {
-            $purchaseQuery->where(['order_purchase_id' => $id])->andWhere(['like', 'original_company', $request['original_company']]);
-        } else {
-            $purchaseQuery->where(['order_purchase_id' => $id]);
+            $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
         }
         $purchaseGoods         = $purchaseQuery->all();
 
