@@ -286,7 +286,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th rowspan="4"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
+                <th rowspan="5"><?=Html::a('竞争对手记录', Url::to(['competitor-goods/index', 'CompetitorGoodsSearch[goods_id]' => $goods->id]))?></th>
                 <th>类型</th>
                 <th>竞争对手</th>
                 <th>针对客户</th>
@@ -296,6 +296,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>货期</th>
                 <th>报价时间</th>
                 <th>备注</th>
+            </tr>
+            <tr>
+                <td>发行价</td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->competitor->name : ''?></td>
+                <td><?=($competitorGoodsIssue && $competitorGoodsIssue->customer) ? $competitorGoodsIssue->customers->name : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->number : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->tax_rate : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->tax_price : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->delivery_time : ''?></td>
+                <td><?=$competitorGoodsIssue ? substr($competitorGoodsIssue->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->remark : ''?></td>
             </tr>
             <tr>
                 <td>最新</td>
@@ -310,25 +321,25 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             <tr>
                 <td>最高价</td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->competitor->name : ''?></td>
-                <td><?=($competitorGoodsNew && $competitorGoodsNew->customer) ? $competitorGoodsNew->customers->name : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->number : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_rate : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
-                <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->competitor->name : ''?></td>
+                <td><?=($competitorGoodsHigh && $competitorGoodsHigh->customer) ? $competitorGoodsHigh->customers->name : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->number : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->tax_rate : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->tax_price : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->delivery_time : ''?></td>
+                <td><?=$competitorGoodsHigh ? substr($competitorGoodsHigh->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->remark : ''?></td>
             </tr>
             <tr>
                 <td>最低价</td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->competitor->name : ''?></td>
-                <td><?=($competitorGoodsNew && $competitorGoodsNew->customer) ? $competitorGoodsNew->customers->name : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->number : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_rate : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
-                <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->competitor->name : ''?></td>
+                <td><?=($competitorGoodsLow && $competitorGoodsLow->customer) ? $competitorGoodsLow->customers->name : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->number : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->tax_rate : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->tax_price : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->delivery_time : ''?></td>
+                <td><?=$competitorGoodsLow ? substr($competitorGoodsLow->offer_date, 0, 10) : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->remark : ''?></td>
             </tr>
             </thead>
         </table>

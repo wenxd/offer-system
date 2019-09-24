@@ -132,7 +132,9 @@ class GoodsController extends BaseController
         //最低价
         $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price asc')->one();
 
-        //竞争对手 最新
+        //竞争对手 发行价
+        $competitorGoodsIssue  = CompetitorGoods::find()->where(['goods_id' => $goods_id, 'is_issue' => CompetitorGoods::IS_ISSUE_YES])->one();
+        //最新
         $competitorGoodsNew  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
         //最高价
         $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price Desc')->one();
@@ -157,6 +159,7 @@ class GoodsController extends BaseController
         $data['agreementGoodsHigh'] = $agreementGoodsHigh;
         $data['agreementGoodsLow']  = $agreementGoodsLow;
 
+        $data['competitorGoodsIssue']  = $competitorGoodsIssue;
         $data['competitorGoodsNew']  = $competitorGoodsNew;
         $data['competitorGoodsHigh'] = $competitorGoodsHigh;
         $data['competitorGoodsLow']  = $competitorGoodsLow;
