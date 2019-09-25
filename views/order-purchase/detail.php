@@ -46,24 +46,18 @@ $model->delivery_date = date('Y-m-d');
                     <?php endif;?>
                     <th>厂家号</th>
                     <th>中文描述</th>
-                    <th>英文描述</th>
                     <th>原厂家</th>
-                    <th>原厂家备注</th>
-                    <th>单位</th>
-                    <th>技术备注</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
                     <th>供应商</th>
-                    <th>供应商缩写</th>
-                    <th width="80px;">是否入库</th>
-                    <th>货期(周)</th>
-                    <th>税率</th>
+                    <th>单位</th>
+                    <th>采购数量</th>
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>未税总价</th>
                     <th>含税总价</th>
-                    <th>数量</th>
+                    <th>货期(周)</th>
+                    <th width="80px;">是否入库</th>
+                    <th>税率</th>
+                    <th>合同需求数量</th>
                     <th>使用库存数</th>
                     <th>审核状态</th>
                     <th>驳回原因</th>
@@ -74,16 +68,9 @@ $model->delivery_date = date('Y-m-d');
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     <td>
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
                     <td>
                         <select class="form-control" name="supplier_id">
                             <option value=""></option>
@@ -93,6 +80,12 @@ $model->delivery_date = date('Y-m-d');
                         </select>
                     </td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
                         <select class="form-control" name="is_stock">
                             <option value=""></option>
@@ -100,12 +93,6 @@ $model->delivery_date = date('Y-m-d');
                             <option value="1" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -136,26 +123,20 @@ $model->delivery_date = date('Y-m-d');
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
-                    <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
-                    <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
-                    <td><?=$item->inquiry->supplier->short_name?></td>
-                    <td><?=$item::$stock[$item->is_stock]?></td>
-                    <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
-                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td><?=$item->goods->unit?></td>
+                    <td class="afterNumber">
+                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
+                    </td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
-                    <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
-                    </td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
+                    <td><?=$item::$stock[$item->is_stock]?></td>
+                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td><?=$item->number?></td>
                     <td><?=$item->number - $item->fixed_number?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
