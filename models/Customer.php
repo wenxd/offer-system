@@ -21,6 +21,11 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $full_name
+ * @property string $taxpayer
+ * @property string $bank_name
+ * @property string $bank_number
+ * @property string $post_address
  */
 class Customer extends ActiveRecord
 {
@@ -59,9 +64,10 @@ class Customer extends ActiveRecord
         return [
             [['is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'string', 'max' => 255],
+            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email',
+                'company_contacts', 'full_name', 'taxpayer', 'bank_name', 'bank_number', 'post_address'], 'string', 'max' => 255],
             ['company_email', 'email'],
-            [['name'], 'required'],
+            [['name', 'short_name'], 'required'],
         ];
     }
 
@@ -79,10 +85,15 @@ class Customer extends ActiveRecord
             'company_fax'       => '公司传真',
             'company_address'   => '公司地址',
             'company_email'     => '公司邮箱',
-            'company_contacts'  => '公司联系人',
+            'company_contacts'  => '联系人信息',
             'is_deleted'        => '是否删除',
             'updated_at'        => '更新时间',
             'created_at'        => '创建时间',
+            'full_name'         => '客户全称',
+            'taxpayer'          => '纳税人识别号',
+            'bank_name'         => '开户行',
+            'bank_number'       => '银行账号',
+            'post_address'      => '邮寄地址'
         ];
     }
 

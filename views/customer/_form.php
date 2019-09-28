@@ -18,17 +18,25 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'short_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'full_name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'taxpayer')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'company_address')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'company_telephone')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'company_fax')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'bank_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'company_address')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'bank_number')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'company_fax')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'company_email')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'company_contacts')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'post_address')->textInput(['maxlength' => true]) ?>
 
     </div>
 

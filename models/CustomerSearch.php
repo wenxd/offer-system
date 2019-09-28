@@ -19,8 +19,10 @@ class CustomerSearch extends Customer
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts', 'updated_at', 'created_at'], 'safe'],
-            [['id', 'name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email', 'company_contacts'], 'trim'],
+            [['name', 'short_name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email',
+                'company_contacts', 'updated_at', 'created_at', 'full_name', 'taxpayer', 'bank_name', 'bank_number', 'post_address'], 'safe'],
+            [['id', 'name', 'mobile', 'company_telephone', 'company_fax', 'company_address', 'company_email',
+                'company_contacts', 'full_name', 'taxpayer', 'bank_name', 'bank_number', 'post_address'], 'trim'],
         ];
     }
 
@@ -77,7 +79,12 @@ class CustomerSearch extends Customer
             ->andFilterWhere(['like', 'company_fax', $this->company_fax])
             ->andFilterWhere(['like', 'company_address', $this->company_address])
             ->andFilterWhere(['like', 'company_email', $this->company_email])
-            ->andFilterWhere(['like', 'company_contacts', $this->company_contacts]);
+            ->andFilterWhere(['like', 'company_contacts', $this->company_contacts])
+            ->andFilterWhere(['like', 'full_name', $this->full_name])
+            ->andFilterWhere(['like', 'taxpayer', $this->taxpayer])
+            ->andFilterWhere(['like', 'bank_name', $this->bank_name])
+            ->andFilterWhere(['like', 'bank_number', $this->bank_number])
+            ->andFilterWhere(['like', 'post_address', $this->post_address]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
