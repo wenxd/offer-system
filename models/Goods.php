@@ -30,6 +30,12 @@ use app\extend\tencent\Cos;
  * @property string $created_at 创建时间
  * @property string $device_info 设备信息
  * @property string $material 材质
+ * @property string $is_tz
+ * @property string $is_standard
+ * @property string $is_import
+ * @property string $is_repair
+ * @property string $part
+ * @property string $remark
  */
 class Goods extends ActiveRecord
 {
@@ -50,7 +56,19 @@ class Goods extends ActiveRecord
     
     const IS_ASSEMBLY_NO    = '0';
     const IS_ASSEMBLY_YES   = '1';
-    
+
+    const IS_TZ_NO       = '0';
+    const IS_TZ_YES      = '1';
+
+    const IS_STANDARD_NO   = '0';
+    const IS_STANDARD_YES  = '1';
+
+    const IS_IMPORT_NO     = '0';
+    const IS_IMPORT_YES    = '1';
+
+    const IS_REPAIR_NO     = '0';
+    const IS_REPAIR_YES    = '1';
+
     public static $process = [
         self::IS_PROCESS_NO  => '否',
         self::IS_PROCESS_YES => '是',
@@ -75,7 +93,27 @@ class Goods extends ActiveRecord
         self::IS_ASSEMBLY_NO  => '否',
         self::IS_ASSEMBLY_YES => '是',
     ];
-    
+
+    public static $tz = [
+        self::IS_TZ_NO  => '否',
+        self::IS_TZ_YES => '是',
+    ];
+
+    public static $standard = [
+        self::IS_STANDARD_NO  => '否',
+        self::IS_STANDARD_YES => '是',
+    ];
+
+    public static $import = [
+        self::IS_IMPORT_NO  => '否',
+        self::IS_IMPORT_YES => '是',
+    ];
+
+    public static $repair = [
+        self::IS_REPAIR_NO  => '否',
+        self::IS_REPAIR_YES => '是',
+    ];
+
     public $img_url = '';
     public $nameplate_img_url = '';
     public $is_inquiry;
@@ -111,10 +149,11 @@ class Goods extends ActiveRecord
     public function rules()
     {
         return [
-            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry'], 'integer'],
+            [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
+                'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
-            [['description', 'description_en', 'material'], 'string', 'max' => 255],
+            [['description', 'description_en', 'material', 'part', 'remark'], 'string', 'max' => 255],
             [
                 ['goods_number'],
                 'required',
@@ -152,6 +191,12 @@ class Goods extends ActiveRecord
             'nameplate_img_url'       => '图片地址',
             'device_info'             => '设备信息',
             'material'                => '材质',
+            'is_tz'                   => 'TZ',
+            'is_standard'             => '标准',
+            'is_import'               => '进口',
+            'is_repair'               => '大修',
+            'part'                    => '所属部件',
+            'remark'                  => '零件备注',
         ];
     }
 

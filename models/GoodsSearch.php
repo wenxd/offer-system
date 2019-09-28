@@ -25,11 +25,12 @@ class GoodsSearch extends Goods
     {
         return [
             [['id', 'is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry'
-            , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high'], 'integer'],
+            , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high', 'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info', 'material'], 'safe'],
+                'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
+                'material', 'part', 'remark'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_info', 'material'], 'trim'],
+                'technique_remark', 'device_info', 'material', 'part', 'remark'], 'trim'],
         ];
     }
 
@@ -143,6 +144,10 @@ class GoodsSearch extends Goods
             'goods.is_emerg'     => $this->is_emerg,
             'goods.is_assembly'  => $this->is_assembly,
             'goods.is_deleted'   => self::IS_DELETED_NO,
+            'goods.is_tz'        => $this->is_tz,
+            'goods.is_standard'  => $this->is_standard,
+            'goods.is_import'    => $this->is_import,
+            'goods.is_repair'    => $this->is_repair,
         ]);
 
         $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
@@ -155,7 +160,9 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.technique_remark', $this->technique_remark])
               ->andFilterWhere(['like', 'goods.img_id', $this->img_id])
               ->andFilterWhere(['like', 'goods.material', $this->material])
-              ->andFilterWhere(['like', 'goods.device_info', $this->device_info]);
+              ->andFilterWhere(['like', 'goods.material', $this->material])
+              ->andFilterWhere(['like', 'goods.part', $this->material])
+              ->andFilterWhere(['like', 'goods.remark', $this->device_info]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

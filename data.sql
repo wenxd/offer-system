@@ -741,4 +741,12 @@ ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' 
 ALTER TABLE `supplier` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
 ALTER TABLE `supplier` ADD COLUMN  `contacts` varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
 
+ALTER TABLE `goods` ADD COLUMN  `is_tz` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否TZ 0否 1是';
+ALTER TABLE `goods` ADD COLUMN  `is_standard` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否标准 0否 1是';
+ALTER TABLE `goods` ADD COLUMN  `is_import` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否进口 0否 1是';
+ALTER TABLE `goods` ADD COLUMN  `is_repair` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否大修 0否 1是';
+ALTER TABLE `goods` ADD COLUMN  `part` varchar(255) NOT NULL DEFAULT '' COMMENT '所属部件';
+ALTER TABLE `goods` ADD COLUMN  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '零件备注';
+
+
 
