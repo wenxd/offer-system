@@ -83,7 +83,7 @@ class Customer extends ActiveRecord
             'mobile'            => '客户电话',
             'company_telephone' => '公司电话',
             'company_fax'       => '公司传真',
-            'company_address'   => '公司地址',
+            'company_address'   => '地址及电话',
             'company_email'     => '公司邮箱',
             'company_contacts'  => '联系人信息',
             'is_deleted'        => '是否删除',
@@ -91,7 +91,7 @@ class Customer extends ActiveRecord
             'created_at'        => '创建时间',
             'full_name'         => '客户全称',
             'taxpayer'          => '纳税人识别号',
-            'bank_name'         => '开户行',
+            'bank_name'         => '开户行及账号',
             'bank_number'       => '银行账号',
             'post_address'      => '邮寄地址'
         ];

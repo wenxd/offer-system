@@ -17,14 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'short_name',
-            'mobile',
-            'company_telephone',
-            'company_fax',
+            'full_name',
+            'taxpayer',
             'company_address',
-            'company_email',
+            'bank_name',
             'company_contacts',
-            'updated_at',
-            'created_at',
+            'post_address',
         ],
     ]) ?>
 
