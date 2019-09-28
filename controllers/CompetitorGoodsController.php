@@ -87,8 +87,8 @@ class CompetitorGoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税单价', '数量', '货期', '库存数量', '备注'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税单价', '数量', '货期', '库存数量', '备注', '是否发行价'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -209,6 +209,9 @@ class CompetitorGoodsController extends BaseController
                             $competitorGoods->offer_date    = $date;
                             if ($value['I']) {
                                 $competitorGoods->remark = trim($value['I']);
+                            }
+                            if ($value['J'] && $value['J'] != '否') {
+                                $competitorGoods->is_issue = trim($value['J']);
                             }
                             if ($competitorGoods->save()) {
                                 $num++;
