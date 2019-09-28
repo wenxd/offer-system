@@ -141,20 +141,14 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             </tr>
             <?php endforeach;?>
                 <tr style="background-color: #acccb9">
-                    <td colspan="10" rowspan="2">汇总统计</td>
-                    <td>合同未税总价</td>
-                    <td>合同含税总价</td>
-                    <td>最长货期</td>
-                    <td>采购未税总价</td>
+                    <td colspan="14" rowspan="2">汇总统计</td>
                     <td>采购含税总价</td>
+                    <td>最长货期</td>
                     <td colspan="9"></td>
                 </tr>
                 <tr style="background-color: #acccb9">
-                    <td class="sta_all_price"></td>
-                    <td class="sta_all_tax_price"></td>
-                    <td class="mostLongTime"></td>
-                    <td class="purchase_price"></td>
                     <td class="purchase_all_price"></td>
+                    <td class="mostLongTime"></td>
                     <td colspan="9"></td>
                 </tr>
             </tbody>
@@ -206,7 +200,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 var price           = $(e).find('.price').text();
                 var tax_price       = $(e).find('.tax_price').text();
                 var number          = $(e).find('.oldNumber').text();
-                var delivery_time   = $(e).find('.delivery_time').text();
+                var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 var purchase_number = $(e).find('.number').val();
 
                 sta_all_price += parseFloat(price * number);
