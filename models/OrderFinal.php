@@ -34,6 +34,11 @@ class OrderFinal extends \yii\db\ActiveRecord
         self::IS_QUOTE_YES => '是'
     ];
 
+    public static $purchase = [
+        self::IS_PURCHASE_NO  => '否',
+        self::IS_PURCHASE_YES => '是'
+    ];
+
     public $provide_date;
     /**
      * {@inheritdoc}

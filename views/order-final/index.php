@@ -94,6 +94,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_purchase',
+                'format'    => 'raw',
+                'filter'    => OrderFinal::$purchase,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderFinal::$purchase[$model->is_purchase];
+                }
+            ],
+            [
                 'attribute' => 'manage_name',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'manage_name',['class'=>'form-control']),
