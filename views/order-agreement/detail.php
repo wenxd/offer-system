@@ -26,7 +26,7 @@ foreach ($adminList as $key => $admin) {
 }
 
 $customer_name = $order->customer ? $order->customer->short_name : '';
-$model->purchase_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
+$model->purchase_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
 $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 ?>
 <style>
@@ -76,10 +76,10 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td style="width:100px">
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td>
@@ -90,6 +90,7 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                             <?php endforeach;?>
                         </select>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -258,8 +259,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            var agreement_number          = parseFloat($(this).parent().parent().find('.oldNumber').text());
+
             //默认使用库存数量
+            var agreement_number = parseFloat($(this).parent().parent().find('.oldNumber').text());
             var use_number = agreement_number - number;
             if (use_number < 0) {
                 use_number = 0;
