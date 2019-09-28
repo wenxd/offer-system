@@ -16,6 +16,7 @@ use Yii;
  * @property string $created_at 创建时间
  * @property string $is_quote 是否生成报价单 0否 1是
  * @property string $customer_id
+ * @property string $is_purchase
  */
 class OrderFinal extends \yii\db\ActiveRecord
 {
@@ -24,6 +25,9 @@ class OrderFinal extends \yii\db\ActiveRecord
 
     const IS_AGREEMENT_NO  = '0';
     const IS_AGREEMENT_YES = '1';
+
+    const IS_PURCHASE_NO  = '0';
+    const IS_PURCHASE_YES = '1';
 
     public static $quote = [
         self::IS_QUOTE_NO  => '否',
@@ -45,7 +49,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_deleted', 'is_quote', 'customer_id'], 'integer'],
+            [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase'], 'integer'],
             [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -72,6 +76,7 @@ class OrderFinal extends \yii\db\ActiveRecord
             'is_quote'       => '是否生成报价单',
             'updated_at'     => '更新时间',
             'created_at'     => '创建时间',
+            'is_purchase'    => '是否生成采购单',
         ];
     }
 

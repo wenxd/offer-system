@@ -234,7 +234,7 @@ class OrderFinalController extends BaseController
         return $this->render('detail', $data);
     }
 
-    /**成本单直接生成采购单
+    /**成本单直接生成采购单的页面
      * @param $id
      * @return string
      */
@@ -286,7 +286,7 @@ class OrderFinalController extends BaseController
         return $this->render('create-purchase', $data);
     }
 
-    /**保存为采购单
+    /**保存为采购单的动作
      * @return false|string
      */
     public function actionSavePurchase()
@@ -294,6 +294,8 @@ class OrderFinalController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderFinal = OrderFinal::findOne($params['order_final_id']);
+        $orderFinal->is_purchase = OrderFinal::IS_PURCHASE_YES;
+        $orderFinal->save();
 
         $orderPurchase                     = new OrderPurchase();
         $orderPurchase->purchase_sn        = $params['purchase_sn'];
@@ -317,12 +319,12 @@ class OrderFinalController extends BaseController
                     $purchaseGoods->goods_id            = $finalGoods->goods_id;
                     $purchaseGoods->type                = $finalGoods->type;
                     $purchaseGoods->relevance_id        = $finalGoods->relevance_id;
-                    $purchaseGoods->number              = $finalGoods->inquiry->number;
+                    $purchaseGoods->number              = $finalGoods->number;
                     $purchaseGoods->tax_rate            = $finalGoods->inquiry->tax_rate;
                     $purchaseGoods->price               = $finalGoods->inquiry->price;
                     $purchaseGoods->tax_price           = $finalGoods->inquiry->tax_price;
-                    $purchaseGoods->all_price           = $finalGoods->inquiry->number * $finalGoods->inquiry->price;
-                    $purchaseGoods->all_tax_price       = $finalGoods->inquiry->number * $finalGoods->inquiry->tax_price;
+                    $purchaseGoods->all_price           = $finalGoods->number * $finalGoods->inquiry->price;
+                    $purchaseGoods->all_tax_price       = $finalGoods->number * $finalGoods->inquiry->tax_price;
                     $purchaseGoods->fixed_price         = $finalGoods->inquiry->price;
                     $purchaseGoods->fixed_tax_price     = $finalGoods->inquiry->tax_price;
                     $purchaseGoods->fixed_number        = $item['number'];
