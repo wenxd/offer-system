@@ -47,22 +47,24 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
                     <th>序号</th>
                     <th>零件号</th>
-                    <th>原厂家</th>
+                    <th>厂家号</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
+                    <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>供应商</th>
                     <th>询价员</th>
-                    <th>未税单价</th>
-                    <th>含税单价</th>
-                    <th>未税总价</th>
-                    <th>含税总价</th>
                     <th>税率</th>
-                    <th>报价货期(周)</th>
-                    <th>是否有采购单</th>
+                    <th>未税单价</th>
+                    <th>未税总价</th>
+                    <th>含税单价</th>
+                    <th>含税总价</th>
+                    <th>货期</th>
                     <th>采购单号</th>
                     <th>合同需求数量</th>
-                    <th>数量</th>
+                    <th>采购数量</th>
+                    <th>单位</th>
+                    <th>使用库存数量</th>
                     <th>库存数量</th>
                     <th>建议库存</th>
                     <th>高储</th>
@@ -112,25 +114,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 </td>
                 <td><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
                 <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
-                <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
-                <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
+                <td><?=Admin::findOne($item->inquiry_admin_id)->username?></td>
                 <td><?=$item->tax_rate?></td>
                 <td class="price"><?=$item->price?></td>
-                <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"><?=$item->all_price?></td>
+                <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_tax_price"><?=$item->all_tax_price?></td>
                 <td class="delivery_time"><?=$item->quote_delivery_time?></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td class="oldNumber"><?=$item->number?></td>
                 <td class="afterNumber">
                     <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->number?>">
                 </td>
+                <td><?=$item->goods->unit?></td>
+                <td class="use_stock"></td>
                 <td><?=$item->stock ? $item->stock->number : 0?></td>
                 <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
                 <td><?=$item->stock ? $item->stock->high_number : 0?></td>
@@ -220,6 +223,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
                 purchase_price     += parseFloat(all_price);
                 purchase_all_price += parseFloat(all_tax_price);
+
+                //默认使用库存数量
+                var use_number = number - purchase_number;
+                if (use_number < 0) {
+                    use_number = 0;
+                }
+                $(e).find('.use_stock').text(use_number);
             });
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
@@ -246,10 +256,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
         $(".number").bind('input propertychange', function (e) {
 
             var number = $(this).val();
-            if (number == 0) {
-                layer.msg('数量最少为1', {time:2000});
-                return false;
-            }
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
@@ -258,6 +264,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            var agreement_number          = parseFloat($(this).parent().parent().find('.oldNumber').text());
+            //默认使用库存数量
+            var use_number = agreement_number - number;
+            if (use_number < 0) {
+                use_number = 0;
+            }
+            $(this).parent().parent().find('.use_stock').text(use_number);
 
             var purchase_price     = 0;
             var purchase_all_price = 0;
