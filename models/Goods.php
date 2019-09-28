@@ -36,6 +36,9 @@ use app\extend\tencent\Cos;
  * @property string $is_repair
  * @property string $part
  * @property string $remark
+ * @property string $goods_number_b
+ * @property string $is_emerg
+ * @property string $is_assembly
  */
 class Goods extends ActiveRecord
 {
