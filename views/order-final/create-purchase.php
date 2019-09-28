@@ -128,9 +128,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                     <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                     <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
-                    <td class="oldNumber"><?=$item->inquiry->number?></td>
+                    <td class="oldNumber"><?=$item->number?></td>
                     <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->inquiry->number?>">
+                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->number?>">
                     </td>
                     <td><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
