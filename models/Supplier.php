@@ -74,7 +74,7 @@ class Supplier extends ActiveRecord
             [['sort', 'is_deleted', 'is_confirm'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
-                'full_name'], 'string', 'max' => 255],
+                'full_name', 'contacts'], 'string', 'max' => 255],
             [
                 ['name', 'short_name'],
                 'required',
