@@ -24,6 +24,10 @@ $userId = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'short_name')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'full_name')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'contacts')->textInput(['maxlength' => true]) ?>
+
         <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'telephone')->textInput(['maxlength' => true]) ?>

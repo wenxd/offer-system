@@ -732,10 +732,13 @@ ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMME
 ALTER TABLE `final_goods` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
 ALTER TABLE `order_final` ADD COLUMN  `is_purchase` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
 
-ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '客户全称';
 ALTER TABLE `customer` ADD COLUMN  `taxpayer` varchar(255) NOT NULL DEFAULT '' COMMENT '纳税人识别号';
 ALTER TABLE `customer` ADD COLUMN  `bank_name` varchar(255) NOT NULL DEFAULT '' COMMENT '开户行';
 ALTER TABLE `customer` ADD COLUMN  `bank_number` varchar(255) NOT NULL DEFAULT '' COMMENT '银行账号';
 ALTER TABLE `customer` ADD COLUMN  `post_address` varchar(255) NOT NULL DEFAULT '' COMMENT '邮寄地址';
+ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '客户全称';
+
+ALTER TABLE `supplier` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
+ALTER TABLE `supplier` ADD COLUMN  `contacts` varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
 
 

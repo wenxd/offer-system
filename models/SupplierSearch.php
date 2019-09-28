@@ -19,8 +19,10 @@ class SupplierSearch extends Supplier
     {
         return [
             [['id', 'sort', 'is_deleted', 'is_confirm'], 'integer'],
-            [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade', 'grade_reason', 'advantage_product'], 'safe'],
-            [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'trim']
+            [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade',
+                'grade_reason', 'advantage_product', 'full_name', 'contacts'], 'safe'],
+            [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
+                'full_name', 'contacts'], 'trim']
         ];
     }
 
@@ -79,7 +81,9 @@ class SupplierSearch extends Supplier
             ->andFilterWhere(['like', 'telephone', $this->telephone])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'grade_reason', $this->email])
-            ->andFilterWhere(['like', 'advantage_product', $this->email]);
+            ->andFilterWhere(['like', 'advantage_product', $this->email])
+            ->andFilterWhere(['like', 'contacts', $this->email])
+            ->andFilterWhere(['like', 'full_name', $this->full_name]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

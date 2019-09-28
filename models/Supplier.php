@@ -19,6 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $full_name
  */
 class Supplier extends ActiveRecord
 {
@@ -72,14 +73,13 @@ class Supplier extends ActiveRecord
         return [
             [['sort', 'is_deleted', 'is_confirm'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product'], 'string', 'max' => 255],
+            [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
+                'full_name'], 'string', 'max' => 255],
             [
-                ['name', 'short_name', 'mobile'],
+                ['name', 'short_name'],
                 'required',
                 'on' => 'supplier'
             ],
-            [['mobile'],'match','pattern'=>'/^[1][0-9]{10}$/'],
-            ['email', 'email']
         ];
     }
 
@@ -92,6 +92,7 @@ class Supplier extends ActiveRecord
             'id'                   => '自增id',
             'name'                 => '供应商名称',
             'short_name'           => '供应商简称',
+            'contacts'             => '供应商联系人',
             'mobile'               => '供应商电话',
             'telephone'            => '供应商座机',
             'email'                => '供应商邮箱',
@@ -103,6 +104,7 @@ class Supplier extends ActiveRecord
             'is_deleted'           => '是否删除：0未删除 1已删除',
             'updated_at'           => '更新时间',
             'created_at'           => '创建时间',
+            'full_name'            => '供应商全称',
         ];
     }
 
