@@ -183,6 +183,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税单价</th>
                 <th>货期</th>
                 <th>采购员</th>
+                <th>支出合同签订时间</th>
                 <th>入库时间</th>
                 <th>实际货期</th>
                 <th>订单号</th>
@@ -197,8 +198,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><b class="color"><?= $paymentNew ? $paymentNew->fixed_tax_price : 0 ?></b></td>
                 <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
                 <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
                 <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td><?=$paymentNew ? number_format((strtotime($paymentNew->orderPayment->agreement_at) - strtotime($paymentNew->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
+                <td><?=$paymentNew ? number_format((strtotime($paymentNew->orderPayment->stock_at) - strtotime($paymentNew->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
                 <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
                 <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
                 <td><?=$paymentNew ? $paymentNew->number * $paymentNew->fixed_tax_price : 0 ?></td>
@@ -211,8 +213,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><b class="color"><?= $paymentPrice ? $paymentPrice->fixed_tax_price : 0 ?></b></td>
                 <td class="stressColor"><b class="color"><?= $paymentPrice ? $paymentPrice->delivery_time : 0 ?></b></td>
                 <td><?= $paymentPrice ? (isset($adminList[$paymentPrice->inquiry_admin_id]) ? $adminList[$paymentPrice->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentPrice ? ($paymentPrice->orderPayment ?  substr($paymentPrice->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
                 <td><?= $paymentPrice ? ($paymentPrice->orderPayment ?  substr($paymentPrice->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td><?=$paymentPrice ? number_format((strtotime($paymentPrice->orderPayment->agreement_at) - strtotime($paymentPrice->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
+                <td><?=$paymentPrice ? number_format((strtotime($paymentPrice->orderPayment->stock_at) - strtotime($paymentPrice->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
                 <td><?= $paymentPrice ? Html::a($paymentPrice->order->order_sn, Url::to(['order/detail', 'id' => $paymentPrice->order_id])) : ''?></td>
                 <td><?= $paymentPrice ? Html::a($paymentPrice->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentPrice->order_payment_id])) : ''?></td>
                 <td><?=$paymentPrice ? $paymentPrice->number * $paymentPrice->fixed_tax_price : 0 ?></td>
@@ -225,8 +228,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="tax_price"><b class="color"><?= $paymentDay ? $paymentDay->fixed_tax_price : 0 ?></b></td>
                 <td class="stressColor"><b class="color"><?= $paymentDay ? $paymentDay->delivery_time : 0 ?></b></td>
                 <td><?= $paymentDay ? (isset($adminList[$paymentDay->inquiry_admin_id]) ? $adminList[$paymentDay->inquiry_admin_id]->username : '') : '' ?></td>
+                <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
                 <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->stock_at, 0, 10): '') : '' ?></td>
-                <td><?= $paymentDay ? number_format((strtotime($paymentDay->orderPayment->agreement_at) - strtotime($paymentDay->orderPayment->stock_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
+                <td><?= $paymentDay ? number_format((strtotime($paymentDay->orderPayment->stock_at) - strtotime($paymentDay->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天' : '' ?></td>
                 <td><?= $paymentDay ? Html::a($paymentDay->order->order_sn, Url::to(['order/detail', 'id' => $paymentDay->order_id])) : ''?></td>
                 <td><?= $paymentDay ? Html::a($paymentDay->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentDay->order_payment_id])) : ''?></td>
                 <td><?= $paymentDay ? $paymentDay->number * $paymentDay->fixed_tax_price : 0 ?></td>
