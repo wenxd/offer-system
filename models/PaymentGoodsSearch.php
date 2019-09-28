@@ -51,7 +51,7 @@ class PaymentGoodsSearch extends PaymentGoods
      */
     public function search($params)
     {
-        $query = PaymentGoods::find();
+        $query = PaymentGoods::find()->where(['is_payment' => self::IS_PAYMENT_YES]);
 
         // add conditions that should always apply here
 

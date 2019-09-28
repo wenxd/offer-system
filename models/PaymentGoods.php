@@ -37,11 +37,15 @@ use Yii;
  * @property string $delivery_time 采购货期（周）
  * @property int $before_supplier_id 修改前供应商ID
  * @property string $before_delivery_time 修改前货期
+ * @property string $is_payment 判断采购记录是否展示
  */
 class PaymentGoods extends \yii\db\ActiveRecord
 {
     const IS_QUALITY_NO  = '0';
     const IS_QUALITY_YES = '1';
+
+    const IS_PAYMENT_NO  = '0';
+    const IS_PAYMENT_YES = '1';
 
     public static $quality = [
         self::IS_QUALITY_NO  => '否',
@@ -63,7 +67,8 @@ class PaymentGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_payment_id', 'order_purchase_id', 'purchase_goods_id', 'goods_id', 'type',
-                'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id', 'is_quality', 'supplier_id', 'before_supplier_id'], 'integer'],
+                'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id', 'is_quality', 'supplier_id',
+                'before_supplier_id', 'is_payment'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price',
                 'fixed_all_price', 'fixed_all_tax_price', 'delivery_time', 'before_delivery_time'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
@@ -107,6 +112,7 @@ class PaymentGoods extends \yii\db\ActiveRecord
             'delivery_time'         => '采购货期（周）',
             'before_supplier_id'    => '修改前供应商ID',
             'before_delivery_time'  => '修改前货期',
+            'is_payment'            => '判断是否生成合同用',
         ];
     }
 

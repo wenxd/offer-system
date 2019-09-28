@@ -711,6 +711,7 @@ ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0
 ALTER TABLE `payment_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 ALTER TABLE `payment_goods` ADD COLUMN `before_supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '修改前供应商ID';
 ALTER TABLE `payment_goods` ADD COLUMN `before_delivery_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改前货期';
+ALTER TABLE `payment_goods` ADD COLUMN `is_payment` int(11) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是  采购记录列表展示是否显示';
 
 CREATE TABLE `temp_not_stock` (
   `id`           int(11)  NOT NULL AUTO_INCREMENT,

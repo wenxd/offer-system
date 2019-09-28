@@ -271,11 +271,17 @@ class OrderPurchaseVerifyController extends BaseController
         return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 
+    /**生成支出合同
+     * @param $id
+     * @return \yii\web\Response
+     */
     public function actionComplete($id)
     {
         $orderPayment = OrderPayment::findOne($id);
         $orderPayment->is_agreement = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->save();
+
+        PaymentGoods::updateAll(['is_payment' => PaymentGoods::IS_PAYMENT_YES], ['order_payment_id' => $id]);
 
         return $this->redirect(['index']);
     }
