@@ -555,6 +555,7 @@ class OrderController extends BaseController
                 $isHaveFinalGoods->serial       = $value->serial;
                 $isHaveFinalGoods->relevance_id = $inquiry->id;
                 $isHaveFinalGoods->key          = $key;
+                $isHaveFinalGoods->number       = $value->number;
                 $isHaveFinalGoods->save();
             }
         }

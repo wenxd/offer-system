@@ -146,6 +146,12 @@ class OrderFinalController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        $orderGoods = OrderGoods::find()->where([
+            'order_id'     => $params['order_id'],
+            'goods_id'     => $params['goods_id'],
+            'serial'       => $params['serial'],
+        ])->one();
+
         $finalGoods = FinalGoods::find()->where([
             'order_id'     => $params['order_id'],
             'goods_id'     => $params['goods_id'],
@@ -159,9 +165,9 @@ class OrderFinalController extends BaseController
             $finalGoods->goods_id     = $params['goods_id'];
             $finalGoods->key          = $params['key'];
             $finalGoods->serial       = $params['serial'];
+            $finalGoods->number       = $orderGoods ? $orderGoods->number : 0;
         }
         //更新最新为准
-        $finalGoods->type         = $params['type'];
         $finalGoods->relevance_id = $params['select_id'];
 
         if ($finalGoods->save()) {
@@ -171,6 +177,9 @@ class OrderFinalController extends BaseController
         }
     }
 
+    /**保存成本单
+     * @return false|string
+     */
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();

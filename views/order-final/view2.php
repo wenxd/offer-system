@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $item->goods->original_company?></td>
                         <td><?= $item->goods->original_company_remark?></td>
                         <td><?= $item->goods->unit?></td>
-                        <td class="number"><?= $item->inquiry->number?></td>
+                        <td class="number"><?= $item->number?></td>
                         <td><?= $item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
                         <td class="price"><?= $item->type ? $item->stock->price : $item->inquiry->price?></td>
                         <td class="tax_price"><?= $item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>

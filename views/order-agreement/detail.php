@@ -47,18 +47,17 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
                     <th>序号</th>
                     <th>零件号</th>
+                    <th>原厂家</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
-                    <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>供应商</th>
-                    <th>询价状态</th>
                     <th>询价员</th>
-                    <th>税率</th>
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>未税总价</th>
                     <th>含税总价</th>
+                    <th>税率</th>
                     <th>报价货期(周)</th>
                     <th>是否有采购单</th>
                     <th>采购单号</th>

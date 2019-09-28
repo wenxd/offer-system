@@ -729,4 +729,4 @@ ALTER TABLE `competitor_goods` ADD COLUMN  `is_issue`        tinyint(4) NOT NULL
 
 ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
 
-
+ALTER TABLE `final_goods` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
