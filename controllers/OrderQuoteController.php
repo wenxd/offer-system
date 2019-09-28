@@ -260,14 +260,6 @@ class OrderQuoteController extends Controller
         $orderAgreement->order_quote_sn  = $orderQuote->quote_sn;
 
         $json = [];
-        foreach ($params['goods_info'] as $goods) {
-            $item = [];
-            $item['goods_id']     = $goods['goods_id'];
-            $item['number']       = $goods['number'];
-            $item['price']        = $goods['price'];
-            $item['is_agreement'] = 0;
-            $json[] = $item;
-        }
 
         $orderAgreement->goods_info      = json_encode($json, JSON_UNESCAPED_UNICODE);
         $orderAgreement->agreement_date  = $params['agreement_date'];
@@ -300,7 +292,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->tax_price           = $quoteGoods->tax_price;
                 $agreementGoods->all_price           = $quoteGoods->all_price;
                 $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
-                $agreementGoods->quote_delivery_time = $quoteGoods->quote_delivery_time;
+                $agreementGoods->quote_delivery_time = $item['delivery_time'];
                 //用item的值
                 $agreementGoods->quote_price         = $item['price'];
                 $agreementGoods->quote_tax_price     = $item['tax_price'];

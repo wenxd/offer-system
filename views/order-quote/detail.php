@@ -66,7 +66,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td class="delivery_time"><?=$item->quote_delivery_time?></td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
@@ -177,6 +177,7 @@ $userId   = Yii::$app->user->identity->id;
                 item.number          = $(ele).find('.number').val();
                 item.price           = $(ele).find('.change_price').val();
                 item.tax_price       = $(ele).find('.tax_price').text();
+                item.delivery_time   = $(ele).find('.delivery_time input').val();
                 goods_info.push(item);
 
             });
