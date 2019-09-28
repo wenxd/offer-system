@@ -13,7 +13,7 @@ use Yii;
  * @property string $order_payment_sn 支出合同订单号
  * @property int $order_purchase_id 采购订单ID
  * @property string $order_purchase_sn 采购订单号
- * @property string $purchase_goods_id 支出合同单商品主键
+ * @property int $purchase_goods_id 支出合同单商品主键
  * @property string $serial 序号
  * @property int $goods_id 零件ID
  * @property int $type 关联类型  0询价  1库存
@@ -29,13 +29,14 @@ use Yii;
  * @property string $fixed_all_price 修改后的未税总价
  * @property string $fixed_all_tax_price 修改后的含税总价
  * @property int $fixed_number 修改后的数量
- * @property int $inquiry_admin_id 询价员ID
+ * @property int $inquiry_admin_id 采购员ID
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
- * @property string $supplier_id
- * @property string $delivery_time
- * @property string $before_supplier_id
- * @property string $before_delivery_time
+ * @property int $is_quality 是否质检
+ * @property int $supplier_id 供应商ID
+ * @property string $delivery_time 采购货期（周）
+ * @property int $before_supplier_id 修改前供应商ID
+ * @property string $before_delivery_time 修改前货期
  */
 class PaymentGoods extends \yii\db\ActiveRecord
 {
@@ -61,8 +62,8 @@ class PaymentGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_payment_id', 'order_purchase_id', 'goods_id', 'type', 'relevance_id', 'number',
-                'fixed_number', 'inquiry_admin_id', 'supplier_id', 'before_supplier_id'], 'integer'],
+            [['order_id', 'order_payment_id', 'order_purchase_id', 'purchase_goods_id', 'goods_id', 'type',
+                'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id', 'is_quality', 'supplier_id', 'before_supplier_id'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price',
                 'fixed_all_price', 'fixed_all_tax_price', 'delivery_time', 'before_delivery_time'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
@@ -82,6 +83,7 @@ class PaymentGoods extends \yii\db\ActiveRecord
             'order_payment_sn'      => '支出合同订单号',
             'order_purchase_id'     => '采购订单ID',
             'order_purchase_sn'     => '采购订单号',
+            'purchase_goods_id'     => '支出合同单商品主键',
             'serial'                => '序号',
             'goods_id'              => '零件ID',
             'type'                  => '关联类型  0询价  1库存',
@@ -97,11 +99,12 @@ class PaymentGoods extends \yii\db\ActiveRecord
             'fixed_all_price'       => '修改后的未税总价',
             'fixed_all_tax_price'   => '修改后的含税总价',
             'fixed_number'          => '修改后的数量',
-            'inquiry_admin_id'      => '询价员ID',
+            'inquiry_admin_id'      => '采购员ID',
             'updated_at'            => '更新时间',
             'created_at'            => '创建时间',
-            'supplier_id'           => '供应商ID',
-            'delivery_time'         => '货期',
+            'is_quality'            => '是否质检',
+            'supplier_id'           => '供应商',
+            'delivery_time'         => '采购货期（周）',
             'before_supplier_id'    => '修改前供应商ID',
             'before_delivery_time'  => '修改前货期',
         ];
