@@ -12,7 +12,7 @@ use app\models\Goods;
 
 $deviceList = [];
 if ($model->isNewRecord) {
-    $model->unit = '个';
+    $model->unit = '件';
 } else {
     $deviceList = json_decode($model->device_info, true);
 }
@@ -48,7 +48,16 @@ if ($model->isNewRecord) {
 
     <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
     <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_standard')->radioList(Goods::$standard, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_import')->radioList(Goods::$import, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
+    <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [
         'options' => [
@@ -63,14 +72,6 @@ if ($model->isNewRecord) {
         ]
     ]); ?>
 
-    <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
-
-    <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-        
-    <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-        
-    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
-        
     <?= $form->field($model, 'nameplate_img_id')->widget(FileInput::classname(), [
         'options' => [
             'accept' => 'image/*'
@@ -85,6 +86,7 @@ if ($model->isNewRecord) {
     ]); ?>
 
     <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
     <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>
 

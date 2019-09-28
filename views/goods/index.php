@@ -88,6 +88,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_tz',
+                'filter'    => Goods::$tz,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$tz[$model->is_tz];
+                }
+            ],
+            [
+                'attribute' => 'is_standard',
+                'filter'    => Goods::$standard,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$standard[$model->is_standard];
+                }
+            ],
+            [
+                'attribute' => 'is_import',
+                'filter'    => Goods::$import,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$import[$model->is_import];
+                }
+            ],
+            [
+                'attribute' => 'is_repair',
+                'filter'    => Goods::$repair,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$repair[$model->is_repair];
+                }
+            ],
+            [
                 'attribute' => 'is_special',
                 'filter'    => Goods::$special,
                 'value'     => function ($model, $key, $index, $column) {
@@ -116,7 +144,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'part',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
                 'attribute' => 'technique_remark',
+                'contentOptions'=>['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute' => 'remark',
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
             [

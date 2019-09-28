@@ -31,6 +31,30 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'is_tz',
+                'value'     => function ($model) {
+                    return Goods::$tz[$model->is_tz];
+                }
+            ],
+            [
+                'attribute' => 'is_standard',
+                'value'     => function ($model) {
+                    return Goods::$standard[$model->is_standard];
+                }
+            ],
+            [
+                'attribute' => 'is_import',
+                'value'     => function ($model) {
+                    return Goods::$import[$model->is_import];
+                }
+            ],
+            [
+                'attribute' => 'is_repair',
+                'value'     => function ($model) {
+                    return Goods::$repair[$model->is_repair];
+                }
+            ],
+            [
                 'attribute' => 'img_id',
                 'format'    => 'raw',
                 'value'     => function ($model) {
@@ -68,7 +92,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($model->nameplate_img_url, ['width' => 300]);
                 }
             ],
+            'part',
             'technique_remark',
+            'remark',
             [
                 'attribute'      => 'device_info',
                 'format'         => 'raw',
