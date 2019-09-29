@@ -32,63 +32,67 @@ if ($model->isNewRecord) {
     </div>
     <div class="box-body">
 
-    <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
-        
-    <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'material')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'publish_tax_price')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'publish_delivery_time')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'material')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_standard')->radioList(Goods::$standard, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_import')->radioList(Goods::$import, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
-    <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [
-        'options' => [
-            'accept' => 'image/*'
-        ],
-        'pluginOptions' => [
-            'initialPreviewAsData' => true,
-            'initialPreview'       => $model->img_url ? [$model->img_url] : [],
-            'showUpload'           => false,
-            'overwriteInitial'     => true,
-            'dropZoneTitle'        => '请选择图片'
-        ]
-    ]); ?>
+        <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'nameplate_img_id')->widget(FileInput::classname(), [
-        'options' => [
-            'accept' => 'image/*'
-        ],
-        'pluginOptions' => [
-            'initialPreviewAsData' => true,
-            'initialPreview'       => $model->nameplate_img_url ? [$model->nameplate_img_url] : [],
-            'showUpload'           => false,
-            'overwriteInitial'     => true,
-            'dropZoneTitle'        => '请选择图片'
-        ]
-    ]); ?>
+        <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_standard')->radioList(Goods::$standard, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_import')->radioList(Goods::$import, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
 
-    <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>
+        <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [
+            'options' => [
+                'accept' => 'image/*'
+            ],
+            'pluginOptions' => [
+                'initialPreviewAsData' => true,
+                'initialPreview'       => $model->img_url ? [$model->img_url] : [],
+                'showUpload'           => false,
+                'overwriteInitial'     => true,
+                'dropZoneTitle'        => '请选择图片'
+            ]
+        ]); ?>
+
+        <?= $form->field($model, 'nameplate_img_id')->widget(FileInput::classname(), [
+            'options' => [
+                'accept' => 'image/*'
+            ],
+            'pluginOptions' => [
+                'initialPreviewAsData' => true,
+                'initialPreview'       => $model->nameplate_img_url ? [$model->nameplate_img_url] : [],
+                'showUpload'           => false,
+                'overwriteInitial'     => true,
+                'dropZoneTitle'        => '请选择图片'
+            ]
+        ]); ?>
+
+        <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+
+        <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>
 
     <div class="form-group field-goods-device_info">
         <div class="device_list">

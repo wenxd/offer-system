@@ -39,6 +39,8 @@ use app\extend\tencent\Cos;
  * @property string $goods_number_b
  * @property string $is_emerg
  * @property string $is_assembly
+ * @property string $publish_tax_price
+ * @property string $publish_delivery_time
  */
 class Goods extends ActiveRecord
 {
@@ -154,7 +156,7 @@ class Goods extends ActiveRecord
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
                 'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
-            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info'], 'safe'],
+            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info', 'publish_tax_price', 'publish_delivery_time'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en', 'material', 'part', 'remark'], 'string', 'max' => 255],
             [
@@ -200,6 +202,8 @@ class Goods extends ActiveRecord
             'is_repair'               => '大修',
             'part'                    => '所属部件',
             'remark'                  => '零件备注',
+            'publish_tax_price'       => '发行含税单价',
+            'publish_delivery_time'   => '发行货期',
         ];
     }
 

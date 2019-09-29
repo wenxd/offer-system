@@ -28,7 +28,7 @@ class GoodsSearch extends Goods
             , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high', 'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
-                'material', 'part', 'remark'], 'safe'],
+                'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'technique_remark', 'device_info', 'material', 'part', 'remark'], 'trim'],
         ];
@@ -137,17 +137,19 @@ class GoodsSearch extends Goods
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'goods.id'           => $this->id,
-            'goods.is_process'   => $this->is_process,
-            'goods.is_special'   => $this->is_special,
-            'goods.is_nameplate' => $this->is_nameplate,
-            'goods.is_emerg'     => $this->is_emerg,
-            'goods.is_assembly'  => $this->is_assembly,
-            'goods.is_deleted'   => self::IS_DELETED_NO,
-            'goods.is_tz'        => $this->is_tz,
-            'goods.is_standard'  => $this->is_standard,
-            'goods.is_import'    => $this->is_import,
-            'goods.is_repair'    => $this->is_repair,
+            'goods.id'                      => $this->id,
+            'goods.is_process'              => $this->is_process,
+            'goods.is_special'              => $this->is_special,
+            'goods.is_nameplate'            => $this->is_nameplate,
+            'goods.is_emerg'                => $this->is_emerg,
+            'goods.is_assembly'             => $this->is_assembly,
+            'goods.is_deleted'              => self::IS_DELETED_NO,
+            'goods.is_tz'                   => $this->is_tz,
+            'goods.is_standard'             => $this->is_standard,
+            'goods.is_import'               => $this->is_import,
+            'goods.is_repair'               => $this->is_repair,
+            'goods.publish_tax_price'       => $this->publish_tax_price,
+            'goods.publish_delivery_time'   => $this->publish_delivery_time,
         ]);
 
         $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
