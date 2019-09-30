@@ -83,7 +83,7 @@ $userId = Yii::$app->user->identity->id;
                 <td colspan="2" rowspan="2"></td>
                 <td>修改前含税总价</td>
                 <td colspan="4" rowspan="2"></td>
-                <td>支出含税总价</td>
+                <td>支出合同含税总价</td>
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
