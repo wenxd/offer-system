@@ -69,9 +69,9 @@ foreach ($adminList as $key => $admin) {
                     <td><?=$item->goods->unit?></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="ratio"><?=$item->tax_rate?></td>
-                    <td><?=$item->goods->publish_tax_price?></td>
-                    <td><?=$item->goods->publish_tax_price * $item->number?></td>
-                    <td><?=$item->goods->publish_delivery_time?></td>
+                    <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
+                    <td class="all_publish_tax_price"><?=$item->goods->publish_tax_price * $item->number?></td>
+                    <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
@@ -86,24 +86,29 @@ foreach ($adminList as $key => $admin) {
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
                 <td colspan="12" rowspan="2">汇总统计</td>
+                <td rowspan="2">发行</td>
+                <td>发行含税总价合计</td>
+                <td>发行最长货期</td>
+                <td rowspan="2"></td>
                 <td rowspan="2">成本单</td>
-                <td>最长货期</td>
-                <td>未税总价</td>
-                <td>含税总价</td>
+                <td>成本未税总价合计</td>
+                <td>成本含税总价合计</td>
+                <td>成本最长货期</td>
                 <td rowspan="2"></td>
                 <td rowspan="2">报价单</td>
+                <td>报价未税总价合计</td>
+                <td>报价含税总价合计</td>
                 <td>报价最长货期</td>
-                <td>报价未税总价</td>
-                <td>报价含税总价</td>
-                <td colspan="2" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
-                <td class="mostLongTime"></td>
+                <td class="sta_all_publish_tax_price"></td>
+                <td class="most_publish_delivery_time"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
-                <td class="quote_mostLongTime"></td>
+                <td class="mostLongTime"></td>
                 <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
+                <td class="most_quote_delivery_time"></td>
             </tr>
             </tbody>
         </table>
@@ -125,45 +130,62 @@ foreach ($adminList as $key => $admin) {
     $(document).ready(function () {
         init();
         function init(){
-            var mostLongTime            = 0;
-            var sta_all_price           = 0;
-            var sta_all_tax_price       = 0;
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            var quote_mostLongTime      = 0;
+            var sta_publish_tax_price       = 0;
+            var most_publish_delivery_time  = 0;
+
+            var sta_all_price               = 0;
+            var sta_all_tax_price           = 0;
+            var mostLongTime                = 0;
+
+            var sta_quote_all_price         = 0;
+            var sta_quote_all_tax_price     = 0;
+            var most_quote_delivery_time    = 0;
             $('.order_final_list').each(function (i, e) {
+                var publish_tax_price = parseFloat($(e).find('.all_publish_tax_price').text());
+                if (publish_tax_price) {
+                    sta_publish_tax_price += publish_tax_price;
+                }
+                var publish_delivery_time = parseFloat($(e).find('.publish_delivery_time').text());
+                if (publish_delivery_time > most_publish_delivery_time) {
+                    most_publish_delivery_time = publish_delivery_time;
+                }
+
+                var all_price       = $(e).find('.all_price').text();
+                if (all_price) {
+                    sta_all_price      += parseFloat(all_price);
+                }
+                var all_tax_price   = $(e).find('.all_tax_price').text();
+                if (all_tax_price) {
+                    sta_all_tax_price  += parseFloat(all_tax_price);
+                }
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }
-                var all_price       = $(e).find('.all_price').text();
-                var all_tax_price   = $(e).find('.all_tax_price').text();
-                if (all_price) {
-                    sta_all_price      += parseFloat(all_price);
-                }
-                if (all_tax_price) {
-                    sta_all_tax_price  += parseFloat(all_tax_price);
-                }
+
                 var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
                 if (quote_all_price) {
                     sta_quote_all_price += parseFloat(quote_all_price);
                 }
+                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
                 if (quote_all_tax_price) {
                     sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
                 }
                 var quote_delivery_time   = parseFloat($(e).find('.quote_delivery_time').text());
-                if (quote_delivery_time > mostLongTime) {
-                    quote_mostLongTime = quote_delivery_time;
+                if (quote_delivery_time > most_quote_delivery_time) {
+                    most_quote_delivery_time = quote_delivery_time;
                 }
-
             });
-            $('.mostLongTime').text(mostLongTime);
+            $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
+            $('.most_publish_delivery_time').text(most_publish_delivery_time.toFixed(2));
+
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            $('.mostLongTime').text(mostLongTime);
+
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
-            $('.quote_mostLongTime').text(quote_mostLongTime);
+            $('.most_quote_delivery_time').text(most_quote_delivery_time);
         }
     });
 </script>
