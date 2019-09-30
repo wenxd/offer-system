@@ -1,28 +1,17 @@
 <?php
 
-use app\models\Admin;
-use app\models\AuthAssignment;
-use kartik\daterange\DateRangePicker;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
+use app\models\Helper;
+use kartik\grid\GridView;
+use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\InquiryGoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '寻不出记录列表';
 $this->params['breadcrumbs'][] = $this->title;
-
-
-$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '询价员']])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
 ?>
 <div class="box table-responsive">
     <?php Pjax::begin(); ?>
@@ -64,6 +53,16 @@ foreach ($adminList as $key => $admin) {
                 'format'    => 'raw',
                 'value'     => function($model) {
                     return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->orderInquiry->id]));
+                }
+            ],
+            [
+                'attribute'  => 'admin_id',
+                'label'      => '询价员',
+                'filter'     => Helper::getAdminList(['系统管理员', '询价员']),
+                'filterType' => GridView::FILTER_SELECT2,
+                'value'     => function ($model, $key, $index, $column) {
+                    $adminList = Helper::getAdminList(['系统管理员', '询价员']);
+                    return (isset($adminList[$model->admin_id]) ? $adminList[$model->admin_id] : '');
                 }
             ],
             [

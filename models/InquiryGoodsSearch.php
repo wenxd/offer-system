@@ -22,6 +22,8 @@ class InquiryGoodsSearch extends InquiryGoods
         return [
             [['id', 'order_id', 'goods_id', 'number', 'is_inquiry', 'is_result', 'is_deleted', 'admin_id'], 'integer'],
             [['inquiry_sn', 'serial', 'reason', 'updated_at', 'created_at', 'not_result_at'], 'safe'],
+            [['goods_number', 'goods_number_b'], 'string'],
+            [['goods_number', 'goods_number_b'], 'trim'],
         ];
     }
 
@@ -65,18 +67,24 @@ class InquiryGoodsSearch extends InquiryGoods
             return $dataProvider;
         }
 
+        if ($this->goods_number || $this->goods_number_b) {
+            $query->leftJoin('goods as g', 'g.id = inquiry_goods.goods_id');
+            $query->andFilterWhere(['like', 'g.goods_number', $this->goods_number]);
+            $query->andFilterWhere(['like', 'g.goods_number_b', $this->goods_number_b]);
+        }
+
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'            => $this->id,
-            'order_id'      => $this->order_id,
-            'goods_id'      => $this->goods_id,
-            'number'        => $this->number,
-            'is_inquiry'    => $this->is_inquiry,
-            'is_result'     => $this->is_result,
-            'is_deleted'    => $this->is_deleted,
-            'updated_at'    => $this->updated_at,
-            'created_at'    => $this->created_at,
-            'admin_id'      => $this->admin_id,
+            'inquiry_goods.id'            => $this->id,
+            'inquiry_goods.order_id'      => $this->order_id,
+            'inquiry_goods.goods_id'      => $this->goods_id,
+            'inquiry_goods.number'        => $this->number,
+            'inquiry_goods.is_inquiry'    => $this->is_inquiry,
+            'inquiry_goods.is_result'     => $this->is_result,
+            'inquiry_goods.is_deleted'    => $this->is_deleted,
+            'inquiry_goods.updated_at'    => $this->updated_at,
+            'inquiry_goods.created_at'    => $this->created_at,
+            'inquiry_goods.admin_id'      => $this->admin_id,
         ]);
 
         $query->andFilterWhere(['like', 'inquiry_sn', $this->inquiry_sn])
