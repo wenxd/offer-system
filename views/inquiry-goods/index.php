@@ -10,7 +10,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\InquiryGoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '寻不出记录列表';
+$this->title = '询不出记录列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">

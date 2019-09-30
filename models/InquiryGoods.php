@@ -65,8 +65,8 @@ class InquiryGoods extends \yii\db\ActiveRecord
             'is_deleted'    => '是否删除：0未删除 1已删除',
             'updated_at'    => '更新时间',
             'created_at'    => '创建时间',
-            'not_result_at' => '未寻出时间',
-            'reason'        => '寻不出理由',
+            'not_result_at' => '未询出时间',
+            'reason'        => '询不出理由',
             'admin_id'      => '询价员',
         ];
     }
