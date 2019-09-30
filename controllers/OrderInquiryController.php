@@ -292,7 +292,7 @@ class OrderInquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '含税总价',
+        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '单位',
             '货期(周)', '供应商', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -324,8 +324,8 @@ class OrderInquiryController extends BaseController
                 //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
                 $excel->setCellValue($letter[$i+8] . ($key + 2), $inquiry->number);
-                //含税总价
-                //$excel->setCellValue($letter[$i+9] . ($key + 2), '');
+                //单位
+                $excel->setCellValue($letter[$i+9] . ($key + 2), $inquiry->goods->unit);
                 //货期(周)
                 //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
