@@ -33,13 +33,17 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$model->end_date   = date('Y-m-d');
+
 
 $model->inquiry_sn = 'X' . date('ymd_') . $number;
 
 $order_goods_ids = [];
 foreach ($orderGoods as $v) {
     $order_goods_ids[$v->goods_id] = $v->number;
+}
+
+if ($model->isNewRecord) {
+    $model->end_date   = date('Y-m-d', time() + 3600 * 24 * 2);
 }
 
 ?>
