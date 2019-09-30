@@ -38,6 +38,9 @@ $userId = Yii::$app->user->identity->id;
                 <th>供应商</th>
                 <th>货期(周)</th>
                 <th>税率</th>
+                <th>发行含税单价</th>
+                <th>发行含税总价</th>
+                <th>发行货期</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>未税总价</th>
@@ -59,6 +62,9 @@ $userId = Yii::$app->user->identity->id;
                     <td><?=$item->supplier->name?></td>
                     <td><?=$item->inquiry->delivery_time?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
+                    <td><?=$item->goods->publish_tax_price?></td>
+                    <td class="publish_tax_price"><?=$item->goods->publish_tax_price * $item->fixed_number?></td>
+                    <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                     <td style="background-color: darkgrey" class="price"><?=$item->fixed_price?></td>
                     <td style="background-color: darkgrey" class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td style="background-color: darkgrey" class="all_price"><?=$item->fixed_all_price?></td>
@@ -68,12 +74,17 @@ $userId = Yii::$app->user->identity->id;
             <?php endforeach;?>
 
             <tr style="background-color: #acccb9">
-                <td colspan="11" rowspan="2">汇总统计</td>
+                <td colspan="10" rowspan="2">汇总统计</td>
+                <td>发行含税总价合计</td>
+                <td rowspan="2"></td>
+                <td rowspan="2"></td>
+                <td rowspan="2"></td>
                 <td>支出未税总价</td>
                 <td>支出含税总价</td>
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <td class="sta_all_publish_tax_price"></td>
                 <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
             </tr>
@@ -90,8 +101,9 @@ $userId = Yii::$app->user->identity->id;
     $(document).ready(function () {
         init();
         function init() {
-            var sta_quote_all_price = 0;
-            var sta_quote_all_tax_price = 0;
+            var sta_quote_all_price         = 0;
+            var sta_quote_all_tax_price     = 0;
+            var sta_all_publish_tax_price   = 0;
             $('.order_payment_list').each(function (i, e) {
                 var all_price = $(e).find('.all_price').text();
                 var all_tax_price = $(e).find('.all_tax_price').text();
@@ -101,7 +113,12 @@ $userId = Yii::$app->user->identity->id;
                 if (all_tax_price) {
                     sta_quote_all_tax_price += parseFloat(all_tax_price);
                 }
+                var publish_tax_price = parseFloat($(e).find('.publish_tax_price').text());
+                if (publish_tax_price) {
+                    sta_all_publish_tax_price += publish_tax_price;
+                }
             });
+            $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
         }

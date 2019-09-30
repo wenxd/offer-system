@@ -38,11 +38,12 @@ $userId   = Yii::$app->user->identity->id;
                 <th>英文描述</th>
                 <th>数量</th>
                 <th>单位</th>
-                <th>含税单价</th>
-                <th>含税总价</th>
                 <th>税率</th>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
+                <th>发行货期</th>
+                <th>含税单价</th>
+                <th>含税总价</th>
                 <th>货期</th>
                 <th>库存数量</th>
             </tr>
@@ -61,21 +62,23 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$item->goods->description_en?></td>
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td class="tax_price"><?=$item->quote_tax_price?></td>
-                    <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td><?=$item->goods->publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$item->goods->publish_tax_price * $item->number?></td>
+                    <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                    <td class="tax_price"><?=$item->quote_tax_price?></td>
+                    <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td><?=$item->quote_delivery_time?></td>
                     <td><?=isset($item->stock) ? $item->stock->number : 0?></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
                 <td colspan="7" rowspan="2">汇总统计</td>
-                <td>收入合同金额</td>
-                <td rowspan="2"></td>
                 <td rowspan="2"></td>
                 <td>发行含税总价合计</td>
+                <td rowspan="2"></td>
+                <td rowspan="2"></td>
+                <td>收入合同金额</td>
                 <td rowspan="2"></td>
                 <td rowspan="2"></td>
             </tr>
