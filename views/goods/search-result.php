@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税总价</th>
             </tr>
             <tr class="inquiry_list stock_list">
-                <td class="number color"><b><?= $stock ? $stock->number : 0 ?></b></td>
+                <td class="color"><b><?= $stock ? $stock->number : 0 ?></b></td>
                 <td><?= $stock ? $stock->tax_rate : 0 ?></td>
                 <td class="tax_price"><b class="color"><?= $stock ? $stock->tax_price : 0 ?></b></td>
                 <td><?= $stock ? $stock->position : 0 ?></td>

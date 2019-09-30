@@ -160,9 +160,9 @@ class GoodsController extends BaseController
         $data['agreementGoodsLow']  = $agreementGoodsLow;
 
         $data['competitorGoodsIssue']  = $competitorGoodsIssue;
-        $data['competitorGoodsNew']  = $competitorGoodsNew;
-        $data['competitorGoodsHigh'] = $competitorGoodsHigh;
-        $data['competitorGoodsLow']  = $competitorGoodsLow;
+        $data['competitorGoodsNew']    = $competitorGoodsNew;
+        $data['competitorGoodsHigh']   = $competitorGoodsHigh;
+        $data['competitorGoodsLow']    = $competitorGoodsLow;
 
         //所有用户
         $adminList = Admin::find()->indexBy('id')->all();
