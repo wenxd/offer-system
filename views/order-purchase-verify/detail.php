@@ -44,11 +44,11 @@ $userId = Yii::$app->user->identity->id;
                     <th>含税单价</th>
                     <th>含税总价</th>
                     <th>数量</th>
-                    <th style="background-color: darkgrey">修改后供应商</th>
-                    <th style="background-color: darkgrey">修改后货期(周)</th>
-                    <th style="background-color: darkgrey">修改后含税单价</th>
-                    <th style="background-color: darkgrey">修改后含税总价</th>
-                    <th style="background-color: darkgrey">修改后数量</th>
+                    <th style="background-color: darkgrey">支出合同供应商</th>
+                    <th style="background-color: darkgrey">支出合同货期(周)</th>
+                    <th style="background-color: darkgrey">支出合同含税单价</th>
+                    <th style="background-color: darkgrey">支出合同含税总价</th>
+                    <th style="background-color: darkgrey">支出合同数量</th>
                 </tr>
             </thead>
             <tbody>
