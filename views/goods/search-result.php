@@ -115,6 +115,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>含税总价</th>
             </tr>
             <tr class="inquiry_list">
+                <td>优选</td>
+                <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
+                <td class="number"><?=$inquiryBetter ? $inquiryBetter->number : 0?></td>
+                <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
+                <td class="tax_price"><b class="color"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></b></td>
+                <td class="stressColor"><b class="color"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></b></td>
+                <td><?=$inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
+                <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
+                <td><?=$inquiryBetter ? $inquiryBetter->remark : ''?></td>
+                <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
+                <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
+                <td><?=$inquiryBetter ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
+            </tr>
+            <tr class="inquiry_list">
                 <td>价格</td>
                 <td class="stressColor"><?= $inquiryPrice ? $inquiryPrice->supplier->name : '' ?></td>
                 <td class="number"><?=$inquiryPrice ? $inquiryPrice->number : 0?></td>
@@ -155,20 +169,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$inquiryNew ? Html::a($inquiryNew->order_id ? $inquiryNew->order->order_sn : '', $inquiryNew->order_id ? Url::to(['order/detail', 'id' => $inquiryNew->order_id]) : '') : '' ?></td>
                 <td><?=$inquiryNew ? Html::a($inquiryNew->order_inquiry_id ? $inquiryNew->orderInquiry->inquiry_sn : '', $inquiryNew->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryNew->order_inquiry_id]) : '') : '' ?></td>
                 <td><?=$inquiryNew ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
-            </tr>
-            <tr class="inquiry_list">
-                <td>优选</td>
-                <td class="stressColor"><?= $inquiryBetter ? $inquiryBetter->supplier->name : '' ?></td>
-                <td class="number"><?=$inquiryBetter ? $inquiryBetter->number : 0?></td>
-                <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
-                <td class="tax_price"><b class="color"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></b></td>
-                <td class="stressColor"><b class="color"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></b></td>
-                <td><?=$inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
-                <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
-                <td><?=$inquiryBetter ? $inquiryBetter->remark : ''?></td>
-                <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
-                <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
-                <td><?=$inquiryBetter ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
             </tr>
             </thead>
         </table>
