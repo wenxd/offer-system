@@ -35,31 +35,32 @@ $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
+                <th>零件号</th>
                 <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
+                <th>订单需求数量</th>
+                <th>库存数量</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>税率</th>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
+                <th>成本未税单价</th>
+                <th>成本含税单价</th>
+                <th>成本未税总价</th>
+                <th>成本含税总价</th>
                 <th>成本货期(周)</th>
-                <th>未税单价</th>
-                <th>含税单价</th>
-                <th>未税总价</th>
-                <th>含税总价</th>
-                <th>报价货期(周)</th>
                 <th>报价未税单价</th>
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
                 <th>报价含税总价</th>
+                <th>报价货期(周)</th>
                 <th>是否有报价单</th>
                 <th>报价单号</th>
-                <th>库存数量</th>
-                <th>订单需求数量</th>
             </tr>
             </thead>
             <tbody>
@@ -69,57 +70,59 @@ $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
 data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
                 <td class="serial"><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
+                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
+                        '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $orderGoods[$item->goods_id]->number . '" 
+    onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
+    onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?>
+                </td>
+                <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$item->inquiry->tax_rate?></td>
                 <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
-                <td class="delivery_time"><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
-                <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
-                <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
+                <td class="price"><?=$item->inquiry->price?></td>
+                <td class="tax_price"><?=$item->inquiry->tax_price?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
-                <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
+                <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                 <td class="quote_price"><input type="text" style="width: 100px;"></td>
                 <td class="quote_tax_price"></td>
                 <td class="quote_all_price"></td>
                 <td class="quote_all_tax_price"></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
-                <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
-                <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
-                        '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $orderGoods[$item->goods_id]->number . '" 
-    onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
-    onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?>
-                </td>
+                <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
+                <td><?=isset($quoteGoods[$item->goods_id]) ? '是' : '否'?></td>
+                <td><?=isset($quoteGoods[$item->goods_id]) ? $quoteGoods[$item->goods_id]->order_quote_sn : ''?></td>
             </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="10" rowspan="2">汇总统计</td>
-                <td rowspan="2">成本单</td>
+                <td colspan="13" rowspan="2">汇总统计</td>
+                <td rowspan="2">发行</td>
                 <td>发行含税总价合计</td>
+                <td>发行最长货期</td>
                 <td rowspan="2"></td>
-                <td>最长货期</td>
+                <td rowspan="2">成本单</td>
+                <td>成本未税总价合计</td>
+                <td>成本含税总价合计</td>
+                <td>成本最长货期</td>
                 <td rowspan="2"></td>
-                <td rowspan="2"></td>
-                <td>未税总价合计</td>
-                <td>含税总价合计</td>
-                <td colspan="2" rowspan="2"></td>
                 <td rowspan="2">报价单</td>
                 <td>报价未税总价合计</td>
                 <td>报价含税总价合计</td>
-                <td colspan="5" rowspan="2"></td>
+                <td>报价最长货期</td>
+                <td colspan="3" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
-                <td class="mostLongTime"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
+                <td class="mostLongTime"></td>
                 <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
             </tr>

@@ -221,15 +221,21 @@ class OrderFinalController extends BaseController
             $number = '01';
         }
 
+        $purchaseGoods  = PurchaseGoods::find()
+            ->where(['order_id' => $orderFinal->order_id])
+            ->indexBy('goods_id')
+            ->all();
+
         $data = [];
-        $data['order']         = $order;
-        $data['orderGoods']    = $orderGoods;
-        $data['orderFinal']    = $orderFinal;
-        $data['finalGoods']    = $finalGoods;
-        $data['inquiryGoods']  = $inquiryGoods;
-        $data['quoteGoods']    = $quoteGoods;
-        $data['model']         = new OrderQuote();
-        $data['number']        = $number;
+        $data['order']          = $order;
+        $data['orderGoods']     = $orderGoods;
+        $data['orderFinal']     = $orderFinal;
+        $data['finalGoods']     = $finalGoods;
+        $data['inquiryGoods']   = $inquiryGoods;
+        $data['quoteGoods']     = $quoteGoods;
+        $data['model']          = new OrderQuote();
+        $data['number']         = $number;
+        $data['purchaseGoods']  = $purchaseGoods;
 
         return $this->render('detail', $data);
     }
