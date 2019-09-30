@@ -45,6 +45,7 @@ $userId   = Yii::$app->user->identity->id;
                 <th>报价货期</th>
                 <th>供应商</th>
                 <th>税率</th>
+                <th>发行含税单价</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
@@ -69,6 +70,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
+                    <td><?=$item->goods->publish_tax_price?></td>
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"></td>
