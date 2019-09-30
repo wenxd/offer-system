@@ -120,11 +120,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
+                <td class="most_publish_delivery_time"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
                 <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
+                <td class="most_quote_delivery_time"></td>
             </tr>
             </tbody>
         </table>
@@ -158,15 +160,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
-            var mostLongTime            = 0;
-            var sta_all_price           = 0;
-            var sta_all_tax_price       = 0;
-            var sta_publish_tax_price   = 0;
+            var mostLongTime                = 0;
+            var sta_all_price               = 0;
+            var sta_all_tax_price           = 0;
+            var sta_publish_tax_price       = 0;
+            var most_publish_delivery_time  = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }
+
+                var publish_delivery_time = parseFloat($(e).find('.publish_delivery_time').text());
+                if (publish_delivery_time > most_publish_delivery_time) {
+                    most_publish_delivery_time = publish_delivery_time;
+                }
+
                 var price               = $(e).find('.price').text();
                 var tax_price           = $(e).find('.tax_price').text();
                 var number              = $(e).find('.afterNumber input').val();
@@ -190,10 +199,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     sta_publish_tax_price += parseFloat(all_publish_tax_price);
                 }
             });
-            $('.mostLongTime').text(mostLongTime);
+            $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
+            $('.most_publish_delivery_time').text(most_publish_delivery_time);
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-            $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
+            $('.mostLongTime').text(mostLongTime);
         }
 
         //全选
@@ -326,10 +336,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         //输入货期系数
         $('#orderquote-delivery_ratio').bind('input propertychange', function (e) {
             var delivery_ratio = $(this).val();
+            var most_quote_delivery_time    = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time = $(e).find('.delivery_time').text();
-                $(e).find('.quote_delivery_time input').val((delivery_time * delivery_ratio).toFixed(2));
+                var quote_delivery_time = (delivery_time * delivery_ratio).toFixed(2);
+                $(e).find('.quote_delivery_time input').val(quote_delivery_time);
+                if (quote_delivery_time > most_quote_delivery_time) {
+                    most_quote_delivery_time = quote_delivery_time;
+                }
             });
+            $('.most_quote_delivery_time').text(most_quote_delivery_time);
         });
 
         //保存
