@@ -500,9 +500,6 @@ CREATE TABLE `system_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='系统配置';
 
-ALTER TABLE `goods` ADD COLUMN `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';
-ALTER TABLE `inquiry_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
-
 CREATE TABLE `system_notice` (
   `id`             int(11)      NOT NULL AUTO_INCREMENT,
   `admin_id`       int(11)      NOT NULL DEFAULT '0'  COMMENT '后端用户ID',
@@ -514,64 +511,6 @@ CREATE TABLE `system_notice` (
   `created_at`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='系统通知';
-
-ALTER TABLE `inquiry` ADD COLUMN `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
-ALTER TABLE `inquiry` ADD COLUMN `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
-
-ALTER TABLE `final_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
-
-ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
-
-ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
-ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
-ALTER TABLE `order_quote` ADD COLUMN `quote_at` NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报价时间';
-ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
-ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
-ALTER TABLE `order_quote` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
-
-ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
-ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
-ALTER TABLE `quote_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
-ALTER TABLE `quote_goods` ADD COLUMN `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税单价';
-ALTER TABLE `quote_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
-ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '货期（周）';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
-
-ALTER TABLE `agreement_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
-ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
-ALTER TABLE `agreement_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
-ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否出库';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
-
-ALTER TABLE `supplier` ADD COLUMN `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
-
-ALTER TABLE `purchase_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
-ALTER TABLE `purchase_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
-ALTER TABLE `purchase_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
-ALTER TABLE `purchase_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
-ALTER TABLE `purchase_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `purchase_goods` ADD COLUMN `fixed_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税单价';
-ALTER TABLE `purchase_goods` ADD COLUMN `fixed_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税单价';
-ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税总价';
-ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税总价';
-ALTER TABLE `purchase_goods` ADD COLUMN `fixed_number` int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量';
-ALTER TABLE `purchase_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
-ALTER TABLE `purchase_goods` ADD COLUMN `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '驳回原因';
-ALTER TABLE `purchase_goods` ADD COLUMN `apply_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '审核状态 0无 1审核中 2审核通过 3被驳回';
-ALTER TABLE `purchase_goods` ADD COLUMN `delivery_time`decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 
 CREATE TABLE `order_payment` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT,
@@ -618,8 +557,106 @@ CREATE TABLE `payment_goods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支出合同单与零件ID对应表';
 
+CREATE TABLE `temp_not_stock` (
+  `id`           int(11)  NOT NULL AUTO_INCREMENT,
+  `goods_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
+  `updated_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手动出库库存不够的零件';
+
+CREATE TABLE `temp_order_inquiry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `goods_ids` TEXT     COMMENT '零件id 多个用,分开',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成询价单';
+
+CREATE TABLE `temp_order_goods` (
+  `id`          int(11) NOT NULL AUTO_INCREMENT,
+  `serial`      varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
+  `goods_id`    int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `number`      int(11) NOT NULL DEFAULT '0' COMMENT '数量',
+  `token`       varchar(255) NOT NULL DEFAULT '' COMMENT '每次上传的一批零件统一为一个token',
+  `updated_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成订单';
+
+CREATE TABLE `temp_not_goods` (
+  `id`           int(11)  NOT NULL AUTO_INCREMENT,
+  `goods_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
+  `updated_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
+
+
+ALTER TABLE `inquiry_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
+ALTER TABLE `inquiry_goods` ADD COLUMN  `not_result_at` datetime DEFAULT NULL COMMENT '寻不出时间';
+
+ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
+ALTER TABLE `inquiry` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
+
+
+ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
+ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
+ALTER TABLE `order_quote` ADD COLUMN `quote_at` NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报价时间';
+ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
+ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
+ALTER TABLE `order_quote` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+
+ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `quote_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+
+ALTER TABLE `agreement_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `agreement_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
+ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否出库';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+
+
+
+ALTER TABLE `purchase_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `purchase_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `purchase_goods` ADD COLUMN `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税单价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税总价';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_number` int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量';
+ALTER TABLE `purchase_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
+ALTER TABLE `purchase_goods` ADD COLUMN `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '驳回原因';
+ALTER TABLE `purchase_goods` ADD COLUMN `apply_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '审核状态 0无 1审核中 2审核通过 3被驳回';
+ALTER TABLE `purchase_goods` ADD COLUMN `delivery_time`decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
+ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+
+
 ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
 ALTER TABLE `order_purchase` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
+
 
 ALTER TABLE `order_payment` ADD COLUMN `is_verify`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
 ALTER TABLE `order_payment` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
@@ -642,7 +679,6 @@ ALTER TABLE `order_payment` ADD COLUMN `supplier_id`    int(11) NOT NULL DEFAULT
 ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`    int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
 ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`    int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
 
-ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
 
 ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
 ALTER TABLE `order_agreement` ADD COLUMN `is_payment`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
@@ -676,35 +712,10 @@ ALTER TABLE `stock_log` ADD COLUMN  `region` varchar(255) NOT NULL DEFAULT ''COM
 ALTER TABLE `stock_log` ADD COLUMN  `plat_name` varchar(255) NOT NULL DEFAULT ''COMMENT '平台名称';
 
 
-CREATE TABLE `temp_order_inquiry` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `goods_ids` TEXT     COMMENT '零件id 多个用,分开',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成询价单';
-
-CREATE TABLE `temp_order_goods` (
-  `id`          int(11) NOT NULL AUTO_INCREMENT,
-  `serial`      varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
-  `goods_id`    int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
-  `number`      int(11) NOT NULL DEFAULT '0' COMMENT '数量',
-  `token`       varchar(255) NOT NULL DEFAULT '' COMMENT '每次上传的一批零件统一为一个token',
-  `updated_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `created_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='临时选择商品生成订单';
-
-CREATE TABLE `temp_not_goods` (
-  `id`           int(11)  NOT NULL AUTO_INCREMENT,
-  `goods_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
-  `updated_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
-
+ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
 ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
 ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN  `is_purchase` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
@@ -713,13 +724,6 @@ ALTER TABLE `payment_goods` ADD COLUMN `before_supplier_id` int(11) NOT NULL DEF
 ALTER TABLE `payment_goods` ADD COLUMN `before_delivery_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改前货期';
 ALTER TABLE `payment_goods` ADD COLUMN `is_payment` int(11) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是  采购记录列表展示是否显示';
 
-CREATE TABLE `temp_not_stock` (
-  `id`           int(11)  NOT NULL AUTO_INCREMENT,
-  `goods_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
-  `updated_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手动出库库存不够的零件';
 
 
 ALTER TABLE `competitor_goods` ADD COLUMN  `stock_number`    int(11) NOT NULL DEFAULT '0' COMMENT '库存数量';
@@ -728,10 +732,10 @@ ALTER TABLE `competitor_goods` ADD COLUMN  `all_price`       decimal(10,2) NOT N
 ALTER TABLE `competitor_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT NULL DEFAULT '0' COMMENT '含税总价'
 ALTER TABLE `competitor_goods` ADD COLUMN  `is_issue`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否发行价 0否 1是'
 
-ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
 
+ALTER TABLE `final_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
 ALTER TABLE `final_goods` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
-ALTER TABLE `order_final` ADD COLUMN  `is_purchase` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
+
 
 ALTER TABLE `customer` ADD COLUMN  `taxpayer` varchar(255) NOT NULL DEFAULT '' COMMENT '纳税人识别号';
 ALTER TABLE `customer` ADD COLUMN  `bank_name` varchar(255) NOT NULL DEFAULT '' COMMENT '开户行';
@@ -739,9 +743,12 @@ ALTER TABLE `customer` ADD COLUMN  `bank_number` varchar(255) NOT NULL DEFAULT '
 ALTER TABLE `customer` ADD COLUMN  `post_address` varchar(255) NOT NULL DEFAULT '' COMMENT '邮寄地址';
 ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '客户全称';
 
-ALTER TABLE `supplier` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
-ALTER TABLE `supplier` ADD COLUMN  `contacts` varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
+ALTER TABLE `supplier` ADD COLUMN  `full_name`  varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
+ALTER TABLE `supplier` ADD COLUMN  `contacts`   varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
+ALTER TABLE `supplier` ADD COLUMN  `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
 
+
+ALTER TABLE `goods` ADD COLUMN  `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';
 ALTER TABLE `goods` ADD COLUMN  `is_tz` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否TZ 0否 1是';
 ALTER TABLE `goods` ADD COLUMN  `is_standard` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否标准 0否 1是';
 ALTER TABLE `goods` ADD COLUMN  `is_import` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否进口 0否 1是';

@@ -237,8 +237,9 @@ class OrderInquiryController extends BaseController
     {
         $params = Yii::$app->request->post();
         $inquiryGoods = InquiryGoods::findOne($params['id']);
-        $inquiryGoods->reason    = $params['reason'];
-        $inquiryGoods->is_result = InquiryGoods::IS_RESULT_YES;
+        $inquiryGoods->reason        = $params['reason'];
+        $inquiryGoods->is_result     = InquiryGoods::IS_RESULT_YES;
+        $inquiryGoods->not_result_at = date('Y-m-d');
         if ($inquiryGoods->save()) {
             //超级管理员
             $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
@@ -246,7 +247,7 @@ class OrderInquiryController extends BaseController
             //给超管通知
             $notice = new SystemNotice();
             $notice->admin_id  = $user_super->user_id;
-            $notice->content   = $admin_name . '寻不出零件的价格';
+            $notice->content   = $admin_name . '寻不出零件' . $inquiryGoods->goods->goods_number . '的价格';
             $notice->notice_at = date('Y-m-d H:i:s');
             $notice->save();
             return json_encode(['code' => 200, 'msg' => '成功']);
@@ -404,22 +405,23 @@ class OrderInquiryController extends BaseController
                             ])->one();
                             if ($goods) {
                                 if (isset($supplierList[trim($value['L'])])) {
-                                    $inquiry = new Inquiry();
-                                    $inquiry->inquiry_goods_id = trim($value['A']);
-                                    $inquiry->order_inquiry_id = $orderInquiry->id;
-                                    $inquiry->tax_rate = trim($value['G']);
-                                    $inquiry->price = trim($value['H']) / ((100 + $inquiry->tax_rate) / 100);
-                                    $inquiry->number = trim($value['I']);
-                                    $inquiry->tax_price = trim($value['H']);
-                                    $inquiry->good_id = $goods->id;
-                                    $inquiry->supplier_id = $supplierList[trim($value['L'])]->id;
-                                    $inquiry->all_price = $inquiry->price * $inquiry->number;
-                                    $inquiry->all_tax_price = $inquiry->tax_price * $inquiry->number;
-                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
-                                    $inquiry->remark = trim($value['M']);
-                                    $inquiry->delivery_time = trim($value['K']);
-                                    $inquiry->admin_id = Yii::$app->user->identity->id;
-                                    $inquiry->order_id = $orderInquiry->order_id;
+                                    $inquiry                    = new Inquiry();
+                                    $inquiry->inquiry_goods_id  = trim($value['A']);
+                                    $inquiry->order_inquiry_id  = $orderInquiry->id;
+                                    $inquiry->tax_rate          = trim($value['G']);
+                                    $inquiry->price             = trim($value['H']) / ((100 + $inquiry->tax_rate) / 100);
+                                    $inquiry->number            = trim($value['I']);
+                                    $inquiry->tax_price         = trim($value['H']);
+                                    $inquiry->good_id           = $goods->id;
+                                    $inquiry->supplier_id       = $supplierList[trim($value['L'])]->id;
+                                    $inquiry->all_price         = $inquiry->price * $inquiry->number;
+                                    $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
+                                    $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
+                                    $inquiry->remark            = trim($value['M']);
+                                    $inquiry->delivery_time     = trim($value['K']);
+                                    $inquiry->admin_id          = Yii::$app->user->identity->id;
+                                    $inquiry->order_id          = $orderInquiry->order_id;
+                                    $inquiry->is_upload         = Inquiry::IS_UPLOAD_YES;
                                     if ($inquiry->save()) {
                                         $num++;
                                     }

@@ -13,6 +13,9 @@ use Yii;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $not_result_at
+ * @property string $is_result
+ * @property string $reason
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -43,9 +46,9 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['inquiry_sn'], 'string', 'max' => 255],
+            [['goods_id', 'is_deleted', 'is_result'], 'integer'],
+            [['updated_at', 'created_at', 'not_result_at'], 'safe'],
+            [['inquiry_sn', 'reason'], 'string', 'max' => 255],
         ];
     }
 
@@ -55,12 +58,14 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'inquiry_sn' => '询价单号',
-            'goods_id' => '零件ID',
-            'is_deleted' => '是否删除：0未删除 1已删除',
-            'updated_at' => '更新时间',
-            'created_at' => '创建时间',
+            'id'            => 'ID',
+            'inquiry_sn'    => '询价单号',
+            'goods_id'      => '零件ID',
+            'is_deleted'    => '是否删除：0未删除 1已删除',
+            'updated_at'    => '更新时间',
+            'created_at'    => '创建时间',
+            'not_result_at' => '未寻出时间',
+            'reason'        => '寻不出理由',
         ];
     }
 
