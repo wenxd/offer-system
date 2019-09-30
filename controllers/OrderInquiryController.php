@@ -213,6 +213,7 @@ class OrderInquiryController extends BaseController
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
         $info->reason     = '';
         $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
+        $info->admin_id   = Yii::$app->user->identity->id;
         if ($info->save()) {
             //如果都询价了，本订单和询价单就是已询价
             $res = InquiryGoods::find()->where(['inquiry_sn' => $info->inquiry_sn, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
@@ -240,6 +241,7 @@ class OrderInquiryController extends BaseController
         $inquiryGoods->reason        = $params['reason'];
         $inquiryGoods->is_result     = InquiryGoods::IS_RESULT_YES;
         $inquiryGoods->not_result_at = date('Y-m-d');
+        $inquiryGoods->admin_id      = Yii::$app->user->identity->id;
         if ($inquiryGoods->save()) {
             //超级管理员
             $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();

@@ -593,8 +593,9 @@ CREATE TABLE `temp_not_goods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
 
 
-ALTER TABLE `inquiry_goods` ADD COLUMN `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
+ALTER TABLE `inquiry_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
 ALTER TABLE `inquiry_goods` ADD COLUMN  `not_result_at` datetime DEFAULT NULL COMMENT '寻不出时间';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
 
 ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
 ALTER TABLE `inquiry` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;

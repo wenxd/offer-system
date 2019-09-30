@@ -16,6 +16,7 @@ use Yii;
  * @property string $not_result_at
  * @property string $is_result
  * @property string $reason
+ * @property string $admin_id
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -46,7 +47,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted', 'is_result'], 'integer'],
+            [['goods_id', 'is_deleted', 'is_result', 'admin_id'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at'], 'safe'],
             [['inquiry_sn', 'reason'], 'string', 'max' => 255],
         ];
@@ -66,6 +67,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
             'created_at'    => '创建时间',
             'not_result_at' => '未寻出时间',
             'reason'        => '寻不出理由',
+            'admin_id'      => '询价员',
         ];
     }
 
