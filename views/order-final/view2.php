@@ -27,6 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>单位</th>
                     <th>数量</th>
                     <th>税率</th>
+                    <th>发行含税单价</th>
+                    <th>发行含税总价</th>
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>未税总价</th>
@@ -53,13 +55,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $item->goods->original_company?></td>
                         <td><?= $item->goods->original_company_remark?></td>
                         <td><?= $item->goods->unit?></td>
-                        <td class="number"><?= $item->number?></td>
-                        <td><?= $item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
-                        <td class="price"><?= $item->type ? $item->stock->price : $item->inquiry->price?></td>
-                        <td class="tax_price"><?= $item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
+                        <td class="number"><?=$item->number?></td>
+                        <td><?= $item->inquiry->tax_rate?></td>
+                        <td><?= $item->goods->publish_tax_price?></td>
+                        <td class="publish_tax_price"><?= $item->goods->publish_tax_price * $item->number?></td>
+                        <td class="price"><?=$item->inquiry->price?></td>
+                        <td class="tax_price"><?=$item->inquiry->tax_price?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
-                        <td class="delivery_time"><?= $item->type ? '' : $item->inquiry->delivery_time?></td>
+                        <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                         <td><?= Goods::$process[$item->goods->is_process]?></td>
                         <td><?= Goods::$special[$item->goods->is_special]?></td>
                         <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
@@ -71,7 +75,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 <?php endforeach;?>
                 <tr style="background-color: #acccb9">
-                    <td colspan="12">汇总统计</td>
+                    <td colspan="11">汇总统计</td>
+                    <td class="sta_all_publish_tax_price"></td>
+                    <td></td>
+                    <td></td>
                     <td class="sta_all_price"></td>
                     <td class="sta_all_tax_price"></td>
                     <td class="mostLongTime"></td>
@@ -89,9 +96,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var sta_all_price     = 0;
-        var sta_all_tax_price = 0;
-        var mostLongTime      = 0;
+        var sta_all_price               = 0;
+        var sta_all_tax_price           = 0;
+        var mostLongTime                = 0;
+        var sta_all_publish_tax_price   = 0;
         $('.goods_list').each(function (i, e) {
             var delivery_time = parseFloat($(e).find('.delivery_time').text());
             var number = $(e).find('.number').text();
@@ -106,11 +114,14 @@ $this->params['breadcrumbs'][] = $this->title;
             }
             $(e).find('.all_price').text(all_price.toFixed(2));
             $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
-
-            $('.sta_all_price').text(sta_all_price.toFixed(2));
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-
-            $('.mostLongTime').text(mostLongTime);
+            var publish_tax_price = parseFloat($(e).find('.publish_tax_price').text());
+            if (publish_tax_price) {
+                sta_all_publish_tax_price += publish_tax_price;
+            }
         });
+        $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price);
+        $('.sta_all_price').text(sta_all_price.toFixed(2));
+        $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        $('.mostLongTime').text(mostLongTime);
     });
 </script>

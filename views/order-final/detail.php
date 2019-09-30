@@ -82,7 +82,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 </td>
                 <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                 <td><?=$item->goods->unit?></td>
-                <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
+                <td><?=$item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$item->inquiry->tax_rate?></td>
                 <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
                 <td class="all_publish_tax_price"></td>

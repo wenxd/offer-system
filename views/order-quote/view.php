@@ -35,20 +35,23 @@ foreach ($adminList as $key => $admin) {
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>订单需求数量</th>
+                <th>库存数量</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>货期(周)</th>
-                <th>未税单价</th>
-                <th>含税单价</th>
-                <th>未税总价</th>
-                <th>含税总价</th>
-                <th>报价货期(周)</th>
+                <th>发行含税单价</th>
+                <th>发行含税总价</th>
+                <th>发行货期</th>
+                <th>成本未税单价</th>
+                <th>成本含税单价</th>
+                <th>成本未税总价</th>
+                <th>成本含税总价</th>
+                <th>成本货期(周)</th>
                 <th>报价未税单价</th>
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
                 <th>报价含税总价</th>
-                <th>库存数量</th>
+                <th>报价货期(周)</th>
             </tr>
             </thead>
             <tbody>
@@ -62,31 +65,23 @@ foreach ($adminList as $key => $admin) {
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
                     <td class="afterNumber"><?=$item->number?></td>
+                    <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
+                    <td><?=$item->inquiry->supplier->name?></td>
                     <td class="ratio"><?=$item->tax_rate?></td>
-                    <td class="delivery_time"><?=$item->delivery_time?></td>
+                    <td><?=$item->goods->publish_tax_price?></td>
+                    <td><?=$item->goods->publish_tax_price * $item->number?></td>
+                    <td><?=$item->goods->publish_delivery_time?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
                     <td class="all_tax_price"><?=$item->all_tax_price?></td>
-                    <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
+                    <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td class="quote_price"><?=$item->quote_price?></td>
                     <td class="quote_tax_price"><?=$item->quote_tax_price?></td>
                     <td class="quote_all_price"><?=$item->quote_all_price?></td>
                     <td class="quote_all_tax_price"><?=$item->quote_all_tax_price?></td>
-                    <?php
-                        $is_inquiry = false;
-                        foreach ($inquiryGoods as $inquiry) {
-                            if ($inquiry['goods_id'] == $item->goods_id && $inquiry['serial'] == $item->serial) {
-                                if ($inquiry['is_inquiry']) {
-                                    $is_inquiry = true;
-                                }
-                                break;
-                            }
-                        }
-                    ?>
-                    <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
+                    <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
