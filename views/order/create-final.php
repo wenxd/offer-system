@@ -33,6 +33,9 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <th>单位</th>
                         <th>数量</th>
                         <th>税率</th>
+                        <th>发行含税单价</th>
+                        <th>发行含税总价</th>
+                        <th>发行货期</th>
                         <th>未税单价</th>
                         <th>含税单价</th>
                         <th>未税总价</th>
@@ -61,9 +64,12 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td><?= $item->goods->original_company_remark?></td>
                         <td><?= $item->goods->unit?></td>
                         <td class="number"><?= $item->number?></td>
-                        <td><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->tax_rate : $item->finalGoods->inquiry->tax_rate) : ''?></td>
-                        <td class="price"><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->price : $item->finalGoods->inquiry->price) : ''?></td>
-                        <td class="tax_price"><?= $item->finalGoods ? ($item->finalGoods->type ? $item->finalGoods->stock->tax_price : $item->finalGoods->inquiry->tax_price) : ''?></td>
+                        <td><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_rate : ''?></td>
+                        <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
+                        <td class="all_publish_tax_price"></td>
+                        <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                        <td class="price"><?= $item->finalGoods ? $item->finalGoods->inquiry->price : ''?></td>
+                        <td class="tax_price"><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_price : ''?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
                         <td class="delivery_time"><?= $item->finalGoods ? ($item->finalGoods->type ? '' : $item->finalGoods->inquiry->delivery_time) : ''?></td>
@@ -82,8 +88,12 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                     </tr>
                     <?php endforeach;?>
                     <tr style="background-color: #acccb9">
-                        <td colspan="12">汇总统计</td>
-                        <td class="sta_all_price"></td>
+                        <td colspan="11">汇总统计</td>
+                        <td class="sta_publish_tax_price"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td class="sta_all_tax_price"></td>
                         <td class="mostLongTime"></td>
                         <td colspan="9"></td>
@@ -147,28 +157,37 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                 }
             });
         });
-        var sta_all_price     = 0;
-        var sta_all_tax_price = 0;
-        var mostLongTime      = 0;
+        var sta_all_price           = 0;
+        var sta_all_tax_price       = 0;
+        var mostLongTime            = 0;
+        var sta_publish_tax_price   = 0;
         $('.goods_list').each(function (i, e) {
-            var delivery_time = $(e).find('.delivery_time').text();
-            var number = $(e).find('.number').text();
-            var price = $(e).find('.price').text();
-            var tax_price = $(e).find('.tax_price').text();
-            var all_price = number * price;
-            var all_tax_price = number * tax_price;
+            var delivery_time       = parseFloat($(e).find('.delivery_time').text());
+            var number              = $(e).find('.number').text();
+            var price               = $(e).find('.price').text();
+            var tax_price           = $(e).find('.tax_price').text();
+            var publish_tax_price   = parseFloat($(e).find('.publish_tax_price').text());
+            var all_price           = number * price;
+            var all_tax_price       = number * tax_price;
+            var all_publish_tax_price = number * publish_tax_price;
             sta_all_price += all_price;
             sta_all_tax_price += all_tax_price;
             if (delivery_time > mostLongTime) {
                 mostLongTime = delivery_time;
             }
+
+            sta_publish_tax_price += all_publish_tax_price;
+
             $(e).find('.all_price').text(all_price.toFixed(2));
             $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
+            $(e).find('.all_publish_tax_price').text(all_publish_tax_price.toFixed(2));
 
-            $('.sta_all_price').text(sta_all_price.toFixed(2));
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-
-            $('.mostLongTime').text(mostLongTime);
         });
+
+        $('.sta_publish_tax_price').text(sta_publish_tax_price);
+        $('.sta_all_price').text(sta_all_price.toFixed(2));
+        $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        $('.mostLongTime').text(mostLongTime);
+
     });
 </script>

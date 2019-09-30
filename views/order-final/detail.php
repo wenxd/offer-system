@@ -41,14 +41,12 @@ $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <th>单位</th>
-                <th>技术备注</th>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>货期(周)</th>
+                <th>发行含税单价</th>
+                <th>发行含税总价</th>
+                <th>发行货期</th>
+                <th>成本货期(周)</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>未税总价</th>
@@ -58,7 +56,6 @@ $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
                 <th>报价含税总价</th>
-                <th>询价状态</th>
                 <th>是否有报价单</th>
                 <th>报价单号</th>
                 <th>库存数量</th>
@@ -77,13 +74,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
                 <td><?=$item->goods->unit?></td>
-                <td><?=$item->goods->technique_remark?></td>
-                <td><?=Goods::$process[$item->goods->is_process]?></td>
-                <td><?=Goods::$special[$item->goods->is_special]?></td>
-                <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                 <td><?=$item->type ? $item->stock->supplier->name : $item->inquiry->supplier->name?></td>
-                <td class="ratio"><?=$item->type ? $item->stock->tax_rate : $item->inquiry->tax_rate?></td>
+                <td class="ratio"><?=$item->inquiry->tax_rate?></td>
+                <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
+                <td class="all_publish_tax_price"></td>
+                <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                 <td class="delivery_time"><?=$item->type ? '' : $item->inquiry->delivery_time?></td>
                 <td class="price"><?=$item->type ? $item->stock->price : $item->inquiry->price?></td>
                 <td class="tax_price"><?=$item->type ? $item->stock->tax_price : $item->inquiry->tax_price?></td>
@@ -94,7 +89,6 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="quote_tax_price"></td>
                 <td class="quote_all_price"></td>
                 <td class="quote_all_tax_price"></td>
-                <td><?=isset($inquiryGoods[$item->goods_id]) ? ($inquiryGoods[$item->goods_id]->is_inquiry ? '已询价' : '未询价') : '未询价'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                 <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
@@ -106,18 +100,23 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="16" rowspan="2">汇总统计</td>
+                <td colspan="10" rowspan="2">汇总统计</td>
                 <td rowspan="2">成本单</td>
+                <td>发行含税总价合计</td>
+                <td rowspan="2"></td>
                 <td>最长货期</td>
-                <td>未税总价</td>
-                <td>含税总价</td>
+                <td rowspan="2"></td>
+                <td rowspan="2"></td>
+                <td>未税总价合计</td>
+                <td>含税总价合计</td>
                 <td colspan="2" rowspan="2"></td>
                 <td rowspan="2">报价单</td>
-                <td>报价未税总价</td>
-                <td>报价含税总价</td>
+                <td>报价未税总价合计</td>
+                <td>报价含税总价合计</td>
                 <td colspan="5" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <td class="sta_all_publish_tax_price"></td>
                 <td class="mostLongTime"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
@@ -156,32 +155,42 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
-            var mostLongTime        = 0;
-            var sta_all_price       = 0;
-            var sta_all_tax_price   = 0;
+            var mostLongTime            = 0;
+            var sta_all_price           = 0;
+            var sta_all_tax_price       = 0;
+            var sta_publish_tax_price   = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
                 }
-                var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
-                var number          = $(e).find('.afterNumber input').val();
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                var price               = $(e).find('.price').text();
+                var tax_price           = $(e).find('.tax_price').text();
+                var number              = $(e).find('.afterNumber input').val();
+                var publish_tax_price   = $(e).find('.publish_tax_price').text();
 
-                var all_price           = parseFloat(price * number).toFixed(2);
-                var all_tax_price       = parseFloat(tax_price * number).toFixed(2);
+                var all_price               = parseFloat(price * number).toFixed(2);
+                var all_tax_price           = parseFloat(tax_price * number).toFixed(2);
+                var all_publish_tax_price   = parseFloat(publish_tax_price * number).toFixed(2);
+
+                $(e).find('.all_publish_tax_price').text(all_publish_tax_price);
+                $(e).find('.all_price').text(all_price);
+                $(e).find('.all_tax_price').text(all_tax_price);
+
                 if (all_price) {
                     sta_all_price      += parseFloat(all_price);
                 }
                 if (all_tax_price) {
                     sta_all_tax_price  += parseFloat(all_tax_price);
                 }
+                if (all_publish_tax_price) {
+                    sta_publish_tax_price += parseFloat(all_publish_tax_price);
+                }
             });
             $('.mostLongTime').text(mostLongTime);
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
         }
 
         //全选
