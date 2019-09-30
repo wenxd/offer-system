@@ -34,10 +34,18 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'customer_short_name')->textInput(['readonly' => true])->label('客户缩写/用途缩写') ?>
 
-    <?= $form->field($model, 'manage_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'manage_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'created_at')->textInput(['readonly' => true]) ?>
-
+        <?= $form->field($model, 'created_at')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' =>2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   =>2,  //最大选择范围（年）
+                'minView'   =>2,  //最小选择范围（年）
+            ]
+        ]);?>
     </div>
 
     <div class="box-footer">
