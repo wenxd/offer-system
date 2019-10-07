@@ -342,7 +342,7 @@ class StockInLogController extends Controller
                                         $stock->number += trim($value['B']);
                                         $stock->save();
                                     }
-
+                                    $num++;
                                 }
                             }
                         }
