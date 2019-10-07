@@ -37,7 +37,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'agreement_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->agreement_sn, Url::to(['view', 'id' => $model->id]));
+                    return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
                 }
             ],
             [
