@@ -123,6 +123,7 @@ class Goods extends ActiveRecord
     public $nameplate_img_url = '';
     public $is_inquiry;
     public $is_better_inquiry;
+    public $suggest_number;
 
     public function behaviors()
     {
@@ -155,12 +156,12 @@ class Goods extends ActiveRecord
     {
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
-                'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
+                'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info', 'publish_tax_price', 'publish_delivery_time'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en', 'material', 'part', 'remark'], 'string', 'max' => 255],
             [
-                ['goods_number'],
+                ['goods_number', 'suggest_number'],
                 'required',
                 'on' => 'goods',
             ],
@@ -204,6 +205,7 @@ class Goods extends ActiveRecord
             'remark'                  => '零件备注',
             'publish_tax_price'       => '发行含税单价',
             'publish_delivery_time'   => '发行货期',
+            'suggest_number'          => '建议库存',
         ];
     }
 
@@ -267,6 +269,21 @@ class Goods extends ActiveRecord
         if ($this->is_deleted == static::IS_DELETED_YES ) { // 删除操作
 
         }
+
+        if ($this->suggest_number) {
+            $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
+            $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
+            $stock = Stock::find()->where(['good_id' => $this->id])->one();
+            if (!$stock) {
+                $stock = new Stock();
+                $stock->good_id         = $this->id;
+            }
+            $stock->suggest_number  = $this->suggest_number;
+            $stock->high_number     = $high_stock_ratio * trim($this->suggest_number);
+            $stock->low_number      = $low_stock_ratio * trim($this->suggest_number);
+            $stock->save();
+        }
+
         unset($this->img_url);
         return parent::beforeSave($insert);
     }
