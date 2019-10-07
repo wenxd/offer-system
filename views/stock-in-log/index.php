@@ -89,6 +89,7 @@ foreach ($adminList as $key => $admin) {
                     'value' => Yii::$app->request->get('StockInLogSearch')['operate_time'],
                 ])
             ],
+            'source',
             [
                 'attribute' => 'is_manual',
                 'filter'    => StockLog::$manual,

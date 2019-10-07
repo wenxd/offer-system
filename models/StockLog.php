@@ -31,6 +31,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $customer_id
  * @property int $region
  * @property int $plat_name
+ * @property int $source
  */
 class StockLog extends ActiveRecord
 {
@@ -86,7 +87,7 @@ class StockLog extends ActiveRecord
             [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn', 'goods_id',
                 'number', 'type', 'is_deleted', 'admin_id', 'is_manual', 'customer_id'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'direction'], 'safe'],
-            [['payment_sn', 'agreement_sn', 'remark', 'region', 'plat_name'], 'string', 'max' => 255],
+            [['payment_sn', 'agreement_sn', 'remark', 'region', 'plat_name', 'source'], 'string', 'max' => 255],
         ];
     }
 
@@ -121,6 +122,7 @@ class StockLog extends ActiveRecord
             'plat_name'             => '平台名称',
             'suggest_number'        => '建议库存',
             'position'              => '库存位置',
+            'source'                => '入库来源',
         ];
     }
 

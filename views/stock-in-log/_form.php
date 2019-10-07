@@ -1,5 +1,6 @@
 <?php
 
+use app\models\SystemConfig;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -63,7 +64,7 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'position')->textInput() ?>
 
-        <?= $form->field($model, 'suggest_number')->textInput() ?>
+        <?= $form->field($model, 'source')->dropDownList(SystemConfig::getList(SystemConfig::TITLE_STOCK_SOURCE))->label('来源')?>
 
         <?= $form->field($model, 'type')->dropDownList(['1' => '入库'])->label('入库') ?>
 
@@ -141,9 +142,9 @@ use yii\widgets\ActiveForm;
             return false;
         }
 
-        var suggest_number = $('#stocklog-suggest_number').val();
-        if (!suggest_number) {
-            layer.msg('请输入库存位置', {time:2000});
+        var source = $('#stocklog-source').find("option:selected").text();
+        if (!source) {
+            layer.msg('请输入来源', {time:2000});
             return false;
         }
 
@@ -156,7 +157,7 @@ use yii\widgets\ActiveForm;
         $.ajax({
             type:"POST",
             url:"?r=stock-in-log/add",
-            data:{goods_id:goods_id, number:number, position:position, suggest_number:suggest_number, remark:remark},
+            data:{goods_id:goods_id, number:number, position:position, source:source, remark:remark},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

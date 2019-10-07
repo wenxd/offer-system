@@ -24,7 +24,8 @@ class StockInLogSearch extends StockLog
             [['id', 'order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'purchase_sn',
                 'goods_id', 'number', 'type', 'is_deleted', 'admin_id', 'is_manual'], 'integer'],
             [['payment_sn', 'agreement_sn', 'operate_time', 'updated_at', 'created_at', 'remark', 'order_sn',
-                'order_type', 'goods_number'], 'safe'],
+                'order_type', 'goods_number', 'source'], 'safe'],
+            [['payment_sn', 'agreement_sn', 'remark', 'source'], 'trim'],
         ];
     }
 
@@ -117,6 +118,7 @@ class StockInLogSearch extends StockLog
 
         $query->andFilterWhere(['like', 'stock_log.payment_sn', $this->payment_sn])
             ->andFilterWhere(['like', 'stock_log.agreement_sn', $this->agreement_sn])
+            ->andFilterWhere(['like', 'stock_log.source', $this->source])
             ->andFilterWhere(['like', 'stock_log.remark', $this->remark]);
 
         return $dataProvider;

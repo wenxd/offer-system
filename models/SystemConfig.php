@@ -21,11 +21,23 @@ class SystemConfig extends \yii\db\ActiveRecord
 
     const TITLE_TAX              = 'tax';
     const TITLE_DELIVERY_TIME    = 'delivery';
+    const TITLE_STOCK_SOURCE     = 'source';
     const TITLE_STOCK_DIRECTION  = 'direction';
     const TITLE_REGION           = 'region';
     const TITLE_HIGH_STOCK_RATIO = 'high_stock_ratio';
     const TITLE_LOW_STOCK_RATIO  = 'low_stock_ratio';
     const TITLE_PAYMENT_RATIO    = 'payment_ratio';
+
+    public static $config = [
+        self::TITLE_TAX              => '税率',
+        self::TITLE_DELIVERY_TIME    => '货期',
+        self::TITLE_STOCK_SOURCE     => '入库来源',
+        self::TITLE_STOCK_DIRECTION  => '出库去向',
+        self::TITLE_REGION           => '区块',
+        self::TITLE_HIGH_STOCK_RATIO => '高储系数',
+        self::TITLE_LOW_STOCK_RATIO  => '低储系数',
+        self::TITLE_PAYMENT_RATIO    => '预付款比例',
+    ];
 
     /**
      * {@inheritdoc}
@@ -62,19 +74,9 @@ class SystemConfig extends \yii\db\ActiveRecord
         ];
     }
 
-    public static $config = [
-        self::TITLE_TAX              => '税率',
-        self::TITLE_DELIVERY_TIME    => '货期',
-        self::TITLE_STOCK_DIRECTION  => '出库去向',
-        self::TITLE_REGION           => '区块',
-        self::TITLE_HIGH_STOCK_RATIO => '高储系数',
-        self::TITLE_LOW_STOCK_RATIO  => '低储系数',
-        self::TITLE_PAYMENT_RATIO    => '预付款比例',
-    ];
-
-    public static function getList()
+    public static function getList($title = SystemConfig::TITLE_STOCK_DIRECTION)
     {
-        $directionList = SystemConfig::find()->where(['title' => SystemConfig::TITLE_STOCK_DIRECTION])->all();
+        $directionList = SystemConfig::find()->where(['title' => $title])->all();
         $list = [];
         foreach ($directionList as $item) {
             $list[$item->id] = $item['value'];
