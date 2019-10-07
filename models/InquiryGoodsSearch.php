@@ -13,6 +13,10 @@ class InquiryGoodsSearch extends InquiryGoods
 {
     public $goods_number;
     public $goods_number_b;
+    public $description;
+    public $description_en;
+    public $original_company;
+    public $order_sn;
 
     /**
      * {@inheritdoc}
@@ -22,8 +26,8 @@ class InquiryGoodsSearch extends InquiryGoods
         return [
             [['id', 'order_id', 'goods_id', 'number', 'is_inquiry', 'is_result', 'is_deleted', 'admin_id'], 'integer'],
             [['inquiry_sn', 'serial', 'reason', 'updated_at', 'created_at', 'not_result_at'], 'safe'],
-            [['goods_number', 'goods_number_b'], 'string'],
-            [['goods_number', 'goods_number_b'], 'trim'],
+            [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'order_sn'], 'string'],
+            [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'order_sn'], 'trim'],
         ];
     }
 
@@ -45,7 +49,7 @@ class InquiryGoodsSearch extends InquiryGoods
      */
     public function search($params)
     {
-        $query = InquiryGoods::find()->where(['is_result' => self::IS_RESULT_YES]);
+        $query = InquiryGoods::find()->where(['!=', 'not_result_at', '']);
 
         // add conditions that should always apply here
 
@@ -67,10 +71,18 @@ class InquiryGoodsSearch extends InquiryGoods
             return $dataProvider;
         }
 
-        if ($this->goods_number || $this->goods_number_b) {
+        if ($this->goods_number || $this->goods_number_b || $this->description || $this->description_en || $this->original_company) {
             $query->leftJoin('goods as g', 'g.id = inquiry_goods.goods_id');
             $query->andFilterWhere(['like', 'g.goods_number', $this->goods_number]);
             $query->andFilterWhere(['like', 'g.goods_number_b', $this->goods_number_b]);
+            $query->andFilterWhere(['like', 'g.description', $this->description]);
+            $query->andFilterWhere(['like', 'g.description_en', $this->description_en]);
+            $query->andFilterWhere(['like', 'g.original_company', $this->original_company]);
+        }
+
+        if ($this->order_sn) {
+            $query->leftJoin('order as o', 'o.id = inquiry_goods.order_id');
+            $query->andFilterWhere(['like', 'o.order_sn', $this->order_sn]);
         }
 
         // grid filtering conditions

@@ -214,6 +214,7 @@ class OrderInquiryController extends BaseController
         $info->reason     = '';
         $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
         $info->admin_id   = Yii::$app->user->identity->id;
+        $info->inquiry_at = date('Y-m-d H:i:s');
         if ($info->save()) {
             //如果都询价了，本订单和询价单就是已询价
             $res = InquiryGoods::find()->where(['inquiry_sn' => $info->inquiry_sn, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();

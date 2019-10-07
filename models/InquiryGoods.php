@@ -17,6 +17,7 @@ use Yii;
  * @property string $is_result
  * @property string $reason
  * @property string $admin_id
+ * @property string $inquiry_at
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -48,7 +49,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
     {
         return [
             [['goods_id', 'is_deleted', 'is_result', 'admin_id'], 'integer'],
-            [['updated_at', 'created_at', 'not_result_at'], 'safe'],
+            [['updated_at', 'created_at', 'not_result_at', 'inquiry_at'], 'safe'],
             [['inquiry_sn', 'reason'], 'string', 'max' => 255],
         ];
     }
@@ -68,6 +69,8 @@ class InquiryGoods extends \yii\db\ActiveRecord
             'not_result_at' => '未询出时间',
             'reason'        => '询不出理由',
             'admin_id'      => '询价员',
+            'is_inquiry'    => '是否询价',
+            'inquiry_at'    => '确认询价时间',
         ];
     }
 
@@ -75,8 +78,14 @@ class InquiryGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
+
     public function getOrderInquiry()
     {
         return $this->hasOne(OrderInquiry::className(), ['inquiry_sn' => 'inquiry_sn']);
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 }
