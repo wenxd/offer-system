@@ -137,7 +137,7 @@ $model->delivery_date = date('Y-m-d');
                     <td><?=$item::$stock[$item->is_stock]?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td><?=$item->number?></td>
-                    <td><?=$item->number - $item->fixed_number?></td>
+                    <td><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
                                 $status = '无';
