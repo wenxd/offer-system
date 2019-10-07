@@ -49,7 +49,7 @@ class InquiryGoodsSearch extends InquiryGoods
      */
     public function search($params)
     {
-        $query = InquiryGoods::find()->where(['!=', 'not_result_at', '']);
+        $query = InquiryGoods::find()->where(['is_result_tag' => 1]);
 
         // add conditions that should always apply here
 

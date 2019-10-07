@@ -243,6 +243,7 @@ class OrderInquiryController extends BaseController
         $inquiryGoods->is_result     = InquiryGoods::IS_RESULT_YES;
         $inquiryGoods->not_result_at = date('Y-m-d');
         $inquiryGoods->admin_id      = Yii::$app->user->identity->id;
+        $inquiryGoods->is_result_tag = 1;
         if ($inquiryGoods->save()) {
             //超级管理员
             $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();

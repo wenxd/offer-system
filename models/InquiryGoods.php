@@ -18,6 +18,7 @@ use Yii;
  * @property string $reason
  * @property string $admin_id
  * @property string $inquiry_at
+ * @property string $is_result_tag
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -48,7 +49,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted', 'is_result', 'admin_id'], 'integer'],
+            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at'], 'safe'],
             [['inquiry_sn', 'reason'], 'string', 'max' => 255],
         ];
