@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
 $this->title = '生成报价单';
@@ -26,6 +27,11 @@ foreach ($adminList as $key => $admin) {
 $customer_name = $order->customer ? $order->customer->short_name : '';
 $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
 
+$model->quote_ratio = SystemConfig::find()->select('value')
+    ->where(['title' => SystemConfig::TITLE_QUOTE_PRICE_RATIO])->scalar();
+
+$model->delivery_ratio = SystemConfig::find()->select('value')
+    ->where(['title' => SystemConfig::TITLE_QUOTE_DELIVERY_RATIO])->scalar();
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -160,11 +166,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $('.field-orderpurchase-admin_id').hide();
                 $('.field-orderpurchase-end_date').hide();
             }
+            var quote_ratio                 = $('#orderquote-quote_ratio').val();
+            var quote_delivery_ratio        = $('#orderquote-delivery_ratio').val();
             var mostLongTime                = 0;
             var sta_all_price               = 0;
             var sta_all_tax_price           = 0;
             var sta_publish_tax_price       = 0;
             var most_publish_delivery_time  = 0;
+            var sta_quote_all_price         = 0;
+            var sta_quote_all_tax_price     = 0;
+            var most_quote_delivery_time    = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
@@ -198,12 +209,36 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 if (all_publish_tax_price) {
                     sta_publish_tax_price += parseFloat(all_publish_tax_price);
                 }
+                //报价
+                var quote_price         = parseFloat((quote_ratio * price).toFixed(2));
+                var quote_tax_price     = parseFloat((quote_ratio * tax_price).toFixed(2));
+                var quote_all_price     = parseFloat((quote_price * number).toFixed(2));
+                var quote_all_tax_price = parseFloat((quote_tax_price * number).toFixed(2));
+                var quote_delivery_time = parseFloat((quote_delivery_ratio * delivery_time).toFixed(2));
+
+                $(e).find('.quote_price input').val(quote_price);
+                $(e).find('.quote_tax_price').text(quote_tax_price);
+                $(e).find('.quote_all_price').text(quote_all_price);
+                $(e).find('.quote_all_tax_price').text(quote_all_tax_price);
+                $(e).find('.quote_delivery_time input').val(quote_delivery_time);
+                if (quote_all_price) {
+                    sta_quote_all_price += quote_all_price;
+                }
+                if (quote_all_tax_price) {
+                    sta_quote_all_tax_price += quote_all_tax_price;
+                }
+                if (quote_delivery_time > most_quote_delivery_time) {
+                    most_quote_delivery_time = quote_delivery_time;
+                }
             });
             $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
             $('.most_publish_delivery_time').text(most_publish_delivery_time);
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
             $('.mostLongTime').text(mostLongTime);
+            $('.sta_quote_all_price').text(sta_quote_all_price);
+            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price);
+            $('.most_quote_delivery_time').text(most_quote_delivery_time);
         }
 
         //全选
