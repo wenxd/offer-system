@@ -83,8 +83,8 @@ $userId   = Yii::$app->user->identity->id;
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
-                <td class="sta_all_price"></td>
                 <td class="sta_all_publish_tax_price"></td>
+                <td class="sta_all_price"></td>
             </tr>
             </tbody>
         </table>
