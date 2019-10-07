@@ -292,7 +292,7 @@ class OrderFinalController extends BaseController
         return $this->render('create-purchase', $data);
     }
 
-    /**保存为采购单的动作
+    /**保存为采购单的动作(非项目订单直接生成采购单)
      * @return false|string
      */
     public function actionSavePurchase()
@@ -335,6 +335,7 @@ class OrderFinalController extends BaseController
                     $purchaseGoods->fixed_tax_price     = $finalGoods->inquiry->tax_price;
                     $purchaseGoods->fixed_number        = $item['number'];
                     $purchaseGoods->inquiry_admin_id    = $finalGoods->inquiry->admin_id;
+                    $purchaseGoods->delivery_time       = $item['delivery_time'];
 
                     //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
                     $purchaseGoods->purchase_date       = $params['end_date'];
