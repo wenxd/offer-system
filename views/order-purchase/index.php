@@ -98,11 +98,11 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'is_complete',
+                'attribute' => 'is_agreement',
                 'label'     => '是否全部生成了支出合同',
-                'filter'    => OrderPurchase::$complete,
+                'filter'    => OrderPurchase::$agreement,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$complete[$model->is_complete];
+                    return OrderPurchase::$agreement[$model->is_agreement];
                 }
             ]
         ],

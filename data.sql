@@ -659,6 +659,7 @@ ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '
 
 ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
 ALTER TABLE `order_purchase` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
+ALTER TABLE `order_purchase` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是';
 
 
 ALTER TABLE `order_payment` ADD COLUMN `is_verify`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';

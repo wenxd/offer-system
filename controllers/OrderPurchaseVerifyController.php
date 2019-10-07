@@ -138,7 +138,7 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPayment->remain_price  = $money;
             $orderPayment->save();
 
-            //是否全部生成了支出合同
+            //是否全部生成了支出申请
             $paymentGoodsCount  = PaymentGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
             $purchaseGoodsCount = PurchaseGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
             if ($purchaseGoodsCount == $paymentGoodsCount) {
@@ -282,6 +282,19 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->save();
 
         PaymentGoods::updateAll(['is_payment' => PaymentGoods::IS_PAYMENT_YES], ['order_payment_id' => $id]);
+
+        //是否全部生成了支出合同
+        $isNotOrderPayment = OrderPayment::find()->where([
+            'order_purchase_id' => $orderPayment->order_purchase_id,
+            'is_agreement'      => OrderPayment::IS_AGREEMENT_NO
+        ])->one();
+        //采购单是否全部生成支出申请
+        $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
+
+        if (!$isNotOrderPayment && $orderPurchase->is_complete == OrderPurchase::IS_COMPLETE_YES) {
+            $orderPurchase->is_agreement = OrderPurchase::IS_AGREEMENT_YES;
+        }
+
 
         return $this->redirect(['index']);
     }
