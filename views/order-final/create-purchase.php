@@ -313,7 +313,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     item.number             = $(element).parent().parent().find('.number').val();
                     item.type               = $(element).data('type');
                     item.relevance_id       = $(element).data('relevance_id');
-                    item.delivery_time      = $(element).parent().parent().find('.delivery_time').val();
+                    item.delivery_time      = $(element).parent().parent().find('.delivery_time').text();
                     goods_info.push(item);
                 }
             });
