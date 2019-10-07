@@ -78,7 +78,10 @@ foreach ($adminList as $key => $admin) {
                         }
                     }
                 ],
-                'number',
+                [
+                    'attribute' => 'number',
+                    'label'     => '出库数量',
+                ],
                 [
                     'attribute' => 'price',
                     'label'     => '价格',

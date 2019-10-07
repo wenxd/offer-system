@@ -69,7 +69,10 @@ foreach ($adminList as $key => $admin) {
                     }
                 }
             ],
-            'number',
+            [
+                'attribute' => 'number',
+                'label'     => '入库数量',
+            ],
             [
                 'attribute' => 'admin_id',
                 'label'     => '操作员',

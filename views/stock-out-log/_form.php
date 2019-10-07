@@ -61,7 +61,7 @@ use app\models\Customer;
             </ul>
         </div>
 
-        <?= $form->field($model, 'number')->textInput() ?>
+        <?= $form->field($model, 'number')->textInput()->label('出库数量') ?>
 
         <?= $form->field($model, 'type')->dropDownList(['2' => '出库'])->label('出库') ?>
 

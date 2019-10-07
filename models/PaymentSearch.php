@@ -49,7 +49,7 @@ class PaymentSearch extends OrderPayment
      */
     public function search($params)
     {
-        $query = static::find()->where(['is_payment' => self::IS_PAYMENT_NO]);
+        $query = static::find()->where(['is_payment' => self::IS_PAYMENT_NO, 'is_agreement' => self::IS_AGREEMENT_YES]);
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

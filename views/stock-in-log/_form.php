@@ -60,7 +60,7 @@ use yii\widgets\ActiveForm;
             </ul>
         </div>
 
-        <?= $form->field($model, 'number')->textInput() ?>
+        <?= $form->field($model, 'number')->textInput()->label('入库数量') ?>
 
         <?= $form->field($model, 'position')->textInput() ?>
 

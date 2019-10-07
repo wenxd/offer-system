@@ -209,7 +209,7 @@ class StockOutLogController extends Controller
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-        $tableHeader = ['订单号', '收入合同单号', '零件号', '库存数量', '价格', '总价', '采购员', '出库时间', '手动',
+        $tableHeader = ['订单号', '收入合同单号', '零件号', '出库数量', '价格', '总价', '采购员', '出库时间', '手动',
             '订单类型', '客户', '区块', '平台名称', '去向', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -336,7 +336,7 @@ class StockOutLogController extends Controller
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-        $tableHeader = ['零件号', '库存数量', '客户', '区块', '平台名称', '去向', '备注'];
+        $tableHeader = ['零件号', '出库数量', '客户', '区块', '平台名称', '去向', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);

@@ -216,7 +216,7 @@ class StockInLogController extends Controller
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E'];
-        $tableHeader = ['零件号', '库存数量', '库存位置', '入库来源', '备注'];
+        $tableHeader = ['零件号', '入库数量', '库存位置', '入库来源', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
