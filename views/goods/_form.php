@@ -15,6 +15,8 @@ if ($model->isNewRecord) {
     $model->unit = '件';
 } else {
     $deviceList = json_decode($model->device_info, true);
+    $stock = \app\models\Stock::find()->where(['good_id' => $model->id])->one();
+    $model->suggest_number = $stock->suggest_number;
 }
 ?>
 
@@ -91,6 +93,7 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'suggest_number')->textInput(['maxlength' => true]) ?>
 
         <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>
 

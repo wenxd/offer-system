@@ -161,7 +161,7 @@ class Goods extends ActiveRecord
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
             [['description', 'description_en', 'material', 'part', 'remark'], 'string', 'max' => 255],
             [
-                ['goods_number', 'suggest_number'],
+                ['goods_number'],
                 'required',
                 'on' => 'goods',
             ],
