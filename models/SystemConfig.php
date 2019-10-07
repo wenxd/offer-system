@@ -19,24 +19,28 @@ class SystemConfig extends \yii\db\ActiveRecord
     const IS_DELETED_NO          = '0';
     const IS_DELETED_YES         = '1';
 
-    const TITLE_TAX              = 'tax';
-    const TITLE_DELIVERY_TIME    = 'delivery';
-    const TITLE_STOCK_SOURCE     = 'source';
-    const TITLE_STOCK_DIRECTION  = 'direction';
-    const TITLE_REGION           = 'region';
-    const TITLE_HIGH_STOCK_RATIO = 'high_stock_ratio';
-    const TITLE_LOW_STOCK_RATIO  = 'low_stock_ratio';
-    const TITLE_PAYMENT_RATIO    = 'payment_ratio';
+    const TITLE_TAX                     = 'tax';
+    const TITLE_DELIVERY_TIME           = 'delivery';
+    const TITLE_STOCK_SOURCE            = 'source';
+    const TITLE_STOCK_DIRECTION         = 'direction';
+    const TITLE_REGION                  = 'region';
+    const TITLE_HIGH_STOCK_RATIO        = 'high_stock_ratio';
+    const TITLE_LOW_STOCK_RATIO         = 'low_stock_ratio';
+    const TITLE_PAYMENT_RATIO           = 'payment_ratio';
+    const TITLE_QUOTE_PRICE_RATIO       = 'quote_price_ratio';
+    const TITLE_QUOTE_DELIVERY_RATIO    = 'quote_delivery_ratio';
 
     public static $config = [
-        self::TITLE_TAX              => '税率',
-        self::TITLE_DELIVERY_TIME    => '货期',
-        self::TITLE_STOCK_SOURCE     => '入库来源',
-        self::TITLE_STOCK_DIRECTION  => '出库去向',
-        self::TITLE_REGION           => '区块',
-        self::TITLE_HIGH_STOCK_RATIO => '高储系数',
-        self::TITLE_LOW_STOCK_RATIO  => '低储系数',
-        self::TITLE_PAYMENT_RATIO    => '预付款比例',
+        self::TITLE_TAX                     => '税率',
+        self::TITLE_DELIVERY_TIME           => '货期',
+        self::TITLE_STOCK_SOURCE            => '入库来源',
+        self::TITLE_STOCK_DIRECTION         => '出库去向',
+        self::TITLE_REGION                  => '区块',
+        self::TITLE_HIGH_STOCK_RATIO        => '高储系数',
+        self::TITLE_LOW_STOCK_RATIO         => '低储系数',
+        self::TITLE_PAYMENT_RATIO           => '预付款比例',
+        self::TITLE_QUOTE_PRICE_RATIO       => '报价系数',
+        self::TITLE_QUOTE_DELIVERY_RATIO    => '货期系数',
     ];
 
     /**
