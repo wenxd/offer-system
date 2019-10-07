@@ -216,7 +216,7 @@ class StockInLogController extends Controller
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E'];
-        $tableHeader = ['零件号', '库存数量', '库存位置', '建议库存', '备注'];
+        $tableHeader = ['零件号', '库存数量', '库存位置', '入库来源', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -294,13 +294,14 @@ class StockInLogController extends Controller
                                 $temp->save();
                             } else {
                                 $stockLog = new StockLog();
-                                $stockLog->goods_id = $goods->id;
-                                $stockLog->number = $value['B'] ? trim($value['B']) : 0;
-                                $stockLog->type = StockLog::TYPE_IN;
-                                $stockLog->remark = $value['E'] ? trim($value['E']) : '';
+                                $stockLog->goods_id     = $goods->id;
+                                $stockLog->number       = $value['B'] ? trim($value['B']) : 0;
+                                $stockLog->type         = StockLog::TYPE_IN;
+                                $stockLog->remark       = $value['E'] ? trim($value['E']) : '';
                                 $stockLog->operate_time = date('Y-m-d H:i:s');
-                                $stockLog->admin_id = Yii::$app->user->identity->id;
-                                $stockLog->is_manual = StockLog::IS_MANUAL_YES;
+                                $stockLog->admin_id     = Yii::$app->user->identity->id;
+                                $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
+                                $stockLog->source       = trim($value['D']);
                                 if ($stockLog->save()) {
                                     foreach ($systemList as $k => $item) {
                                         if ($item['title'] == SystemConfig::TITLE_TAX) {
@@ -322,18 +323,13 @@ class StockInLogController extends Controller
                                         $stock->tax_price       = 0;
                                         $stock->number          = trim($value['B']);
                                         $stock->position        = $value['C'] ? trim($value['C']) : '';
-                                        $stock->suggest_number  = $value['D'] ? trim($value['D']) : 0;
+                                        $stock->suggest_number  = 0;
                                         $stock->high_number     = $stock->suggest_number * $highRatio;
                                         $stock->low_number      = $stock->suggest_number * $lowRatio;
                                         $stock->save();
                                     } else {
                                         if (trim($value['C'])) {
                                             $stock->position = $value['C'] ? trim($value['C']) : '';
-                                        }
-                                        if (trim($value['D'])) {
-                                            $stock->suggest_number  = $value['D'] ? trim($value['D']) : 0;
-                                            $stock->high_number     = $stock->suggest_number * $highRatio;
-                                            $stock->low_number      = $stock->suggest_number * $lowRatio;
                                         }
                                         $stock->number += trim($value['B']);
                                         $stock->save();
