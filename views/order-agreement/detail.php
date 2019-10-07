@@ -135,7 +135,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 </td>
                 <td><?=$item->goods->unit?></td>
                 <td class="use_stock"></td>
-                <td><?=$item->stock ? $item->stock->number : 0?></td>
+                <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                 <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
                 <td><?=$item->stock ? $item->stock->high_number : 0?></td>
                 <td><?=$item->stock ? $item->stock->low_number : 0?></td>
@@ -288,9 +288,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 return false;
             }
 
-            var goods_info = [];
-            var number_flag = false;
+            var goods_info    = [];
+            var number_flag   = false;
             var supplier_flag = false;
+            var flag_stock    = false;
             var supplier_name = '';
             $('.select_id').each(function (index, element) {
                 var item = {};
@@ -306,6 +307,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     if (!$(element).parent().parent().find('.number').val()){
                         number_flag  = true;
                     }
+
+                    var purchase_number     = $(element).parent().parent().find('.number').val();
+                    var stock_number        = $(element).parent().parent().find('.stock_number').text();
+                    var old_number          = $(element).parent().parent().find('.oldNumber').text();
+
+                    if (purchase_number == 0 && old_number > stock_number) {
+                        flag_stock = true;
+                    }
+
                     item.agreement_goods_id = $(element).data('agreement_goods_id');
                     item.goods_id           = $(element).val();
                     item.number             = $(element).parent().parent().find('.number').val();
@@ -320,6 +330,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
             //     return false;
             // }
+
+            if (flag_stock) {
+                layer.msg('需求数量大于库存数量时，采购数量不能为0', {time:2000});
+                return false;
+            }
 
             if (number_flag) {
                 layer.msg('请给选中的行输入数量', {time:2000});

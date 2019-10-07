@@ -146,7 +146,7 @@ class OrderAgreementController extends Controller
         $orderAgreement = OrderAgreement::findOne($id);
         $agreementGoodsQuery = AgreementGoods::find()->from('agreement_goods ag')
             ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-            ->where(['order_agreement_id' => $id]);
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0]);
         if (isset($request['admin_id'])) {
             $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
         }

@@ -132,53 +132,70 @@ class OrderPurchaseController extends BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**生成采购单
+     * @return false|string
+     */
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();
 
-        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
-
-        $orderPurchase                     = new OrderPurchase();
-        $orderPurchase->purchase_sn        = $params['purchase_sn'];
-        $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
-        $orderPurchase->order_id           = $orderAgreement->order_id;
-        $orderPurchase->order_agreement_id = $params['order_agreement_id'];
-        $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
-        $orderPurchase->end_date           = $params['end_date'];
-        $orderPurchase->admin_id           = $params['admin_id'];
-        if ($orderPurchase->save()) {
-            foreach ($params['goods_info'] as $item) {
-                $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
-                if ($agreementGoods) {
-                    $purchaseGoods = new PurchaseGoods();
-
-                    $purchaseGoods->order_id            = $orderAgreement->order_id;
-                    $purchaseGoods->order_agreement_id  = $orderAgreement->id;
-                    $purchaseGoods->order_purchase_id   = $orderPurchase->primaryKey;
-                    $purchaseGoods->order_purchase_sn   = $orderPurchase->purchase_sn;
-                    $purchaseGoods->serial              = $agreementGoods->serial;
-                    $purchaseGoods->goods_id            = $agreementGoods->goods_id;
-                    $purchaseGoods->type                = $agreementGoods->type;
-                    $purchaseGoods->relevance_id        = $agreementGoods->relevance_id;
-                    $purchaseGoods->number              = $agreementGoods->number;
-                    $purchaseGoods->tax_rate            = $agreementGoods->tax_rate;
-                    $purchaseGoods->price               = $agreementGoods->price;
-                    $purchaseGoods->tax_price           = $agreementGoods->tax_price;
-                    $purchaseGoods->all_price           = $agreementGoods->all_price;
-                    $purchaseGoods->all_tax_price       = $agreementGoods->all_tax_price;
-                    $purchaseGoods->fixed_price         = $agreementGoods->price;
-                    $purchaseGoods->fixed_tax_price     = $agreementGoods->tax_price;
-                    $purchaseGoods->fixed_number        = $item['number'];
-                    $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
-                    $purchaseGoods->agreement_sn        = $orderAgreement->agreement_sn;
-                    $purchaseGoods->purchase_date       = $params['end_date'];
-                    $purchaseGoods->delivery_time       = $item['delivery_time'];
-                    $purchaseGoods->save();
-                }
+        $open = false;
+        foreach ($params['goods_info'] as $goods) {
+            if ($goods['number'] > 0) {
+                $open = true;
             }
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        }
+        if ($open) {
+            $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
+
+            $orderPurchase                     = new OrderPurchase();
+            $orderPurchase->purchase_sn        = $params['purchase_sn'];
+            $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
+            $orderPurchase->order_id           = $orderAgreement->order_id;
+            $orderPurchase->order_agreement_id = $params['order_agreement_id'];
+            $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
+            $orderPurchase->end_date           = $params['end_date'];
+            $orderPurchase->admin_id           = $params['admin_id'];
+            if ($orderPurchase->save()) {
+                foreach ($params['goods_info'] as $item) {
+                    if ($item['number'] > 0) {
+                        $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                        if ($agreementGoods) {
+                            $purchaseGoods = new PurchaseGoods();
+
+                            $purchaseGoods->order_id = $orderAgreement->order_id;
+                            $purchaseGoods->order_agreement_id = $orderAgreement->id;
+                            $purchaseGoods->order_purchase_id = $orderPurchase->primaryKey;
+                            $purchaseGoods->order_purchase_sn = $orderPurchase->purchase_sn;
+                            $purchaseGoods->serial = $agreementGoods->serial;
+                            $purchaseGoods->goods_id = $agreementGoods->goods_id;
+                            $purchaseGoods->type = $agreementGoods->type;
+                            $purchaseGoods->relevance_id = $agreementGoods->relevance_id;
+                            $purchaseGoods->number = $agreementGoods->number;
+                            $purchaseGoods->tax_rate = $agreementGoods->tax_rate;
+                            $purchaseGoods->price = $agreementGoods->price;
+                            $purchaseGoods->tax_price = $agreementGoods->tax_price;
+                            $purchaseGoods->all_price = $agreementGoods->all_price;
+                            $purchaseGoods->all_tax_price = $agreementGoods->all_tax_price;
+                            $purchaseGoods->fixed_price = $agreementGoods->price;
+                            $purchaseGoods->fixed_tax_price = $agreementGoods->tax_price;
+                            $purchaseGoods->fixed_number = $item['number'];
+                            $purchaseGoods->inquiry_admin_id = $agreementGoods->inquiry_admin_id;
+                            $purchaseGoods->agreement_sn = $orderAgreement->agreement_sn;
+                            $purchaseGoods->purchase_date = $params['end_date'];
+                            $purchaseGoods->delivery_time = $item['delivery_time'];
+                            $purchaseGoods->save();
+                        }
+                    }
+                }
+                return json_encode(['code' => 200, 'msg' => '保存成功']);
+            } else {
+                return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            }
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+            $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
+            AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
     }
 
