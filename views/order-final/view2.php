@@ -26,6 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
+                    <th>供应商</th>
+                    <th>询价员</th>
                     <th>税率</th>
                     <th>发行含税单价</th>
                     <th>发行含税总价</th>
@@ -56,6 +58,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $item->goods->original_company_remark?></td>
                         <td><?= $item->goods->unit?></td>
                         <td class="number"><?=$item->number?></td>
+                        <td><?= $item->inquiry->supplier->name?></td>
+                        <td><?= $item->inquiry->admin->username?></td>
                         <td><?= $item->inquiry->tax_rate?></td>
                         <td><?= $item->goods->publish_tax_price?></td>
                         <td class="publish_tax_price"><?= $item->goods->publish_tax_price * $item->number?></td>
