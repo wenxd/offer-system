@@ -7,7 +7,9 @@ use app\models\Order;
 use app\models\OrderAgreement;
 use app\models\OrderAgreementStockOutSearch;
 use app\models\OrderGoods;
+use app\models\OrderPayment;
 use app\models\OrderPurchase;
+use app\models\PaymentGoods;
 use app\models\PurchaseGoods;
 use app\models\Stock;
 use app\models\StockLog;
@@ -66,7 +68,18 @@ class StockOutController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $order_id = $orderAgreement->order_id;
 
-        $orderPurchase = OrderPurchase::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
+        //采购
+        $purchaseGoods = PurchaseGoods::find()->where([
+            'order_id'           => $order_id,
+            'order_agreement_id' => $orderAgreement->id,
+            'serial'             => $agreementGoods->serial,
+            'goods_id'           => $agreementGoods->goods_id,
+        ])->one();
+
+        //支出
+        $paymentGoods = PaymentGoods::find()->where([
+            'purchase_goods_id' => ($purchaseGoods ? $purchaseGoods->id : 0),
+        ])->one();
 
         //判断库存是否够
         $stock = Stock::findOne(['good_id' => $agreementGoods['goods_id']]);
@@ -74,17 +87,23 @@ class StockOutController extends BaseController
             return json_encode(['code' => 500, 'msg' => '库存不够了'], JSON_UNESCAPED_UNICODE);
         }
 
-        $stockLog                    = new StockLog();
-        $stockLog->order_id          = $orderAgreement['order_id'];
-        $stockLog->order_purchase_id = $orderPurchase ? $orderPurchase : 0;
-        $stockLog->purchase_sn       = $orderPurchase ? $orderPurchase['purchase_sn'] : '';
-        $stockLog->order_payment_id  = $orderAgreement->id;
-        $stockLog->purchase_sn       = $orderAgreement->agreement_sn;
-        $stockLog->goods_id          = $agreementGoods['goods_id'];
-        $stockLog->number            = $agreementGoods['number'];
-        $stockLog->type              = StockLog::TYPE_OUT;
-        $stockLog->operate_time      = date('Y-m-d H:i:s');
-        $stockLog->admin_id          = Yii::$app->user->identity->id;
+        $stockLog                       = new StockLog();
+        $stockLog->order_id             = $orderAgreement['order_id'];
+
+        $stockLog->order_payment_id     = $paymentGoods ? $paymentGoods->order_payment_id : 0;
+        $stockLog->payment_sn           = $paymentGoods ? $paymentGoods->order_payment_sn : '';
+
+        $stockLog->order_agreement_id   = $orderAgreement->id;
+        $stockLog->agreement_sn         = $orderAgreement->agreement_sn;
+
+        $stockLog->order_purchase_id    = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
+        $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
+
+        $stockLog->goods_id             = $agreementGoods['goods_id'];
+        $stockLog->number               = $agreementGoods['number'];
+        $stockLog->type                 = StockLog::TYPE_OUT;
+        $stockLog->operate_time         = date('Y-m-d H:i:s');
+        $stockLog->admin_id             = Yii::$app->user->identity->id;
         if ($stockLog->save()) {
             if (!$stock) {
                 $inquiry = Inquiry::findOne($agreementGoods->relevance_id);
@@ -121,17 +140,37 @@ class StockOutController extends BaseController
         $order_id = $orderAgreement->order_id;
 
         foreach ($agreementGoods as $agreementGood) {
+            //采购
+            $purchaseGoods = PurchaseGoods::find()->where([
+                'order_id'           => $order_id,
+                'order_agreement_id' => $orderAgreement->id,
+                'serial'             => $agreementGood->serial,
+                'goods_id'           => $agreementGood->goods_id,
+            ])->one();
+
+            //支出
+            $paymentGoods = PaymentGoods::find()->where([
+                'purchase_goods_id' => ($purchaseGoods ? $purchaseGoods->id : 0),
+            ])->one();
+
             $stock = Stock::findOne(['good_id' => $agreementGood['goods_id']]);
             if (!$stock || ($stock && $stock->number < $agreementGood['number'])) {
                 return json_encode(['code' => 500, 'msg' => $agreementGood->goods->goods_number . '库存不够了'], JSON_UNESCAPED_UNICODE);
             }
+            //采购
             $orderPurchase = OrderPurchase::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
             $stockLog                    = new StockLog();
             $stockLog->order_id          = $orderAgreement['order_id'];
-            $stockLog->order_purchase_id = $orderPurchase ? $orderPurchase : 0;
-            $stockLog->purchase_sn       = $orderPurchase ? $orderPurchase['purchase_sn'] : '';
-            $stockLog->order_payment_id  = $orderAgreement->id;
-            $stockLog->purchase_sn       = $orderAgreement->agreement_sn;
+
+            $stockLog->order_payment_id     = $paymentGoods ? $paymentGoods->order_payment_id : 0;
+            $stockLog->payment_sn           = $paymentGoods ? $paymentGoods->order_payment_sn : '';
+
+            $stockLog->order_agreement_id   = $orderAgreement->id;
+            $stockLog->agreement_sn         = $orderAgreement->agreement_sn;
+
+            $stockLog->order_purchase_id    = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
+            $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
+
             $stockLog->goods_id          = $agreementGood['goods_id'];
             $stockLog->number            = $agreementGood['number'];
             $stockLog->type              = StockLog::TYPE_OUT;
