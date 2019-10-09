@@ -761,5 +761,33 @@ ALTER TABLE `goods` ADD COLUMN  `is_repair` tinyint(2) NOT NULL DEFAULT '0' COMM
 ALTER TABLE `goods` ADD COLUMN  `part` varchar(255) NOT NULL DEFAULT '' COMMENT '所属部件';
 ALTER TABLE `goods` ADD COLUMN  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '零件备注';
 
-
+CREATE TABLE `inquiry_temp` (
+  `id`                  int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `good_id`             int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `supplier_id`         int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID',
+  `price`               decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税价格',
+  `tax_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税价格',
+  `tax_rate`            decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率',
+  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `number`              int(11) NOT NULL DEFAULT '0' COMMENT '询价数量',
+  `inquiry_datetime`    varchar(255) NOT NULL DEFAULT '' COMMENT '咨询时间',
+  `sort`                int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `is_better`           int(11) NOT NULL DEFAULT '0' COMMENT '是否优选：0否 1是',
+  `is_newest`           int(11) NOT NULL DEFAULT '0' COMMENT '是否最新询价：0否 1是',
+  `is_priority`         int(11) NOT NULL DEFAULT '0' COMMENT '是否优先询价： 0否 1是',
+  `is_deleted`          int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `offer_date`          datetime DEFAULT NULL COMMENT '交货日期',
+  `remark`              varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `better_reason`       varchar(255) NOT NULL DEFAULT '' COMMENT '优选理由',
+  `delivery_time`       int(11) NOT NULL DEFAULT '0' COMMENT '货期  （天）',
+  `admin_id`            int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID',
+  `order_id`            int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `order_inquiry_id`    int(11) NOT NULL DEFAULT '0' COMMENT '询价单ID',
+  `inquiry_goods_id`    int(11) NOT NULL DEFAULT '0' COMMENT '询价零件表ID',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `is_upload`           int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='临时询价表';
 
