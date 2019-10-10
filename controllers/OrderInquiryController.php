@@ -136,20 +136,21 @@ class OrderInquiryController extends BaseController
         $orderInquiry->admin_id   = $params['admin_id'];
 
         $json = $params['goods_info'] ? $params['goods_info'] : [];
-        $data = [];
-        foreach ($params['goods_info'] as $goods) {
-            $row = [];
-            //批量数据
-            $row[] = $params['order_id'];
-            $row[] = $params['inquiry_sn'];
-            $row[] = $goods['goods_id'];
-            $row[] = $goods['number'];
-            $row[] = $goods['serial'];
-            $data[] = $row;
-        }
 
-        $orderInquiry->goods_info = json_encode($json, JSON_UNESCAPED_UNICODE);
+        $orderInquiry->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
         if ($orderInquiry->save()) {
+            $data = [];
+            foreach ($params['goods_info'] as $goods) {
+                $row = [];
+                //批量数据
+                $row[] = $params['order_id'];
+                $row[] = $orderInquiry->id;
+                $row[] = $params['inquiry_sn'];
+                $row[] = $goods['goods_id'];
+                $row[] = $goods['number'];
+                $row[] = $goods['serial'];
+                $data[] = $row;
+            }
             self::insertInquiryGoods($data);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -160,7 +161,7 @@ class OrderInquiryController extends BaseController
     //批量插入
     public static function insertInquiryGoods($data)
     {
-        $feild = ['order_id', 'inquiry_sn', 'goods_id', 'number', 'serial'];
+        $feild = ['order_id', 'order_inquiry_id', 'inquiry_sn', 'goods_id', 'number', 'serial'];
         $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
     }
 
@@ -197,7 +198,7 @@ class OrderInquiryController extends BaseController
             'good_id'           => $goods_ids,
             'order_inquiry_id'  => $id,
             'admin_id'          => Yii::$app->user->identity->id,
-        ])->asArray()->all();
+        ])->asArray()->createCommand()->getRawSql();var_dump($inquiryMyList);die;
         $inquiryMyList = ArrayHelper::index($inquiryMyList, null, 'good_id');
 
         $data['inquiryList']    = $inquiryList;
@@ -211,8 +212,8 @@ class OrderInquiryController extends BaseController
     {
         $info = InquiryGoods::findOne($id);
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
-        $info->reason     = '';
-        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
+//        $info->reason     = '';
+//        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
         $info->admin_id   = Yii::$app->user->identity->id;
         $info->inquiry_at = date('Y-m-d H:i:s');
         if ($info->save()) {

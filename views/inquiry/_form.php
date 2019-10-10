@@ -55,7 +55,9 @@ foreach ($adminList as $key => $admin) {
 //通过inquiry_goods_id查询数量
 if (isset($_GET['inquiry_goods_id'])) {
     $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
-    $model->number = $inquiryGoods->number;
+    $model->number           = $inquiryGoods->number;
+    $model->order_id         = $inquiryGoods->order_id;
+    $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
 }
 
 ?>
@@ -283,34 +285,12 @@ if (isset($_GET['inquiry_goods_id'])) {
 
     init();
     function init() {
-        // $('#inquiry-order_id').val(0);
-        // $('#inquiry-order_inquiry_id').val(0);
         var is_inquiry = '<?=$_GET['inquiry_goods_id'] ?? 0?>';
         if (is_inquiry) {
             var goods_id = '<?=$_GET['goods_id'] ?? 0?>';
-            getGoodsInfo(goods_id);
+            $('#inquiry-better_reason').val('原厂家');
         }
     }
-
-    function getGoodsInfo(goods_id) {
-        $.ajax({
-            type:"get",
-            url:'?r=goods/get-info',
-            data:{goods_id:goods_id},
-            dataType:'JSON',
-            success:function(res){
-                if (res && res.code == 200){
-                    $('#inquiry-better_reason').val('原厂家');
-                    $('#inquiry-order_id').val(res.data.orderGoods.order_id);
-                    $('#inquiry-order_inquiry_id').val(res.data.orderInquiry.id);
-                }
-            }
-        });
-    }
-    $('#inquiry-good_id').change(function (e) {
-        goods_id = $(this).val();
-        getGoodsInfo(goods_id);
-    });
 
     //供应商搜索
     $("#inquiry-supplier_name").bind('input propertychange', function (e) {

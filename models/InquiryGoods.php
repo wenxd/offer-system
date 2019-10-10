@@ -19,6 +19,9 @@ use Yii;
  * @property string $admin_id
  * @property string $inquiry_at
  * @property string $is_result_tag
+ * @property string $number
+ * @property string $order_id
+ * @property string $order_inquiry_id
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -49,7 +52,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag'], 'integer'],
+            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at'], 'safe'],
             [['inquiry_sn', 'reason'], 'string', 'max' => 255],
         ];
@@ -72,6 +75,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
             'admin_id'      => '询价员',
             'is_inquiry'    => '是否询价',
             'inquiry_at'    => '确认询价时间',
+            'number'        => '数量',
         ];
     }
 
