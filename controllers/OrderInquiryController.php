@@ -198,7 +198,7 @@ class OrderInquiryController extends BaseController
             'good_id'           => $goods_ids,
             'order_inquiry_id'  => $id,
             'admin_id'          => Yii::$app->user->identity->id,
-        ])->asArray()->createCommand()->getRawSql();var_dump($inquiryMyList);die;
+        ])->asArray()->all();
         $inquiryMyList = ArrayHelper::index($inquiryMyList, null, 'good_id');
 
         $data['inquiryList']    = $inquiryList;
