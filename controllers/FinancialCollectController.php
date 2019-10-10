@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\AgreementGoods;
 use app\models\OrderAgreement;
+use app\models\OrderAgreementSearch;
 use Yii;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
@@ -127,5 +128,19 @@ class FinancialCollectController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
+    }
+
+    /**
+     * 待收款汇总
+     */
+    public function actionList()
+    {
+        $searchModel = new OrderAgreementSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('agreement-list', [
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

@@ -23,9 +23,9 @@ class OrderAgreementSearch extends OrderAgreement
         return [
             [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
-                'customer_name', 'sign_date', 'stock_at'], 'safe'],
-            [['id', 'order_quote_sn', 'order_sn', 'customer_name'], 'trim'],
-            [['payment_price'], 'number'],
+                'customer_name', 'sign_date', 'stock_at', 'payment_price'], 'safe'],
+            [['id', 'order_quote_sn', 'order_sn', 'customer_name', 'payment_price', 'payment_ratio', 'remain_price'], 'trim'],
+            [['payment_price', 'payment_ratio', 'remain_price'], 'number'],
         ];
     }
 
