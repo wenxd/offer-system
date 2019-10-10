@@ -49,9 +49,9 @@ class StockOutController extends BaseController
             'type' => StockLog::TYPE_OUT
         ])->all();
 
-        $data['model']         = $orderAgreement;
-        $data['orderGoods']    = $agreementGoods;
-        $data['stockLog']      = $stockLog;
+        $data['model']          = $orderAgreement;
+        $data['agreementGoods'] = $agreementGoods;
+        $data['stockLog']       = $stockLog;
 
         return $this->render('detail', $data);
     }

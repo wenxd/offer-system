@@ -54,11 +54,12 @@ $isShow = in_array($userId, $adminIds);
                 <?php endif;?>
                 <th>数量</th>
                 <th>出库</th>
+                <th>库存数量</th>
                 <th>操作</th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($orderGoods as $item):?>
+            <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_final_list">
                     <?php
                         $str = "<input type='checkbox' class='select_id' value={$item->id}>";
@@ -79,6 +80,7 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
+                    <td><?=$item->stock ? $item->stock->number : 0?></td>
                     <td>
                         <?php if (!$item->is_out):?>
                             <a class="btn btn-success btn-xs btn-flat stock_out" href="javascript:void(0);" data-id="<?=$item->id?>">出库</a>
