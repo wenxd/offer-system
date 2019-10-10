@@ -78,6 +78,8 @@ class OrderAgreementSearch extends OrderAgreement
             'order_agreement.is_agreement'   => $this->is_agreement,
             'order_agreement.admin_id'       => $this->admin_id,
             'order_agreement.payment_price'  => $this->payment_price,
+            'order_agreement.payment_ratio'  => $this->payment_ratio,
+            'order_agreement.remain_price'   => $this->remain_price,
         ]);
 
         if ($this->order_sn || $this->customer_name) {
