@@ -27,7 +27,7 @@ if ($isShow) {
     $func = '{create} {gen}';
     $operate = '{view}';
 } else {
-    $func = '{create} {gen} {delete} {stock_in} {stock_out}';
+    $func = '{create} {gen} {delete} {stock_in} {stock_out} {download}';
     $operate = '{view} {update} {delete}';
 }
 
@@ -46,6 +46,12 @@ if ($isShow) {
                     return Html::a('<i class="fa fa-chrome"></i> 批量移库', 'Javascript: void(0)', [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-success btn-flat stock-move',
+                    ]);
+                },
+                'download' => function () {
+                    return Html::a('<i class="fa fa-download"></i> 导出', Url::to(['download']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat',
                     ]);
                 }
             ]
