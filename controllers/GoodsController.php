@@ -211,9 +211,9 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'];
         $tableHeader = ['零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
-            '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价', '发行货期'];
+            '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价', '发行货期', '预估发行价', '物资编码'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -392,6 +392,14 @@ class GoodsController extends BaseController
                             //发行货期
                             if ($value['Y']) {
                                 $goods->publish_delivery_time = trim($value['Y']);
+                            }
+                            //预估发行价
+                            if ($value['Z']) {
+                                $goods->estimate_publish_price = trim($value['Z']);
+                            }
+                            //物资编码
+                            if ($value['AA']) {
+                                $goods->material_code = trim($value['AA']);
                             }
                             if ($goods->save()) {
                                 $num++;
