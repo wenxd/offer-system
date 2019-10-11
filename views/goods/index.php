@@ -82,6 +82,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
             'original_company_remark',
+            'estimate_publish_price',
+            'material_code',
             [
                 'attribute' => 'is_process',
                 'filter'    => Goods::$process,

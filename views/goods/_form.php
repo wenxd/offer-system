@@ -44,6 +44,8 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'publish_tax_price')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'estimate_publish_price')->textInput(['maxlength' => true]) ?>
+
         <?= $form->field($model, 'publish_delivery_time')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'material')->textInput(['maxlength' => true]) ?>
@@ -51,6 +53,8 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'material_code')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 

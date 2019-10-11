@@ -26,6 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'material',
             'original_company',
             'original_company_remark',
+            'estimate_publish_price',
+            'material_code',
             [
                 'attribute' => 'is_process',
                 'value'     => function ($model) {

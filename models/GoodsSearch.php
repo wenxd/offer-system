@@ -28,9 +28,9 @@ class GoodsSearch extends Goods
             , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high', 'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
-                'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time'], 'safe'],
+                'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'material_code'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_info', 'material', 'part', 'remark'], 'trim'],
+                'technique_remark', 'device_info', 'material', 'part', 'remark', 'estimate_publish_price', 'material_code'], 'trim'],
         ];
     }
 
@@ -150,6 +150,7 @@ class GoodsSearch extends Goods
             'goods.is_repair'               => $this->is_repair,
             'goods.publish_tax_price'       => $this->publish_tax_price,
             'goods.publish_delivery_time'   => $this->publish_delivery_time,
+            'goods.estimate_publish_price'  => $this->estimate_publish_price,
         ]);
 
         $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
@@ -164,6 +165,7 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.material', $this->material])
               ->andFilterWhere(['like', 'goods.material', $this->material])
               ->andFilterWhere(['like', 'goods.part', $this->material])
+              ->andFilterWhere(['like', 'goods.material_code', $this->material_code])
               ->andFilterWhere(['like', 'goods.remark', $this->device_info]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {

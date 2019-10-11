@@ -41,6 +41,8 @@ use app\extend\tencent\Cos;
  * @property string $is_assembly
  * @property string $publish_tax_price
  * @property string $publish_delivery_time
+ * @property string $estimate_publish_price
+ * @property string $material_code
  */
 class Goods extends ActiveRecord
 {
@@ -157,9 +159,10 @@ class Goods extends ActiveRecord
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
                 'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
-            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info', 'publish_tax_price', 'publish_delivery_time'], 'safe'],
+            [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
+                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
-            [['description', 'description_en', 'material', 'part', 'remark'], 'string', 'max' => 255],
+            [['description', 'description_en', 'material', 'part', 'remark', 'material_code'], 'string', 'max' => 255],
             [
                 ['goods_number'],
                 'required',
@@ -206,6 +209,8 @@ class Goods extends ActiveRecord
             'publish_tax_price'       => '发行含税单价',
             'publish_delivery_time'   => '发行货期',
             'suggest_number'          => '建议库存',
+            'estimate_publish_price'  => '预估发行价',
+            'material_code'           => '物资编码',
         ];
     }
 

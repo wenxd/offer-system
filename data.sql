@@ -761,6 +761,8 @@ ALTER TABLE `goods` ADD COLUMN  `is_import` tinyint(2) NOT NULL DEFAULT '0' COMM
 ALTER TABLE `goods` ADD COLUMN  `is_repair` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否大修 0否 1是';
 ALTER TABLE `goods` ADD COLUMN  `part` varchar(255) NOT NULL DEFAULT '' COMMENT '所属部件';
 ALTER TABLE `goods` ADD COLUMN  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '零件备注';
+ALTER TABLE `goods` ADD COLUMN  `estimate_publish_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '预估发行价';
+ALTER TABLE `goods` ADD COLUMN  `material_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '物资编码';
 
 CREATE TABLE `inquiry_temp` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
