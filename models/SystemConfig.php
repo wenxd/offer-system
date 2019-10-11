@@ -94,6 +94,41 @@ class SystemConfig extends \yii\db\ActiveRecord
                 return false;
             }
         }
+        if ($insert && $this->title == self::TITLE_DELIVERY_TIME) {
+            $res = self::find()->where(['title' => self::TITLE_DELIVERY_TIME])->one();
+            if ($res) {
+                $this->addError('id', '货期只能添加一个');
+                return false;
+            }
+        }
+        if ($insert && $this->title == self::TITLE_QUOTE_DELIVERY_RATIO) {
+            $res = self::find()->where(['title' => self::TITLE_QUOTE_DELIVERY_RATIO])->one();
+            if ($res) {
+                $this->addError('id', '货期系数只能添加一个');
+                return false;
+            }
+        }
+        if ($insert && $this->title == self::TITLE_PAYMENT_RATIO) {
+            $res = self::find()->where(['title' => self::TITLE_PAYMENT_RATIO])->one();
+            if ($res) {
+                $this->addError('id', '预付款比例只能添加一个');
+                return false;
+            }
+        }
+        if ($insert && $this->title == self::TITLE_LOW_STOCK_RATIO) {
+            $res = self::find()->where(['title' => self::TITLE_LOW_STOCK_RATIO])->one();
+            if ($res) {
+                $this->addError('id', '低储系数只能添加一个');
+                return false;
+            }
+        }
+        if ($insert && $this->title == self::TITLE_HIGH_STOCK_RATIO) {
+            $res = self::find()->where(['title' => self::TITLE_HIGH_STOCK_RATIO])->one();
+            if ($res) {
+                $this->addError('id', '高储系数只能添加一个');
+                return false;
+            }
+        }
         return parent::beforeSave($insert);
     }
 
