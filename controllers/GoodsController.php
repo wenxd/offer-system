@@ -376,6 +376,7 @@ class GoodsController extends BaseController
                                     $goods->device_info = json_encode($device, JSON_UNESCAPED_UNICODE);
                                 } else {
                                     //存在某个key
+                                    $oldDevice = is_array($oldDevice) ? $oldDevice : [];
                                     if (array_key_exists($deviceName, $oldDevice)) {
                                         $oldDevice[$deviceName] = $deviceNumber;
                                         $newDevice = $oldDevice;
