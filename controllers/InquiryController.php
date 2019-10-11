@@ -246,23 +246,25 @@ class InquiryController extends BaseController
                                 $temp->goods_number = $value['A'] ? trim($value['A']) : trim($value['B']);
                                 $temp->save();
                             } else {
-                                $inquiry = new Inquiry();
-                                $inquiry->good_id           = $goods->id;
-                                $inquiry->supplier_id       = $supplier->id;
-                                $inquiry->price             = $value['D'] ? trim($value['D']) : 0;
-                                $inquiry->tax_price         = $inquiry->price * (1 + $tax/100);
-                                $inquiry->tax_rate          = $tax;
-                                $inquiry->number            = $value['E'] ? trim($value['E']) : 0;
-                                $inquiry->delivery_time     = $value['F'] ? trim($value['F']) : $delivery;
-                                $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                $inquiry->all_price         = $inquiry->number * $inquiry->price;
-                                $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
-                                $inquiry->is_better         = (trim($value['H']) == '是') ? 1 : 0;
-                                $inquiry->better_reason     = $value['I'] ? trim($value['I']) : '';
-                                $inquiry->remark            = $value['G'] ? trim($value['G']) : '';
-                                $inquiry->admin_id          = Yii::$app->user->identity->id;
-                                if ($inquiry->save()) {
-                                    $num++;
+                                if ($supplier) {
+                                    $inquiry = new Inquiry();
+                                    $inquiry->good_id = $goods->id;
+                                    $inquiry->supplier_id = $supplier->id;
+                                    $inquiry->price = $value['D'] ? trim($value['D']) : 0;
+                                    $inquiry->tax_price = $inquiry->price * (1 + $tax / 100);
+                                    $inquiry->tax_rate = $tax;
+                                    $inquiry->number = $value['E'] ? trim($value['E']) : 0;
+                                    $inquiry->delivery_time = $value['F'] ? trim($value['F']) : $delivery;
+                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
+                                    $inquiry->all_price = $inquiry->number * $inquiry->price;
+                                    $inquiry->all_tax_price = $inquiry->number * $inquiry->tax_price;
+                                    $inquiry->is_better = (trim($value['H']) == '是') ? 1 : 0;
+                                    $inquiry->better_reason = $value['I'] ? trim($value['I']) : '';
+                                    $inquiry->remark = $value['G'] ? trim($value['G']) : '';
+                                    $inquiry->admin_id = Yii::$app->user->identity->id;
+                                    if ($inquiry->save()) {
+                                        $num++;
+                                    }
                                 }
                             }
                         }
