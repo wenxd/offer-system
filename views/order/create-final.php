@@ -65,7 +65,10 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td><?= $item->goods->unit?></td>
                         <td class="number"><?= $item->number?></td>
                         <td><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_rate : ''?></td>
-                        <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
+                        <?php
+                            $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                        ?>
+                        <td class="publish_tax_price"><?=$publish_tax_price?></td>
                         <td class="all_publish_tax_price"></td>
                         <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                         <td class="price"><?= $item->finalGoods ? $item->finalGoods->inquiry->price : ''?></td>

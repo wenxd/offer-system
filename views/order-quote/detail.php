@@ -70,6 +70,7 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
+
                     <td><?=$item->goods->publish_tax_price?></td>
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>

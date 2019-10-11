@@ -69,8 +69,11 @@ foreach ($adminList as $key => $admin) {
                     <td><?=$item->goods->unit?></td>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="ratio"><?=$item->tax_rate?></td>
-                    <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
-                    <td class="all_publish_tax_price"><?=$item->goods->publish_tax_price * $item->number?></td>
+                    <?php
+                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                    ?>
+                    <td class="publish_tax_price"><?=$publish_tax_price?></td>
+                    <td class="all_publish_tax_price"><?=$publish_tax_price * $item->number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>

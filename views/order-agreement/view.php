@@ -63,8 +63,11 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->goods->unit?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td><?=$item->goods->publish_tax_price?></td>
-                    <td class="publish_tax_price"><?=$item->goods->publish_tax_price * $item->number?></td>
+                    <?php
+                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                    ?>
+                    <td><?=$publish_tax_price?></td>
+                    <td class="publish_tax_price"><?=$publish_tax_price * $item->number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>

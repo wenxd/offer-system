@@ -61,8 +61,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $item->inquiry->supplier->name?></td>
                         <td><?= $item->inquiry->admin->username?></td>
                         <td><?= $item->inquiry->tax_rate?></td>
-                        <td><?= $item->goods->publish_tax_price?></td>
-                        <td class="publish_tax_price"><?= $item->goods->publish_tax_price * $item->number?></td>
+                        <?php
+                            $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                        ?>
+                        <td><?= $publish_tax_price ?></td>
+                        <td class="publish_tax_price"><?= $publish_tax_price * $item->number?></td>
                         <td class="price"><?=$item->inquiry->price?></td>
                         <td class="tax_price"><?=$item->inquiry->tax_price?></td>
                         <td class="all_price"></td>
