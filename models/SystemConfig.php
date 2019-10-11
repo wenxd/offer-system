@@ -78,6 +78,25 @@ class SystemConfig extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if ($insert && $this->title == self::TITLE_TAX) {
+            $res = self::find()->where(['title' => self::TITLE_TAX])->one();
+            if ($res) {
+                $this->addError('id', '税率只能添加一个');
+                return false;
+            }
+        }
+        if ($insert && $this->title == self::TITLE_QUOTE_PRICE_RATIO) {
+            $res = self::find()->where(['title' => self::TITLE_QUOTE_PRICE_RATIO])->one();
+            if ($res) {
+                $this->addError('id', '报价系数只能添加一个');
+                return false;
+            }
+        }
+        return parent::beforeSave($insert);
+    }
+
     public static function getList($title = SystemConfig::TITLE_STOCK_DIRECTION)
     {
         $directionList = SystemConfig::find()->where(['title' => $title])->all();
