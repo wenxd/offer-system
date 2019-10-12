@@ -430,7 +430,7 @@ if (isset($_GET['inquiry_goods_id'])) {
             var data = JSON.parse(data);
             if(data.code == 200){
                 //导入成功
-                layer.msg(data.msg,{time:2000},function(){
+                layer.msg(data.msg,{time:5000},function(){
                     window.location.reload();
                 });
             }else{

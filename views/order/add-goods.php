@@ -389,7 +389,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
             var data = JSON.parse(data);
             if(data.code == 200){
                 //导入成功
-                layer.msg(data.msg,{time:2000},function(){
+                layer.msg(data.msg,{time:5000},function(){
                     var url = window.location.href;
                     url += '&token=' + data.data;
                     window.location.href = url

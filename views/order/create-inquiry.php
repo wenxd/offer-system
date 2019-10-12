@@ -131,7 +131,7 @@ if ($model->isNewRecord) {
                             <option value="1" <?=isset($_GET['is_inquiry']) ? ($_GET['is_inquiry'] === '1' ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
-                    
+
                 </tr>
             </thead>
             <tbody>
