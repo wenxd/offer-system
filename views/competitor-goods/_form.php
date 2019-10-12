@@ -55,7 +55,7 @@ if (!$model->isNewRecord) {
 
     <?= $form->field($model, 'customer')->dropDownList(Customer::getAllDropDown())->label('针对客户') ?>
 
-    <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+    <?= $form->field($model, 'tax_rate')->textInput() ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'is_issue')->dropDownList(CompetitorGoods::$issue) ?>

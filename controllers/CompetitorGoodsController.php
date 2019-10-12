@@ -186,14 +186,8 @@ class CompetitorGoodsController extends BaseController
                                 $e = trim($value['E']);
                             }
                             $tax_price = number_format(($e * (1 + floatval($d/100))), 2, '.', '');
-                            $competitorGoods = CompetitorGoods::find()->where([
-                                'goods_id'      => $goods->id,
-                                'competitor_id' => $competitor->id,
-                                'customer'      => $customer->id
-                            ])->one();
-                            if (!$competitorGoods) {
-                                $competitorGoods = new CompetitorGoods();
-                            }
+
+                            $competitorGoods = new CompetitorGoods();
                             $competitorGoods->goods_id      = $goods->id;
                             $competitorGoods->goods_number  = $a;
                             $competitorGoods->competitor_id = $competitor->id;
