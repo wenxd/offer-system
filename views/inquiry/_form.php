@@ -185,7 +185,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         </div>
 
         <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
-        <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
         <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'all_price')->textInput(['maxlength' => true]) ?>
@@ -236,6 +236,12 @@ if (isset($_GET['inquiry_goods_id'])) {
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
+    //禁用页面回车提交表单
+    document.onkeypress = function(event){
+        if(event.keyCode == 13) {
+            return false;
+        }
+    };
     //实现税率自动转换
     var tax = $('#inquiry-tax_rate').val();
 
