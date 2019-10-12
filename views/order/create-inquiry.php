@@ -72,9 +72,9 @@ if ($model->isNewRecord) {
                     <th style="width: 80px;">特制</th>
                     <th style="width: 80px;">铭牌</th>
                     <th style="width: 80px;">总成</th>
-                    <th>是否询价</th>
+                    <th style="width: 80px;">是否询价</th>
                     <th>询价数量</th>
-                    <th>是否优选</th>
+                    <th style="width: 80px;">是否优选</th>
                     <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
@@ -124,6 +124,14 @@ if ($model->isNewRecord) {
                             <option value="1" <?=isset($_GET['is_assembly']) ? ($_GET['is_assembly'] === '1' ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
+                    <td>
+                        <select class="form-control" name="is_inquiry">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_inquiry']) ? ($_GET['is_inquiry'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_inquiry']) ? ($_GET['is_inquiry'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -314,6 +322,12 @@ if ($model->isNewRecord) {
                         break;
                     case 'is_assembly':
                         parameter += '&is_assembly=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_inquiry':
+                        parameter += '&is_inquiry=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_inquiry_better':
+                        parameter += '&is_inquiry_better=' + $(e).find("option:selected").val();
                         break;
                     default:
                         break;

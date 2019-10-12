@@ -465,6 +465,10 @@ class OrderController extends BaseController
         $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
 
+        //询价记录
+        $inquiryListOld = Inquiry::find()->all();
+        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
+
         $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
             ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
             ->where(['order_id' => $order->id]);
@@ -489,11 +493,17 @@ class OrderController extends BaseController
         if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
             $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
         }
+        if (isset($request['is_inquiry']) && $request['is_inquiry'] !== '') {
+            $inquiryGoodsIds = ArrayHelper::getColumn($inquiryListOld, 'good_id');
+            if ($request['is_inquiry']) {
+                $orderGoodsQuery->andWhere(['goods_id' => $inquiryGoodsIds]);
+            } else {
+                $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
+            }
+        }
         $orderGoods           = $orderGoodsQuery->all();
 
-        //询价记录
-        $inquiryList = Inquiry::find()->all();
-        $inquiryList = ArrayHelper::index($inquiryList, null, 'good_id');
+
 
         //库存数量
         $stockList = Stock::find()->indexBy('good_id')->all();
