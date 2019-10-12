@@ -125,6 +125,7 @@ class OrderInquiryController extends BaseController
         return $this->render('detail', $data);
     }
 
+    //保存询价单
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();
@@ -152,6 +153,12 @@ class OrderInquiryController extends BaseController
                 $data[] = $row;
             }
             self::insertInquiryGoods($data);
+//            $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+//            $orderGoodsCount = OrderGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+//            if ($count >= $orderGoodsCount) {
+//                $order = Order::findOne($params['order_id']);
+//
+//            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderInquiry->getErrors()]);
