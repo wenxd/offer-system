@@ -32,6 +32,9 @@ $model->quote_ratio = SystemConfig::find()->select('value')
 
 $model->delivery_ratio = SystemConfig::find()->select('value')
     ->where(['title' => SystemConfig::TITLE_QUOTE_DELIVERY_RATIO])->scalar();
+
+$model->quote_publish_price_ratio = 1;
+
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -144,6 +147,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         <?= $form->field($model, 'quote_ratio')->textInput() ?>
 
         <?= $form->field($model, 'delivery_ratio')->textInput() ?>
+
+        <?= $form->field($model, 'quote_publish_price_ratio')->textInput()->label('发行价系数') ?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存报价单', [
@@ -382,6 +387,23 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             });
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
         });
+
+        //输入发行价系数
+        $('#orderquote-quote_publish_price_ratio').bind('input propertychange', function (e) {
+            var quote_publish_price_ratio = parseFloat($(this).val());
+            var quote_publish_price_all = 0;
+            $('.order_final_list').each(function (i, e) {
+                var number            = parseFloat($(e).find('.afterNumber input').val());
+                var publish_tax_price = parseFloat($(e).find('.publish_tax_price').text());
+                var new_all_publish_tax_price = number * publish_tax_price * quote_publish_price_ratio;
+                $(e).find('.all_publish_tax_price').text(new_all_publish_tax_price.toFixed(2));
+                if (new_all_publish_tax_price) {
+                    quote_publish_price_all += new_all_publish_tax_price;
+                }
+            });
+            $('.sta_all_publish_tax_price').text(quote_publish_price_all.toFixed(2));
+        });
+
 
         //保存
         $('.quote_save').click(function (e) {

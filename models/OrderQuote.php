@@ -42,6 +42,8 @@ class OrderQuote extends \yii\db\ActiveRecord
         self::IS_QUOTE_YES  => '是',
     ];
 
+    public $quote_publish_price_ratio;
+
     /**
      * {@inheritdoc}
      */
