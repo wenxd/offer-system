@@ -93,20 +93,30 @@ if (!$model->isNewRecord) {
 </div>
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript">
-    //实现税率自动转换
-    var tax = $('#competitorgoods-tax_rate').val();
-
+    //输入未税价格
     $("#competitorgoods-price").bind('input propertychange', function (e) {
+        var tax = $('#competitorgoods-tax_rate').val();
         var price = $('#competitorgoods-price').val();
         var tax_price = price * (1 + tax/100);
-        $("#competitorgoods-tax_price").attr("value",tax_price.toFixed(2));
+        $("#competitorgoods-tax_price").attr("value", tax_price.toFixed(2));
         $("#competitorgoods-tax_price").val(tax_price.toFixed(2));
     });
+    //输入含税价格
     $("#competitorgoods-tax_price").bind('input propertychange', function (e) {
+        var tax = $('#competitorgoods-tax_rate').val();
         var tax_price = $('#competitorgoods-tax_price').val();
         var price = tax_price / (1 + tax/100);
-        $("#competitorgoods-price").attr("value",price.toFixed(2));
+        $("#competitorgoods-price").attr("value", price.toFixed(2));
         $("#competitorgoods-price").val(price.toFixed(2));
+    });
+    //输入税率
+    $("#competitorgoods-tax_rate").bind('input propertychange', function (e) {
+        var tax   = parseFloat($('#competitorgoods-tax_rate').val());
+        $("#competitorgoods-tax_rate").attr("value", tax.toFixed(2));
+        var price = parseFloat($('#competitorgoods-price').val());
+        var tax_price = price * (1 + tax/100);
+        $("#competitorgoods-tax_price").attr("value", tax_price.toFixed(2));
+        $("#competitorgoods-tax_price").val(tax_price.toFixed(2));
     });
 
     // $('#competitorgoods-price').blur(function () {
