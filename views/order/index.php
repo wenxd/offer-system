@@ -75,6 +75,14 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 ],
                 [
+                    'attribute' => '是否有询价记录',
+                    'format'    => 'raw',
+                    'filter'    => ['0' => '否', '1' => '是'],
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Order::getInquiry($model->id);
+                    }
+                ],
+                [
                     'attribute' => 'order_type',
                     'format'    => 'raw',
                     'filter'    => Order::$orderType,

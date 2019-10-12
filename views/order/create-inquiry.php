@@ -7,20 +7,20 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\InquiryGoods;
 use app\models\AuthAssignment;
 
 $this->title = '生成询价单';
 $this->params['breadcrumbs'][] = $this->title;
 
-//$inquiryYes = [];
 $inquiryInfo = [];
 if ($orderInquiry) {
-    foreach ($orderInquiry as $k => $item) {
-        $goods_info = json_decode($item['goods_info'], true);
-        foreach ($goods_info as $g) {
-            //$inquiryYes[] = $g['goods_id'];
-            $inquiryInfo[] = $g;
-        }
+    foreach ($orderInquiry as $item) {
+        $itemList = InquiryGoods::find()->where([
+            'order_id'          => $item['order_id'],
+            'order_inquiry_id'  => $item['id'],
+        ])->asArray()->all();
+        $inquiryInfo = array_merge($inquiryInfo, $itemList);
     }
 }
 
@@ -149,7 +149,7 @@ if ($model->isNewRecord) {
                         }
                     ?>
                     <td>
-                        <?=$open ? ($item->inquiryGoods->is_result ? $str : '') : $str?>
+                        <?=$str?>
                     </td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
@@ -184,7 +184,7 @@ if ($model->isNewRecord) {
                     </td>
                     <td><?=isset($stockList[$item->goods_id]) ? $stockList[$item->goods_id]->number : 0?></td>
                     <td><?= $item->goods->technique_remark?></td>
-                    <td><?= $open ? ($item->inquiryGoods->is_result ? $item->inquiryGoods->inquiry_sn : '') : ''?></td>
+                    <td><?= $open ? $item->inquiryGoods->inquiry_sn : ''?></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>

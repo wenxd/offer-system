@@ -5,6 +5,8 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "order".
  *
@@ -124,5 +126,14 @@ class Order extends ActiveRecord
     public function getCost()
     {
         return $this->hasOne(OrderFinal::className(), ['order_id' => 'id']);
+    }
+
+    public static function getInquiry($order_id)
+    {
+        $orderGoodsList = OrderGoods::findAll(['order_id' => $order_id]);
+        $goods_ids = ArrayHelper::getColumn($orderGoodsList, 'goods_id');
+        $inquiryList = Inquiry::find()->where(['good_id' => $goods_ids])->all();
+        $inquiryListNew = ArrayHelper::index($inquiryList, null, 'good_id');
+        return (count($goods_ids) == count($inquiryListNew)) ? '是' : '否';
     }
 }
