@@ -503,8 +503,6 @@ class OrderController extends BaseController
         }
         $orderGoods           = $orderGoodsQuery->all();
 
-
-
         //库存数量
         $stockList = Stock::find()->indexBy('good_id')->all();
 
