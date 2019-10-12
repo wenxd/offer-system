@@ -81,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'material',
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
+            'unit',
             'original_company_remark',
             'estimate_publish_price',
             'material_code',

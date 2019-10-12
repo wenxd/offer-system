@@ -353,7 +353,7 @@ class GoodsController extends BaseController
                                 $goods->part = trim($value['Q']);
                             }
                             //单位
-                            $goods->unit = $value['T'] ? trim($value['Q']) : '件';
+                            $goods->unit = $value['T'] ? trim($value['T']) : '件';
                             //技术备注、技术
                             if ($value['U']) {
                                 $goods->technique_remark = trim($value['U']);
