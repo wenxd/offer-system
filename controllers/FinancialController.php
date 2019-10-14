@@ -71,9 +71,11 @@ class FinancialController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        $payment_ratio_price = $params['payment_ratio'] * 100;
+
         $orderPayment = OrderPayment::findOne($params['id']);
-        $orderPayment->payment_ratio    = $params['payment_ratio'];
-        $orderPayment->remain_price     = (100 - $params['payment_ratio'])/100 * $orderPayment->payment_price ;
+        $orderPayment->payment_ratio    = number_format($payment_ratio_price / $orderPayment->payment_price, 2, '.', '');
+        $orderPayment->remain_price     = $orderPayment->payment_price - $params['payment_ratio'];
         $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
         if ($orderPayment->is_stock && $orderPayment->is_payment && $orderPayment->is_bill) {

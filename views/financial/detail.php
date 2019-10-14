@@ -26,8 +26,8 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
         'title' => SystemConfig::TITLE_PAYMENT_RATIO
 ])->scalar();
 
-if (!$model->payment_ratio) {
-    $model->payment_ratio = $payment_ratio;
+if ($model->payment_ratio == '0.00') {
+    $model->payment_ratio = $payment_ratio/100 * $orderPayment->payment_price;
 }
 
 ?>
@@ -121,7 +121,7 @@ if (!$model->payment_ratio) {
             ]) ?>
         </div>
         <?php if(!$model->is_advancecharge):?>
-        <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true])->label('预付款金额') ?>
         <?php endif;?>
     </div>
     <div class="box-footer">
