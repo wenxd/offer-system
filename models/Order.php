@@ -130,10 +130,12 @@ class Order extends ActiveRecord
 
     public static function getInquiry($order_id)
     {
-        $orderGoodsList = OrderGoods::findAll(['order_id' => $order_id]);
+        $orderGoodsList = OrderGoods::find()->where(['order_id' => $order_id])->indexBy('goods_id')->asArray()->all();
         $goods_ids = ArrayHelper::getColumn($orderGoodsList, 'goods_id');
+
         $inquiryList = Inquiry::find()->where(['good_id' => $goods_ids])->all();
         $inquiryListNew = ArrayHelper::index($inquiryList, null, 'good_id');
-        return (count($goods_ids) == count($inquiryListNew)) ? '是' : '否';
+
+        return (count($orderGoodsList) == count($inquiryListNew)) ? '是' : '否';
     }
 }
