@@ -3,9 +3,10 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Admin;
+use app\models\Customer;
 use app\models\AuthAssignment;
 use app\models\OrderQuote;
 use kartik\daterange\DateRangePicker;
@@ -34,6 +35,21 @@ $userId   = Yii::$app->user->identity->id;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute'      => 'customer_id',
+                'label'          => '客户名称',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'format'         => 'raw',
+                'filter'         => Customer::getAllDropDown(),
+                'filterType'     => GridView::FILTER_SELECT2,
+                'value'          => function ($model, $key, $index, $column) {
+                    if ($model->customer) {
+                        return $model->customer->name;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'quote_sn',
                 'format'    => 'raw',

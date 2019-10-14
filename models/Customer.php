@@ -116,7 +116,7 @@ class Customer extends ActiveRecord
         foreach ($list as $row) {
             $return[$row->id] = $row->name;
         }
-        return ['0' => '请选择'] + $return;
+        return ['' => '请选择'] + $return;
     }
 
     public static function getSelectDropDown()

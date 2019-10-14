@@ -19,7 +19,7 @@ class OrderQuoteSearch extends OrderQuote
     public function rules()
     {
         return [
-            [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted', 'customer_id'], 'integer'],
             [['quote_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
             [['id', 'quote_sn', 'order_sn'], 'trim'],
         ];
@@ -49,6 +49,12 @@ class OrderQuoteSearch extends OrderQuote
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+                'attributes' => ['id']
+            ],
         ]);
 
         $this->load($params);
@@ -67,6 +73,7 @@ class OrderQuoteSearch extends OrderQuote
             'order_quote.is_quote'       => $this->is_quote,
             'order_quote.admin_id'       => $this->admin_id,
             'order_quote.is_deleted'     => $this->is_deleted,
+            'order_quote.customer_id'    => $this->customer_id,
         ]);
 
         if ($this->order_sn) {
