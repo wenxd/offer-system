@@ -3,6 +3,7 @@
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
 use app\models\Order;
@@ -42,7 +43,7 @@ foreach ($adminList as $key => $admin) {
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
-                        return $model->order->order_sn;
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
                     } else {
                         return '';
                     }
@@ -53,7 +54,7 @@ foreach ($adminList as $key => $admin) {
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
-                    return $model->payment_sn;
+                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->order_payment_id]));
                 }
             ],
             [
@@ -63,7 +64,7 @@ foreach ($adminList as $key => $admin) {
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
-                        return $model->goods->goods_number;
+                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
                     } else {
                         return '';
                     }
