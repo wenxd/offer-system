@@ -58,9 +58,9 @@ $model->quote_publish_price_ratio = 1;
                 <th>发行价含税单价</th>
                 <th>发行价含税总价</th>
                 <th>发行价货期</th>
-<!--                <th>成本未税单价</th>-->
+                <th>成本未税单价</th>
                 <th>成本含税单价</th>
-<!--                <th>成本未税总价</th>-->
+                <th>成本未税总价</th>
                 <th>成本含税总价</th>
                 <th>成本货期(周)</th>
                 <th>报价未税单价</th>
@@ -96,7 +96,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                <td class="price"><?=$item->inquiry->price?></td>
                 <td class="tax_price"><?=$item->inquiry->tax_price?></td>
+                <td class="all_price"></td>
                 <td class="all_tax_price"></td>
                 <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                 <td class="quote_price"><input type="text" style="width: 100px;"></td>
@@ -113,22 +115,29 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td rowspan="2">发行价</td>
                 <td>发行总价</td>
                 <td>货期</td>
+                <td rowspan="2"></td>
                 <td rowspan="2">成本单</td>
+                <td></td>
+<!--                <td>成本未税总价合计</td>-->
                 <td>成本总价</td>
                 <td>货期</td>
-                <td colspan="2" rowspan="2"></td>
+                <td rowspan="2"></td>
                 <td rowspan="2">报价单</td>
+                <td></td>
+<!--                <td>报价未税总价合计</td>-->
                 <td>报价总价</td>
                 <td>货期</td>
-                <td colspan="2" rowspan="2"></td>
+                <td colspan="3" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
 <!--                <td class="sta_all_price"></td>-->
+                <td></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
 <!--                <td class="sta_quote_all_price"></td>-->
+                <td></td>
                 <td class="sta_quote_all_tax_price"></td>
                 <td class="most_quote_delivery_time"></td>
             </tr>
