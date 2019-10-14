@@ -19,7 +19,7 @@ class OrderQuoteSearch extends OrderQuote
     public function rules()
     {
         return [
-            [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted', 'customer_id'], 'integer'],
+            [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted', 'customer_id', 'quote_only_one'], 'integer'],
             [['quote_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
             [['id', 'quote_sn', 'order_sn'], 'trim'],
         ];
@@ -74,6 +74,7 @@ class OrderQuoteSearch extends OrderQuote
             'order_quote.admin_id'       => $this->admin_id,
             'order_quote.is_deleted'     => $this->is_deleted,
             'order_quote.customer_id'    => $this->customer_id,
+            'order_quote.quote_only_one' => $this->quote_only_one,
         ]);
 
         if ($this->order_sn) {

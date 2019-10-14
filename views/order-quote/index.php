@@ -71,6 +71,15 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'quote_only_one',
+                'label'     => '生成收入合同',
+                'format'    => 'raw',
+                'filter'    => ['1' => '否', '2' => '是'],
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->quote_only_one == 1 ? '否' : '是';
+                }
+            ],
+            [
                 'attribute' => 'is_quote',
                 'format'    => 'raw',
                 'filter'    => OrderQuote::$quote,
