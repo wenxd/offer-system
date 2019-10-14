@@ -73,6 +73,15 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'is_complete',
+                'label'     => '全流程',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$complete,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$complete[$model->is_complete];
+                }
+            ],
+            [
                 'attribute' => 'order_sn',
                 'label'     => '订单号',
                 'visible'   => !in_array($userId, $adminIds),

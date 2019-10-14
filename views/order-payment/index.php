@@ -76,6 +76,15 @@ foreach ($adminList as $key => $value) {
                     return OrderPayment::$bill[$model->is_bill];
                 }
             ],
+            [
+                'attribute' => 'is_complete',
+                'label'     => '全流程',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$complete,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$complete[$model->is_complete];
+                }
+            ],
             'payment_price',
             [
                 'attribute' => 'order_sn',
