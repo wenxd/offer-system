@@ -7,6 +7,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\OrderAgreementSearch;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderAgreementSearch */
@@ -38,6 +39,42 @@ $userId   = Yii::$app->user->identity->id;
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->agreement_sn, Url::to(['view', 'id' => $model->id]));
+                }
+            ],
+            [
+                'attribute' => 'is_stock',
+                'label'     => '完成出库',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$stock,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$stock[$model->is_stock];
+                }
+            ],
+            [
+                'attribute' => 'is_advancecharge',
+                'label'     => '预收款完成',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$advanceCharge,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$advanceCharge[$model->is_advancecharge];
+                }
+            ],
+            [
+                'attribute' => 'is_payment',
+                'label'     => '全单收款完成',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$payment,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$payment[$model->is_payment];
+                }
+            ],
+            [
+                'attribute' => 'is_bill',
+                'label'     => '开发票',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$bill,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$bill[$model->is_bill];
                 }
             ],
             'payment_price',

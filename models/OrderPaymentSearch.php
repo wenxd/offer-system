@@ -84,6 +84,9 @@ class OrderPaymentSearch extends OrderPayment
             'order_payment.updated_at'        => $this->updated_at,
             'order_payment.created_at'        => $this->created_at,
             'order_payment.supplier_id'       => $this->supplier_id,
+            'order_payment.is_bill'           => $this->is_bill,
+            'order_payment.is_stock'          => $this->is_stock,
+            'order_payment.is_advancecharge'  => $this->is_advancecharge,
         ]);
 
         if ($this->order_sn) {

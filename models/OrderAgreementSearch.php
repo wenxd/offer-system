@@ -21,7 +21,8 @@ class OrderAgreementSearch extends OrderAgreement
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted',
+                'is_payment', 'is_bill', 'is_stock', 'is_advancecharge'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
                 'customer_name', 'sign_date', 'stock_at', 'payment_price'], 'safe'],
             [['id', 'order_quote_sn', 'order_sn', 'customer_name', 'payment_price', 'payment_ratio', 'remain_price'], 'trim'],
@@ -71,15 +72,19 @@ class OrderAgreementSearch extends OrderAgreement
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_agreement.id'             => $this->id,
-            'order_agreement.order_id'       => $this->order_id,
-            'order_agreement.order_quote_id' => $this->order_quote_id,
-            'order_agreement.order_quote_sn' => $this->order_quote_sn,
-            'order_agreement.is_agreement'   => $this->is_agreement,
-            'order_agreement.admin_id'       => $this->admin_id,
-            'order_agreement.payment_price'  => $this->payment_price,
-            'order_agreement.payment_ratio'  => $this->payment_ratio,
-            'order_agreement.remain_price'   => $this->remain_price,
+            'order_agreement.id'               => $this->id,
+            'order_agreement.order_id'         => $this->order_id,
+            'order_agreement.order_quote_id'   => $this->order_quote_id,
+            'order_agreement.order_quote_sn'   => $this->order_quote_sn,
+            'order_agreement.is_agreement'     => $this->is_agreement,
+            'order_agreement.admin_id'         => $this->admin_id,
+            'order_agreement.payment_price'    => $this->payment_price,
+            'order_agreement.payment_ratio'    => $this->payment_ratio,
+            'order_agreement.remain_price'     => $this->remain_price,
+            'order_agreement.is_payment'       => $this->is_payment,
+            'order_agreement.is_bill'          => $this->is_bill,
+            'order_agreement.is_stock'         => $this->is_stock,
+            'order_agreement.is_advancecharge' => $this->is_advancecharge,
         ]);
 
         if ($this->order_sn || $this->customer_name) {
