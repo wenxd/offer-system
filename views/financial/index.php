@@ -5,14 +5,14 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\OrderPurchase;
-use kartik\daterange\DateRangePicker;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\OrderPayment;
+use kartik\daterange\DateRangePicker;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OrderPurchaseSearch */
+/* @var $searchModel app\models\OrderFinancialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '待付款订单';
@@ -40,36 +40,36 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'is_stock',
                 'label'     => '完成入库',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$stock,
+                'filter'    => OrderPayment::$stock,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$stock[$model->is_stock];
+                    return OrderPayment::$stock[$model->is_stock];
                 }
             ],
             [
                 'attribute' => 'is_advancecharge',
                 'label'     => '预付款完成',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$advanceCharge,
+                'filter'    => OrderPayment::$advanceCharge,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$advanceCharge[$model->is_advancecharge];
+                    return OrderPayment::$advanceCharge[$model->is_advancecharge];
                 }
             ],
             [
                 'attribute' => 'is_payment',
                 'label'     => '全单付款完成',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$payment,
+                'filter'    => OrderPayment::$payment,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$payment[$model->is_payment];
+                    return OrderPayment::$payment[$model->is_payment];
                 }
             ],
             [
                 'attribute' => 'is_bill',
                 'label'     => '收到发票',
                 'format'    => 'raw',
-                'filter'    => OrderPurchase::$bill,
+                'filter'    => OrderPayment::$bill,
                 'value'     => function ($model, $key, $index, $column) {
-                    return OrderPurchase::$bill[$model->is_bill];
+                    return OrderPayment::$bill[$model->is_bill];
                 }
             ],
             [

@@ -23,7 +23,7 @@ class PaymentSearch extends OrderPayment
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill'], 'integer'],
+                'is_advancecharge', 'is_bill', 'stock_admin_id', 'financial_admin_id'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'last_payment',
                 'payment_price', 'remain_price', 'take_time', 'payment_ratio'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],

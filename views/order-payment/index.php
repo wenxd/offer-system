@@ -1,6 +1,7 @@
 <?php
 
 use app\models\AuthAssignment;
+use app\models\OrderPayment;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -37,6 +38,42 @@ foreach ($adminList as $key => $value) {
                 'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                }
+            ],
+            [
+                'attribute' => 'is_stock',
+                'label'     => '完成入库',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$stock,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$stock[$model->is_stock];
+                }
+            ],
+            [
+                'attribute' => 'is_advancecharge',
+                'label'     => '预付款完成',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$advanceCharge,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$advanceCharge[$model->is_advancecharge];
+                }
+            ],
+            [
+                'attribute' => 'is_payment',
+                'label'     => '全单付款完成',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$payment,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$payment[$model->is_payment];
+                }
+            ],
+            [
+                'attribute' => 'is_bill',
+                'label'     => '收到发票',
+                'format'    => 'raw',
+                'filter'    => OrderPayment::$bill,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderPayment::$bill[$model->is_bill];
                 }
             ],
             'payment_price',
@@ -102,6 +139,26 @@ foreach ($adminList as $key => $value) {
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'stock_admin_id',
+                'label'     => '库管员',
+                'filter'    => $admins,
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'financial_admin_id',
+                'label'     => '财务',
                 'filter'    => $admins,
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
