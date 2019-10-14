@@ -408,6 +408,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_all_publish_tax_price').text(quote_publish_price_all.toFixed(2));
         });
 
+        //单独输入报价货期
+        $('.quote_delivery_time input').bind('input propertychange', function (e) {
+            var quote_delivery_time = parseFloat($(this).val());
+            var most_quote_delivery_time = 0;
+            $('.order_final_list').each(function (i, e) {
+                var delivery_time = $(e).find('.quote_delivery_time input').val();
+                if (delivery_time > most_quote_delivery_time) {
+                    most_quote_delivery_time = delivery_time;
+                }
+            });
+            if (quote_delivery_time > most_quote_delivery_time) {
+                most_quote_delivery_time = quote_delivery_time;
+            }
+            $('.most_quote_delivery_time').text(most_quote_delivery_time);
+        });
 
         //保存
         $('.quote_save').click(function (e) {
