@@ -36,6 +36,7 @@ use Yii;
  * @property string $inquiry_admin_id 报价员ID
  * @property string $tax_rate 报价员ID
  * @property string $quote_delivery_time
+ * @property string $delivery_time
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
@@ -60,7 +61,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
                 'is_deleted', 'order_quote_id'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
-            [['updated_at', 'created_at', 'quote_delivery_time'], 'safe'],
+            [['updated_at', 'created_at', 'quote_delivery_time', 'delivery_time'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'agreement_sn', 'purchase_date',
                 'agreement_date', 'serial'], 'string', 'max' => 255],
         ];

@@ -292,12 +292,13 @@ class OrderQuoteController extends Controller
                 $agreementGoods->tax_price           = $quoteGoods->tax_price;
                 $agreementGoods->all_price           = $quoteGoods->all_price;
                 $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
-                $agreementGoods->quote_delivery_time = $item['delivery_time'];
+                $agreementGoods->delivery_time       = $item['delivery_time'];
                 //用item的值
                 $agreementGoods->quote_price         = $item['price'];
                 $agreementGoods->quote_tax_price     = $item['tax_price'];
                 $agreementGoods->quote_all_price     = $item['price'] * $item['number'];
                 $agreementGoods->quote_all_tax_price = $item['tax_price'] * $item['number'];
+                $agreementGoods->quote_delivery_time = $quoteGoods->quote_delivery_time;
                 $agreementGoods->number              = $item['number'];
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->save();
