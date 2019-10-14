@@ -23,7 +23,7 @@ class OrderPaymentSearch extends OrderPayment
                 'is_advancecharge', 'is_bill', 'supplier_id', 'stock_admin_id', 'financial_admin_id'], 'integer'],
             [['payment_price'], 'number'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
-                'agreement_at'], 'safe'],
+                'agreement_at', 'delivery_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
             [['order_sn'], 'trim'],
@@ -75,18 +75,20 @@ class OrderPaymentSearch extends OrderPayment
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_payment.id'                => $this->id,
-            'order_payment.order_id'          => $this->order_id,
-            'order_payment.order_purchase_id' => $this->order_purchase_id,
-            'order_payment.payment_at'        => $this->payment_at,
-            'order_payment.is_payment'        => $this->is_payment,
-            'order_payment.admin_id'          => $this->admin_id,
-            'order_payment.updated_at'        => $this->updated_at,
-            'order_payment.created_at'        => $this->created_at,
-            'order_payment.supplier_id'       => $this->supplier_id,
-            'order_payment.is_bill'           => $this->is_bill,
-            'order_payment.is_stock'          => $this->is_stock,
-            'order_payment.is_advancecharge'  => $this->is_advancecharge,
+            'order_payment.id'                  => $this->id,
+            'order_payment.order_id'            => $this->order_id,
+            'order_payment.order_purchase_id'   => $this->order_purchase_id,
+            'order_payment.payment_at'          => $this->payment_at,
+            'order_payment.is_payment'          => $this->is_payment,
+            'order_payment.admin_id'            => $this->admin_id,
+            'order_payment.updated_at'          => $this->updated_at,
+            'order_payment.created_at'          => $this->created_at,
+            'order_payment.supplier_id'         => $this->supplier_id,
+            'order_payment.is_bill'             => $this->is_bill,
+            'order_payment.is_stock'            => $this->is_stock,
+            'order_payment.is_advancecharge'    => $this->is_advancecharge,
+            'order_payment.financial_admin_id'  => $this->financial_admin_id,
+            'order_payment.stock_admin_id'      => $this->stock_admin_id,
         ]);
 
         if ($this->order_sn) {
@@ -110,6 +112,20 @@ class OrderPaymentSearch extends OrderPayment
             $take_time_start .= ' 00:00:00';
             $take_time_end   .= ' 23::59:59';
             $query->andFilterWhere(['between', 'order_payment.take_time', $take_time_start, $take_time_end]);
+        }
+
+        if ($this->stock_at && strpos($this->stock_at, ' - ')) {
+            list($stock_at_start, $stock_at_end) = explode(' - ', $this->stock_at);
+            $stock_at_start .= ' 00:00:00';
+            $stock_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_payment.stock_at', $stock_at_start, $stock_at_end]);
+        }
+
+        if ($this->delivery_date && strpos($this->delivery_date, ' - ')) {
+            list($delivery_date_start, $delivery_date_end) = explode(' - ', $this->delivery_date);
+            $delivery_date_start .= ' 00:00:00';
+            $delivery_date_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_payment.delivery_date', $delivery_date_start, $delivery_date_end]);
         }
 
         return $dataProvider;

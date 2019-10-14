@@ -1,9 +1,11 @@
 <?php
 
-use app\models\AuthAssignment;
+use app\models\Helper;
+use app\models\Supplier;
 use app\models\OrderPayment;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\ArrayHelper;
+use app\models\AuthAssignment;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
@@ -25,7 +27,6 @@ foreach ($adminList as $key => $value) {
 
 ?>
 <div class="box table-responsive">
-
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -35,7 +36,6 @@ foreach ($adminList as $key => $value) {
             [
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
                 }
@@ -81,7 +81,7 @@ foreach ($adminList as $key => $value) {
                 'attribute' => 'order_sn',
                 'label'     => '订单编号',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
                         return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
@@ -91,10 +91,10 @@ foreach ($adminList as $key => $value) {
                 }
             ],
             [
-                'attribute' => 'agreement_at',
+                'attribute'     => 'agreement_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPaymentSearch[agreement_at]',
+                'filter'        => DateRangePicker::widget([
+                    'name'  => 'OrderPaymentSearch[agreement_at]',
                     'value' => Yii::$app->request->get('OrderPaymentSearch')['agreement_at'],
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
@@ -102,10 +102,10 @@ foreach ($adminList as $key => $value) {
                 }
             ],
             [
-                'attribute' => 'delivery_date',
+                'attribute'     => 'delivery_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPaymentSearch[delivery_date]',
+                'filter'        => DateRangePicker::widget([
+                    'name'  => 'OrderPaymentSearch[delivery_date]',
                     'value' => Yii::$app->request->get('OrderPaymentSearch')['delivery_date'],
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
@@ -113,11 +113,11 @@ foreach ($adminList as $key => $value) {
                 }
             ],
             [
-                'attribute' => 'stock_at',
-                'label'     => '合同实际交货日期',
+                'attribute'     => 'stock_at',
+                'label'         => '合同实际交货日期',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderPaymentSearch[stock_at]',
+                    'name'  => 'OrderPaymentSearch[stock_at]',
                     'value' => Yii::$app->request->get('OrderPaymentSearch')['stock_at'],
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
@@ -126,7 +126,7 @@ foreach ($adminList as $key => $value) {
             ],
             [
                 'attribute'  => 'supplier_id',
-                'filter'     => \app\models\Customer::getAllDropDown(),
+                'filter'     => Supplier::getAllDropDown(),
                 'filterType' => GridView::FILTER_SELECT2,
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->supplier) {
@@ -139,30 +139,36 @@ foreach ($adminList as $key => $value) {
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => Helper::getAdminList(['系统管理员', '采购员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->admin) {
-                        return $model->admin->username;
+                    if (isset(Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id];
+                    } else {
+                        return '';
                     }
                 }
             ],
             [
                 'attribute' => 'stock_admin_id',
                 'label'     => '库管员',
-                'filter'    => $admins,
+                'filter'    => Helper::getAdminList(['系统管理员', '库管员']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->admin) {
-                        return $model->admin->username;
+                    if (isset(Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id];
+                    } else {
+                        return '';
                     }
                 }
             ],
             [
                 'attribute' => 'financial_admin_id',
                 'label'     => '财务',
-                'filter'    => $admins,
+                'filter'    => Helper::getAdminList(['系统管理员', '财务']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->admin) {
-                        return $model->admin->username;
+                    if (isset(Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id];
+                    } else {
+                        return '';
                     }
                 }
             ],
@@ -171,12 +177,10 @@ foreach ($adminList as $key => $value) {
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
                     $html = '';
-
                     $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
                     ]);
-
                     return $html;
                 }
             ],
