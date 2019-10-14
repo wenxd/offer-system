@@ -293,6 +293,7 @@ class OrderPurchaseVerifyController extends BaseController
 
         if (!$isNotOrderPayment && $orderPurchase->is_complete == OrderPurchase::IS_COMPLETE_YES) {
             $orderPurchase->is_agreement = OrderPurchase::IS_AGREEMENT_YES;
+            $orderPurchase->save();
         }
 
 
