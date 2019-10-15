@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\Helper;
 use app\models\AuthAssignment;
 
 $this->title = '支出合同审核';
@@ -99,6 +100,14 @@ $userId = Yii::$app->user->identity->id;
         </table>
 
         <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('采购申请备注'); ?>
+
+        <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
+
+        <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('合同签订时间'); ?>
+
+        <?= $form->field($model, 'take_time')->textInput(['readonly' => true, 'value' => substr($model->take_time, 0, 10)])->label('交货日期'); ?>
+
+        <?= $form->field($model, 'payment_sn')->textInput(['readonly' => true])->label('支出合同单号'); ?>
 
         <?php if (!$model->is_verify):?>
             <?= $form->field($model, 'reason')->textInput(); ?>
