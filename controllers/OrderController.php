@@ -13,6 +13,7 @@ use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\Stock;
 use app\models\TempNotGoods;
+use app\models\TempNotGoodsB;
 use app\models\TempOrderGoods;
 use app\models\TempOrderInquiry;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -726,6 +727,7 @@ class OrderController extends BaseController
                     $data = [];
                     $time = time();
                     TempNotGoods::deleteAll();
+                    TempNotGoodsB::deleteAll();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['B'])) {
@@ -739,6 +741,13 @@ class OrderController extends BaseController
                                 $item[] = trim($value['C']);
                                 $item[] = $time;
                                 $data[] = $item;
+                                if (!$goods->goods_number_b) {
+                                    $temp_b                 = new TempNotGoodsB();
+                                    $temp_b->goods_id       = $goods->id;
+                                    $temp_b->goods_number   = $goods->goods_number;
+                                    $temp_b->goods_number_b = $goods->goods_number_b;
+                                    $temp_b->save();
+                                }
                             } else {
                                 $temp = new TempNotGoods();
                                 $temp->goods_number = trim($value['B']);

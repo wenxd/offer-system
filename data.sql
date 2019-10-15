@@ -592,6 +592,16 @@ CREATE TABLE `temp_not_goods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的零件';
 
+CREATE TABLE `temp_not_goods_b` (
+  `id`              int(11)  NOT NULL AUTO_INCREMENT,
+  `goods_id`        int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `goods_number`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '零件号',
+  `goods_number_b`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '厂家号',
+  `updated_at`      datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`      datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的厂家号';
+
 
 ALTER TABLE `inquiry_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
 ALTER TABLE `inquiry_goods` ADD COLUMN  `not_result_at` datetime DEFAULT NULL COMMENT '寻不出时间';
