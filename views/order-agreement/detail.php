@@ -61,6 +61,7 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                     <th>含税总价</th>
                     <th>货期</th>
                     <th>采购单号</th>
+                    <th>合同货期</th>
                     <th>合同需求数量</th>
                     <th>采购数量</th>
                     <th>单位</th>
@@ -129,6 +130,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="all_tax_price"><?=$item->all_tax_price?></td>
                 <td class="delivery_time"><?=$item->delivery_time?></td>
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
+                <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
                 <td class="oldNumber"><?=$item->number?></td>
                 <td class="afterNumber">
                     <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->number?>">
@@ -145,12 +147,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td colspan="14" rowspan="2">汇总统计</td>
                     <td>采购含税总价</td>
                     <td>最长货期</td>
-                    <td colspan="9"></td>
+                    <td></td>
+                    <td>合同最长货期</td>
+                    <td colspan="8"></td>
                 </tr>
                 <tr style="background-color: #acccb9">
                     <td class="purchase_all_price"></td>
                     <td class="mostLongTime"></td>
-                    <td colspan="9"></td>
+                    <td></td>
+                    <td class="quote_mostLongTime"></td>
+                    <td colspan="8"></td>
                 </tr>
             </tbody>
         </table>
@@ -197,6 +203,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             var mostLongTime        = 0;
             var purchase_price      = 0;
             var purchase_all_price  = 0;
+            var quote_mostLongTime  = 0;
             $('.order_agreement_list').each(function (i, e) {
                 var price           = $(e).find('.price').text();
                 var tax_price       = $(e).find('.tax_price').text();
@@ -225,12 +232,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     use_number = 0;
                 }
                 $(e).find('.use_stock').text(use_number);
+
+                //合同货期
+                var quote_delivery_time = parseFloat($(e).find('.quote_delivery_time').text());
+                if (quote_delivery_time > quote_mostLongTime) {
+                    quote_mostLongTime = quote_delivery_time;
+                }
             });
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
             $('.mostLongTime').text(mostLongTime);
             $('.purchase_price').text(purchase_price.toFixed(2));
             $('.purchase_all_price').text(purchase_all_price.toFixed(2));
+            $('.quote_mostLongTime').text(quote_mostLongTime.toFixed(2));
         }
 
         //全选

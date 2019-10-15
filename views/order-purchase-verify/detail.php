@@ -9,7 +9,7 @@ use app\models\Goods;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
-$this->title = '采购单审核详情';
+$this->title = '支出合同审核';
 $this->params['breadcrumbs'][] = $this->title;
 
 
