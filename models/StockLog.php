@@ -32,13 +32,13 @@ use yii\behaviors\TimestampBehavior;
  * @property int $region
  * @property int $plat_name
  * @property int $source
+ * @property int $position
  */
 class StockLog extends ActiveRecord
 {
     public $price;
     public $goods_number;
     public $suggest_number;
-    public $position;
 
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
@@ -87,7 +87,7 @@ class StockLog extends ActiveRecord
             [['order_id', 'order_payment_id', 'order_agreement_id', 'order_purchase_id', 'goods_id',
                 'number', 'type', 'is_deleted', 'admin_id', 'is_manual', 'customer_id'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'direction'], 'safe'],
-            [['purchase_sn', 'payment_sn', 'agreement_sn', 'remark', 'region', 'plat_name', 'source'], 'string', 'max' => 255],
+            [['purchase_sn', 'payment_sn', 'agreement_sn', 'remark', 'region', 'plat_name', 'source', 'position'], 'string', 'max' => 255],
         ];
     }
 

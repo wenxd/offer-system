@@ -714,9 +714,10 @@ ALTER TABLE `stock_log` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMM
 ALTER TABLE `stock_log` ADD COLUMN  `is_manual` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否手动 0否 1是';
 ALTER TABLE `stock_log` ADD COLUMN  `direction` varchar(255) NOT NULL DEFAULT '' COMMENT '去向';
 ALTER TABLE `stock_log` ADD COLUMN  `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户id';
-ALTER TABLE `stock_log` ADD COLUMN  `region` varchar(255) NOT NULL DEFAULT ''COMMENT '区块';
-ALTER TABLE `stock_log` ADD COLUMN  `plat_name` varchar(255) NOT NULL DEFAULT ''COMMENT '平台名称';
-ALTER TABLE `stock_log` ADD COLUMN  `source` varchar(255) NOT NULL DEFAULT ''COMMENT '入库来源';
+ALTER TABLE `stock_log` ADD COLUMN  `region` varchar(255) NOT NULL DEFAULT '' COMMENT '区块';
+ALTER TABLE `stock_log` ADD COLUMN  `plat_name` varchar(255) NOT NULL DEFAULT '' COMMENT '平台名称';
+ALTER TABLE `stock_log` ADD COLUMN  `source` varchar(255) NOT NULL DEFAULT '' COMMENT '入库来源';
+ALTER TABLE `stock_log` ADD COLUMN  `position` varchar(255) NOT NULL DEFAULT '' COMMENT '库存位置';
 
 
 ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;

@@ -149,10 +149,10 @@ use yii\widgets\ActiveForm;
         }
 
         var remark = $('#stocklog-remark').val();
-        if (!remark) {
-            layer.msg('请输入备注说明', {time:2000});
-            return false;
-        }
+        // if (!remark) {
+        //     layer.msg('请输入备注说明', {time:2000});
+        //     return false;
+        // }
 
         $.ajax({
             type:"POST",

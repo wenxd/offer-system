@@ -149,6 +149,7 @@ class StockInLogController extends Controller
         $stockLog->admin_id     = Yii::$app->user->identity->id;
         $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
         $stockLog->source       = $params['source'];
+        $stockLog->position       = $params['source'];
         if ($stockLog->save()) {
             $systemList = SystemConfig::find()->where([
                 'title'  => [SystemConfig::TITLE_TAX, SystemConfig::TITLE_HIGH_STOCK_RATIO, SystemConfig::TITLE_LOW_STOCK_RATIO],
