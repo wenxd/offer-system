@@ -94,7 +94,10 @@ foreach ($adminList as $key => $admin) {
                 ])
             ],
             'source',
-            'position',
+            [
+                'attribute' => 'position',
+                'label'     => '入库位置',
+            ],
             [
                 'attribute' => 'is_manual',
                 'filter'    => StockLog::$manual,
