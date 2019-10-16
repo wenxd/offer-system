@@ -174,7 +174,7 @@ class OrderAgreementController extends Controller
         $data = [];
         $data['orderAgreement'] = $orderAgreement;
         $data['agreementGoods'] = $agreementGoods;
-        $data['model']          = new OrderPurchase();
+        $data['model']          = new OrderAgreement();
         $data['number']         = $number;
         $data['inquiryGoods']   = $inquiryGoods;
         $data['purchaseGoods']  = $purchaseGoods;

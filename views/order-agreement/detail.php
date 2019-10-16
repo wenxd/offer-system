@@ -26,8 +26,8 @@ foreach ($adminList as $key => $admin) {
 }
 
 $customer_name = $order->customer ? $order->customer->short_name : '';
-$model->purchase_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
-$model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
+$model->purchase_sn    = 'B' . date('ymd_') . $customer_name . '_' . $number;
+$model->agreement_date = date('Y-m-d');
 ?>
 <style>
     #example2 {
@@ -160,11 +160,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 </tr>
             </tbody>
         </table>
-        <?= $form->field($model, 'purchase_sn')->textInput() ?>
+        <?= $form->field($model, 'purchase_sn')->textInput()->label('采购订单号') ?>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
 
-        <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
+        <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
             'pluginOptions' => [
                 'autoclose' => true,
@@ -196,7 +196,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 $('.purchase_save').hide();
                 $('.field-orderpurchase-purchase_sn').hide();
                 $('.field-orderpurchase-admin_id').hide();
-                $('.field-orderpurchase-end_date').hide();
+                $('.field-orderpurchase-agreement_date').hide();
             }
             var sta_all_price       = 0;
             var sta_all_tax_price   = 0;
@@ -280,6 +280,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             if (use_number < 0) {
                 use_number = 0;
             }
+            var stock_number = parseFloat($(this).parent().parent().find('.stock_number').text());
+            if (use_number > stock_number) {
+                layer.msg('使用库存数量不能比库存大', {time:2000});
+                $(this).val(agreement_number);
+                return false;
+            }
+
             $(this).parent().parent().find('.use_stock').text(use_number);
 
             var purchase_price     = 0;
@@ -366,9 +373,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 return false;
             }
 
-            var end_date = $('#orderpurchase-end_date').val();
-            if (!end_date) {
-                layer.msg('请输入采购截止时间', {time:2000});
+            var agreement_date = $('#orderpurchase-agreement_date').val();
+            if (!agreement_date) {
+                layer.msg('请输入收入合同交货日期', {time:2000});
                 return false;
             }
 
@@ -377,7 +384,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             $.ajax({
                 type:"post",
                 url:'?r=order-purchase/save-order',
-                data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
+                data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
