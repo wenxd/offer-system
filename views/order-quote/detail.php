@@ -198,7 +198,8 @@ $userId   = Yii::$app->user->identity->id;
             var quote_delivery_time = $(this).val();
             $('.order_quote_list').each(function (i, ele) {
                 $(ele).find('.delivery_time input').val(quote_delivery_time);
-            })
+            });
+            $('.mostLongTime').text(quote_delivery_time);
         });
 
         $('.quote_complete').click(function (e) {

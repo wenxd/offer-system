@@ -44,6 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>原厂家</th>
                 <th>厂家备注</th>
                 <th>单位</th>
+                <th>发行价</th>
+                <th>发行货期</th>
                 <th>加工</th>
                 <th>特制</th>
                 <th>总成</th>
@@ -60,6 +62,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$goods ? $goods->original_company : ''?></td>
                 <td><?=$goods ? $goods->original_company_remark : ''?></td>
                 <td><?=$goods ? $goods->unit : ''?></td>
+                <td><?=$goods ? ($goods->publish_tax_price ? $goods->publish_tax_price : $goods->estimate_publish_price) : ''?></td>
+                <td><?=$goods ? $goods->publish_delivery_time : ''?></td>
                 <td><?=$goods ? ($goods->is_process == 1 ? '<b class="color">' . Goods::$process[$goods->is_process] . '</b>' : Goods::$process[$goods->is_process]) : ''?></td>
                 <td><?=$goods ? ($goods->is_special == 1 ? '<b class="color">' . Goods::$special[$goods->is_special] . '</b>' : Goods::$special[$goods->is_special]) : ''?></td>
                 <td><?=$goods ? ($goods->is_assembly == 1 ? '<b class="color">' . Goods::$assembly[$goods->is_assembly] . '</b>' : Goods::$assembly[$goods->is_assembly]) : ''?></td>
