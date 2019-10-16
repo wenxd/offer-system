@@ -274,13 +274,12 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                     var goodsIds = $('.goods_list').find('.goods_id');
                     var open = false;
                     goodsIds.each(function (i, e) {
-
-                        if (res.data.id == $(e).data('id') && $(e).find('.serialNumber input').val() == serialNumber) {
+                        if ($(e).find('.serialNumber input').val() == serialNumber) {
                             open = true;
                         }
                     });
                     if (open) {
-                        layer.msg('已添加了此零件', {time:2000});
+                        layer.msg('已添加了此序号', {time:2000});
                         return false;
                     }
                     //添加此零件
