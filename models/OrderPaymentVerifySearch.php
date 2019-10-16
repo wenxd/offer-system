@@ -47,6 +47,12 @@ class OrderPaymentVerifySearch extends OrderPayment
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+                'attributes' => ['id']
+            ],
         ]);
 
         $this->load($params);

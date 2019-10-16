@@ -7,6 +7,10 @@ use app\models\OrderAgreement;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
 use app\models\Supplier;
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
@@ -296,5 +300,89 @@ class OrderPurchaseController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    /**
+     * 导出采购单详情页面
+     */
+    public function actionDownload($id)
+    {
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel=$spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        $tableHeader = ['厂家号', '中文描述', '原厂家', '供应商', '单位', '采购数量', '含税单价', '含税总价', '货期(周)'];
+        for($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+        }
+
+        $purchaseGoods = PurchaseGoods::find()->where(['order_purchase_id' => $id])->orderBy('serial')->all();
+        foreach ($purchaseGoods as $key => $value) {
+            for($i = 0; $i < count($letter); $i++) {
+                if ($value->goods) {
+                    //厂家号
+                    $excel->setCellValue($letter[$i] . ($key + 2), $value->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->description);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->original_company);
+                    $excel->setCellValue($letter[$i+4] . ($key + 2), $value->goods->unit);
+                } else {
+                    $excel->setCellValue($letter[$i] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i+1] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i+4] . ($key + 2), '');
+                }
+                $excel->setCellValue($letter[$i+3] . ($key + 2), $value->inquiry->supplier->name);
+                //采购数量
+                $excel->setCellValue($letter[$i+5] . ($key + 2), $value->fixed_number);
+                //含税单价
+                $excel->setCellValue($letter[$i+6] . ($key + 2), $value->fixed_tax_price);
+                //含税总价
+                $excel->setCellValue($letter[$i+7] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
+                //货期(周)
+                $excel->setCellValue($letter[$i+8] . ($key + 2), $value->delivery_time);
+                break;
+            }
+        }
+
+        $title = '采购单详情' . date('ymd-His');
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
     }
 }

@@ -35,6 +35,12 @@ $model->delivery_date = date('Y-m-d');
 
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
+    <div class="box-header">
+        <?= Html::a('导出', Url::to(['download', 'id' => $_GET['id']]), [
+            'data-pjax' => '0',
+            'class'     => 'btn btn-primary btn-flat',
+        ])?>
+    </div>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
