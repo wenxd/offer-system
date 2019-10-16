@@ -355,7 +355,7 @@ class OrderQuoteController extends Controller
             $excel->setCellValue($letter[$i].'1', $tableHeader[$i]);
         }
 
-        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $id])->all();
+        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $id])->orderBy('serial')->all();
         $name = date('Ymd');
         foreach ($quoteGoods as $key => $value) {
             $excel->setCellValue('A'.($key + 2), $value->serial);
