@@ -109,7 +109,10 @@ if (!$model->payment_ratio) {
                 'model' => $model,
                 'attributes' => [
                     'stock_at',
-                    'payment_ratio',
+                    [
+                        'attribute'      => 'payment_ratio',
+                        'contentOptions' => ['class' => 'payment_ratio'],
+                    ],
                     'advancecharge_at',
                     'payment_at',
                     'bill_at',
@@ -195,6 +198,12 @@ if (!$model->payment_ratio) {
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         }
+
+        //动态修改预付款
+        $('#orderagreement-payment_ratio').bind('input propertychange', function (e) {
+            var ratio = $(this).val();
+            $('.payment_ratio').text(ratio);
+        });
 
         var id = $('.data').data('order_agreement_id');
         $('.save_remark').click(function (e) {
