@@ -53,7 +53,7 @@ class OrderAgreementController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        $agreementGoods = AgreementGoods::find()->where(['order_agreement_id' => $id])->orderBy('serial')->all();
 
         $date = date('ymd_');
         $orderI = OrderAgreement::find()->where(['like', 'agreement_sn', $date])->orderBy('created_at Desc')->one();
@@ -154,7 +154,7 @@ class OrderAgreementController extends Controller
             $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
         }
 
-        $agreementGoods = $agreementGoodsQuery->all();
+        $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
         $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
         $purchaseGoods  = PurchaseGoods::find()
             ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])

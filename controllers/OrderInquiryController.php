@@ -181,7 +181,7 @@ class OrderInquiryController extends BaseController
             return $this->redirect(['index']);
         }
 
-        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->all();
+        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->orderBy('serial')->all();
         $goods_ids = ArrayHelper::getColumn($orderGoods, 'goods_id');
 
         $data = [];
@@ -192,7 +192,7 @@ class OrderInquiryController extends BaseController
             'i.order_id'   => $orderInquiry->order_id,
             'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
             'g.is_deleted' => Goods::IS_DELETED_NO,
-            ])->leftJoin('goods as g', 'g.id = i.goods_id')->all();
+            ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('serial')->all();
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 

@@ -64,7 +64,7 @@ class OrderFinalController extends BaseController
         $finalGoods = FinalGoods::find()->where([
             'order_id'       => $orderFinal->order_id,
             'order_final_id' => $orderFinal->id,
-        ])->all();
+        ])->orderBy('serial')->all();
 
 
         return $this->render('view2', [

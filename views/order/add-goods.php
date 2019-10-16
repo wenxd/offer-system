@@ -129,6 +129,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                         <th>原厂家</th>
                         <th>单位</th>
                         <th>税率</th>
+                        <th>总成</th>
                         <th>加工</th>
                         <th>特制</th>
                         <th>图片</th>
@@ -289,7 +290,8 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                     tr += '<td>' + res.data.goods_number_b + '</td>';
                     tr += '<td>' + res.data.original_company + '</td>';
                     tr += '<td>' + res.data.unit + '</td>';
-                    tr += '<td>16%</td>';
+                    tr += '<td>' + '<?=$tax_rate?>' + '</td>';
+                    tr += '<td>' + (res.data.is_assembly == 0 ? '否' : '是') + '</td>';
                     tr += '<td>' + (res.data.is_process == 0 ? '否' : '是') + '</td>';
                     tr += '<td>' + (res.data.is_special == 0 ? '否' : '是') + '</td>';
                     tr += '<td><img src="' + '<?=Yii::$app->params['img_url_prefix'] . '/'?>' + res.data.img_id + '" width="50px"></td>';

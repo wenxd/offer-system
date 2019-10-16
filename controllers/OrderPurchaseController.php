@@ -215,7 +215,7 @@ class OrderPurchaseController extends BaseController
         if (isset($request['original_company']) && $request['original_company']) {
             $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
         }
-        $purchaseGoods         = $purchaseQuery->all();
+        $purchaseGoods         = $purchaseQuery->orderBy('serial')->all();
 
         $data = [];
         $data['orderPurchase'] = $data['model'] = $orderPurchase;

@@ -191,7 +191,7 @@ class OrderPurchaseVerifyController extends BaseController
     {
         $orderPayment = OrderPayment::findOne($id);
 
-        $paymentGoods = PaymentGoods::find()->where(['order_payment_id' => $id])->all();
+        $paymentGoods = PaymentGoods::find()->where(['order_payment_id' => $id])->orderBy('serial')->all();
 
         return $this->render('detail', [
             'model'        => $orderPayment,
