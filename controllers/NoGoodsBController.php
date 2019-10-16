@@ -169,7 +169,7 @@ class NoGoodsBController extends Controller
             $excel->setCellValue('B' . ($key + 2), $value->goods_number);
         }
 
-        $title = '库中没有的零件号列表';
+        $title = '库中没有的厂家号列表' . date('ymd-His');
         // Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($title);
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
