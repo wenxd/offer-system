@@ -157,6 +157,7 @@ class OrderPurchaseController extends BaseController
             $orderPurchase->end_date           = $params['agreement_date'];
             $orderPurchase->admin_id           = $params['admin_id'];
             if ($orderPurchase->save()) {
+                $agreement_goods_ids = [];
                 foreach ($params['goods_info'] as $item) {
                     if ($item['number'] > 0) {
                         $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
@@ -186,6 +187,9 @@ class OrderPurchaseController extends BaseController
                             $purchaseGoods->delivery_time       = $item['delivery_time'];
                             $purchaseGoods->save();
                         }
+                    } else {
+                        $agreement_goods_ids[] = $item['agreement_goods_id'];
+                        AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                     }
                 }
                 return json_encode(['code' => 200, 'msg' => '保存成功']);

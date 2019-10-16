@@ -329,9 +329,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                         number_flag  = true;
                     }
 
-                    var purchase_number     = $(element).parent().parent().find('.number').val();
-                    var stock_number        = $(element).parent().parent().find('.stock_number').text();
-                    var old_number          = $(element).parent().parent().find('.oldNumber').text();
+                    var purchase_number     = parseFloat($(element).parent().parent().find('.number').val());
+                    var stock_number        = parseFloat($(element).parent().parent().find('.stock_number').text());
+                    var old_number          = parseFloat($(element).parent().parent().find('.oldNumber').text());
 
                     if (purchase_number == 0 && old_number > stock_number) {
                         flag_stock = true;
@@ -361,19 +361,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 layer.msg('请给选中的行输入数量', {time:2000});
                 return false;
             }
-            var purchase_sn = $('#orderpurchase-purchase_sn').val();
+            var purchase_sn = $('#orderagreement-purchase_sn').val();
             if (!purchase_sn) {
                 layer.msg('请输入采购单号', {time:2000});
                 return false;
             }
 
-            var admin_id = $('#orderpurchase-admin_id').val();
+            var admin_id = $('#orderagreement-admin_id').val();
             if (!admin_id) {
                 layer.msg('请选择采购员', {time:2000});
                 return false;
             }
 
-            var agreement_date = $('#orderpurchase-agreement_date').val();
+            var agreement_date = $('#orderagreement-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入收入合同交货日期', {time:2000});
                 return false;
