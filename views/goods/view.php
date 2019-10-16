@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'original_company_remark',
             'estimate_publish_price',
             'material_code',
+            'import_mark',
             [
                 'attribute' => 'is_process',
                 'value'     => function ($model) {

@@ -28,9 +28,11 @@ class GoodsSearch extends Goods
             , 'is_inquiry_better', 'is_stock', 'stock_low', 'stock_high', 'is_tz', 'is_standard', 'is_import', 'is_repair'], 'integer'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
-                'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'material_code'], 'safe'],
+                'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price',
+                'material_code', 'import_mark'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_info', 'material', 'part', 'remark', 'estimate_publish_price', 'material_code'], 'trim'],
+                'technique_remark', 'device_info', 'material', 'part', 'remark', 'estimate_publish_price', 'material_code',
+                'import_mark'], 'trim'],
         ];
     }
 

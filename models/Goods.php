@@ -43,6 +43,7 @@ use app\extend\tencent\Cos;
  * @property string $publish_delivery_time
  * @property string $estimate_publish_price
  * @property string $material_code
+ * @property string $import_mark
  */
 class Goods extends ActiveRecord
 {
@@ -161,8 +162,9 @@ class Goods extends ActiveRecord
                 'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
                 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price'], 'safe'],
-            [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark', 'img_id', 'nameplate_img_id'], 'string', 'max' => 255],
-            [['description', 'description_en', 'material', 'part', 'remark', 'material_code'], 'string', 'max' => 255],
+            [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
+                'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
+                'import_mark'], 'string', 'max' => 255],
             [
                 ['goods_number'],
                 'required',
@@ -210,7 +212,8 @@ class Goods extends ActiveRecord
             'publish_delivery_time'   => '发行货期',
             'suggest_number'          => '建议库存',
             'estimate_publish_price'  => '预估发行价',
-            'material_code'           => '物资编码',
+            'material_code'           => '设备类别',
+            'import_mark'             => '导入类别',
         ];
     }
 

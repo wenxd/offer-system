@@ -56,6 +56,8 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'material_code')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'import_mark')->textInput(['maxlength' => true]) ?>
+
         <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
