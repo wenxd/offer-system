@@ -147,34 +147,41 @@ class OrderPurchaseVerifyController extends BaseController
             }
 
             //给管理员发送系统消息
-            if ($noticeOpen) {
+//            if ($noticeOpen) {
+//                $systemNotice = new SystemNotice();
+//                $systemNotice->admin_id  = $params['admin_id'];
+//                $systemNotice->content   = '采购生成支出合同有价格修改,支出合同号为' . $orderPayment->payment_sn;
+//                $systemNotice->notice_at = date('Y-m-d H:i:s');
+//                $systemNotice->save();
+//            }
+//            //给管理员发送系统消息(货期修改)
+//            if ($noticeDeliveryOpen) {
+//                $systemNotice = new SystemNotice();
+//                $systemNotice->admin_id  = $params['admin_id'];
+//                $systemNotice->content   = '采购生成支出合同有货期修改,支出合同号为' . $orderPayment->payment_sn;
+//                $systemNotice->notice_at = date('Y-m-d H:i:s');
+//                $systemNotice->save();
+//            }
+//            //给管理员发送系统消息(供应商修改)
+//            if ($noticeSupplierOpen) {
+//                $systemNotice = new SystemNotice();
+//                $systemNotice->admin_id  = $params['admin_id'];
+//                $systemNotice->content   = '采购生成支出合同有供应商修改,支出合同号为' . $orderPayment->payment_sn;
+//                $systemNotice->notice_at = date('Y-m-d H:i:s');
+//                $systemNotice->save();
+//            }
+//            //给管理员发送系统消息(数量修改)
+//            if ($noticeNumberOpen) {
+//                $systemNotice = new SystemNotice();
+//                $systemNotice->admin_id  = $params['admin_id'];
+//                $systemNotice->content   = '采购生成支出合同有数量修改,支出合同号为' . $orderPayment->payment_sn;
+//                $systemNotice->notice_at = date('Y-m-d H:i:s');
+//                $systemNotice->save();
+//            }
+            if ($noticeOpen || $noticeDeliveryOpen || $noticeSupplierOpen || $noticeNumberOpen) {
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '采购生成支出合同有价格修改,支出合同号为' . $orderPayment->payment_sn;
-                $systemNotice->notice_at = date('Y-m-d H:i:s');
-                $systemNotice->save();
-            }
-            //给管理员发送系统消息(货期修改)
-            if ($noticeDeliveryOpen) {
-                $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '采购生成支出合同有货期修改,支出合同号为' . $orderPayment->payment_sn;
-                $systemNotice->notice_at = date('Y-m-d H:i:s');
-                $systemNotice->save();
-            }
-            //给管理员发送系统消息(供应商修改)
-            if ($noticeSupplierOpen) {
-                $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '采购生成支出合同有供应商修改,支出合同号为' . $orderPayment->payment_sn;
-                $systemNotice->notice_at = date('Y-m-d H:i:s');
-                $systemNotice->save();
-            }
-            //给管理员发送系统消息(数量修改)
-            if ($noticeNumberOpen) {
-                $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '采购生成支出合同有数量修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->content   = '采购生成支出合同有修改,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
