@@ -27,9 +27,9 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
 ])->scalar();
 
 if ($model->payment_ratio == '0.00') {
-    $model->payment_ratio = $payment_ratio/100 * $orderPayment->payment_price;
+    $model->payment_ratio = $payment_ratio;
+    $model->price         = $payment_ratio/100 * $orderPayment->payment_price;
 }
-
 ?>
 
 <div class="box table-responsive">
@@ -120,7 +120,7 @@ if ($model->payment_ratio == '0.00') {
             ]) ?>
         </div>
         <?php if(!$model->is_advancecharge):?>
-        <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true])->label('预付款金额') ?>
+        <?= $form->field($model, 'price')->textInput(['maxlength' => true])->label('预付款金额') ?>
         <?php endif;?>
     </div>
     <div class="box-footer">
@@ -200,9 +200,11 @@ if ($model->payment_ratio == '0.00') {
         }
 
         //动态修改预付款
-        $('#orderpayment-payment_ratio').bind('input propertychange', function (e) {
-            var ratio = $(this).val();
-            $('.payment_ratio').text(ratio);
+        $('#orderpayment-price').bind('input propertychange', function (e) {
+            var money = $(this).val();
+            var all_money = $('.sta_all_tax_price').text();
+            var res = (money / all_money) * 100;
+            $('.payment_ratio').text(res.toFixed(2));
         });
 
         var id = $('.data').data('order_payment_id');

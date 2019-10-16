@@ -42,7 +42,7 @@ $userId   = Yii::$app->user->identity->id;
                     'label'     => '收入合同单号',
                     'format'    => 'raw',
                     'value'     => function ($model, $key, $index, $column) {
-                        return Html::a($model->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->id]));
+                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
                     }
                 ],
                 'payment_price',

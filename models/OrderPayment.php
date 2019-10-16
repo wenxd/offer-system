@@ -42,6 +42,7 @@ class OrderPayment extends \yii\db\ActiveRecord
 {
     public $reason;
     public $purchase_id;
+    public $price;
 
     const PURCHASE_STATUS_CREATE = '0'; // 新的
     const PURCHASE_STATUS_PASS   = '1'; // 通过

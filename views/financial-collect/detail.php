@@ -28,6 +28,7 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
 
 if (!$model->payment_ratio) {
     $model->payment_ratio = $payment_ratio;
+    $model->price         = $payment_ratio/100 * $orderAgreement->payment_price;
 }
 
 ?>
@@ -120,7 +121,7 @@ if (!$model->payment_ratio) {
             ]) ?>
         </div>
         <?php if(!$model->is_advancecharge):?>
-            <?= $form->field($model, 'payment_ratio')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'price')->textInput(['maxlength' => true])->label('预收款金额') ?>
         <?php endif;?>
     </div>
     <div class="box-footer">
@@ -200,9 +201,11 @@ if (!$model->payment_ratio) {
         }
 
         //动态修改预付款
-        $('#orderagreement-payment_ratio').bind('input propertychange', function (e) {
-            var ratio = $(this).val();
-            $('.payment_ratio').text(ratio);
+        $('#orderagreement-price').bind('input propertychange', function (e) {
+            var money = $(this).val();
+            var all_money = $('.sta_all_tax_price').text();
+            var res = (money / all_money) * 100;
+            $('.payment_ratio').text(res.toFixed(2));
         });
 
         var id = $('.data').data('order_agreement_id');
