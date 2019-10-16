@@ -33,11 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
-            'payment_sn',
+            [
+                'attribute' => 'payment_sn',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                }
+            ],
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'payment_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
                 }
