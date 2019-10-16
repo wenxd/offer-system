@@ -88,19 +88,15 @@ if ($model->payment_ratio == '0.00') {
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="12" rowspan="2">汇总统计</td>
-                <td>合计</td>
-                <td>合计</td>
+                <td colspan="14" rowspan="2">汇总统计</td>
                 <td>最长货期</td>
-                <td>合计</td>
+                <td></td>
                 <td>合计</td>
                 <td colspan="2" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
-                <td class="sta_price"></td>
-                <td class="sta_tax_price"></td>
                 <td class="mostLongTime"></td>
-                <td class="sta_all_price"></td>
+                <td></td>
                 <td class="sta_all_tax_price"></td>
             </tr>
             </tbody>
