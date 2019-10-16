@@ -82,8 +82,22 @@ $userId   = Yii::$app->user->identity->id;
                     </td>
                 </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="7" rowspan="2">汇总统计</td>
+                <td>最长合同货期</td>
+                <td colspan="5" rowspan="2"></td>
+                <td>合同总价</td>
+                <td></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="mostLongTime"></td>
+                <td class="sta_all_tax_price"></td>
+                <td></td>
+            </tr>
             </tbody>
         </table>
+
+        <?= $form->field($model, 'quote_delivery_time')->textInput()->label('统一报价货期') ?>
 
         <?= $form->field($model, 'agreement_sn')->textInput() ?>
 
@@ -127,15 +141,26 @@ $userId   = Yii::$app->user->identity->id;
     $(document).ready(function () {
         init();
         function init(){
+            var sta_all_tax_price = 0;
+            var mostLongTime      = 0;
             $('.order_quote_list').each(function (i, e) {
-                var price     = $(e).find('.change_price').val();
-                var tax_price = $(e).find('.tax_price').text();
-                var number    = $(e).find('.afterNumber').find('input').val();
-                $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                var price           = parseFloat($(e).find('.change_price').val());
+                var tax_price       = parseFloat($(e).find('.tax_price').text());
+                var number          = parseFloat($(e).find('.afterNumber').find('input').val());
+                var all_tax_price   = parseFloat(tax_price * number);
+                $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
+                if (all_tax_price) {
+                    sta_all_tax_price += all_tax_price;
+                }
+                var delivery_time = parseFloat($(e).find('.delivery_time input').val());
+                if (delivery_time > mostLongTime) {
+                    mostLongTime = delivery_time;
+                }
             });
             var date = '<?=$model->agreement_date?>';
             $('#orderpurchase-agreement_date').val(date);
+            $('.mostLongTime').text(mostLongTime);
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         }
 
         //改变数量
@@ -166,6 +191,14 @@ $userId   = Yii::$app->user->identity->id;
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             console.log(price);
+        });
+
+        //统一修改货期
+        $('#orderagreement-quote_delivery_time').bind('input propertychange', function (e) {
+            var quote_delivery_time = $(this).val();
+            $('.order_quote_list').each(function (i, ele) {
+                $(ele).find('.delivery_time input').val(quote_delivery_time);
+            })
         });
 
         $('.quote_complete').click(function (e) {

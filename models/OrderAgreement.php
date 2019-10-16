@@ -38,6 +38,7 @@ use Yii;
 class OrderAgreement extends \yii\db\ActiveRecord
 {
     public $order_sn;
+    public $quote_delivery_time;
 
     const IS_STOCK_NO     = '0';
     const IS_STOCK_YES    = '1';
