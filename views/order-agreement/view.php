@@ -13,6 +13,7 @@ $this->title = '收入合同详情';
 $this->params['breadcrumbs'][] = $this->title;
 
 $model->agreement_date = substr($model->agreement_date, 0, 10);
+$model->sign_date = substr($model->sign_date, 0, 10);
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
@@ -106,6 +107,8 @@ $userId   = Yii::$app->user->identity->id;
                 'minView'   => 2,  //最小选择范围（年）
             ]
         ])->textInput(['readonly' => true]);?>
+
+        <?= $form->field($model, 'sign_date')->textInput(['readonly' => true]) ?>
 
     </div>
     <?php ActiveForm::end(); ?>
