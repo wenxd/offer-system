@@ -184,7 +184,7 @@ class OrderPurchaseController extends BaseController
                             $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
                             $purchaseGoods->agreement_sn        = $orderAgreement->agreement_sn;
                             $purchaseGoods->purchase_date       = $params['agreement_date'];
-                            $purchaseGoods->delivery_time       = $item['delivery_time'];
+                            $purchaseGoods->delivery_time       = $agreementGoods->delivery_time;
                             $purchaseGoods->save();
                         }
                     } else {
