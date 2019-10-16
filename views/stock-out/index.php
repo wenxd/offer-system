@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Admin;
+use app\models\OrderAgreement;
 use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -53,13 +54,13 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            [
-                'attribute' => 'order_quote_sn',
-                'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_quote_sn, Url::to(['order-quote/detail', 'id' => $model->order_quote_id]));
-                }
-            ],
+//            [
+//                'attribute' => 'order_quote_sn',
+//                'format'    => 'raw',
+//                'value'     => function ($model, $key, $index, $column) {
+//                    return Html::a($model->order_quote_sn, Url::to(['order-quote/detail', 'id' => $model->order_quote_id]));
+//                }
+//            ],
             //'goods_info',
             //'agreement_date',
             //'is_quote',
@@ -72,6 +73,15 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function($model){
                     return substr($model->agreement_date, 0, 10);
+                }
+            ],
+            [
+                'attribute'      => 'is_stock',
+                'label'          => '是否出库',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'         => OrderAgreement::$stock,
+                'value'          => function ($model, $key, $index, $column) {
+                    return OrderAgreement::$stock[$model->is_stock];
                 }
             ],
             [

@@ -21,7 +21,8 @@ class OrderAgreementStockOutSearch extends OrderAgreement
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted'], 'integer'],
+            [['id', 'order_id', 'order_quote_id', 'order_quote_sn', 'is_agreement', 'admin_id', 'is_deleted',
+                'is_stock'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
                 'customer_name', 'sign_date'], 'safe'],
             [['id', 'order_quote_sn', 'order_sn', 'customer_name'], 'trim'],
@@ -76,6 +77,7 @@ class OrderAgreementStockOutSearch extends OrderAgreement
             'order_agreement.order_quote_sn' => $this->order_quote_sn,
             'order_agreement.is_agreement'   => $this->is_agreement,
             'order_agreement.admin_id'       => $this->admin_id,
+            'order_agreement.is_stock'       => $this->is_stock,
         ]);
 
         if ($this->order_sn || $this->customer_name) {
