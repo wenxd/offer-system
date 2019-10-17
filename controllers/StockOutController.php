@@ -120,6 +120,18 @@ class StockOutController extends BaseController
             if ($res) {
                 $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
                 $agreementGoods->save();
+
+                //判断所有收入合同的零件都已近出库
+                $isHasAgreementGoods = AgreementGoods::find()->where([
+                    'order_agreement_id' => $params['order_agreement_id'],
+                    'is_out'             => AgreementGoods::IS_OUT_NO
+                ])->one();
+                if (!$isHasAgreementGoods) {
+                    $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
+                    $orderAgreement->stock_at = date('Y-m-d H:i:s');
+                    $orderAgreement->save();
+                }
+
                 return json_encode(['code' => 200, 'msg' => '出库成功']);
             }
         } else {
@@ -136,7 +148,7 @@ class StockOutController extends BaseController
 
         $agreementGoods = AgreementGoods::findAll(['id' => $params['ids']]);
 
-        $orderAgreement = OrderAgreement::findOne($agreementGoods[0]->order_agreement_id);
+        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $order_id = $orderAgreement->order_id;
 
         foreach ($agreementGoods as $agreementGood) {
@@ -157,8 +169,7 @@ class StockOutController extends BaseController
             if (!$stock || ($stock && $stock->number < $agreementGood['number'])) {
                 return json_encode(['code' => 500, 'msg' => $agreementGood->goods->goods_number . '库存不够了'], JSON_UNESCAPED_UNICODE);
             }
-            //采购
-            $orderPurchase = OrderPurchase::find()->where(['order_id' => $order_id, 'order_agreement_id' => $orderAgreement->id])->one();
+
             $stockLog                    = new StockLog();
             $stockLog->order_id          = $orderAgreement['order_id'];
 
@@ -194,6 +205,17 @@ class StockOutController extends BaseController
                     $agreementGood->save();
                 }
             }
+        }
+
+        //判断所有收入合同的零件都已近出库
+        $isHasAgreementGoods = AgreementGoods::find()->where([
+            'order_agreement_id' => $params['order_agreement_id'],
+            'is_out'             => AgreementGoods::IS_OUT_NO
+        ])->one();
+        if (!$isHasAgreementGoods) {
+            $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
+            $orderAgreement->stock_at = date('Y-m-d H:i:s');
+            $orderAgreement->save();
         }
 
         return json_encode(['code' => 200, 'msg' => '出库成功']);

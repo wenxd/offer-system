@@ -154,10 +154,11 @@ $isShow = in_array($userId, $adminIds);
                     paymentGoods_ids.push(id);
                 }
             });
+            var order_agreement_id = "<?=$_GET['id'] ?? ''?>";
             $.ajax({
                 type:"post",
                 url:'?r=stock-out/more-out',
-                data:{ids:paymentGoods_ids},
+                data:{ids:paymentGoods_ids, order_agreement_id:order_agreement_id},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
