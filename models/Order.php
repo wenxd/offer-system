@@ -24,6 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $goods_ids 创建时间
+ * @property string $is_final
  */
 class Order extends ActiveRecord
 {
@@ -37,6 +38,9 @@ class Order extends ActiveRecord
 
     const ORDER_TYPE_PROJECT_NO  = 0;
     const ORDER_TYPE_PROJECT_YES = 1;
+
+    const IS_FINAL_NO  = '0';
+    const IS_FINAL_YES = '1';
 
     public static $status = [
         self::STATUS_NO  => '未询价',
@@ -54,6 +58,13 @@ class Order extends ActiveRecord
         self::ORDER_TYPE_PROJECT_YES => '项目订单',
         self::ORDER_TYPE_PROJECT_NO  => '非项目订单',
     ];
+
+    public static $final = [
+        self::IS_FINAL_NO  => '否',
+        self::IS_FINAL_YES => '是',
+    ];
+
+    public $is_inquiry;
     public $customer_short_name = '';
 
     public function behaviors()
@@ -86,7 +97,7 @@ class Order extends ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'type', 'status', 'is_deleted', 'order_type'], 'integer'],
+            [['customer_id', 'type', 'status', 'is_deleted', 'order_type', 'is_final'], 'integer'],
             [['order_price'], 'number'],
             [['provide_date', 'updated_at', 'created_at'], 'safe'],
             [['goods_ids', 'order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
@@ -114,6 +125,7 @@ class Order extends ActiveRecord
             'updated_at'      => '更新时间',
             'created_at'      => '创建时间',
             'order_type'      => '订单来源',
+            'is_final'        => '是否生成成本单',
         ];
     }
 

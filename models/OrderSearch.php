@@ -19,7 +19,7 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'type', 'status', 'is_deleted', 'order_type'], 'integer'],
+            [['id', 'customer_id', 'type', 'status', 'is_deleted', 'order_type', 'is_final'], 'integer'],
             [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
             [['order_price'], 'number'],
             [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
@@ -74,13 +74,13 @@ class OrderSearch extends Order
             'order.order_type'  => $this->order_type,
             'order.status'      => $this->status,
             'order.is_deleted'  => $this->is_deleted,
+            'order.is_final'    => $this->is_final,
         ]);
 
         if ($this->customer_name) {
             $query->leftJoin('customer as a', 'a.id = order.customer_id');
             $query->andFilterWhere(['like', 'a.name', $this->customer_name]);
         }
-
 
         $query->andFilterWhere(['like', 'order_sn', $this->order_sn])
             ->andFilterWhere(['like', 'description', $this->description])

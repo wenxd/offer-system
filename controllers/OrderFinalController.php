@@ -196,6 +196,8 @@ class OrderFinalController extends BaseController
         if ($orderFinal->save()) {
             $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],
                 ['order_id' => $params['order_id'], 'key' => $params['key']]);
+            $order->is_final = Order::IS_FINAL_YES;
+            $order->save();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderFinal->getErrors()]);
