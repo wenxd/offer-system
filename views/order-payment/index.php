@@ -100,6 +100,13 @@ foreach ($adminList as $key => $value) {
                 }
             ],
             [
+                'attribute' => 'order_purchase_sn',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                }
+            ],
+            [
                 'attribute'     => 'agreement_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'        => DateRangePicker::widget([

@@ -58,13 +58,19 @@ foreach ($adminList as $key => $admin) {
                     'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->order) {
-                            return $model->order->order_sn;
+                            return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
                         } else {
                             return '';
                         }
                     }
                 ],
-                'agreement_sn',
+                [
+                    'attribute' => 'agreement_sn',
+                    'format'    => 'raw',
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->order_agreement_id]));
+                    }
+                ],
                 [
                     'attribute' => 'goods_number',
                     'format'    => 'raw',

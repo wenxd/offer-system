@@ -13,6 +13,7 @@ use app\models\OrderQuote;
 class OrderQuoteSearch extends OrderQuote
 {
     public $order_sn;
+    public $order_final_sn;
     /**
      * {@inheritdoc}
      */
@@ -20,8 +21,8 @@ class OrderQuoteSearch extends OrderQuote
     {
         return [
             [['id', 'order_id', 'is_quote', 'admin_id', 'is_deleted', 'customer_id', 'quote_only_one'], 'integer'],
-            [['quote_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn'], 'safe'],
-            [['id', 'quote_sn', 'order_sn'], 'trim'],
+            [['quote_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn', 'order_final_sn'], 'safe'],
+            [['id', 'quote_sn', 'order_sn', 'order_final_sn'], 'trim'],
         ];
     }
 
@@ -80,6 +81,11 @@ class OrderQuoteSearch extends OrderQuote
         if ($this->order_sn) {
             $query->leftJoin('order as a', 'a.id = order_quote.order_id');
             $query->andFilterWhere(['like', 'a.order_sn', $this->order_sn]);
+        }
+
+        if ($this->order_final_sn) {
+            $query->leftJoin('order_final as of', 'of.id = order_quote.order_final_id');
+            $query->andFilterWhere(['like', 'of.final_sn', $this->order_final_sn]);
         }
 
         $query->andFilterWhere(['like', 'quote_sn', $this->quote_sn])

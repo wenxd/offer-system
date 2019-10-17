@@ -92,6 +92,13 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'order_quote_sn',
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::a($model->order_quote_sn, Url::to(['order-quote/view', 'id' => $model->order_quote_id]));
+                }
+            ],
+            [
                 'attribute' => 'sign_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([

@@ -51,6 +51,18 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'order_final_sn',
+                'format'    => 'raw',
+                'label'     => '成本单号',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->orderFinal) {
+                        return Html::a($model->orderFinal->final_sn, Url::to(['order-final/view', 'id' => $model->order_final_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'quote_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
