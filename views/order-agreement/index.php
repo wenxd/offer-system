@@ -79,6 +79,14 @@ $userId   = Yii::$app->user->identity->id;
             ],
             'payment_price',
             [
+                'attribute' => 'is_purchase',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$purchase,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$purchase[$model->is_purchase];
+                }
+            ],
+            [
                 'attribute' => 'order_sn',
                 'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',

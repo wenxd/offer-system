@@ -196,6 +196,14 @@ class OrderPurchaseController extends BaseController
                         AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                     }
                 }
+                //判断是否全部生成采购单
+                $agreementGoodsCount = AgreementGoods::find()->where(['is_deleted' => 0])->count();
+                $purchaseGoodsCount  = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
+                if ($agreementGoodsCount == $purchaseGoodsCount) {
+                    $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
+                    $orderAgreement->save();
+                }
+
                 return json_encode(['code' => 200, 'msg' => '保存成功']);
             } else {
                 return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);

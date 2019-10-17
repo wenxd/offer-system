@@ -34,6 +34,7 @@ use Yii;
  * @property string $payment_price
  * @property string $payment_ratio
  * @property string $remain_price
+ * @property string $is_purchase
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -60,6 +61,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
     const IS_INSTOCK_NO  = '0';
     const IS_INSTOCK_YES = '1';
 
+    const IS_PURCHASE_NO  = '0';
+    const IS_PURCHASE_YES = '1';
+
     public static $stock = [
         self::IS_STOCK_NO   => '否',
         self::IS_STOCK_YES  => '是',
@@ -80,6 +84,11 @@ class OrderAgreement extends \yii\db\ActiveRecord
         self::IS_BILL_YES  => '是',
     ];
 
+    public static $purchase = [
+        self::IS_PURCHASE_NO   => '否',
+        self::IS_PURCHASE_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -95,7 +104,8 @@ class OrderAgreement extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
-                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'payment_ratio'], 'integer'],
+                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'payment_ratio',
+                'is_purchase'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at', 'sign_date'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -133,6 +143,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'payment_ratio'     => '预收款比例',
             'payment_price'     => '收入合同金额',
             'remain_price'      => '收入订单剩余金额',
+            'is_purchase'       => '是否派送采购员',
         ];
     }
 
