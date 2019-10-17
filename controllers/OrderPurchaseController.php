@@ -197,7 +197,9 @@ class OrderPurchaseController extends BaseController
                     }
                 }
                 //判断是否全部生成采购单
-                $agreementGoodsCount = AgreementGoods::find()->where(['is_deleted' => 0])->count();
+                $agreementGoodsCount = AgreementGoods::find()->where([
+                    'order_agreement_id' => $orderAgreement->id,
+                    'is_deleted'         => 0])->count();
                 $purchaseGoodsCount  = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
                 if ($agreementGoodsCount == $purchaseGoodsCount) {
                     $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;

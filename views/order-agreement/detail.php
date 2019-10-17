@@ -110,9 +110,24 @@ $model->agreement_date = date('Y-m-d');
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
             <tr class="order_agreement_list">
+                <?php
+                    $checkbox = true;
+                    $order_purchase_sn = '';
+                    $purchase_number = 0;
+                    if (isset($purchaseGoods[$item->goods_id])) {
+                        $purchaseGoodsList = $purchaseGoods[$item->goods_id];
+                        foreach ($purchaseGoodsList as $k => $v) {
+                            if ($v['serial'] == $item->serial && $v['goods_id'] == $item->goods_id) {
+                                $checkbox           = false;
+                                $order_purchase_sn  = $v['order_purchase_sn'];
+                                $purchase_number    = $v['fixed_number'];
+                            }
+                        }
+                    }
+                ?>
                 <td>
-                    <?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
-data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>"?>
+                    <?=$checkbox ? "<input type='checkbox' name='select_id' 
+data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>" : ""?>
                 </td>
                 <td><?=$item->serial?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
@@ -129,11 +144,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_tax_price"><?=$item->all_tax_price?></td>
                 <td class="delivery_time"><?=$item->delivery_time?></td>
-                <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
+                <td><?=$order_purchase_sn?></td>
                 <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
                 <td class="oldNumber"><?=$item->number?></td>
                 <td class="afterNumber">
-                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->fixed_number : $item->number?>">
+                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$purchase_number ? $purchase_number : $item->number?>">
                 </td>
                 <td><?=$item->goods->unit?></td>
                 <td class="use_stock"></td>

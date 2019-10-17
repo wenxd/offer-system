@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\{Order, OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods, PurchaseGoods};
 use app\models\OrderAgreementSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -156,10 +157,8 @@ class OrderAgreementController extends Controller
 
         $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
         $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
-        $purchaseGoods  = PurchaseGoods::find()
-            ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])
-            ->indexBy('goods_id')
-            ->all();
+        $purchaseGoods  = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();
+        $purchaseGoods  = ArrayHelper::index($purchaseGoods, null, 'goods_id');
 
         $date = date('ymd_');
         $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
