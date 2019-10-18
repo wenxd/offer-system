@@ -17,7 +17,7 @@ $model->sign_date = date('Y-m-d');
 $customer_name = $order->customer ? $order->customer->short_name : '';
 $model->agreement_sn = 'S' . date('ymd_') . $customer_name . '_' . $number;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -33,19 +33,25 @@ $userId   = Yii::$app->user->identity->id;
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
-                <?php if(!in_array($userId, $adminIds)):?>
                 <th>零件号</th>
+                <?php if(!in_array($userId, $adminIds)):?>
+                    <th>厂家号</th>
                 <?php endif;?>
-                <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
+                <?php if(!in_array($userId, $adminIds)):?>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
+                <?php endif;?>
                 <th>单位</th>
-                <th>报价货期</th>
+                <th>收入合同货期</th>
+                <?php if(!in_array($userId, $adminIds)):?>
                 <th>供应商</th>
+                <?php endif;?>
                 <th>税率</th>
+                <?php if(!in_array($userId, $adminIds)):?>
                 <th>发行含税单价</th>
+                <?php endif;?>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
@@ -55,23 +61,28 @@ $userId   = Yii::$app->user->identity->id;
             <tbody>
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_quote_list">
-                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
+                    <?php if(!in_array($userId, $adminIds)):?>
+                        <td><?=$item->goods->goods_number_b?></td>
                     <?php endif;?>
-                    <td><?=$item->goods->goods_number_b?></td>
                     <td class="goods_id" data-goods_id="<?=$item->goods_id?>" data-goods_type="<?=$item->type?>"
                         data-relevance_id="<?=$item->relevance_id?>" data-quote_goods_id="<?=$item->id?>">
                         <?=$item->goods->description?>
                     </td>
                     <td><?=$item->goods->description_en?></td>
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->unit?></td>
                     <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->inquiry->supplier->name?></td>
+                    <?php endif;?>
                     <td class="tax"><?=$item->tax_rate?></td>
-
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->publish_tax_price?></td>
+                    <?php endif;?>
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"></td>

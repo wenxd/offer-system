@@ -54,6 +54,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_final_sn',
                 'format'    => 'raw',
                 'label'     => '成本单号',
+                'visible'   => !in_array($userId, $adminIds),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->orderFinal) {
                         return Html::a($model->orderFinal->final_sn, Url::to(['order-final/view', 'id' => $model->order_final_id]));
@@ -71,12 +72,15 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'order_sn',
-                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'value'     => function ($model, $key, $index, $column) use($userId, $adminIds){
                     if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                        if (in_array($userId, $adminIds)) {
+                            return $model->order->order_sn;
+                        } else {
+                            return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                        }
                     } else {
                         return '';
                     }
