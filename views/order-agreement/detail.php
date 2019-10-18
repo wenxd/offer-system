@@ -25,8 +25,7 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$customer_name = $order->customer ? $order->customer->short_name : '';
-$model->purchase_sn    = 'B' . date('ymd_') . $customer_name . '_' . $number;
+$model->purchase_sn    = 'B' . date('ymd_') . $number;
 $model->agreement_date = date('Y-m-d');
 ?>
 <style>
