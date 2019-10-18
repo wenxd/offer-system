@@ -24,10 +24,10 @@ $userId    = Yii::$app->user->identity->id;
 $isShow    = in_array($userId, $adminIds);
 
 if ($isShow) {
-    $func = '{create} {gen}';
+    $func = '{gen}';
     $operate = '{view}';
 } else {
-    $func = '{create} {gen} {delete} {stock_in} {stock_out} {download}';
+    $func = '{gen} {delete} {stock_in} {stock_out} {download}';
     $operate = '{view} {update} {delete}';
 }
 
