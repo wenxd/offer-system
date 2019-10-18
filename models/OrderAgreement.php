@@ -126,7 +126,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'order_quote_id'    => '报价订单ID',
             'order_quote_sn'    => '报价订单号',
             'goods_info'        => '零件信息 json，包括ID',
-            'agreement_date'    => '合同交货时间',
+            'agreement_date'    => '收入合同交货时间',
             'is_agreement'      => '是否报价：0未报价 1已报价',
             'admin_id'          => '报价员ID',
             'is_deleted'        => '是否删除：0未删除 1已删除',

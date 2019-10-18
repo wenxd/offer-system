@@ -123,7 +123,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'order_agreement_id'       => '合同订单ID',
             'order_agreement_sn'       => '合同订单号',
             'goods_info'               => '零件信息 json，包括ID',
-            'end_date'                 => '采购截止时间',
+            'end_date'                 => '收入合同交货日期',
             'admin_id'                 => '采购员ID',
             'financial_remark'         => '财务备注',
             'is_purchase'              => '完成采购',

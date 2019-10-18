@@ -187,7 +187,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 'maxView'   => 2,  //最大选择范围（年）
                 'minView'   => 2,  //最小选择范围（年）
             ]
-        ]);?>
+        ])->label('收入合同交货时间');?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存采购单', [
