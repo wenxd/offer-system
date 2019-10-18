@@ -46,7 +46,6 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'purchase_sn',
-                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'purchase_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {

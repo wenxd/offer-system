@@ -195,7 +195,7 @@ $model->delivery_date = date('Y-m-d');
                 'maxView'   => 2,  //最大选择范围（年）
                 'minView'   => 2,  //最小选择范围（年）
             ]
-        ])->label('合同交货时间');?>
+        ])->label('支出合同交货时间');?>
 
         <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
 

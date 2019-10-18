@@ -35,15 +35,19 @@ $userId = Yii::$app->user->identity->id;
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
                 <tr>
                     <th>序号</th>
+                    <?php if (!in_array($userId, $adminIds)):?>
                     <th>零件号</th>
+                    <?php endif;?>
                     <th>厂家号</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
                     <th>税率</th>
+                    <?php if (!in_array($userId, $adminIds)):?>
                     <th>发行含税单价</th>
                     <th>发行含税总价</th>
                     <th>发行货期</th>
+                    <?php endif;?>
                     <th style="background-color: darkgrey">支出合同供应商</th>
                     <th style="background-color: darkgrey">支出合同货期(周)</th>
                     <th style="background-color: darkgrey">支出合同含税单价</th>
@@ -55,18 +59,22 @@ $userId = Yii::$app->user->identity->id;
             <?php foreach ($paymentGoods as $item):?>
                 <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
+                    <?php if (!in_array($userId, $adminIds)):?>
                     <td><?=$item->goods->goods_number?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
                     <td class="tax"><?=$tax_rate?></td>
+                    <?php if (!in_array($userId, $adminIds)):?>
                     <?php
                         $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->estimate_publish_price;
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                    <?php endif;?>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -76,14 +84,18 @@ $userId = Yii::$app->user->identity->id;
             <?php endforeach;?>
 
             <tr style="background-color: #acccb9">
-                <td colspan="8" rowspan="2">汇总统计</td>
+                <td colspan="<?=in_array($userId, $adminIds) ? 5 : 8?>" rowspan="2">汇总统计</td>
+                <?php if (!in_array($userId, $adminIds)):?>
                 <td>发行含税总价合计</td>
+                <?php endif;?>
                 <td colspan="4" rowspan="2"></td>
                 <td>支出合同含税总价</td>
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <?php if (!in_array($userId, $adminIds)):?>
                 <td class="sta_all_publish_tax_price"></td>
+                <?php endif;?>
                 <td class="sta_quote_all_tax_price"></td>
             </tr>
 
@@ -92,9 +104,9 @@ $userId = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
 
-        <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('合同签订时间'); ?>
+        <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('支出合同签订时间'); ?>
 
-        <?= $form->field($model, 'take_time')->textInput(['readonly' => true, 'value' => substr($model->take_time, 0, 10)])->label('交货日期'); ?>
+        <?= $form->field($model, 'take_time')->textInput(['readonly' => true, 'value' => substr($model->take_time, 0, 10)])->label('支出合同交货日期'); ?>
 
         <?= $form->field($model, 'payment_sn')->textInput(['readonly' => true])->label('支出合同单号'); ?>
 
