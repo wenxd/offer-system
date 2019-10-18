@@ -778,6 +778,8 @@ ALTER TABLE `goods` ADD COLUMN  `estimate_publish_price` decimal(10,2) NOT NULL 
 ALTER TABLE `goods` ADD COLUMN  `material_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '设备类别';
 ALTER TABLE `goods` ADD COLUMN  `import_mark` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '导入类别';
 
+ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
+
 CREATE TABLE `inquiry_temp` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `good_id`             int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
@@ -808,4 +810,38 @@ CREATE TABLE `inquiry_temp` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='临时询价表';
 
-ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
+CREATE TABLE `temp_payment_goods` (
+  `id`               int(11) NOT NULL AUTO_INCREMENT,
+  `order_id`         int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `order_payment_id` int(11) NOT NULL DEFAULT '0' COMMENT '支出合同订单ID',
+  `order_payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同订单号',
+  `order_purchase_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购订单ID',
+  `order_purchase_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '采购订单号',
+  `purchase_goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '支出合同单商品主键',
+  `serial` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '序号',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `type` int(11) NOT NULL DEFAULT '0' COMMENT '关联类型  0询价  1库存',
+  `relevance_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联ID（询价或库存）',
+  `number` int(11) NOT NULL DEFAULT '0' COMMENT '采购数量',
+  `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税单价',
+  `tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `fixed_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税单价',
+  `fixed_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税单价',
+  `fixed_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的未税总价',
+  `fixed_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '修改后的含税总价',
+  `fixed_number` int(11) NOT NULL DEFAULT '0' COMMENT '修改后的数量',
+  `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '采购员ID',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检',
+  `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID',
+  `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）',
+  `before_supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '修改前供应商ID',
+  `before_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '修改前货期',
+  `is_payment` int(11) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是  采购记录列表展示是否显示',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='临时支出合同单与零件ID对应表(采购记录表)';
+

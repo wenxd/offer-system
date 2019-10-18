@@ -127,7 +127,7 @@ $model->delivery_date = date('Y-m-d');
                     <?php if(!in_array($userId, $adminIds)):?>
                         <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
-                    <td><?=$item->goods->goods_number_b?></td>
+                    <td><?=$item->goods->goods_number_b?><?=Html::a(' 采购记录', Url::to(['temp-payment-goods/temp', 'id' => $item->id]))?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->original_company?></td>
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
