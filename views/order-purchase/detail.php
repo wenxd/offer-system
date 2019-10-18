@@ -31,6 +31,10 @@ $userId = Yii::$app->user->identity->id;
 $i = 0;
 
 $model->delivery_date = date('Y-m-d');
+
+//收入合同交货日期
+$order_agreement_at = substr($orderPurchase->orderAgreement->agreement_date, 0, 10);
+
 ?>
 
 <div class="box table-responsive">
@@ -373,29 +377,45 @@ $model->delivery_date = date('Y-m-d');
             var end_date          = $('#orderpurchase-end_date').val();
             var payment_sn        = $('#orderpurchase-payment_sn').val();
             var supplier_id       = $('#orderpurchase-supplier_id option:selected').val();
+            if (!supplier_id) {
+                layer.msg('请选择供应商', {time:2000});
+                return false;
+            }
             var apply_reason      = $('#orderpurchase-apply_reason').val();
             var agreement_date    = $('#orderpurchase-agreement_date').val();
             //合同交货日期
             var delivery_date     = $('#orderpurchase-delivery_date').val();
+            //收入合同交货日期
+            var order_agreement_date = '<?=$order_agreement_at?>';
 
-            //创建支出合同
-            $.ajax({
-                type:"post",
-                url:'?r=order-purchase-verify/save-order',
-                data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
-                    goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
-                    apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        window.location.reload();
-                    } else {
-                        layer.msg(res.msg, {time:2000});
-                        return false;
-                    }
-                }
-            });
+            if ((new Date(delivery_date.replace('/-/g', '\/'))) > (new Date(order_agreement_date.replace('/-/g', '\/')))) {
+                layer.confirm('支出交货时间晚于收入', {
+                    btn: ['重新选择', '确认'] //按钮
+                }, function(index){
+                    layer.close(index);
+                    return false;
+                }, function(index){
+                    //创建支出合同
+                    $.ajax({
+                        type:"post",
+                        url:'?r=order-purchase-verify/save-order',
+                        data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
+                            goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
+                            apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date,
+                            order_agreement_date:order_agreement_date},
+                        dataType:'JSON',
+                        success:function(res){
+                            if (res && res.code == 200){
+                                layer.msg(res.msg, {time:2000});
+                                window.location.reload();
+                            } else {
+                                layer.msg(res.msg, {time:2000});
+                                return false;
+                            }
+                        }
+                    });
+                });
+            }
         });
     });
 </script>

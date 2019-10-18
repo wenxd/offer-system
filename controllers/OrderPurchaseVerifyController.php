@@ -139,13 +139,12 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPayment->save();
 
             //是否全部生成了支出申请
-            $paymentGoodsCount  = PaymentGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
-            $purchaseGoodsCount = PurchaseGoods::find()->where(['order_purchase_id' => $orderPurchase])->count();
+            $paymentGoodsCount  = PaymentGoods::find()->where(['order_purchase_id' => $orderPurchase->id])->count();
+            $purchaseGoodsCount = PurchaseGoods::find()->where(['order_purchase_id' => $orderPurchase->id])->count();
             if ($purchaseGoodsCount == $paymentGoodsCount) {
                 $orderPurchase->is_complete = 1;
                 $orderPurchase->save();
             }
-
             //给管理员发送系统消息
 //            if ($noticeOpen) {
 //                $systemNotice = new SystemNotice();
@@ -182,6 +181,14 @@ class OrderPurchaseVerifyController extends BaseController
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id  = $params['admin_id'];
                 $systemNotice->content   = '采购生成支出合同有修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+
+            if (strtotime($params['delivery_date']) > strtotime($params['order_agreement_date'])) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $params['admin_id'];
+                $systemNotice->content   = '支出合同交货时间比收入合同交货时间晚,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
