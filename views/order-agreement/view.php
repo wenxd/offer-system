@@ -15,15 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
 $model->agreement_date = substr($model->agreement_date, 0, 10);
 $model->sign_date = substr($model->sign_date, 0, 10);
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-$userId   = Yii::$app->user->identity->id;
 
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -40,9 +35,11 @@ $userId   = Yii::$app->user->identity->id;
                 <th>数量</th>
                 <th>单位</th>
                 <th>税率</th>
+                <?php if (!in_array($userId, $adminIds)):?>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
+                <?php endif;?>
                 <th>含税单价</th>
                 <th>含税总价</th>
                 <th>货期</th>
@@ -64,12 +61,14 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->goods->unit?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
+                    <?php if (!in_array($userId, $adminIds)):?>
                     <?php
                         $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                    <?php endif;?>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td><?=$item->quote_delivery_time?></td>
@@ -77,9 +76,10 @@ $userId   = Yii::$app->user->identity->id;
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="7" rowspan="2">汇总统计</td>
-                <td rowspan="2"></td>
+                <td colspan="<?=in_array($userId, $adminIds) ? 5 : 8?>" rowspan="2">汇总统计</td>
+                <?php if (!in_array($userId, $adminIds)):?>
                 <td>发行含税总价合计</td>
+                <?php endif;?>
                 <td rowspan="2"></td>
                 <td rowspan="2"></td>
                 <td>收入合同金额</td>
@@ -87,7 +87,9 @@ $userId   = Yii::$app->user->identity->id;
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <?php if (!in_array($userId, $adminIds)):?>
                 <td class="sta_all_publish_tax_price"></td>
+                <?php endif;?>
                 <td class="sta_all_price"></td>
             </tr>
             </tbody>
