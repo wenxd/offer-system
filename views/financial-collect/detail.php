@@ -39,17 +39,16 @@ if (!$model->payment_ratio) {
         <table id="example2" class="table table-bordered table-hover">
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
             <tr>
+                <th>零件号</th>
+                <?php if (!$isShow):?>
                 <th>厂家号</th>
+                <?php endif;?>
                 <th>中文描述</th>
                 <th>英文描述</th>
-                <th>原厂家</th>
-                <th>原厂家备注</th>
-                <th>单位</th>
-                <th>技术备注</th>
                 <?php if (!$isShow):?>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
+                <th>原厂家</th>
+                <?php endif;?>
+                <th>单位</th>
                 <th>客户</th>
                 <th>税率</th>
                 <th>未税单价</th>
@@ -57,7 +56,6 @@ if (!$model->payment_ratio) {
                 <th>货期(周)</th>
                 <th>未税总价</th>
                 <th>含税总价</th>
-                <?php endif;?>
                 <th>数量</th>
                 <th>出库</th>
             </tr>
@@ -66,16 +64,15 @@ if (!$model->payment_ratio) {
             <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_final_list">
                     <td><?=$item->goods->goods_number?></td>
+                    <?php if (!$isShow):?>
+                        <td><?=$item->goods->goods_number_b?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
-                    <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
-                    <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
                     <?php if (!$isShow):?>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                        <td><?=$item->goods->original_company?></td>
+                    <?php endif;?>
+                    <td><?=$item->goods->unit?></td>
                     <td><?=isset($item->orderAgreement) ? (isset($item->orderAgreement->customer) ? $item->orderAgreement->customer->name : '') : ''?></td>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->quote_price?></td>
@@ -83,13 +80,12 @@ if (!$model->payment_ratio) {
                     <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                     <td class="all_price"><?=$item->quote_all_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
-                    <?php endif;?>
                     <td class="number"><?=$item->number?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="14" rowspan="2">汇总统计</td>
+                <td colspan="<?= $isShow ? 8 : 10?>" rowspan="2">汇总统计</td>
                 <td>最长货期</td>
                 <td></td>
                 <td>合计</td>
