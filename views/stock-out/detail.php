@@ -39,19 +39,16 @@ $isShow = in_array($userId, $adminIds);
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
+                <th>零件号</th>
+                <?php if (!$isShow):?>
                 <th>厂家号</th>
+                <?php endif;?>
                 <th>中文描述</th>
                 <th>英文描述</th>
-                <th>原厂家</th>
-                <th>原厂家备注</th>
-                <th>单位</th>
-                <th>技术备注</th>
                 <?php if (!$isShow):?>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
+                <th>原厂家</th>
                 <?php endif;?>
+                <th>单位</th>
                 <th>数量</th>
                 <th>出库</th>
                 <th>库存数量</th>
@@ -66,18 +63,15 @@ $isShow = in_array($userId, $adminIds);
                     ?>
                     <td class="id"><?=in_array($item->goods_id, $stock_goods_ids) ? '' : $str?></td>
                     <td><?=$item->goods->goods_number?></td>
+                    <?php if (!$isShow):?>
+                    <td><?=$item->goods->goods_number_b?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
-                    <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
-                    <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
                     <?php if (!$isShow):?>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
+                    <td><?=$item->goods->original_company?></td>
                     <?php endif;?>
+                    <td><?=$item->goods->unit?></td>
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
                     <td><?=$item->stock ? $item->stock->number : 0?></td>
