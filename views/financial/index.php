@@ -20,13 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-$userId   = Yii::$app->user->identity->id;
 
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-body">
@@ -84,12 +79,15 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'order_sn',
                 'label'     => '订单号',
-                'visible'   => !in_array($userId, $adminIds),
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                        if (in_array($userId, $adminIds)) {
+                            return $model->order->order_sn;
+                        } else {
+                            return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                        }
                     } else {
                         return '';
                     }
@@ -100,8 +98,12 @@ $userId   = Yii::$app->user->identity->id;
                 'label'     => '采购单号',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_purchase_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                        if (in_array($userId, $adminIds)) {
+                            return $model->order_purchase_sn;
+                        } else {
+                            return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                        }
                 }
             ],
             [
@@ -116,7 +118,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;
