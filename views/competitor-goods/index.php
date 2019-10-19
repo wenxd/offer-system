@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
             var data = JSON.parse(data);
             if(data.code == 200){
                 //导入成功
-                layer.msg(data.msg,{time:5000},function(){
+                layer.msg(data.msg,{time:3000},function(){
                     window.location.reload();
                 });
             }else{
