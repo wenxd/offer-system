@@ -342,7 +342,7 @@ class GoodsController extends BaseController
                                 $goods->is_import = Goods::IS_IMPORT_NO;
                             }
                             //紧急
-                            if ($value['K'] && $value['K'] != '否') {
+                            if ($value['K'] && $value['K'] != '是') {
                                 $goods->is_emerg = Goods::IS_EMERG_YES;
                             } else {
                                 $goods->is_emerg = Goods::IS_EMERG_NO;
