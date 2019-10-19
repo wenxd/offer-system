@@ -318,40 +318,58 @@ class GoodsController extends BaseController
                                 $goods->material = trim($value['F']);
                             }
                             //是否TZ
-                            if ($value['G'] && $value['G'] != '否') {
+                            if ($value['G'] && $value['G'] == '是') {
                                 $goods->is_tz = Goods::IS_TZ_YES;
+                            } else {
+                                $goods->is_tz = Goods::IS_TZ_NO;
                             }
                             //加工
-                            if ($value['H'] && $value['H'] != '否') {
+                            if ($value['H'] && $value['H'] == '是') {
                                 $goods->is_process = Goods::IS_PROCESS_YES;
+                            } else {
+                                $goods->is_process = Goods::IS_PROCESS_NO;
                             }
                             //标准
-                            if ($value['I'] && $value['I'] != '否') {
+                            if ($value['I'] && $value['I'] == '是') {
                                 $goods->is_standard = Goods::IS_STANDARD_YES;
+                            } else {
+                                $goods->is_standard = Goods::IS_STANDARD_NO;
                             }
                             //进口
-                            if ($value['J'] && $value['J'] != '否') {
+                            if ($value['J'] && $value['J'] == '是') {
                                 $goods->is_import = Goods::IS_IMPORT_YES;
+                            } else {
+                                $goods->is_import = Goods::IS_IMPORT_NO;
                             }
                             //紧急
                             if ($value['K'] && $value['K'] != '否') {
                                 $goods->is_emerg = Goods::IS_EMERG_YES;
+                            } else {
+                                $goods->is_emerg = Goods::IS_EMERG_NO;
                             }
                             //大修
-                            if ($value['L'] && $value['L'] != '否') {
+                            if ($value['L'] && $value['L'] == '是') {
                                 $goods->is_repair = Goods::IS_REPAIR_YES;
+                            } else {
+                                $goods->is_repair = Goods::IS_REPAIR_NO;
                             }
                             //总成
-                            if ($value['M'] && $value['M'] != '否') {
+                            if ($value['M'] && $value['M'] == '是') {
                                 $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+                            } else {
+                                $goods->is_assembly = Goods::IS_ASSEMBLY_NO;
                             }
                             //特制
-                            if ($value['N'] && $value['N'] != '否') {
+                            if ($value['N'] && $value['N'] == '是') {
                                 $goods->is_special = Goods::IS_SPECIAL_YES;
+                            } else {
+                                $goods->is_special = Goods::IS_SPECIAL_NO;
                             }
                             //铭牌
-                            if ($value['O'] && $value['O'] != '否') {
+                            if ($value['O'] && $value['O'] == '是') {
                                 $goods->is_nameplate = Goods::IS_NAMEPLATE_YES;
+                            } else {
+                                $goods->is_nameplate = Goods::IS_NAMEPLATE_NO;
                             }
                             //所属部位
                             if ($value['Q']) {
