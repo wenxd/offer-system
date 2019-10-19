@@ -282,11 +282,14 @@ class GoodsController extends BaseController
 
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A']) && empty($value['B'])) {
+                            if (empty($value['A']) && empty($value['E'])) {
                                 continue;
                             }
-                            $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
-                                ->andWhere(['or', ['goods_number' => trim($value['A'])], ['goods_number_b' => trim($value['E'])]])->one();
+                            if (trim($value['A'])) {
+                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number' => trim($value['A'])])->one();
+                            } else {
+                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number_b' => trim($value['E'])])->one();
+                            }
                             if (!$goods) {
                                 $goods = new Goods();
                             }
