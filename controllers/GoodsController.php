@@ -440,8 +440,8 @@ class GoodsController extends BaseController
                                     $stock->good_id         = $goods->id;
                                 }
                                 $stock->suggest_number  = trim($value['R']);
-                                $stock->high_number     = $high_stock_ratio * trim($value['R']);
-                                $stock->low_number      = $low_stock_ratio * trim($value['R']);
+                                $stock->high_number     = (int)($high_stock_ratio * trim($value['R']));
+                                $stock->low_number      = (int)($low_stock_ratio * trim($value['R']));
                                 $stock->save();
                             }
                         }
