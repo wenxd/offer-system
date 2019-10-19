@@ -71,6 +71,18 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute'     => 'stock_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'label'         => '收入合同实际交货日期',
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderAgreementSearch[stock_at]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['stock_at'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->stock_at, 0, 10);
+                }
+            ],
+            [
                 'attribute'      => 'is_stock',
                 'label'          => '是否出库',
                 'contentOptions' =>['style'=>'min-width: 80px;'],

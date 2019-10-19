@@ -20,15 +20,10 @@ use kartik\daterange\DateRangePicker;
 $this->title = '出库记录';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '系统管理员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
@@ -55,6 +50,7 @@ foreach ($adminList as $key => $admin) {
                     'attribute' => 'order_sn',
                     'label'     => '订单号',
                     'format'    => 'raw',
+                    'visible'   => !in_array($userId, $adminIds),
                     'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->order) {
@@ -67,8 +63,12 @@ foreach ($adminList as $key => $admin) {
                 [
                     'attribute' => 'agreement_sn',
                     'format'    => 'raw',
-                    'value'     => function ($model, $key, $index, $column) {
-                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->order_agreement_id]));
+                    'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                        if (in_array($userId, $adminIds)) {
+                            return $model->agreement_sn;
+                        } else {
+                            return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->order_agreement_id]));
+                        }
                     }
                 ],
                 [
@@ -87,6 +87,7 @@ foreach ($adminList as $key => $admin) {
                 [
                     'attribute' => 'number',
                     'label'     => '出库数量',
+                    'visible'   => !in_array($userId, $adminIds),
                 ],
                 [
                     'attribute' => 'price',
@@ -100,7 +101,7 @@ foreach ($adminList as $key => $admin) {
                 [
                     'attribute' => 'admin_id',
                     'label'     => '采购员',
-                    'filter'    => $admins,
+                    'filter'    => \app\models\Helper::getAdminList(['系统管理员', '采购员']),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->admin) {
                             return $model->admin->username;
