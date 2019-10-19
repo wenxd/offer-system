@@ -291,6 +291,15 @@ class Goods extends ActiveRecord
             $stock->low_number      = $low_stock_ratio * trim($this->suggest_number);
             $stock->save();
         }
+        if (!$this->publish_tax_price) {
+            $this->publish_tax_price = 0;
+        }
+        if (!$this->estimate_publish_price) {
+            $this->estimate_publish_price = 0;
+        }
+        if (!$this->publish_delivery_time) {
+            $this->publish_delivery_time = 0;
+        }
 
         unset($this->img_url);
         return parent::beforeSave($insert);
