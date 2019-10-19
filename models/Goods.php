@@ -287,8 +287,8 @@ class Goods extends ActiveRecord
                 $stock->good_id         = $this->id;
             }
             $stock->suggest_number  = $this->suggest_number;
-            $stock->high_number     = $high_stock_ratio * trim($this->suggest_number);
-            $stock->low_number      = $low_stock_ratio * trim($this->suggest_number);
+            $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
+            $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
             $stock->save();
         }
         if (!$this->publish_tax_price) {
