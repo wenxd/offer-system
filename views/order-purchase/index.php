@@ -84,7 +84,14 @@ $userId   = Yii::$app->user->identity->id;
                 'filter'    => DateRangePicker::widget([
                     'name' => 'OrderPurchaseSearch[end_date]',
                     'value' => Yii::$app->request->get('OrderPurchaseSearch')['end_date'],
-                ])
+                ]),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return $model->order->order_type ? $model->end_date : '';
+                    } else {
+                        return '';
+                    }
+                }
             ],
             [
                 'attribute' => 'admin_id',
