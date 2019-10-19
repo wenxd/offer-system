@@ -17,16 +17,12 @@ use yii\widgets\Pjax;
 $this->title = '支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '询价员', '系统管理员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = \app\models\Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $value) {
-    $admins[$value->id] = $value->username;
-}
 
+$userId   = Yii::$app->user->identity->id;
 ?>
-<div class="box table-responsive">
+<div class="box">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -90,6 +86,7 @@ foreach ($adminList as $key => $value) {
                 'attribute' => 'order_sn',
                 'label'     => '订单编号',
                 'format'    => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
@@ -102,6 +99,7 @@ foreach ($adminList as $key => $value) {
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
                 }
@@ -191,6 +189,7 @@ foreach ($adminList as $key => $value) {
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
+                'visible'        => !in_array($userId, $adminIds),
                 'value'          => function ($model, $key, $index, $column){
                     $html = '';
                     $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [

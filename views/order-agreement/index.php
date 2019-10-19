@@ -16,7 +16,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '收入合同订单管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -99,13 +99,13 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            [
-                'attribute' => 'order_quote_sn',
-                'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_quote_sn, Url::to(['order-quote/view', 'id' => $model->order_quote_id]));
-                }
-            ],
+//            [
+//                'attribute' => 'order_quote_sn',
+//                'format'    => 'raw',
+//                'value'     => function ($model, $key, $index, $column) {
+//                    return Html::a($model->order_quote_sn, Url::to(['order-quote/view', 'id' => $model->order_quote_id]));
+//                }
+//            ],
             [
                 'attribute' => 'sign_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -155,6 +155,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
                 'value'          => function ($model, $key, $index, $column){
                     return Html::a('<i class="fa fa-plus"></i> 派送采购员', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
