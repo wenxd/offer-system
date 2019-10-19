@@ -18,13 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
-$userId   = Yii::$app->user->identity->id;
 
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-body">

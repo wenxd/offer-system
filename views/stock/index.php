@@ -28,7 +28,7 @@ if ($isShow) {
     $operate = '{view}';
 } else {
     $func = '{gen} {delete} {stock_in} {stock_out} {download}';
-    $operate = '{view} {update} {delete}';
+    $operate = '{view} {update}';
 }
 
 ?>
@@ -164,7 +164,7 @@ if ($isShow) {
             ],
             [
                 'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
+                'contentOptions'=>['style'=>'min-width: 130px;'],
                 'header' => '操作',
                 'template' => $operate,
             ],

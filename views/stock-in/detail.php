@@ -45,19 +45,14 @@ $isShow = in_array($userId, $adminIds);
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
+                <th>零件号</th>
                 <th>厂家号</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>原厂家</th>
-                <th>原厂家备注</th>
                 <th>单位</th>
-                <th>技术备注</th>
-                <?php if (!$isShow):?>
-                <th>加工</th>
-                <th>特制</th>
-                <th>铭牌</th>
-                <th>图片</th>
                 <th>供应商</th>
+                <?php if (!$isShow):?>
                 <th>税率</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
@@ -66,6 +61,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>含税总价</th>
                 <?php endif;?>
                 <th>数量</th>
+                <th>库存位置</th>
                 <th>入库</th>
                 <th>质检</th>
                 <th>操作</th>
@@ -79,18 +75,13 @@ $isShow = in_array($userId, $adminIds);
                     ?>
                     <td class="id"><?=in_array($item->goods_id, $stock_goods_ids) ? '' : $str?></td>
                     <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
-                    <td><?=$item->goods->original_company_remark?></td>
                     <td><?=$item->goods->unit?></td>
-                    <td><?=$item->goods->technique_remark?></td>
-                    <?php if (!$isShow):?>
-                    <td><?=Goods::$process[$item->goods->is_process]?></td>
-                    <td><?=Goods::$special[$item->goods->is_special]?></td>
-                    <td><?=Goods::$nameplate[$item->goods->is_nameplate]?></td>
-                    <td><?=Html::img($item->goods->img_url, ['width' => '50px'])?></td>
                     <td><?=$item->supplier->name?></td>
+                    <?php if (!$isShow):?>
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->fixed_price?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -99,6 +90,7 @@ $isShow = in_array($userId, $adminIds);
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
+                    <td><?=$item->stock ? $item->stock->position : ''?></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                     <td class="quality_text"><?=PaymentGoods::$quality[$item->is_quality]?></td>
                     <td>
