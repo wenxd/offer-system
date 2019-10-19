@@ -284,8 +284,8 @@ class Goods extends ActiveRecord
             $stock = Stock::find()->where(['good_id' => $this->id])->one();
             if ($stock) {
                 $stock->suggest_number  = $this->suggest_number;
-                $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
-                $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
+                $stock->high_number     = (int) round($high_stock_ratio * trim($this->suggest_number));
+                $stock->low_number      = (int) round($low_stock_ratio * trim($this->suggest_number));
                 $stock->save();
             }
         }
@@ -315,8 +315,8 @@ class Goods extends ActiveRecord
                 'title'  => SystemConfig::TITLE_TAX,
                 'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
             $stock->suggest_number  = $this->suggest_number;
-            $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
-            $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
+            $stock->high_number     = (int) round($high_stock_ratio * trim($this->suggest_number));
+            $stock->low_number      = (int) round($low_stock_ratio * trim($this->suggest_number));
             $stock->save();
         }
     }
