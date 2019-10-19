@@ -282,14 +282,12 @@ class Goods extends ActiveRecord
             $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
             $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
             $stock = Stock::find()->where(['good_id' => $this->id])->one();
-            if (!$stock) {
-                $stock = new Stock();
-                $stock->good_id         = $this->id;
+            if ($stock) {
+                $stock->suggest_number  = $this->suggest_number;
+                $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
+                $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
+                $stock->save();
             }
-            $stock->suggest_number  = $this->suggest_number;
-            $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
-            $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
-            $stock->save();
         }
         if (!$this->publish_tax_price) {
             $this->publish_tax_price = 0;
@@ -309,11 +307,16 @@ class Goods extends ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
         if ($insert) {//这里是新增数据
+            $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
+            $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
             $stock = new Stock();
-            $stock->good_id = $this->id;
+            $stock->good_id  = $this->id;
             $stock->tax_rate = SystemConfig::find()->select('value')->where([
                 'title'  => SystemConfig::TITLE_TAX,
                 'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+            $stock->suggest_number  = $this->suggest_number;
+            $stock->high_number     = (int)($high_stock_ratio * trim($this->suggest_number));
+            $stock->low_number      = (int)($low_stock_ratio * trim($this->suggest_number));
             $stock->save();
         }
     }
