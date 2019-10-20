@@ -118,6 +118,18 @@ class Supplier extends ActiveRecord
                 return false;
             }
         }
+        //超级管理员
+        $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+        $admin_name = Yii::$app->user->identity->username;
+        $admin_id = Yii::$app->user->identity->id;
+        if ($admin_id != $user_super->user_id) {
+            //给超管通知
+            $notice = new SystemNotice();
+            $notice->admin_id = $user_super->user_id;
+            $notice->content = $admin_name . '创建了供应商，请确认';
+            $notice->notice_at = date('Y-m-d H:i:s');
+            $notice->save();
+        }
         return parent::beforeSave($insert);
     }
 
