@@ -110,7 +110,7 @@ class GoodsController extends BaseController
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
         //询价记录 价格最优
-        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('tax_price asc')->one();
+        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
         //同期最短(货期)
         $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
         //最新报价
@@ -121,25 +121,25 @@ class GoodsController extends BaseController
         //采购记录  最新采购
         $paymentNew = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //价格最低采购
-        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_tax_price asc')->one();
+        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
         //货期采购
         $paymentDay = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
 
         //收入记录 最新
         $agreementGoodsNew  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //最高价
-        $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price Desc')->one();
+        $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price Desc')->one();
         //最低价
-        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price asc')->one();
+        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price asc')->one();
 
         //竞争对手 发行价
         $competitorGoodsIssue  = CompetitorGoods::find()->where(['goods_id' => $goods_id, 'is_issue' => CompetitorGoods::IS_ISSUE_YES])->one();
         //最新
         $competitorGoodsNew  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
         //最高价
-        $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price Desc')->one();
+        $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price Desc')->one();
         //最低价
-        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price asc')->one();
+        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price asc')->one();
 
         $data = [];
         $data['goods']            = $goods ? $goods : [];
