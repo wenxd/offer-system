@@ -157,14 +157,14 @@ if (isset($_GET['inquiry_goods_id'])) {
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
 
         <?php if ($is_super):?>
-            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号') ?>
+            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('零件号') ?>
             <div class="box-search-goods_number cancel-goods_number">
                 <ul class="box-search-ul-goods_number">
 
                 </ul>
             </div>
         <?php endif;?>
-        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('厂家号') ?>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('厂家号') ?>
         <div class="box-search-goods_number_b cancel-goods_number_b">
             <ul class="box-search-ul-goods_number_b">
 
@@ -184,12 +184,12 @@ if (isset($_GET['inquiry_goods_id'])) {
             </ul>
         </div>
 
-        <?= $form->field($model, 'tax_rate')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tax_rate')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
         <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
-        <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'all_price')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'all_tax_price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'number')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'all_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'all_tax_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'inquiry_datetime')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -202,19 +202,19 @@ if (isset($_GET['inquiry_goods_id'])) {
             ]
         ]);?>
 
-        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(周)');?>
+        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('货期(周)');?>
 
-        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'remark')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
 
-        <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
-        <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->hiddenInput()->label(false) ?>
+        <?= $form->field($model, 'order_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false) ?>
 
-        <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->hiddenInput()->label(false)  ?>
+        <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false)  ?>
 
     </div>
 
