@@ -123,7 +123,7 @@ class StockSearch extends Stock
             ->andFilterWhere(['like', 'stock.position', $this->position]);
 
         if ($this->is_zero && !$this->number) {
-            if ($this->is_zero == 1) {
+            if ($this->is_zero == 0) {
                 $query->andFilterWhere(['stock.number' => 0]);
             } else {
                 $query->andFilterWhere(['!=', 'stock.number', 0]);

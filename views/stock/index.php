@@ -141,7 +141,7 @@ if ($isShow) {
                 'contentOptions'=>['style'=>'min-width: 60px;'],
                 'filter'    => Stock::$zero,
                 'value'     => function($model){
-                    return $model->number ? '否' : '是';
+                    return $model->number ? '是' : '否';
                 }
             ],
             [
