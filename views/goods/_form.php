@@ -16,7 +16,11 @@ if ($model->isNewRecord) {
 } else {
     $deviceList = json_decode($model->device_info, true);
     $stock = \app\models\Stock::find()->where(['good_id' => $model->id])->one();
-    $model->suggest_number = $stock->suggest_number;
+    if ($stock) {
+        $model->suggest_number = $stock->suggest_number;
+    } else {
+        $model->suggest_number = 0;
+    }
 }
 ?>
 
