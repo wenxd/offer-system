@@ -184,7 +184,7 @@ if (isset($_GET['inquiry_goods_id'])) {
             </ul>
         </div>
 
-        <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+        <?= $form->field($model, 'tax_rate')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
         <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
