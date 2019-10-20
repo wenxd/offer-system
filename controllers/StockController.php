@@ -110,7 +110,7 @@ class StockController extends BaseController
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
         $tableHeader = ['ID', '零件号', '中文描述', '英文描述', '税率', '未税单价', '含税单价', '库存位置', '库存数量',
-            '建议库存', '高储', '低储', '是否为0', '库存不足', '库存超量'];
+            '建议库存', '高储', '低储', '是否有库存', '库存不足', '库存超量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -157,7 +157,7 @@ class StockController extends BaseController
                 //低储
                 $excel->setCellValue($letter[$i+11] . ($key + 2), $stock->low_number);
                 //是否为0
-                $excel->setCellValue($letter[$i+12] . ($key + 2), ($stock->number == 0 ? '是' : '否'));
+                $excel->setCellValue($letter[$i+12] . ($key + 2), ($stock->number ? '是' : '否'));
                 //库存不足
                 $excel->setCellValue($letter[$i+13] . ($key + 2), ($stock->number < $stock->low_number ? '是' : '否'));
                 //库存超量
