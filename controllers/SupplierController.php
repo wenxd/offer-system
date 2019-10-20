@@ -26,11 +26,6 @@ class SupplierController extends BaseController
                     ];
                 }
             ],
-            'create' => [
-                'class'      => actions\CreateAction::className(),
-                'modelClass' => Supplier::className(),
-                'scenario'   => 'supplier',
-            ],
             'update' => [
                 'class'      => actions\UpdateAction::className(),
                 'modelClass' => Supplier::className(),
@@ -61,5 +56,18 @@ class SupplierController extends BaseController
         $supplier = Supplier::find()->where(['id' => $id])->asArray()->one();
 
         return json_encode(['code' => 200, 'data' => $supplier]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Supplier();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 }
