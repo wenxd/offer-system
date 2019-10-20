@@ -314,9 +314,9 @@ class Goods extends ActiveRecord
             $stock->tax_rate = SystemConfig::find()->select('value')->where([
                 'title'  => SystemConfig::TITLE_TAX,
                 'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
-            $stock->suggest_number  = $this->suggest_number;
-            $stock->high_number     = (int) round($high_stock_ratio * trim($this->suggest_number));
-            $stock->low_number      = (int) round($low_stock_ratio * trim($this->suggest_number));
+            $stock->suggest_number  = $this->suggest_number ? $this->suggest_number : 0;
+            $stock->high_number     = (int) round($high_stock_ratio * trim($stock->suggest_number));
+            $stock->low_number      = (int) round($low_stock_ratio * trim($stock->suggest_number));
             $stock->save();
         }
     }
