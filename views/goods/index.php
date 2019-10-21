@@ -154,14 +154,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
             [
-                'attribute' => 'technique_remark',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'remark',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
                 'attribute'      => 'device_info',
                 'format'         => 'raw',
                 'contentOptions' =>['style'=>'min-width: 200px;'],

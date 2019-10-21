@@ -50,7 +50,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>特制</th>
                 <th>总成</th>
                 <th>铭牌</th>
-                <th>技术</th>
                 <th>更新时间</th>
                 <th>创建时间</th>
             </tr>
@@ -68,7 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$goods ? ($goods->is_special == 1 ? '<b class="color">' . Goods::$special[$goods->is_special] . '</b>' : Goods::$special[$goods->is_special]) : ''?></td>
                 <td><?=$goods ? ($goods->is_assembly == 1 ? '<b class="color">' . Goods::$assembly[$goods->is_assembly] . '</b>' : Goods::$assembly[$goods->is_assembly]) : ''?></td>
                 <td><?=$goods ? ($goods->is_nameplate == 1 ? '<b class="color">' . Goods::$nameplate[$goods->is_nameplate] . '</b>' : Goods::$nameplate[$goods->is_nameplate]) : ''?></td>
-                <td><?=$goods ? $goods->technique_remark : ''?></td>
                 <td><?=$goods ? substr($goods->updated_at, 0, 10) : ''?></td>
                 <td><?=$goods ? substr($goods->created_at, 0, 10) : ''?></td>
             </tr>
