@@ -182,7 +182,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'inquiry_number',
-                'label'     => '询价数量',
+                'label'     => '询价条目',
                 'format'    => 'raw',
                 'value'     => function($model){
                     return $model->inquiryNumber;
