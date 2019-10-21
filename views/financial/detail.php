@@ -220,7 +220,7 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_advance').click(function (e) {
-            var payment_ratio = $('#orderpayment-payment_ratio').val();
+            var payment_ratio = $('#orderpayment-price').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial/change-advance',
