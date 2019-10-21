@@ -38,9 +38,6 @@ if ($model->isNewRecord) {
     <?= $form->field($model, 'position')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'number')->textInput() ?>
-    <?= $form->field($model, 'suggest_number')->textInput() ?>
-    <?= $form->field($model, 'high_number')->textInput() ?>
-    <?= $form->field($model, 'low_number')->textInput() ?>
    
     </div>
 
