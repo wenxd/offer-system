@@ -26,7 +26,7 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
     'title' => SystemConfig::TITLE_PAYMENT_RATIO
 ])->scalar();
 
-if (!$model->payment_ratio) {
+if ($model->payment_ratio == '0.00') {
     $model->payment_ratio = $payment_ratio;
     $model->price         = $payment_ratio/100 * $orderAgreement->payment_price;
 }
@@ -225,11 +225,11 @@ if (!$model->payment_ratio) {
         });
 
         $('.save_advance').click(function (e) {
-            var payment_ratio = $('#orderagreement-payment_ratio').val();
+            var price = $('#orderagreement-price').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-advance',
-                data:{id:id, payment_ratio:payment_ratio},
+                data:{id:id, price:price},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

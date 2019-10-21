@@ -73,9 +73,11 @@ class FinancialCollectController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        $payment_ratio_price = $params['price'] * 100;
+
         $orderAgreement = OrderAgreement::findOne($params['id']);
-        $orderAgreement->payment_ratio    = $params['payment_ratio'];
-        $orderAgreement->remain_price     = (100 - $params['payment_ratio'])/100 * $orderAgreement->payment_price ;
+        $orderAgreement->payment_ratio    = number_format($payment_ratio_price / $orderAgreement->payment_price, 2, '.', '');
+        $orderAgreement->remain_price     = $orderAgreement->payment_price - $params['price'];
         $orderAgreement->is_advancecharge = $orderAgreement::IS_ADVANCECHARGE_YES;
         $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
