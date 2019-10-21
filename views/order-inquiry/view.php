@@ -57,8 +57,8 @@ $userId    = Yii::$app->user->identity->id;
                 <th>加工照片</th>
                 <th>数量</th>
                 <th>询价</th>
-                <th>总询价数量</th>
-                <th>我的询价数量</th>
+                <th>总询价条目</th>
+                <th>我的询价条目</th>
                 <th>寻不出原因</th>
                 <th width="300px">操作</th>
             </tr>
