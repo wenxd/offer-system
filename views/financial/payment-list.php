@@ -3,11 +3,11 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\OrderPurchase;
+use kartik\grid\GridView;
 use kartik\daterange\DateRangePicker;
 use app\models\Admin;
+use app\models\OrderPurchase;
 use app\models\AuthAssignment;
 
 
@@ -29,6 +29,13 @@ $userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Html::button('刷新', [
+            'class'   => 'btn btn-success upload',
+            'name'    => 'submit-button',
+            'onclick' => 'javascript:location.reload();',
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([

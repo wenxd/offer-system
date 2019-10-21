@@ -30,6 +30,13 @@ $userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Html::button('刷新', [
+            'class'   => 'btn btn-success upload',
+            'name'    => 'submit-button',
+            'onclick' => 'javascript:location.reload();',
+        ])?>
+    </div>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([

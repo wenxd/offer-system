@@ -31,7 +31,7 @@ if ($model->isNewRecord) {
         ->dropDownList($model->isNewRecord ? Goods::getCreateDropDown() : Goods::getAllDropDown())
         ->label('零件号') ?>
 
-    <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+    <?= $form->field($model, 'tax_rate')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
 
