@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\file\FileInput;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
