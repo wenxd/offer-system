@@ -21,7 +21,7 @@ $fieldOptions2 = [
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>查询报价系统</b></a>
+        <a href="#"><b>订单管理系统</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -40,7 +40,7 @@ $fieldOptions2 = [
 
         <div class="row">
             <div class="col-xs-8">
-                <?= $form->field($model, 'rememberMe')->checkbox()->label('记住账号') ?>
+
             </div>
             <!-- /.col -->
             <div class="col-xs-4">
