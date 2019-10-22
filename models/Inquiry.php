@@ -145,10 +145,7 @@ class Inquiry extends ActiveRecord
             return parent::beforeSave($insert);
         }
 
-        $date = $this->inquiry_datetime;
-        $isHasNew = self::find()->where(['good_id' => $this->good_id])->andWhere(" inquiry_datetime >= '$date' ")->one();
-
-        if (!$isHasNew) {
+        if ($insert) {
             self::updateAll(['is_newest' => self::IS_NEWEST_NO], ['good_id' => $this->good_id]);
             $this->is_newest = self::IS_NEWEST_YES;
         }
