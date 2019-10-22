@@ -349,7 +349,7 @@ class OrderInquiryController extends BaseController
             }
         }
 
-        $title = '询价单' . $orderInquiry->inquiry_sn . date('His') . Yii::$app->user->identity->username;
+        $title = $orderInquiry->inquiry_sn . Yii::$app->user->identity->username;
         // Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($title);
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet

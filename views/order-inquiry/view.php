@@ -88,7 +88,7 @@ $userId    = Yii::$app->user->identity->id;
                             <td><?=$item->reason?></td>
                             <td>
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
-                                    <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
+                                    <a class="btn btn-success btn-xs btn-flat adminConfirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                     <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                 <?php endif;?>
                                 <?php if (!$item->is_inquiry && !$item->is_result):?>
@@ -141,8 +141,35 @@ $userId    = Yii::$app->user->identity->id;
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //询价员
         $('.confirm').click(function (e) {
             var inquiry_number = $(this).parent().parent().find('.inquiry_number').text();
+            if (0 == Number(inquiry_number)) {
+                layer.msg('请先添加询价记录', {time:2000});
+                return;
+            }
+            var id = $(this).data('id');
+            $.ajax({
+                type:"get",
+                url:'?r=order-inquiry/confirm',
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //超级管理员
+        $('.adminConfirm').click(function (e) {
+            var inquiry_number = $(this).parent().parent().find('.inquiry_number_all').text();
             if (0 == Number(inquiry_number)) {
                 layer.msg('请先添加询价记录', {time:2000});
                 return;
