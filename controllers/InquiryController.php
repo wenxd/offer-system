@@ -50,6 +50,14 @@ class InquiryController extends BaseController
         ];
     }
 
+    public function actionAdd()
+    {
+        $model = new Inquiry();
+        return $this->render('add-inquiry', [
+            'model' => $model,
+        ]);
+    }
+
     public function actionCreate()
     {
         $model = new Inquiry();

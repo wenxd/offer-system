@@ -89,7 +89,7 @@ $userId    = Yii::$app->user->identity->id;
                             <td>
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
                                     <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
-                                    <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                                    <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                 <?php endif;?>
                                 <?php if (!$item->is_inquiry && !$item->is_result):?>
                                     <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
@@ -121,7 +121,7 @@ $userId    = Yii::$app->user->identity->id;
                                 <td>
                                     <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
                                         <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
-                                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+                                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                     <?php endif;?>
                                     <?php if (!$item->is_inquiry && !$item->is_result):?>
                                         <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
