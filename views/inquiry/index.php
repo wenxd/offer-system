@@ -144,18 +144,6 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'technique_remark',
-                'label'     => '技术备注',
-                'filter'    => Html::activeTextInput($searchModel, 'technique_remark',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->goods) {
-                        return $model->goods->technique_remark;
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
                 'attribute'      => 'is_process',
                 'label'          => '加工',
                 'contentOptions' =>['style'=>'min-width: 80px;'],
