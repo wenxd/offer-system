@@ -40,13 +40,10 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <th>含税单价</th>
                         <th>未税总价</th>
                         <th>含税总价</th>
+                        <th>供应商</th>
                         <th>货期</th>
-                        <th>加工</th>
-                        <th>特制</th>
-                        <th>铭牌</th>
                         <th>更新时间</th>
                         <th>创建时间</th>
-                        <th>技术备注</th>
                         <th>关联询价记录</th>
                         <th>询价ID</th>
                         <th>操作</th>
@@ -75,13 +72,10 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td class="tax_price"><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_price : ''?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
+                        <td><?= $item->finalGoods ? $item->finalGoods->inquiry->supplier->name : ''?></td>
                         <td class="delivery_time"><?= $item->finalGoods ? ($item->finalGoods->type ? '' : $item->finalGoods->inquiry->delivery_time) : ''?></td>
-                        <td><?= Goods::$process[$item->goods->is_process]?></td>
-                        <td><?= Goods::$special[$item->goods->is_special]?></td>
-                        <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                         <td><?= substr($item->goods->updated_at, 0 , 10)?></td>
                         <td><?= substr($item->goods->created_at, 0 , 10)?></td>
-                        <td><?= $item->goods->technique_remark?></td>
                         <td class="relevance"><?= in_array($item->goods_id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$item->goods_id]) ? Html::a($finalGoods[$item->goods_id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$item->goods_id]['relevance_id']])) : ''?></td>
                         <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
@@ -98,8 +92,9 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td></td>
                         <td></td>
                         <td class="sta_all_tax_price"></td>
+                        <td></td>
                         <td class="mostLongTime"></td>
-                        <td colspan="9"></td>
+                        <td colspan="5"></td>
                     </tr>
                 </tbody>
             </table>
