@@ -146,6 +146,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                                 <td><?=$item->goods->original_company?></td>
                                 <td><?=$item->goods->unit?></td>
                                 <td><?=$tax_rate?>></td>
+                                <td><?=Goods::$assembly[$item->goods->is_assembly]?></td>
                                 <td><?=Goods::$process[$item->goods->is_process]?></td>
                                 <td><?=Goods::$special[$item->goods->is_special]?></td>
                                 <td><img src="<?=printf('%s/%s', Yii::$app->params['img_url_prefix'], $item->goods->img_id)?>" width="50px"></td>
