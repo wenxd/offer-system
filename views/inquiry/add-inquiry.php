@@ -247,9 +247,22 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     };
     //实现税率自动转换
-    var tax = $('#inquiry-tax_rate').val();
+    $("#inquiry-tax_rate").bind('input propertychange', function (e) {
+        var tax   = $(this).val();
+        $('#inquiry-tax_rate').val(tax);
+        var price = $('#inquiry-price').val();
+        var tax_price = price * (1 + tax/100);
+        var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
+        var all_price = price * number;
+        var all_tax_price = tax_price * number;
+        $("#inquiry-tax_price").attr("value", tax_price.toFixed(2));
+        $("#inquiry-tax_price").val(tax_price.toFixed(2));
+        $("#inquiry-all_price").val(all_price.toFixed(2));
+        $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
+    });
 
     $("#inquiry-price").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
@@ -261,6 +274,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
     $("#inquiry-tax_price").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var tax_price = $('#inquiry-tax_price').val();
         var price = tax_price / (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
@@ -272,6 +286,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
     $("#inquiry-number").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
