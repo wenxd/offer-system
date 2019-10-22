@@ -10,6 +10,11 @@ use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGood
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->title = '添加询价记录';
+$this->params['breadcrumbs'][] = ['label' => '询价记录列表', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
 //获取税率
 $model->tax_rate = SystemConfig::find()->select('value')->where([
         'title'  => SystemConfig::TITLE_TAX,
@@ -53,17 +58,9 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 //通过inquiry_goods_id查询数量
-if (isset($_GET['inquiry_goods_id'])) {
-    $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
-    $model->number           = $inquiryGoods->number;
-    $model->order_id         = $inquiryGoods->order_id;
-    $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
-}
-
-$this->title = '添加询价记录';
-$this->params['breadcrumbs'][] = ['label' => '询价记录列表', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-
+$model->number           = $inquiryGoods->number;
+$model->order_id         = $inquiryGoods->order_id;
+$model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
 ?>
 <style>
     /*供应商*/

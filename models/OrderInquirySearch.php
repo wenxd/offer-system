@@ -44,17 +44,17 @@ class OrderInquirySearch extends OrderInquiry
      */
     public function search($params)
     {
-//        $userId   = Yii::$app->user->identity->id;
-//        $userName = Yii::$app->user->identity->username;
-//        //询价员
-//        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
-//        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-//        if (in_array($userId, $adminIds)) {
-//            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO, 'admin_id' => $userId]);
-//        } else {
-//            $query = OrderInquiry::find();
-//        }
-        $query = self::find();
+        $userId   = Yii::$app->user->identity->id;
+        $userName = Yii::$app->user->identity->username;
+        //询价员
+        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        if (in_array($userId, $adminIds)) {
+            $query = OrderInquiry::find()->where(['admin_id' => $userId]);
+        } else {
+            $query = OrderInquiry::find();
+        }
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -94,6 +94,13 @@ class OrderInquirySearch extends OrderInquiry
         if ($this->end_date && strpos($this->end_date, ' - ')) {
             list($end_date_start, $end_date_end) = explode(' - ', $this->end_date);
             $query->andFilterWhere(['between', 'order_inquiry.end_date', $end_date_start, $end_date_end]);
+        }
+
+        if ($this->final_at && strpos($this->final_at, ' - ')) {
+            list($final_at_start, $final_at_end) = explode(' - ', $this->final_at);
+            $final_at_start .= ' 00:00:00';
+            $final_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_inquiry.final_at', $final_at_start, $final_at_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {

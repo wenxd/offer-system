@@ -780,6 +780,8 @@ ALTER TABLE `goods` ADD COLUMN  `import_mark` VARCHAR(255) NOT NULL DEFAULT '' C
 
 ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
 
+ALTER TABLE `order_inquiry` ADD COLUMN `final_at` datetime DEFAULT NULL COMMENT '询价完成时间';
+
 CREATE TABLE `inquiry_temp` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `good_id`             int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',

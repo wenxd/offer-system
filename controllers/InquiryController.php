@@ -4,7 +4,16 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{Goods, Stock, Inquiry, PurchaseGoods, InquirySearch, Supplier, SystemConfig, TempNotGoods};
+use app\models\{Goods,
+    InquiryGoods,
+    OrderInquiry,
+    Stock,
+    Inquiry,
+    PurchaseGoods,
+    InquirySearch,
+    Supplier,
+    SystemConfig,
+    TempNotGoods};
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -53,8 +62,19 @@ class InquiryController extends BaseController
     public function actionAdd()
     {
         $model = new Inquiry();
+        $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($inquiryGoods) {
+                return $this->redirect(['order-inquiry/view', 'id' => $inquiryGoods->order_inquiry_id]);
+            } else {
+                return $this->redirect(['order-inquiry/index']);
+            }
+        }
+
         return $this->render('add-inquiry', [
-            'model' => $model,
+            'model'        => $model,
+            'inquiryGoods' => $inquiryGoods,
         ]);
     }
 

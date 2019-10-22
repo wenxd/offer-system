@@ -101,6 +101,7 @@ class Inquiry extends ActiveRecord
             [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price', 'delivery_time'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
             [['good_id', 'supplier_name', 'inquiry_datetime'], 'required', "on" => ["create", "update"]],
+            [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price', 'delivery_time'], 'default', 'value' => 0],
         ];
     }
 
@@ -187,6 +188,10 @@ class Inquiry extends ActiveRecord
                 $this->addError('id', '厂家号不能为空');
                 return false;
             }
+        }
+
+        if ($function == 'add') {
+
         }
         return parent::beforeSave($insert);
     }

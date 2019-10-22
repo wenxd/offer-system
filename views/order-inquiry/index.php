@@ -50,11 +50,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'inquiry_sn',
                 'format'    => 'raw',
                 'value'     => function($model) use($userId, $adminIds) {
-                    if (in_array($userId, $adminIds)) {
-                        return $model->inquiry_sn;
-                    } else {
-                        return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
-                    }
+                    return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
                 }
             ],
             [
@@ -66,6 +62,17 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function($model) {
                     return substr($model->end_date, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'final_at',
+                'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'final_at'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderInquirySearch[final_at]',
+                    'value' => Yii::$app->request->get('OrderInquirySearch')['final_at'],
+                ]),
+                'value'     => function($model) {
+                    return substr($model->final_at, 0, 10);
                 }
             ],
             [
