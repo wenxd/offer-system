@@ -17,11 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
+
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
@@ -53,8 +49,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'inquiry_sn',
                 'format'    => 'raw',
-                'value'     => function($model) {
-                    return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                'value'     => function($model) use($userId, $adminIds) {
+                    if (in_array($userId, $adminIds)) {
+                        return $model->inquiry_sn;
+                    } else {
+                        return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -91,7 +91,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '询价员',
-                'filter'    => $admins,
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

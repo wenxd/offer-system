@@ -44,17 +44,17 @@ class OrderInquirySearch extends OrderInquiry
      */
     public function search($params)
     {
-        $userId   = Yii::$app->user->identity->id;
-        $userName = Yii::$app->user->identity->username;
-        //询价员
-        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
-        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-        if (in_array($userId, $adminIds)) {
-            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO, 'admin_id' => $userId]);
-        } else {
-            $query = OrderInquiry::find();
-        }
-
+//        $userId   = Yii::$app->user->identity->id;
+//        $userName = Yii::$app->user->identity->username;
+//        //询价员
+//        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+//        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+//        if (in_array($userId, $adminIds)) {
+//            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO, 'admin_id' => $userId]);
+//        } else {
+//            $query = OrderInquiry::find();
+//        }
+        $query = self::find();
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
