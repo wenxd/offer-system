@@ -11,6 +11,7 @@ use app\models\OrderGoods;
 use app\models\OrderInquiry;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
+use app\models\OrderQuote;
 use app\models\Stock;
 use app\models\TempNotGoods;
 use app\models\TempNotGoodsB;
@@ -219,6 +220,7 @@ class OrderController extends BaseController
         $orderGoods     = OrderGoods::find()->where(['order_id' => $id])->all();
         $orderInquiry   = OrderInquiry::findAll(['order_id' => $id]);
         $orderFinal     = OrderFinal::findAll(['order_id' => $id]);
+        $orderQuote     = OrderQuote::findAll(['order_id' => $id]);
         $orderPurchase  = OrderPurchase::findAll(['order_id' => $id]);
         $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
         $orderPayment   = OrderPayment::findAll(['order_id' => $id]);
@@ -227,6 +229,7 @@ class OrderController extends BaseController
         $data['orderGoods']     = $orderGoods;
         $data['orderInquiry']   = $orderInquiry;
         $data['orderFinal']     = $orderFinal;
+        $data['orderQuote']     = $orderQuote;
         $data['orderPurchase']  = $orderPurchase;
         $data['orderAgreement'] = $orderAgreement;
         $data['orderPayment']   = $orderPayment;

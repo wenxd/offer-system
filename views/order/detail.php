@@ -114,6 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
             <?php endforeach;?>
             </thead>
+
             <thead>
             <tr>
                 <th>订单号</th>
@@ -126,6 +127,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach;?>
             </thead>
+
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>报价单号</th>
+            </tr>
+            <?php foreach ($orderQuote as $quote):?>
+                <tr>
+                    <td><?=$quote->order_id?></td>
+                    <td><?=Html::a($quote->quote_sn, Url::to(['order-quote/view', 'id' => $quote->id]))?></td>
+                </tr>
+            <?php endforeach;?>
+            </thead>
+
             <thead>
             <tr>
                 <th>订单号</th>
@@ -138,6 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach;?>
             </thead>
+
             <thead>
             <tr>
                 <th>订单号</th>
@@ -150,6 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach;?>
             </thead>
+
             <thead>
             <tr>
                 <th>订单号</th>
@@ -162,6 +179,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach;?>
             </thead>
+
         </table>
     </div>
 </div>
