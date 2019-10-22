@@ -53,6 +53,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'grade_reason',
             'advantage_product',
             [
+                'attribute' => 'admin_id',
+                'label'     => '询价员',
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '询价员']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'is_confirm',
                 'format'    => 'raw',
                 'filter'    => Supplier::$confirm,

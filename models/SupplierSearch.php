@@ -18,7 +18,7 @@ class SupplierSearch extends Supplier
     public function rules()
     {
         return [
-            [['id', 'sort', 'is_deleted', 'is_confirm'], 'integer'],
+            [['id', 'sort', 'is_deleted', 'is_confirm', 'admin_id'], 'integer'],
             [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade',
                 'grade_reason', 'advantage_product', 'full_name', 'contacts'], 'safe'],
             [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
@@ -73,6 +73,7 @@ class SupplierSearch extends Supplier
             'is_deleted' => self::IS_DELETED_NO,
             'is_confirm' => $this->is_confirm,
             'grade'      => $this->grade,
+            'admin_id'   => $this->admin_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

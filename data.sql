@@ -765,6 +765,7 @@ ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' 
 ALTER TABLE `supplier` ADD COLUMN  `full_name`  varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
 ALTER TABLE `supplier` ADD COLUMN  `contacts`   varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
 ALTER TABLE `supplier` ADD COLUMN  `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
+ALTER TABLE `supplier` ADD COLUMN  `admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
 
 
 ALTER TABLE `goods` ADD COLUMN  `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';

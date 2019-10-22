@@ -40,6 +40,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Supplier::$confirm[$model->is_confirm];
                 }
             ],
+            [
+                'attribute' => 'admin_id',
+                'label'     => '询价员',
+                'value'     => function ($model) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'updated_at',
             'created_at',
         ],
