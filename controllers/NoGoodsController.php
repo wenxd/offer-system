@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\TempNotGoodsB;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -188,5 +189,12 @@ class NoGoodsController extends Controller
         $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
         exit;
+    }
+
+    public function actionDeleteAll()
+    {
+        TempNotGoods::deleteAll();
+        TempNotGoodsB::deleteAll();
+        return $this->redirect(['index']);
     }
 }
