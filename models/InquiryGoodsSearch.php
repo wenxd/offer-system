@@ -2,9 +2,10 @@
 
 namespace app\models;
 
+use app\models\InquiryGoods;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\InquiryGoods;
 
 /**
  * InquiryGoodsSearch represents the model behind the search form of `app\models\InquiryGoods`.
@@ -49,7 +50,13 @@ class InquiryGoodsSearch extends InquiryGoods
      */
     public function search($params)
     {
-        $query = InquiryGoods::find()->where(['is_result_tag' => 1]);
+        $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+        $admin_id = Yii::$app->user->identity->id;
+        if ($admin_id == $user_super->user_id) {
+            $query = self::find()->where(['is_result_tag' => 1]);
+        } else {
+            $query = self::find()->where(['is_result_tag' => 1, 'admin_id' => $admin_id]);
+        }
 
         // add conditions that should always apply here
 
