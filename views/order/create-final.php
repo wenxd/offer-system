@@ -66,7 +66,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td class="number"><?= $item->number?></td>
                         <td class="tax"><?=$tax?></td>
                         <?php
-                            $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                            $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '');
                         ?>
                         <td class="publish_tax_price"><?=$publish_tax_price?></td>
                         <td class="all_publish_tax_price"><?=$item->number * $publish_tax_price?></td>
