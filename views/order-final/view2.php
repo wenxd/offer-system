@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $item->inquiry->admin->username?></td>
                         <td><?= $item->tax?></td>
                         <?php
-                            $publish_tax_price = $item->goods->publish_price;
+                            $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
                         ?>
                         <td><?= $publish_tax_price ?></td>
                         <td class="publish_tax_price"><?= $publish_tax_price * $item->number?></td>
