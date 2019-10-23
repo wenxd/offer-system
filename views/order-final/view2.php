@@ -60,17 +60,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td class="number"><?=$item->number?></td>
                         <td><?= $item->inquiry->supplier->name?></td>
                         <td><?= $item->inquiry->admin->username?></td>
-                        <td><?= $item->inquiry->tax_rate?></td>
+                        <td><?= $item->tax?></td>
                         <?php
-                            $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                            $publish_tax_price = $item->goods->publish_price;
                         ?>
                         <td><?= $publish_tax_price ?></td>
                         <td class="publish_tax_price"><?= $publish_tax_price * $item->number?></td>
-                        <td class="price"><?=$item->inquiry->price?></td>
-                        <td class="tax_price"><?=$item->inquiry->tax_price?></td>
+                        <td class="price"><?=$item->price?></td>
+                        <td class="tax_price"><?=$item->tax_price?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
-                        <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                        <td class="delivery_time"><?=$item->delivery_time?></td>
                         <td><?= Goods::$process[$item->goods->is_process]?></td>
                         <td><?= Goods::$special[$item->goods->is_special]?></td>
                         <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 <?php endforeach;?>
                 <tr style="background-color: #acccb9">
-                    <td colspan="11">汇总统计</td>
+                    <td colspan="13">汇总统计</td>
                     <td class="sta_all_publish_tax_price"></td>
                     <td></td>
                     <td></td>

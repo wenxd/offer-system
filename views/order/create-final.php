@@ -6,9 +6,12 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use app\models\SystemConfig;
 
 $this->title = '生成成本单';
 $this->params['breadcrumbs'][] = $this->title;
+
+$tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
 
 $inquiry_goods_ids = ArrayHelper::getColumn($finalGoods, 'goods_id');
 $goods_id = ArrayHelper::getColumn($goods, 'id');
@@ -52,7 +55,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                 <tbody>
                     <?php foreach ($orderGoods as $key => $item):?>
                     <tr class="goods_list">
-                        <td><?= $item->serial?></td>
+                        <td class="serial" data-goods_id="<?=$item->goods_id?>"><?= $item->serial?></td>
                         <td><?= Html::a($item->goods->goods_number, Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
                         <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->description?></td>
@@ -61,15 +64,18 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td><?= $item->goods->original_company_remark?></td>
                         <td><?= $item->goods->unit?></td>
                         <td class="number"><?= $item->number?></td>
-                        <td><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_rate : ''?></td>
+                        <td class="tax"><?=$tax?></td>
                         <?php
                             $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
                         ?>
                         <td class="publish_tax_price"><?=$publish_tax_price?></td>
-                        <td class="all_publish_tax_price"></td>
+                        <td class="all_publish_tax_price"><?=$item->number * $publish_tax_price?></td>
                         <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
-                        <td class="price"><?= $item->finalGoods ? $item->finalGoods->inquiry->price : ''?></td>
-                        <td class="tax_price"><?= $item->finalGoods ? $item->finalGoods->inquiry->tax_price : ''?></td>
+                        <?php
+                            $price = $item->finalGoods ? $item->finalGoods->inquiry->price : 0;
+                        ?>
+                        <td class="price"><?=$price?></td>
+                        <td class="tax_price"><?=number_format($price * (1 + $tax/100), 2, '.', '')?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
                         <td><?= $item->finalGoods ? $item->finalGoods->inquiry->supplier->name : ''?></td>
@@ -139,10 +145,27 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
             var order_id  = $('.goods').data('order_id');
             var key       = $('.goods').data('key');
 
+            var goods_info = [];
+            $('.goods_list').each(function (i, e) {
+                var number               = parseFloat($(e).find('.number').text());
+                var item = {};
+                item.serial              = $(e).find('.serial').text();
+                item.goods_id            = $(e).find('.serial').data('goods_id');
+                item.tax                 = parseFloat($(e).find('.tax').text());
+                var price                = parseFloat($(e).find('.price').text());
+                item.price               = parseFloat($(e).find('.price').text());
+                var tax_price            = parseFloat($(e).find('.tax_price').text());
+                item.tax_price           = parseFloat($(e).find('.tax_price').text());
+                item.all_price           = (number * price).toFixed(2);
+                item.all_tax_price       = (number * tax_price).toFixed(2);
+                item.delivery_time       = parseFloat($(e).find('.delivery_time').text());
+                goods_info.push(item);
+            });
+
             $.ajax({
                 type:"post",
                 url:'?r=order-final/save-order',
-                data:{order_id:order_id, goods_ids:goods_ids, key:key, final_sn:final_sn},
+                data:{order_id:order_id, goods_ids:goods_ids, key:key, final_sn:final_sn, goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
@@ -173,19 +196,14 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
             if (delivery_time > mostLongTime) {
                 mostLongTime = delivery_time;
             }
-
             sta_publish_tax_price += all_publish_tax_price;
-
             $(e).find('.all_price').text(all_price.toFixed(2));
             $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
             $(e).find('.all_publish_tax_price').text(all_publish_tax_price.toFixed(2));
-
         });
-
         $('.sta_publish_tax_price').text(sta_publish_tax_price);
         $('.sta_all_price').text(sta_all_price.toFixed(2));
         $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         $('.mostLongTime').text(mostLongTime);
-
     });
 </script>

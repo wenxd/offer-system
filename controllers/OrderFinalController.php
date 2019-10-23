@@ -194,8 +194,25 @@ class OrderFinalController extends BaseController
         }
         $orderFinal->goods_info     = json_encode($params['goods_ids']);
         if ($orderFinal->save()) {
-            $res = FinalGoods::updateAll(['order_final_id' => $orderFinal->primaryKey, 'final_sn' => $orderFinal->final_sn],
-                ['order_id' => $params['order_id'], 'key' => $params['key']]);
+            foreach ($params['goods_info'] as $key => $value) {
+                $finalGoods = FinalGoods::find()->where([
+                    'order_id'  => $params['order_id'],
+                    'key'       => $params['key'],
+                    'serial'    => $value['serial'],
+                    'goods_id'  => $value['goods_id'],
+                ])->one();
+                if ($finalGoods) {
+                    $finalGoods->order_final_id = $orderFinal->id;
+                    $finalGoods->final_sn       = $orderFinal->final_sn;
+                    $finalGoods->tax            = $value['tax'];
+                    $finalGoods->price          = $value['price'];
+                    $finalGoods->tax_price      = $value['tax_price'];
+                    $finalGoods->all_price      = $value['all_price'];
+                    $finalGoods->all_tax_price  = $value['all_tax_price'];
+                    $finalGoods->delivery_time  = $value['delivery_time'];
+                    $finalGoods->save();
+                }
+            }
             $order->is_final = Order::IS_FINAL_YES;
             $order->save();
             return json_encode(['code' => 200, 'msg' => '保存成功']);

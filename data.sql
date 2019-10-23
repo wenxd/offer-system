@@ -752,8 +752,14 @@ ALTER TABLE `competitor_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT N
 ALTER TABLE `competitor_goods` ADD COLUMN  `is_issue`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否发行价 0否 1是'
 
 
-ALTER TABLE `final_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
-ALTER TABLE `final_goods` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
+ALTER TABLE `final_goods` ADD COLUMN  `serial`          VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
+ALTER TABLE `final_goods` ADD COLUMN  `number`          int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
+ALTER TABLE `final_goods` ADD COLUMN  `tax`             decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '税率';
+ALTER TABLE `final_goods` ADD COLUMN  `price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `delivery_time`   decimal(10,1) NOT NULL DEFAULT '0.00'  COMMENT '货期';
 
 
 ALTER TABLE `customer` ADD COLUMN  `taxpayer` varchar(255) NOT NULL DEFAULT '' COMMENT '纳税人识别号';
