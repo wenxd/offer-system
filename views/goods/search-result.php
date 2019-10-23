@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$goods ? $goods->original_company : ''?></td>
                 <td><?=$goods ? $goods->original_company_remark : ''?></td>
                 <td><?=$goods ? $goods->unit : ''?></td>
-                <td><?=$goods ? ($goods->publish_tax_price ? $goods->publish_tax_price : $goods->estimate_publish_price) : ''?></td>
+                <td><?=$goods ? $goods->publish_price : 0?></td>
                 <td><?=$goods ? $goods->publish_delivery_time : ''?></td>
                 <td><?=$goods ? ($goods->is_process == 1 ? '<b class="color">' . Goods::$process[$goods->is_process] . '</b>' : Goods::$process[$goods->is_process]) : ''?></td>
                 <td><?=$goods ? ($goods->is_special == 1 ? '<b class="color">' . Goods::$special[$goods->is_special] . '</b>' : Goods::$special[$goods->is_special]) : ''?></td>

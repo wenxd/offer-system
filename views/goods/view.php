@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'goods_number_b',
             'description',
             'description_en',
+            'publish_price',
             'publish_tax_price',
             'publish_delivery_time',
             'material',
