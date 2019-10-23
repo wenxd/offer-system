@@ -187,6 +187,10 @@ class Inquiry extends ActiveRecord
             }
         }
 
+        if ($this->is_better) {
+            self::updateAll(['is_better' => self::IS_BETTER_NO], ['good_id' => $this->good_id]);
+        }
+
         return parent::beforeSave($insert);
     }
 
