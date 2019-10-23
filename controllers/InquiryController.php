@@ -70,6 +70,13 @@ class InquiryController extends BaseController
             } else {
                 return $this->redirect(['order-inquiry/index']);
             }
+        } else {
+            $errors = $model->getErrors();
+            $err = '';
+            foreach ($errors as $v) {
+                $err .= $v[0] . '<br>';
+            }
+            Yii::$app->getSession()->setFlash('error', $err);
         }
 
         return $this->render('add-inquiry', [

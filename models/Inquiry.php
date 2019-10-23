@@ -153,10 +153,10 @@ class Inquiry extends ActiveRecord
         $action = urldecode(Yii::$app->request->getQueryParam('r'));
         list($controller, $function) = explode('/', $action);
 
-        if ($function == 'create' || $function == 'update') {
+        if ($function == 'create' || $function == 'update' || $function == 'add') {
             $supplier = Supplier::find()->where(['name' => trim($this->supplier_name)])->one();
             if (!$supplier) {
-                $this->addError('supplier_name', '此供应商不存在');
+                $this->addError('id', '此供应商不存在');
                 return false;
             }
             $this->supplier_id = $supplier->id;
@@ -187,9 +187,6 @@ class Inquiry extends ActiveRecord
             }
         }
 
-        if ($function == 'add') {
-
-        }
         return parent::beforeSave($insert);
     }
 
