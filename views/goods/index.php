@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'original_company',
             'description',
             'description_en',
-            'publish_tax_price',
+            'publish_price',
             'publish_delivery_time',
             [
                 'attribute' => 'material',
@@ -83,7 +83,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'unit',
             'original_company_remark',
-            'estimate_publish_price',
             'material_code',
             'import_mark',
             [
