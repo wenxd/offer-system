@@ -216,6 +216,8 @@ if (isset($_GET['inquiry_goods_id'])) {
 
         <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false)  ?>
 
+        <?= $form->field($model, 'is_confirm_better')->radioList(Inquiry::$better) ?>
+
     </div>
 
     <div class="box-footer">

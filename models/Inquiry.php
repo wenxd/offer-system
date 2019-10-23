@@ -24,6 +24,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $tax_price
  * @property string $tax_rate
  * @property string $is_upload
+ * @property string $is_confirm_better
  */
 class Inquiry extends ActiveRecord
 {
@@ -96,7 +97,7 @@ class Inquiry extends ActiveRecord
     {
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
-                 'order_id', 'order_inquiry_id', 'is_upload'], 'integer'],
+                 'order_id', 'order_inquiry_id', 'is_upload', 'is_confirm_better'], 'integer'],
             [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b'], 'safe'],
             [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price', 'delivery_time'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
@@ -111,31 +112,32 @@ class Inquiry extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'               => '自增id',
-            'good_id'          => '零件ID',
-            'goods_number'     => '零件号',
-            'goods_number_b'   => '厂家号',
-            'supplier_id'      => '供应商ID',
-            'supplier_name'    => '供应商名称',
-            'price'            => '未税单价',
-            'tax_price'        => '含税单价',
-            'tax_rate'         => '税率',
-            'number'           => '询价数量',
-            'all_price'        => '未税总价',
-            'all_tax_price'    => '含税总价',
-            'inquiry_datetime' => '咨询时间',
-            'offer_date'       => '交货日期',
-            'delivery_time'    => '货期',
-            'remark'           => '询价备注',
-            'sort'             => '排序',
-            'is_better'        => '优选',
-            'better_reason'    => '优选理由',
-            'is_newest'        => '最新询价',
-            'is_priority'      => '优先询价',
-            'is_deleted'       => '是否删除：0未删除 1已删除',
-            'updated_at'       => '更新时间',
-            'created_at'       => '创建时间',
-            'is_upload'        => '是否导入',
+            'id'                    => '自增id',
+            'good_id'               => '零件ID',
+            'goods_number'          => '零件号',
+            'goods_number_b'        => '厂家号',
+            'supplier_id'           => '供应商ID',
+            'supplier_name'         => '供应商名称',
+            'price'                 => '未税单价',
+            'tax_price'             => '含税单价',
+            'tax_rate'              => '税率',
+            'number'                => '询价数量',
+            'all_price'             => '未税总价',
+            'all_tax_price'         => '含税总价',
+            'inquiry_datetime'      => '咨询时间',
+            'offer_date'            => '交货日期',
+            'delivery_time'         => '货期',
+            'remark'                => '询价备注',
+            'sort'                  => '排序',
+            'is_better'             => '优选',
+            'better_reason'         => '优选理由',
+            'is_newest'             => '最新询价',
+            'is_priority'           => '优先询价',
+            'is_deleted'            => '是否删除：0未删除 1已删除',
+            'updated_at'            => '更新时间',
+            'created_at'            => '创建时间',
+            'is_upload'             => '是否导入',
+            'is_confirm_better'     => '是否确认优选',
         ];
     }
 

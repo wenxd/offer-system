@@ -610,11 +610,12 @@ ALTER TABLE `inquiry_goods` ADD COLUMN  `inquiry_at` datetime  DEFAULT NULL COMM
 ALTER TABLE `inquiry_goods` ADD COLUMN  `is_result_tag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否寻不出  0否  1是, 用于标记列表';
 ALTER TABLE `inquiry_goods` ADD COLUMN  `order_inquiry_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价单ID';
 
-ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
-ALTER TABLE `inquiry` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
+ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id`    int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
+ALTER TABLE `inquiry` ADD COLUMN  `number`              int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `is_upload`           int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
+ALTER TABLE `inquiry` ADD COLUMN  `is_confirm_better`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否确认优选 0否 1是'
 
 
 ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
