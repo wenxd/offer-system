@@ -29,7 +29,7 @@ class GoodsSearch extends Goods
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
                 'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price',
-                'material_code', 'import_mark'], 'safe'],
+                'material_code', 'import_mark', 'publish_price'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'technique_remark', 'device_info', 'material', 'part', 'remark', 'estimate_publish_price', 'material_code',
                 'import_mark'], 'trim'],

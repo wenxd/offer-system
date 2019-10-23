@@ -46,6 +46,8 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'publish_tax')->textInput(['maxlength' => true]) ?>
+
         <?= $form->field($model, 'publish_tax_price')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'estimate_publish_price')->textInput(['maxlength' => true]) ?>

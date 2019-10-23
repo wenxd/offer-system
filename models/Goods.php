@@ -44,6 +44,8 @@ use app\extend\tencent\Cos;
  * @property string $estimate_publish_price
  * @property string $material_code
  * @property string $import_mark
+ * @property string $publish_price
+ * @property string $publish_tax
  */
 class Goods extends ActiveRecord
 {
@@ -161,7 +163,7 @@ class Goods extends ActiveRecord
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
                 'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
-                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price'], 'safe'],
+                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
                 'import_mark'], 'string', 'max' => 255],
@@ -170,6 +172,7 @@ class Goods extends ActiveRecord
                 'required',
                 'on' => 'goods',
             ],
+            [['publish_tax', 'publish_tax_price', 'estimate_publish_price', 'publish_delivery_time', 'publish_price'], 'default', 'value' => 0],
         ];
     }
 
@@ -214,6 +217,8 @@ class Goods extends ActiveRecord
             'estimate_publish_price'  => '预估发行价',
             'material_code'           => '设备类别',
             'import_mark'             => '导入类别',
+            'publish_price'           => '发行未税单价',
+            'publish_tax'             => '发行税率',
         ];
     }
 
@@ -289,14 +294,20 @@ class Goods extends ActiveRecord
                 $stock->save();
             }
         }
-        if (!$this->publish_tax_price) {
-            $this->publish_tax_price = 0;
-        }
-        if (!$this->estimate_publish_price) {
-            $this->estimate_publish_price = 0;
-        }
-        if (!$this->publish_delivery_time) {
-            $this->publish_delivery_time = 0;
+
+        //计算税率问题
+        if ($this->publish_tax_price != '0.00') {
+            if ($this->publish_tax) {
+                $this->publish_price = number_format(($this->publish_tax_price / (1 + $this->publish_tax/100)), 2, '.', '' );
+            } else {
+                $this->publish_price = $this->publish_tax_price;
+            }
+        } elseif ($this->estimate_publish_price) {
+            if ($this->publish_tax) {
+                $this->publish_price = number_format(($this->estimate_publish_price / (1 + $this->publish_tax/100)), 2, '.', '' );
+            } else {
+                $this->publish_price = $this->estimate_publish_price;
+            }
         }
 
         unset($this->img_url);

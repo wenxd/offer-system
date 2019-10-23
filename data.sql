@@ -778,6 +778,8 @@ ALTER TABLE `goods` ADD COLUMN  `remark` varchar(255) NOT NULL DEFAULT '' COMMEN
 ALTER TABLE `goods` ADD COLUMN  `estimate_publish_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '预估发行价';
 ALTER TABLE `goods` ADD COLUMN  `material_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '设备类别';
 ALTER TABLE `goods` ADD COLUMN  `import_mark` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '导入类别';
+ALTER TABLE `goods` ADD COLUMN  `publish_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行未税单价';
+ALTER TABLE `goods` ADD COLUMN  `publish_tax` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT '发行税率';
 
 ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
 
