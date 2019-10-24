@@ -29,6 +29,7 @@ if ($model->isNewRecord) {
         $model->order_id         = 0;
         $model->order_inquiry_id = 0;   
     }
+    $model->is_confirm_better = 0;
 } else {
     $model->supplier_name    = $model->supplier->name;
     $model->goods_number     = $model->goods->goods_number;
