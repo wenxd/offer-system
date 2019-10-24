@@ -203,8 +203,8 @@ class InquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '未税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $tableHeader = ['零件号', '厂家号', '供应商', '税率', '未税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -265,9 +265,6 @@ class InquiryController extends BaseController
                     //总数
                     $total = count($sheetData);
                     $num = 0;
-                    $tax = SystemConfig::find()->select('value')->where([
-                        'title'  => SystemConfig::TITLE_TAX,
-                        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
                     $delivery = SystemConfig::find()->select('value')->where([
                         'title'  => SystemConfig::TITLE_DELIVERY_TIME,
                         'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
@@ -285,20 +282,20 @@ class InquiryController extends BaseController
                             } else {
                                 if ($supplier) {
                                     $inquiry = new Inquiry();
-                                    $inquiry->good_id = $goods->id;
-                                    $inquiry->supplier_id = $supplier->id;
-                                    $inquiry->price = $value['D'] ? trim($value['D']) : 0;
-                                    $inquiry->tax_price = $inquiry->price * (1 + $tax / 100);
-                                    $inquiry->tax_rate = $tax;
-                                    $inquiry->number = $value['E'] ? trim($value['E']) : 0;
-                                    $inquiry->delivery_time = $value['F'] ? trim($value['F']) : $delivery;
-                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
-                                    $inquiry->all_price = $inquiry->number * $inquiry->price;
-                                    $inquiry->all_tax_price = $inquiry->number * $inquiry->tax_price;
-                                    $inquiry->is_better = (trim($value['H']) == '是') ? 1 : 0;
-                                    $inquiry->better_reason = $value['I'] ? trim($value['I']) : '';
-                                    $inquiry->remark = $value['G'] ? trim($value['G']) : '';
-                                    $inquiry->admin_id = Yii::$app->user->identity->id;
+                                    $inquiry->good_id           = $goods->id;
+                                    $inquiry->supplier_id       = $supplier->id;
+                                    $inquiry->tax_rate          = trim($value['D']);
+                                    $inquiry->price             = $value['E'] ? trim($value['E']) : 0;
+                                    $inquiry->tax_price         = $inquiry->price * (1 + trim($value['D']) / 100);
+                                    $inquiry->number            = $value['F'] ? trim($value['F']) : 0;
+                                    $inquiry->delivery_time     = $value['G'] ? trim($value['G']) : $delivery;
+                                    $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
+                                    $inquiry->all_price         = $inquiry->number * $inquiry->price;
+                                    $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
+                                    $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
+                                    $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
+                                    $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
+                                    $inquiry->admin_id          = Yii::$app->user->identity->id;
                                     if ($inquiry->save()) {
                                         $num++;
                                     }

@@ -26,6 +26,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $is_upload
  * @property string $is_confirm_better
  * @property string $better_reason
+ * @property string $delivery_time
  */
 class Inquiry extends ActiveRecord
 {
