@@ -70,7 +70,7 @@ foreach ($adminList as $key => $admin) {
                     <td><?=$item->inquiry->supplier->name?></td>
                     <td class="ratio"><?=$item->tax_rate?></td>
                     <?php
-                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '');
                     ?>
                     <td class="publish_tax_price"><?=$publish_tax_price?></td>
                     <td class="all_publish_tax_price"><?=$publish_tax_price * $item->number?></td>

@@ -81,7 +81,7 @@ $userId   = Yii::$app->user->identity->id;
                     <?php endif;?>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
-                    <td><?=$item->goods->publish_tax_price?></td>
+                    <td><?=number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '')?></td>
                     <?php endif;?>
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
@@ -186,9 +186,18 @@ $userId   = Yii::$app->user->identity->id;
 
             var price = $(this).parent().parent().find('.change_price').val();
             var tax_price = $(this).parent().parent().find('.tax_price').text();
-
+            var all_tax_price = parseFloat(tax_price * number);
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
-            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(all_tax_price.toFixed(2));
+
+            //计算总价
+            var sta_all_tax_price = 0;
+            $('.order_quote_list').each(function (i, e) {
+                if (all_tax_price) {
+                    sta_all_tax_price += all_tax_price;
+                }
+            });
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         });
 
         //修改单价
