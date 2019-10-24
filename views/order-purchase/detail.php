@@ -415,6 +415,26 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                         }
                     });
                 });
+            } else {
+                //创建支出合同
+                $.ajax({
+                    type:"post",
+                    url:'?r=order-purchase-verify/save-order',
+                    data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
+                        goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
+                        apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date,
+                        order_agreement_date:order_agreement_date},
+                    dataType:'JSON',
+                    success:function(res){
+                        if (res && res.code == 200){
+                            layer.msg(res.msg, {time:2000});
+                            window.location.reload();
+                        } else {
+                            layer.msg(res.msg, {time:2000});
+                            return false;
+                        }
+                    }
+                });
             }
         });
     });
