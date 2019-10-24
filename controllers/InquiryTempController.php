@@ -133,7 +133,7 @@ class InquiryTempController extends Controller
         $inquiry = InquiryGoods::findOne($id);
         $goods_id = $inquiry->goods_id;
 
-        $keys = ['id', 'good_id', 'supplier_id', 'price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price', 'number', 'inquiry_datetime', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'offer_date', 'remark', 'better_reason', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id', 'updated_at', 'created_at', 'is_upload'];
+        $keys = ['id', 'good_id', 'supplier_id', 'price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price', 'number', 'inquiry_datetime', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'offer_date', 'remark', 'better_reason', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id', 'updated_at', 'created_at', 'is_upload', 'is_confirm_better'];
 
         $inquiryList = Inquiry::find()->where(['good_id' => $goods_id])->asArray()->all();
 

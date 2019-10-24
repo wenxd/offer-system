@@ -819,6 +819,7 @@ CREATE TABLE `inquiry_temp` (
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `is_upload`           int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是',
+  `is_confirm_better`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否确认优选 0否 1是'
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='临时询价表';
 
