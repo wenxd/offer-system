@@ -1,14 +1,16 @@
 <?php
 
+use app\models\OrderPayment;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\web\View;
 use yii\widgets\Pjax;
-use app\models\OrderPurchase;
 use kartik\daterange\DateRangePicker;
 use app\models\Admin;
+use app\models\OrderPurchase;
+use app\models\OrderAgreement;
 use app\models\AuthAssignment;
 use app\models\OrderFinancialCollectSearch;
 
@@ -41,36 +43,45 @@ $userId   = Yii::$app->user->identity->id;
                     'attribute' => 'is_stock',
                     'label'     => '完成出库',
                     'format'    => 'raw',
-                    'filter'    => OrderPurchase::$stock,
+                    'filter'    => OrderAgreement::$stock,
                     'value'     => function ($model, $key, $index, $column) {
-                        return OrderPurchase::$stock[$model->is_stock];
+                        return OrderAgreement::$stock[$model->is_stock];
                     }
                 ],
                 [
                     'attribute' => 'is_advancecharge',
                     'label'     => '预收款完成',
                     'format'    => 'raw',
-                    'filter'    => OrderPurchase::$advanceCharge,
+                    'filter'    => OrderAgreement::$advanceCharge,
                     'value'     => function ($model, $key, $index, $column) {
-                        return OrderPurchase::$advanceCharge[$model->is_advancecharge];
+                        return OrderAgreement::$advanceCharge[$model->is_advancecharge];
                     }
                 ],
                 [
                     'attribute' => 'is_payment',
                     'label'     => '全单收款完成',
                     'format'    => 'raw',
-                    'filter'    => OrderPurchase::$payment,
+                    'filter'    => OrderAgreement::$payment,
                     'value'     => function ($model, $key, $index, $column) {
-                        return OrderPurchase::$payment[$model->is_payment];
+                        return OrderAgreement::$payment[$model->is_payment];
                     }
                 ],
                 [
                     'attribute' => 'is_bill',
                     'label'     => '开发票',
                     'format'    => 'raw',
-                    'filter'    => OrderPurchase::$bill,
+                    'filter'    => OrderAgreement::$bill,
                     'value'     => function ($model, $key, $index, $column) {
-                        return OrderPurchase::$bill[$model->is_bill];
+                        return OrderAgreement::$bill[$model->is_bill];
+                    }
+                ],
+                [
+                    'attribute' => 'is_complete',
+                    'label'     => '全流程',
+                    'format'    => 'raw',
+                    'filter'    => OrderAgreement::$complete,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return OrderAgreement::$complete[$model->is_complete];
                     }
                 ],
                 [

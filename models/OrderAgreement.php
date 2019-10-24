@@ -89,6 +89,11 @@ class OrderAgreement extends \yii\db\ActiveRecord
         self::IS_PURCHASE_YES  => '是',
     ];
 
+    public static $complete = [
+        self::IS_COMPLETE_NO   => '否',
+        self::IS_COMPLETE_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */

@@ -22,7 +22,7 @@ class OrderAgreementSearch extends OrderAgreement
     {
         return [
             [['id', 'order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted',
-                'is_payment', 'is_bill', 'is_stock', 'is_advancecharge', 'is_purchase'], 'integer'],
+                'is_payment', 'is_bill', 'is_stock', 'is_advancecharge', 'is_purchase', 'is_complete'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
                 'customer_name', 'sign_date', 'stock_at', 'payment_price', 'order_quote_sn'], 'safe'],
             [['id', 'order_quote_sn', 'order_sn', 'customer_name', 'payment_price', 'payment_ratio', 'remain_price'], 'trim'],
@@ -85,6 +85,7 @@ class OrderAgreementSearch extends OrderAgreement
             'order_agreement.is_stock'         => $this->is_stock,
             'order_agreement.is_advancecharge' => $this->is_advancecharge,
             'order_agreement.is_purchase'      => $this->is_purchase,
+            'order_agreement.is_complete'      => $this->is_complete,
         ]);
 
         if ($this->order_sn || $this->customer_name) {
