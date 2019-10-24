@@ -92,12 +92,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->inquiry->supplier->name?></td>
-                <td class="ratio"><?=$item->inquiry->tax_rate?></td>
+                <td class="ratio"><?=$item->tax?></td>
                 <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
-                <td class="price"><?=$item->inquiry->price?></td>
-                <td class="tax_price"><?=$item->inquiry->tax_price?></td>
+                <td class="price"><?=$item->price?></td>
+                <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
                 <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
