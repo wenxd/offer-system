@@ -165,6 +165,14 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'is_confirm_better',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$better,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Inquiry::$better[$model->is_confirm_better];
+                }
+            ],
+            [
                 'attribute' => 'is_newest',
                 'contentOptions' =>['style'=>'min-width: 80px;'],
                 'filter'    => Inquiry::$newest,

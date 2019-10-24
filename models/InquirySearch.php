@@ -29,7 +29,7 @@ class InquirySearch extends Inquiry
     {
         return [
             [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number',
-                'admin_id', 'is_upload'], 'integer'],
+                'admin_id', 'is_upload', 'is_confirm_better'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'is_process', 'goods_number_b'], 'safe'],
@@ -94,18 +94,19 @@ class InquirySearch extends Inquiry
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'inquiry.id'            => $this->id,
-            'inquiry.supplier_id'   => $this->supplier_id,
-            'inquiry.price'         => $this->price,
-            'inquiry.tax_price'     => $this->tax_price,
-            'inquiry.delivery_time' => $this->delivery_time,
-            'inquiry.remark'        => $this->remark,
-            'inquiry.sort'          => $this->sort,
-            'inquiry.is_better'     => $this->is_better,
-            'inquiry.is_newest'     => $this->is_newest,
-            'inquiry.is_deleted'    => self::IS_BETTER_NO,
-            'inquiry.admin_id'      => $this->admin_id,
-            'inquiry.is_upload'     => $this->is_upload,
+            'inquiry.id'                => $this->id,
+            'inquiry.supplier_id'       => $this->supplier_id,
+            'inquiry.price'             => $this->price,
+            'inquiry.tax_price'         => $this->tax_price,
+            'inquiry.delivery_time'     => $this->delivery_time,
+            'inquiry.remark'            => $this->remark,
+            'inquiry.sort'              => $this->sort,
+            'inquiry.is_better'         => $this->is_better,
+            'inquiry.is_newest'         => $this->is_newest,
+            'inquiry.is_deleted'        => self::IS_BETTER_NO,
+            'inquiry.admin_id'          => $this->admin_id,
+            'inquiry.is_upload'         => $this->is_upload,
+            'inquiry.is_confirm_better' => $this->is_confirm_better,
         ]);
 
         $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);
