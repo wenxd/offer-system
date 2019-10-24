@@ -103,7 +103,7 @@ class FinancialCollectController extends BaseController
         if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
             $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
         }
-
+        $orderAgreement->remain_price = 0;
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
