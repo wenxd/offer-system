@@ -36,12 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>未税总价</th>
                     <th>含税总价</th>
                     <th>货期</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
-                    <th>技术备注</th>
                     <th>关联询价记录</th>
                     <th>询价ID</th>
                 </tr>
@@ -71,12 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
                         <td class="delivery_time"><?=$item->delivery_time?></td>
-                        <td><?= Goods::$process[$item->goods->is_process]?></td>
-                        <td><?= Goods::$special[$item->goods->is_special]?></td>
-                        <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                         <td><?= substr($item->goods->updated_at, 0 , 10)?></td>
                         <td><?= substr($item->goods->created_at, 0 , 10)?></td>
-                        <td><?= $item->goods->technique_remark?></td>
                         <td class="relevance"><?= $item->inquiry ? '是' : '否'?></td>
                         <td><?= Html::a($item->relevance_id, Url::to(['inquiry/view', 'id' => $item->relevance_id]))?></td>
                     </tr>
@@ -89,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="sta_all_price"></td>
                     <td class="sta_all_tax_price"></td>
                     <td class="mostLongTime"></td>
-                    <td colspan="9"></td>
+                    <td colspan="4"></td>
                 </tr>
                 </tbody>
             </table>
