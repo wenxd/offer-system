@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>原厂家</th>
                 <th>厂家备注</th>
                 <th>单位</th>
-                <th>发行价</th>
+                <th>发行未税单价</th>
                 <th>发行货期</th>
                 <th>加工</th>
                 <th>特制</th>
@@ -81,7 +81,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>库存位置</th>
-                <th>紧急</th>
                 <th>建议库存</th>
                 <th>高储</th>
                 <th>低储</th>
@@ -93,7 +92,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $stock ? $stock->price : 0 ?></td>
                 <td class="tax_price"><b class="color"><?= $stock ? $stock->tax_price : 0 ?></b></td>
                 <td><?= $stock ? $stock->position : 0 ?></td>
-                <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
                 <td><?= $stock ? $stock->suggest_number : 0 ?></td>
                 <td class="high_number"><?= $stock ? $stock->high_number : 0 ?></td>
                 <td class="low_number"><?= $stock ? $stock->low_number : 0 ?></td>
