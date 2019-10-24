@@ -81,7 +81,7 @@ class InquiryTemp extends \yii\db\ActiveRecord
             'offer_date'        => '交货日期',
             'remark'            => '备注',
             'better_reason'     => '优选理由',
-            'delivery_time'     => '货期  （天）',
+            'delivery_time'     => '货期（周）',
             'admin_id'          => '询价员ID',
             'order_id'          => '订单ID',
             'order_inquiry_id'  => '询价单ID',

@@ -50,7 +50,11 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'inquiry_sn',
                 'format'    => 'raw',
                 'value'     => function($model) use($userId, $adminIds) {
-                    return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                    if (in_array($userId, $adminIds) && $model->is_inquiry) {
+                        return $model->inquiry_sn;
+                    } else {
+                        return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
