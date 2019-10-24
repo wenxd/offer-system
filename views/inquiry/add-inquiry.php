@@ -34,6 +34,7 @@ if ($model->isNewRecord) {
         $model->order_id         = 0;
         $model->order_inquiry_id = 0;   
     }
+    $model->is_confirm_better = 0;
 } else {
     $model->supplier_name    = $model->supplier->name;
     $model->goods_number     = $model->goods->goods_number;
@@ -216,7 +217,9 @@ $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
         <?= $form->field($model, 'order_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false) ?>
 
         <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false)  ?>
-
+        <?php if ($is_super) :?>
+            <?= $form->field($model, 'is_confirm_better')->radioList(Inquiry::$better) ?>
+        <?php endif;?>
     </div>
 
     <div class="box-footer">

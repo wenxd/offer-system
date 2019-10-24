@@ -93,7 +93,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$item->tax?></td>
-                <td class="publish_tax_price"><?=$item->goods->publish_tax_price?></td>
+                <td class="publish_tax_price"><?=number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '')?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                 <td class="price"><?=$item->price?></td>
@@ -305,25 +305,29 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var a = number.replace(/[\D]/g,'');
             $(this).val(a);
 
+            var publish_price = $(this).parent().parent().find('.publish_tax_price').text();
             var price = $(this).parent().parent().find('.price').text();
             var tax_price = $(this).parent().parent().find('.tax_price').text();
             var quote_price = $(this).parent().parent().find('.quote_price input').val();
             var quote_tax_price = $(this).parent().parent().find('.quote_tax_price').text();
 
+            $(this).parent().parent().find('.all_publish_tax_price').text(parseFloat(publish_price * number).toFixed(2));
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             $(this).parent().parent().find('.quote_all_price').text(parseFloat(quote_price * number).toFixed(2));
             $(this).parent().parent().find('.quote_all_tax_price').text(parseFloat(quote_tax_price * number).toFixed(2));
 
-            var sta_all_price           = 0;
-            var sta_all_tax_price       = 0;
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
+            var sta_all_price               = 0;
+            var sta_all_tax_price           = 0;
+            var sta_quote_all_price         = 0;
+            var sta_quote_all_tax_price     = 0;
+            var sta_all_publish_tax_price   = 0;
             $('.order_final_list').each(function (i, e) {
-                var all_price           = $(e).find('.all_price').text();
-                var all_tax_price       = $(e).find('.all_tax_price').text();
-                var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
+                var all_price               = $(e).find('.all_price').text();
+                var all_tax_price           = $(e).find('.all_tax_price').text();
+                var quote_all_price         = $(e).find('.quote_all_price').text();
+                var quote_all_tax_price     = $(e).find('.quote_all_tax_price').text();
+                var all_publish_tax_price   = $(e).find('.all_publish_tax_price').text();
                 if (all_price) {
                     sta_all_price      += parseFloat(all_price);
                 }
@@ -336,7 +340,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 if (quote_all_tax_price) {
                     sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
                 }
+                if (all_publish_tax_price) {
+                    sta_all_publish_tax_price += parseFloat(all_publish_tax_price);
+                }
             });
+            $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
