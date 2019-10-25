@@ -1,5 +1,8 @@
 <?php
 
+use app\models\Admin;
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -14,6 +17,11 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '供应商列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
@@ -73,10 +81,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'class' => ActionColumn::className(),
+                'class'         => ActionColumn::className(),
+                'visible'       => !in_array($userId, $adminIds),
                 'contentOptions'=>['style'=>'min-width: 150px;'],
-                'header' => '操作',
-                'template' => '{view} {update}',
+                'header'        => '操作',
+                'template'      => '{view} {update}',
             ],
         ],
     ]); ?>
