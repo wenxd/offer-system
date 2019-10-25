@@ -22,10 +22,17 @@ $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
+if (in_array($userId, $adminIds)) {
+    $control = '{create}';
+} else {
+    $control = '{create} {delete}';
+}
 ?>
 <div class="box table-responsive">
     <div class="box-header">
-        <?= Bar::widget()?>
+        <?= Bar::widget([
+            'template' => $control,
+        ])?>
     </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
