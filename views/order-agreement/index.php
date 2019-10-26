@@ -7,6 +7,8 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\OrderPurchase;
+use app\models\OrderPayment;
 use app\models\OrderAgreementSearch;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -138,6 +140,20 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function($model){
                     return substr($model->stock_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'payment_max_date',
+                'label'     => '支出合同最晚时间',
+                'value'     => function ($model, $key, $index, $column) {
+                    $orderPurchaseList = OrderPurchase::find()->where(['order_agreement_id' => $model->id])->all();
+                    $orderPurchaseIds = ArrayHelper::getColumn($orderPurchaseList, 'id');
+                    $orderPayment = OrderPayment::find()->where(['order_purchase_id' => $orderPurchaseIds])->orderBy('delivery_date Desc')->one();
+                    if (!empty($orderPayment)) {
+                        return substr($orderPayment->delivery_date, 0, 10);
+                    } else {
+                        return '';
+                    }
                 }
             ],
             [

@@ -1,5 +1,6 @@
 <?php
 
+use app\models\OrderPayment;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -88,6 +89,18 @@ $userId   = Yii::$app->user->identity->id;
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
                         return $model->order->order_type ? $model->end_date : '';
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'payment_max_date',
+                'label'     => '支出合同最晚时间',
+                'value'     => function ($model, $key, $index, $column) {
+                    $orderPayment = OrderPayment::find()->where(['order_purchase_id' => $model->id])->orderBy('delivery_date Desc')->one();
+                    if (!empty($orderPayment)) {
+                        return substr($orderPayment->delivery_date, 0, 10);
                     } else {
                         return '';
                     }
