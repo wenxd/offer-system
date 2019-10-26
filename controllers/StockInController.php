@@ -95,11 +95,13 @@ class StockInController extends BaseController
                 $stock->tax_price   = $paymentGoods->fixed_tax_price;
                 $stock->tax_rate    = $paymentGoods->tax_rate;
                 $stock->number      = 0;
+                $stock->position    = trim($params['position']);
                 $stock->save();
             } else {
                 $stock->price       = $paymentGoods->fixed_price;
                 $stock->tax_price   = $paymentGoods->fixed_tax_price;
                 $stock->tax_rate    = $paymentGoods->tax_rate;
+                $stock->position    = trim($params['position']);
                 $stock->save();
             }
             //判断是否全部入库
@@ -147,7 +149,6 @@ class StockInController extends BaseController
             $orderPaymentId = $paymentGoods[0]->order_payment_id;
             $orderPayment = OrderPayment::findOne($orderPaymentId);
             foreach ($paymentGoods as $key => $paymentGood) {
-
                 $stockLog = StockLog::find()->where([
                     'order_id' => $orderPayment['order_id'],
                     'order_payment_id' => $orderPayment->id,

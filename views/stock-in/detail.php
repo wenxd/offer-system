@@ -90,7 +90,7 @@ $isShow = in_array($userId, $adminIds);
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
-                    <td><?=$item->stock ? $item->stock->position : ''?></td>
+                    <td class="position"><input type="text" value="<?=$item->stock ? $item->stock->position : ''?>" style="width: 80px;"></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                     <td class="quality_text"><?=PaymentGoods::$quality[$item->is_quality]?></td>
                     <td>
@@ -131,7 +131,6 @@ $isShow = in_array($userId, $adminIds);
         //质检
         $('.quality').click(function (e) {
             var payment_goods_id = $(this).data('id');
-
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/quality',
@@ -190,17 +189,21 @@ $isShow = in_array($userId, $adminIds);
             var order_payment_id = $('.data').data('order_payment_id');
             var goods_id          = $(this).data('goods_id');
             var number            = $(this).parent().parent().find('.number').text();
-
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('入库数量不能为空', {time:2000});
+                return;
+            }
+            var position = $(this).parent().parent().find('.position input').val();
+            if (position == '') {
+                layer.msg('请输入库存位置', {time:2000});
                 return;
             }
 
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/in',
-                data:{goods_id:goods_id, order_payment_id:order_payment_id, number:number},
+                data:{goods_id:goods_id, order_payment_id:order_payment_id, number:number, position:position},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
@@ -221,13 +224,22 @@ $isShow = in_array($userId, $adminIds);
                 layer.msg('请最少选择一个零件', {time:2000});
                 return false;
             }
+
+            var position_open = false;
             var paymentGoods_ids = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var id = $(element).val();
                     paymentGoods_ids.push(id);
+                    if ($(element).parent().parent().find('.position input').val() == '') {
+                        position_open = true;
+                    }
                 }
             });
+            if (position_open) {
+                layer.msg('请先单独给没有库存位置的零件入库', {time:3000});
+                return false;
+            }
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/more-in',
