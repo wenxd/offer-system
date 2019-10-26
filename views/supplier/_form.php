@@ -9,7 +9,7 @@ use app\models\{Supplier, AuthAssignment};
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
 /* @var $form yii\widgets\ActiveForm */
-$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员', '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId = Yii::$app->user->identity->id;
