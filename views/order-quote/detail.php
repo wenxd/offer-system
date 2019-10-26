@@ -272,7 +272,7 @@ $is_show = in_array($userId, $adminIds);
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-agreement/index");
+                        location.replace("?r=order-quote/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;
