@@ -20,6 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
 $use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
+$purchaseAdminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box">
@@ -86,7 +89,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_sn',
                 'label'     => '订单编号',
                 'format'    => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => !in_array($userId, array_merge($adminIds, $purchaseAdminIds)),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
@@ -102,6 +105,18 @@ $userId   = Yii::$app->user->identity->id;
                 'visible'   => !in_array($userId, $adminIds),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                }
+            ],
+            [
+                'attribute' => 'order_agreement_date',
+                'format'    => 'raw',
+                'label'     => '收入合同交货日期',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->purchase && $model->purchase->agreement) {
+                        return substr($model->purchase->agreement->agreement_date, 0, 10);
+                    } else {
+                        return false;
+                    }
                 }
             ],
             [

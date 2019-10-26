@@ -193,4 +193,9 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
+
+    public function getPurchase()
+    {
+        return $this->hasOne(OrderPurchase::className(), ['id' => 'order_purchase_id']);
+    }
 }
