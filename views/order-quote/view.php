@@ -19,6 +19,10 @@ $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
+$userId   = Yii::$app->user->identity->id;
+
+//报价员权限
+$is_show = in_array($userId, $adminIds);
 
 ?>
 <div class="box table-responsive">
@@ -29,16 +33,23 @@ foreach ($adminList as $key => $admin) {
             <tr>
                 <th>序号</th>
                 <th>零件号</th>
+                <?php if (!$is_show) :?>
                 <th>厂家号</th>
+                <?php endif;?>
                 <th>中文描述</th>
                 <th>英文描述</th>
+                <?php if (!$is_show) :?>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
+                <?php endif;?>
                 <th>订单需求数量</th>
                 <th>库存数量</th>
                 <th>单位</th>
+                <?php if (!$is_show) :?>
                 <th>供应商</th>
+                <?php endif;?>
                 <th>税率</th>
+                <?php if (!$is_show) :?>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
@@ -47,6 +58,7 @@ foreach ($adminList as $key => $admin) {
                 <th>成本未税总价</th>
                 <th>成本含税总价</th>
                 <th>成本货期(周)</th>
+                <?php endif;?>
                 <th>报价未税单价</th>
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
@@ -59,16 +71,23 @@ foreach ($adminList as $key => $admin) {
                 <tr class="order_final_list">
                     <td class="serial"><?=$item->serial?></td>
                     <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <?php if (!$is_show) :?>
                     <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
+                    <?php if (!$is_show) :?>
                     <td><?=$item->goods->original_company?></td>
                     <td><?=$item->goods->original_company_remark?></td>
+                    <?php endif;?>
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                     <td><?=$item->goods->unit?></td>
+                    <?php if (!$is_show) :?>
                     <td><?=$item->inquiry->supplier->name?></td>
+                    <?php endif;?>
                     <td class="ratio"><?=$item->tax_rate?></td>
+                    <?php if (!$is_show) :?>
                     <?php
                         $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '');
                     ?>
@@ -80,6 +99,7 @@ foreach ($adminList as $key => $admin) {
                     <td class="all_price"><?=$item->all_price?></td>
                     <td class="all_tax_price"><?=$item->all_tax_price?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
+                    <?php endif;?>
                     <td class="quote_price"><?=$item->quote_price?></td>
                     <td class="quote_tax_price"><?=$item->quote_tax_price?></td>
                     <td class="quote_all_price"><?=$item->quote_all_price?></td>
@@ -88,7 +108,8 @@ foreach ($adminList as $key => $admin) {
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="12" rowspan="2">汇总统计</td>
+                <td colspan="<?= $is_show ? 9 : 12?>" rowspan="2">汇总统计</td>
+                <?php if (!$is_show) :?>
                 <td rowspan="2">发行</td>
                 <td>发行含税总价合计</td>
                 <td>发行最长货期</td>
@@ -98,17 +119,20 @@ foreach ($adminList as $key => $admin) {
                 <td>成本含税总价合计</td>
                 <td>成本最长货期</td>
                 <td rowspan="2"></td>
+                <?php endif;?>
                 <td rowspan="2">报价单</td>
                 <td>报价未税总价合计</td>
                 <td>报价含税总价合计</td>
                 <td>报价最长货期</td>
             </tr>
             <tr style="background-color: #acccb9">
+                <?php if (!$is_show) :?>
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
+                <?php endif;?>
                 <td class="sta_quote_all_price"></td>
                 <td class="sta_quote_all_tax_price"></td>
                 <td class="most_quote_delivery_time"></td>
@@ -120,9 +144,11 @@ foreach ($adminList as $key => $admin) {
 
         <?= $form->field($model, 'quote_sn')->textInput(['readonly' => true]) ?>
 
+        <?php if (!$is_show) :?>
         <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
 
         <?= $form->field($model, 'delivery_ratio')->textInput(['readonly' => true]) ?>
+        <?php endif;?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
