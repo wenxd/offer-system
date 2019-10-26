@@ -66,7 +66,17 @@ class SearchController extends BaseController
         $good_number = (string)Yii::$app->request->get('good_number');
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
-        return json_encode(['code' => 200, 'data' => $goodsList]);
+        $goodsIds = ArrayHelper::getColumn($goodsList, 'id');
+        $stockList = Stock::find()->where(['good_id' => $goodsIds])->indexBy('good_id')->asArray()->all();
+        $data = [];
+        foreach ($goodsList as $key => $goods) {
+            $data[$key] = $goods;
+            $data[$key]['stock_position'] = '';
+            if (isset($stockList[$goods['id']])) {
+                $data[$key]['stock_position'] = $stockList[$goods['id']]['position'];
+            }
+        }
+        return json_encode(['code' => 200, 'data' => $data]);
     }
 
     /**获取零件号并带上最后一次采购价格

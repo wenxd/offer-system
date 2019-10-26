@@ -104,7 +104,7 @@ use yii\widgets\ActiveForm;
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-position="' + res.data[i]['stock_position'] + '">' + res.data[i]['goods_number'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -120,6 +120,7 @@ use yii\widgets\ActiveForm;
         $("#stocklog-goods_id").val(goods_id);
         $("#stocklog-goods_number").val($.trim(obj.html()));
         $('.box-search-goods_number').addClass('cancel-goods_number');
+        $('#stocklog-position').val(obj.data('position'));
     }
 
     $('.stock-created').click(function (e) {

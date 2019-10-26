@@ -164,6 +164,7 @@ if ($isShow) {
             ],
             [
                 'class' => ActionColumn::className(),
+                'visible'   => !$isShow,
                 'contentOptions'=>['style'=>'min-width: 130px;'],
                 'header' => '操作',
                 'template' => $operate,
