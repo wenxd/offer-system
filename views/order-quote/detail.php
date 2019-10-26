@@ -25,7 +25,7 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 $userId   = Yii::$app->user->identity->id;
-
+$is_show = in_array($userId, $adminIds);
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -94,9 +94,9 @@ $userId   = Yii::$app->user->identity->id;
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="7" rowspan="2">汇总统计</td>
+                <td colspan="<?= $is_show ? 4 : 7?>" rowspan="2">汇总统计</td>
                 <td>最长合同货期</td>
-                <td colspan="5" rowspan="2"></td>
+                <td colspan="<?= $is_show ? 3 : 5?>" rowspan="2"></td>
                 <td>合同总价</td>
                 <td></td>
             </tr>
