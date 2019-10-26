@@ -52,6 +52,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>数量</th>
                 <th>出库</th>
                 <th>库存数量</th>
+                <th>库存位置</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -75,6 +76,7 @@ $isShow = in_array($userId, $adminIds);
                     <td class="number"><?=$item->number?></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
                     <td><?=$item->stock ? $item->stock->number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->position : ''?></td>
                     <td>
                         <?php if (!$item->is_out):?>
                             <a class="btn btn-success btn-xs btn-flat stock_out" href="javascript:void(0);" data-id="<?=$item->id?>">出库</a>

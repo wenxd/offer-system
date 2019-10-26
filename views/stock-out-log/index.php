@@ -92,6 +92,7 @@ $userId   = Yii::$app->user->identity->id;
                 [
                     'attribute' => 'price',
                     'label'     => '价格',
+                    'visible'   => !in_array($userId, $adminIds),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->stock) {
                             return $model->stock->price;
