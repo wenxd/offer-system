@@ -35,8 +35,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $model->payment_sn;
+                    } else {
+                        return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -103,8 +107,12 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
                 'visible'   => !in_array($userId, $adminIds),
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $model->order_purchase_sn;
+                    } else {
+                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                    }
                 }
             ],
             [
