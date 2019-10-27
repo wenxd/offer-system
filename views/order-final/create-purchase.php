@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
 $this->title = '生成采购单';
@@ -26,8 +27,10 @@ foreach ($adminList as $key => $admin) {
 }
 
 $customer_name = $order->customer ? $order->customer->short_name : '';
-$model->purchase_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
+$model->purchase_sn = 'B' . date('ymd_') . $number;
 $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
+
+$tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
 ?>
 <style>
     #example2 {
@@ -56,12 +59,12 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                 <th>询价员</th>
                 <th>税率</th>
                 <th>未税单价</th>
-                <th>未税总价</th>
                 <th>含税单价</th>
+                <th>未税总价</th>
                 <th>含税总价</th>
                 <th>货期</th>
                 <th>采购单号</th>
-                <th>合同需求数量</th>
+                <th>订单需求数量</th>
                 <th>采购数量</th>
                 <th>单位</th>
                 <th>使用库存数量</th>
@@ -122,12 +125,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     <td><?=$item->goods->original_company_remark?></td>
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
-                    <td><?=$item->inquiry->tax_rate?></td>
-                    <td class="price"><?=$item->inquiry->price?></td>
-                    <td class="tax_price"><?=$item->inquiry->tax_price?></td>
-                    <td class="all_price"><?=$item->inquiry->price * $item->number?></td>
-                    <td class="all_tax_price"><?=$item->inquiry->tax_price * $item->number?></td>
-                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td><?=$tax?></td>
+                    <td class="price"><?=$item->price?></td>
+                    <?php
+                        $tax_price = number_format($item->price * (1 + $tax/100), 2, '.', '');
+                    ?>
+                    <td class="tax_price"><?=$tax_price?></td>
+                    <td class="all_price"><?=$item->price * $item->number?></td>
+                    <td class="all_tax_price"><?=$tax_price * $item->number?></td>
+                    <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                     <td class="oldNumber"><?=$item->number?></td>
                     <td class="afterNumber">
