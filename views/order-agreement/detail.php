@@ -26,7 +26,7 @@ foreach ($adminList as $key => $admin) {
 }
 
 $model->purchase_sn    = 'B' . date('ymd_') . $number;
-$model->agreement_date = date('Y-m-d');
+$model->agreement_date = substr($orderAgreement->agreement_date, 0, 10);
 ?>
 <style>
     #example2 {
