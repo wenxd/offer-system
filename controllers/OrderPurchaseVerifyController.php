@@ -55,7 +55,9 @@ class OrderPurchaseVerifyController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPurchase = OrderPurchase::findOne($params['order_purchase_id']);
-
+        $orderPurchase->supplier_id  = $params['supplier_id'];
+        $orderPurchase->apply_reason = trim($params['apply_reason']);
+        $orderPurchase->save();
         //保存支出单
         $orderPayment = new OrderPayment();
         $orderPayment->payment_sn           = $params['payment_sn'];
