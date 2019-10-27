@@ -173,7 +173,7 @@ $userId   = Yii::$app->user->identity->id;
                 'format'         => 'raw',
                 'visible'   => !in_array($userId, $adminIds),
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-plus"></i> 派送采购员', Url::to(['detail', 'id' => $model['id']]), [
+                    return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-primary btn-xs btn-flat',
                     ]);

@@ -148,7 +148,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'payment_ratio'     => '预收款比例',
             'payment_price'     => '收入合同金额',
             'remain_price'      => '收入订单剩余金额',
-            'is_purchase'       => '是否派送采购员',
+            'is_purchase'       => '是否生成采购单',
         ];
     }
 
