@@ -295,11 +295,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 use_number = 0;
             }
             var stock_number = parseFloat($(this).parent().parent().find('.stock_number').text());
-            if (use_number > stock_number) {
-                layer.msg('使用库存数量不能比库存大', {time:2000});
-                $(this).val(agreement_number);
-                return false;
-            }
+            // if (use_number > stock_number) {
+            //     layer.msg('使用库存数量不能比库存大', {time:2000});
+            //     $(this).val(agreement_number);
+            //     return false;
+            // }
 
             $(this).parent().parent().find('.use_stock').text(use_number);
 
@@ -323,11 +323,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 return false;
             }
 
-            var goods_info    = [];
-            var number_flag   = false;
-            var supplier_flag = false;
-            var flag_stock    = false;
-            var supplier_name = '';
+            var goods_info              = [];
+            var number_flag             = false;
+            var supplier_flag           = false;
+            var flag_stock              = false;
+            var purchase_number_flag    = false;
+            var supplier_name           = '';
             $('.select_id').each(function (index, element) {
                 var item = {};
                 if ($(element).prop("checked")) {
@@ -346,9 +347,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     var purchase_number     = parseFloat($(element).parent().parent().find('.number').val());
                     var stock_number        = parseFloat($(element).parent().parent().find('.stock_number').text());
                     var old_number          = parseFloat($(element).parent().parent().find('.oldNumber').text());
+                    var use_stock           = parseFloat($(element).parent().parent().find('.use_stock').text());
 
                     if (purchase_number == 0 && old_number > stock_number) {
                         flag_stock = true;
+                    }
+                    if (use_stock > stock_number) {
+                        purchase_number_flag = true;
                     }
 
                     item.agreement_goods_id = $(element).data('agreement_goods_id');
@@ -365,6 +370,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
             //     return false;
             // }
+
+            if (purchase_number_flag) {
+                layer.msg('使用库存数量不能比库存大', {time:2000});
+                return false;
+            }
 
             if (flag_stock) {
                 layer.msg('需求数量大于库存数量时，采购数量不能为0', {time:2000});
