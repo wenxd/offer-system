@@ -69,6 +69,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <th>税率</th>
                     <th>合同需求数量</th>
                     <th>使用库存数</th>
+                    <th>库存数量</th>
                     <th>审核状态</th>
                     <th>驳回原因</th>
                 </tr>
@@ -146,8 +147,9 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td><?=$item->number?></td>
-                    <td><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
+                    <td class="agreement_number"><?=$item->number?></td>
+                    <td class="use_number"><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
                                 $status = '无';
@@ -302,11 +304,17 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
-            var price     = $(this).parent().parent().find('.price input').val();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            var agreement_number = $(this).parent().parent().find('.agreement_number').text();
+            var price            = $(this).parent().parent().find('.price input').val();
+            var tax_price        = $(this).parent().parent().find('.tax_price').text();
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            var use_number = agreement_number - number;
+            if (use_number < 0) {
+                use_number = 0;
+            }
+            $(this).parent().parent().find('.use_number').text(parseInt(use_number));
         });
 
         $('#orderpurchase-supplier_id').change(function(e){

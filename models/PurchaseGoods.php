@@ -127,7 +127,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
 
     public function getStock()
     {
-        return $this->hasOne(Stock::className(), ['id' => 'relevance_id']);
+        return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
     }
 
     public function getInquiry()
