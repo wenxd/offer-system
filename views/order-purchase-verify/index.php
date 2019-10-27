@@ -69,22 +69,31 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'value'          => function ($model, $key, $index, $column){
+                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
                     $html = Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
                     ]);
-                    if (!$model->is_verify) {
-                        $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
-                        ]);
-                    } else {
-                        if (!$model->is_agreement) {
+                    if (in_array($userId, $adminIds)) {
+                        if ($model->purchase_status == 1 && !$model->is_agreement) {
                             $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
+                        }
+                    } else {
+                        if (!$model->is_verify) {
+                            $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
+                            ]);
+                        } else {
+                            if (!$model->is_agreement) {
+                                $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                            }
                         }
                     }
                     return $html;

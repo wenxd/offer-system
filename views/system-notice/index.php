@@ -21,7 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{delete}',
+            'template' => '{delete} {read-all}',
+            'buttons' => [
+                'read-all' => function () {
+                    return Html::button('<i class="fa fa-book"></i> 全部已读', [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat read-all',
+                    ]);
+                },
+            ],
         ])?>
     </div>
     <div class="box-body">
@@ -72,12 +80,43 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 130px;'],
+                'contentOptions'=>['style'=>'min-width: 80px;'],
                 'header' => '操作',
-                'template' => '{view} {delete}',
+                'template' => '{view}',
             ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
     </div>
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    $('.read-all').click(function (e) {
+        var ids = [];
+        $('tbody input').each(function (i, e) {
+            if ($(e).prop("checked")) {
+                ids.push($(e).val());
+            }
+        });
+        if (ids.length) {
+            $.ajax({
+                type: "post",
+                url: '?r=system-notice/read-all',
+                data: {ids: ids},
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res && res.code == 200) {
+                        layer.msg(res.msg, {time: 2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time: 2000});
+                        return false;
+                    }
+                }
+            });
+        } else {
+            layer.msg('请选择已读的选项', {time:2000});
+        }
+    });
+</script>

@@ -54,4 +54,16 @@ class SystemNoticeController extends BaseController
             return json_encode(['code' => 200, 'msg' => '你有新的系统消息了！']);
         }
     }
+
+    /**
+     * 全部已读
+     */
+    public function actionReadAll()
+    {
+        $ids = Yii::$app->request->post('ids');
+        $num = SystemNotice::updateAll(['is_read' => SystemNotice::IS_READ_YES], ['id' => $ids]);
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '全部已读']);
+        }
+    }
 }
