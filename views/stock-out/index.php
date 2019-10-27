@@ -32,8 +32,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'agreement_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds){
+                    if (in_array($userId, $adminIds)) {
+                        return $model->agreement_sn;
+                    } else {
+                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
