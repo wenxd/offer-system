@@ -29,6 +29,10 @@ $isShow = in_array($userId, $adminIds);
                 'class' => 'btn btn-success more-stock',
                 'name'  => 'submit-button']
         )?>
+        <?= Html::button('批量质检', [
+                'class' => 'btn btn-info more-quality',
+                'name'  => 'submit-button']
+        )?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
         ])?>
@@ -50,9 +54,10 @@ $isShow = in_array($userId, $adminIds);
                 <?php endif;?>
                 <th>单位</th>
                 <th>数量</th>
-                <th>出库</th>
                 <th>库存数量</th>
                 <th>库存位置</th>
+                <th>出库</th>
+                <th>质检</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -74,10 +79,14 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
                     <td class="number"><?=$item->number?></td>
-                    <td><?=$item->is_out ? '是' : '否'?></td>
                     <td><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->position : ''?></td>
+                    <td><?=$item->is_out ? '是' : '否'?></td>
+                    <td class="is_quality"><?=$item->is_quality ? '是' : '否'?></td>
                     <td>
+                        <?php if (!$item->is_quality):?>
+                            <a class="btn btn-success btn-xs btn-flat quality" href="javascript:void(0);" data-id="<?=$item->id?>">质检</a>
+                        <?php endif;?>
                         <?php if (!$item->is_out):?>
                             <a class="btn btn-success btn-xs btn-flat stock_out" href="javascript:void(0);" data-id="<?=$item->id?>">出库</a>
                         <?php endif;?>
@@ -117,6 +126,13 @@ $isShow = in_array($userId, $adminIds);
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('出库数量不能为空', {time:2000});
+                return;
+            }
+
+            var quality = $(this).parent().parent().find('.is_quality').text();
+            if (quality == '否') {
+                layer.msg('请先质检', {time:2000});
+                return;
             }
 
             $.ajax({
@@ -143,18 +159,80 @@ $isShow = in_array($userId, $adminIds);
                 layer.msg('请最少选择一个零件', {time:2000});
                 return false;
             }
+            var quality_flag = false;
             var paymentGoods_ids = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var id = $(element).val();
                     paymentGoods_ids.push(id);
+                    var is_quality = $(this).parent().parent().find('.is_quality').text();
+                    if (is_quality == '否') {
+                        quality_flag = true;
+                    }
                 }
             });
+
+            if (quality_flag) {
+                layer.msg('请先质检', {time:2000});
+                return;
+            }
+
             var order_agreement_id = "<?=$_GET['id'] ?? ''?>";
             $.ajax({
                 type:"post",
                 url:'?r=stock-out/more-out',
                 data:{ids:paymentGoods_ids, order_agreement_id:order_agreement_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //质检
+        $('.quality').click(function (e) {
+            var agreement_goods_id = $(this).data('id');
+            $.ajax({
+                type:"post",
+                url:'?r=stock-out/quality',
+                data:{agreement_goods_id:agreement_goods_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
+        //批量质检
+        $('.more-quality').click(function () {
+            var select_length = $('.select_id:checked').length;
+            if (!select_length) {
+                layer.msg('请最少选择一个零件', {time:2000});
+                return false;
+            }
+            var agreementGoods_ids = [];
+            $('.select_id').each(function (index, element) {
+                if ($(element).prop("checked")) {
+                    var id = $(element).val();
+                    agreementGoods_ids.push(id);
+                }
+            });
+            $.ajax({
+                type:"post",
+                url:'?r=stock-out/more-quality',
+                data:{ids:agreementGoods_ids},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

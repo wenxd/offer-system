@@ -220,4 +220,33 @@ class StockOutController extends BaseController
 
         return json_encode(['code' => 200, 'msg' => '出库成功']);
     }
+
+    /**
+     * 质检
+     */
+    public function actionQuality()
+    {
+        $id = Yii::$app->request->post('agreement_goods_id');
+        $agreementGoods = AgreementGoods::findOne($id);
+        $agreementGoods->is_quality = AgreementGoods::IS_QUALITY_YES;
+        if ($agreementGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $agreementGoods->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 批量质检
+     */
+    public function actionMoreQuality()
+    {
+        $ids = Yii::$app->request->post('ids');
+        $num = AgreementGoods::updateAll(['is_quality' => AgreementGoods::IS_QUALITY_YES], ['id' => $ids]);
+        if ($num) {
+            return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '失败'], JSON_UNESCAPED_UNICODE);
+        }
+    }
 }

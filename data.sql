@@ -649,6 +649,7 @@ ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT
 ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
 ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
 ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否出库';
+ALTER TABLE `agreement_goods` ADD COLUMN `is_quality` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `agreement_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '成本货期（周）';
 
 
