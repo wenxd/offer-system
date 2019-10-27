@@ -79,6 +79,15 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderAgreementSearch::$bill[$model->is_bill];
                 }
             ],
+            [
+                'attribute' => 'is_complete',
+                'label'     => '全流程',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$complete,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$complete[$model->is_complete];
+                }
+            ],
             'payment_price',
             [
                 'attribute' => 'is_purchase',
