@@ -204,8 +204,8 @@ class CompetitorGoodsController extends BaseController
                             if ($value['I']) {
                                 $competitorGoods->remark = trim($value['I']);
                             }
-                            if ($value['J'] && $value['J'] != '否') {
-                                $competitorGoods->is_issue = trim($value['J']);
+                            if ($value['J'] && $value['J'] == '是') {
+                                $competitorGoods->is_issue = CompetitorGoods::IS_ISSUE_YES;
                             }
                             if ($competitorGoods->save()) {
                                 $num++;
