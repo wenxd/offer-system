@@ -391,7 +391,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var most_quote_delivery_time    = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time = $(e).find('.delivery_time').text();
-                var quote_delivery_time = (delivery_time * delivery_ratio).toFixed(2);
+                var quote_delivery_time = parseFloat((delivery_time * delivery_ratio).toFixed(2));
                 $(e).find('.quote_delivery_time input').val(quote_delivery_time);
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;

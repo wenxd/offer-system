@@ -87,9 +87,7 @@ $is_show = in_array($userId, $adminIds);
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"></td>
                     <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" value="<?=$item->number?>"
-                               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
-                               onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}"/>
+                        <input type="number" class="number" min="1" value="<?=$item->number?>">
                     </td>
                 </tr>
             <?php endforeach;?>
@@ -177,15 +175,9 @@ $is_show = in_array($userId, $adminIds);
         //改变数量
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
-            if (number == 0) {
-                layer.msg('数量最少为1', {time:2000});
-                return false;
-            }
-            var a = number.replace(/[\D]/g,'');
-            $(this).val(a);
-
-            var price = $(this).parent().parent().find('.change_price').val();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            $(this).val(number);
+            var price     = parseFloat($(this).parent().parent().find('.change_price').val());
+            var tax_price = parseFloat($(this).parent().parent().find('.tax_price').text());
             var all_tax_price = parseFloat(tax_price * number);
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(all_tax_price.toFixed(2));
@@ -193,6 +185,7 @@ $is_show = in_array($userId, $adminIds);
             //计算总价
             var sta_all_tax_price = 0;
             $('.order_quote_list').each(function (i, e) {
+                var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
                 if (all_tax_price) {
                     sta_all_tax_price += all_tax_price;
                 }
