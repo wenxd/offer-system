@@ -222,6 +222,20 @@ $is_show = in_array($userId, $adminIds);
             $('.mostLongTime').text(quote_delivery_time);
         });
 
+        //修改收入合同货期
+        $('.delivery_time input').bind('input propertychange', function (e) {
+            var quote_delivery_time = $(this).val();
+            $(this).val(quote_delivery_time);
+            var most_delivery_time = 0;
+            $('.order_quote_list').each(function (i, ele) {
+                var delivery_time = parseFloat($(ele).find('.delivery_time input').val());
+                if (delivery_time > most_delivery_time) {
+                    most_delivery_time = delivery_time;
+                }
+            });
+            $('.mostLongTime').text(most_delivery_time);
+        });
+
         $('.quote_complete').click(function (e) {
             var goods_info = [];
 
