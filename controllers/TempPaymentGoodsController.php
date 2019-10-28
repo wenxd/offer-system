@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use app\models\AuthAssignment;
 use app\models\PaymentGoods;
 use app\models\PurchaseGoods;
 use Yii;
 use app\models\TempPaymentGoods;
 use app\models\TempPaymentGoodsSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -139,7 +141,15 @@ class TempPaymentGoodsController extends Controller
             'fixed_number', 'inquiry_admin_id', 'updated_at', 'created_at', 'is_quality', 'supplier_id', 'delivery_time',
             'before_supplier_id', 'before_delivery_time', 'is_payment'];
 
-        $paymentGoodsList = PaymentGoods::find()->where(['goods_id' => $goods_id])->asArray()->all();
+        $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $userId   = Yii::$app->user->identity->id;
+
+        if (in_array($userId, $adminIds)) {
+            $paymentGoodsList = PaymentGoods::find()->where(['goods_id' => $goods_id, 'inquiry_admin_id' => $userId])->asArray()->all();
+        } else {
+            $paymentGoodsList = PaymentGoods::find()->where(['goods_id' => $goods_id])->asArray()->all();
+        }
 
         $res = Yii::$app->db->createCommand()->batchInsert(TempPaymentGoods::tableName(), $keys, $paymentGoodsList)->execute();
 
