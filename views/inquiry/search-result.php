@@ -204,13 +204,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>库存位置</th>
-                    <th>紧急</th>
                     <th>建议库存</th>
                     <th>高储</th>
                     <th>低储</th>
                     <th>未税总价</th>
                     <th>含税总价</th>
-                    <th>操作</th>
                 </tr>
                 <tr class="inquiry_list">
                     <td><?= $goods ? $goods->goods_number : '' ?></td>
@@ -220,15 +218,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="price"><?= $stock ? $stock->price : 0 ?></td>
                     <td class="tax_price"><?= $stock ? $stock->tax_price : 0 ?></td>
                     <td><?= $stock ? $stock->position : 0 ?></td>
-                    <td><?= $stock ? Stock::$emerg[$stock->is_emerg] : '' ?></td>
                     <td><?= $stock ? $stock->suggest_number : 0 ?></td>
                     <td class="high_number"><?= $stock ? $stock->high_number : 0 ?></td>
                     <td class="low_number"><?= $stock ? $stock->low_number : 0 ?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
-                    <td>
-                        <a class="btn btn-primary btn-xs btn-flat" href="?r=stock/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
-                    </td>
                 </tr>
                 </thead>
             </table>
