@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Supplier;
+use yii\helpers\ArrayHelper;
 
 /**
  * SupplierSearch represents the model behind the search form of `backend\models\Supplier`.
@@ -44,7 +45,14 @@ class SupplierSearch extends Supplier
      */
     public function search($params)
     {
-        $query = Supplier::find();
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $userId   = Yii::$app->user->identity->id;
+        if (in_array($userId, $adminIds)) {
+            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES]);
+        } else {
+            $query = Supplier::find();
+        }
 
         // add conditions that should always apply here
 
