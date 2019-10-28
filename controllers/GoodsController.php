@@ -110,9 +110,9 @@ class GoodsController extends BaseController
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
         //询价记录 价格最优
-        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
+        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc, Created_at Desc')->one();
         //同期最短(货期)
-        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
+        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
         //最新报价
         $inquiryNewQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
         //优选记录

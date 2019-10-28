@@ -231,79 +231,85 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <th rowspan="4"><?=Html::a('采购记录', Url::to(['purchase-goods/index', 'PurchaseGoodsSearch[goods_id]' => $goods->id]))?></th>
                     <th>类型</th>
-                    <th>厂家号</th>
-                    <th>单位</th>
                     <th>供应商</th>
                     <th>数量</th>
                     <th>税率</th>
                     <th>未税单价</th>
                     <th>含税单价</th>
                     <th>货期</th>
-                    <th>实际货期</th>
                     <th>采购员</th>
-                    <th>采购时间</th>
+                    <th>支出合同签订时间</th>
                     <th>入库时间</th>
+                    <th>实际货期</th>
                     <th>订单号</th>
-                    <th>采购单号</th>
-                    <th>未税总价</th>
+                    <th>支出合同号</th>
                     <th>含税总价</th>
                 </tr>
                 <tr class="inquiry_list">
                     <td>最新</td>
-                    <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                    <td><?= $goods ? $goods->unit : '' ?></td>
-                    <td class="stressColor"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->supplier->name : $purchaseNew->inquiry->supplier->name) : '' ?></td>
-                    <td class="number"><?= $purchaseNew ? $purchaseNew->number : 0 ?></td>
-                    <td><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_rate : $purchaseNew->inquiry->tax_rate) : 0 ?></td>
-                    <td class="price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->price : $purchaseNew->inquiry->price) : 0 ?></td></td>
-                    <td class="tax_price"><?= $purchaseNew ? ($purchaseNew->type ? $purchaseNew->stock->tax_price : $purchaseNew->inquiry->tax_price) : 0 ?></td>
-                    <td class="stressColor"><?= ($purchaseNew && $purchaseNew->inquiry) ? $purchaseNew->inquiry->delivery_time : '' ?></td>
-                    <td><?= $purchaseNew ? ($purchaseNew->stockLog ? ceil((strtotime($purchaseNew->stockLog->operate_time) - strtotime($purchaseNew->purchase_date))/(3600*24)) : '') : '' ?></td>
-                    <td><?= $purchaseNew ? $purchaseNew->orderPurchase->admin->username : '' ?></td>
-                    <td><?= $purchaseNew ? substr($purchaseNew->purchase_date, 0, 10) : '' ?></td>
-                    <td><?= $purchaseNew ? ($purchaseNew->stockLog ? substr($purchaseNew->stockLog->operate_time, 0, 10) : '') : '' ?></td>
-                    <td><?= $purchaseNew ? Html::a($purchaseNew->order->order_sn, Url::to(['order/detail', 'id' => $purchaseNew->order_id])) : ''?></td>
-                    <td><?= $purchaseNew ? Html::a($purchaseNew->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseNew->order_purchase_id])) : ''?></td>
-                    <td class="all_price"></td>
-                    <td class="all_tax_price"></td>
+                    <td class="stressColor"><?= $paymentNew ? $paymentNew->supplier->name : '' ?></td>
+                    <td class="number"><?= $paymentNew ? $paymentNew->number : 0 ?></td>
+                    <td><?= $paymentNew ? $paymentNew->tax_rate : 0 ?></td>
+                    <td><b class="color"><?= $paymentNew ? $paymentNew->fixed_price : 0 ?></b></td>
+                    <td class="tax_price"><?= $paymentNew ? $paymentNew->fixed_tax_price : 0 ?></b></td>
+                    <td class="stressColor"><b class="color"><?= $paymentNew ? $paymentNew->delivery_time : 0 ?></b></td>
+                    <td><?= $paymentNew ? (isset($adminList[$paymentNew->inquiry_admin_id]) ? $adminList[$paymentNew->inquiry_admin_id]->username : '') : '' ?></td>
+                    <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
+                    <td><?= $paymentNew ? ($paymentNew->orderPayment ?  substr($paymentNew->orderPayment->stock_at, 0, 10): '') : '' ?></td>
+                    <td>
+                        <?php
+                        if ($paymentNew && $paymentNew->orderPayment->stock_at) {
+                            echo number_format((strtotime($paymentNew->orderPayment->stock_at) - strtotime($paymentNew->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天';
+                        }
+                        ?>
+                    </td>
+                    <td><?= $paymentNew ? Html::a($paymentNew->order->order_sn, Url::to(['order/detail', 'id' => $paymentNew->order_id])) : ''?></td>
+                    <td><?= $paymentNew ? Html::a($paymentNew->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentNew->order_payment_id])) : ''?></td>
+                    <td><?=$paymentNew ? $paymentNew->number * $paymentNew->fixed_tax_price : 0 ?></td>
                 </tr>
                 <tr class="inquiry_list">
                     <td>价格</td>
-                    <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                    <td><?= $goods ? $goods->unit : '' ?></td>
-                    <td class="stressColor"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->supplier->name : $purchasePrice->inquiry->supplier->name) : '' ?></td>
-                    <td class="number"><?= $purchasePrice ? $purchasePrice->number : 0 ?></td>
-                    <td><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_rate : $purchasePrice->inquiry->tax_rate) : 0 ?></td>
-                    <td class="price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->price : $purchasePrice->inquiry->price) : 0 ?></td></td>
-                    <td class="tax_price"><?= $purchasePrice ? ($purchasePrice->type ? $purchasePrice->stock->tax_price : $purchasePrice->inquiry->tax_price) : 0 ?></td>
-                    <td class="stressColor"><?= $purchasePrice && $purchasePrice->inquiry ? $purchasePrice->inquiry->delivery_time : '' ?></td>
-                    <td><?= $purchasePrice ? ($purchasePrice->stockLog ? ceil((strtotime($purchasePrice->stockLog->operate_time) - strtotime($purchasePrice->purchase_date))/(3600*24)) : '') : '' ?></td>
-                    <td><?= $purchasePrice ? $purchasePrice->orderPurchase->admin->username : '' ?></td>
-                    <td><?= $purchasePrice ? substr($purchasePrice->purchase_date, 0, 10) : '' ?></td>
-                    <td><?= $purchasePrice ? ($purchasePrice->stockLog ? substr($purchasePrice->stockLog->operate_time, 0, 10) : '') : '' ?></td>
-                    <td><?=$purchasePrice ? Html::a($purchasePrice->order->order_sn, Url::to(['order/detail', 'id' => $purchasePrice->order_id])) : ''?></td>
-                    <td><?=$purchasePrice ? Html::a($purchasePrice->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchasePrice->order_purchase_id])) : ''?></td>
-                    <td class="all_price"></td>
-                    <td class="all_tax_price"></td>
+                    <td class="stressColor"><?= $paymentPrice ? $paymentPrice->supplier->name : '' ?></td>
+                    <td class="number"><?= $paymentPrice ? $paymentPrice->number : 0 ?></td>
+                    <td><?= $paymentPrice ? $paymentPrice->tax_rate : 0 ?></td>
+                    <td><b class="color"><?= $paymentPrice ? $paymentPrice->fixed_price : 0 ?></b></td>
+                    <td class="tax_price"><?= $paymentPrice ? $paymentPrice->fixed_tax_price : 0 ?></td>
+                    <td class="stressColor"><b class="color"><?= $paymentPrice ? $paymentPrice->delivery_time : 0 ?></b></td>
+                    <td><?= $paymentPrice ? (isset($adminList[$paymentPrice->inquiry_admin_id]) ? $adminList[$paymentPrice->inquiry_admin_id]->username : '') : '' ?></td>
+                    <td><?= $paymentPrice ? ($paymentPrice->orderPayment ?  substr($paymentPrice->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
+                    <td><?= $paymentPrice ? ($paymentPrice->orderPayment ?  substr($paymentPrice->orderPayment->stock_at, 0, 10): '') : '' ?></td>
+                    <td>
+                        <?php
+                        if ($paymentPrice && $paymentPrice->orderPayment->stock_at) {
+                            echo number_format((strtotime($paymentPrice->orderPayment->stock_at) - strtotime($paymentPrice->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天';
+                        }
+                        ?>
+                    </td>
+                    <td><?= $paymentPrice ? Html::a($paymentPrice->order->order_sn, Url::to(['order/detail', 'id' => $paymentPrice->order_id])) : ''?></td>
+                    <td><?= $paymentPrice ? Html::a($paymentPrice->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentPrice->order_payment_id])) : ''?></td>
+                    <td><?=$paymentPrice ? $paymentPrice->number * $paymentPrice->fixed_tax_price : 0 ?></td>
                 </tr>
                 <tr class="inquiry_list">
                     <td>货期</td>
-                    <td><?= $goods ? $goods->goods_number_b : '' ?></td>
-                    <td><?= $goods ? $goods->unit : '' ?></td>
-                    <td class="stressColor"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->supplier->name : $purchaseDay->inquiry->supplier->name) : '' ?></td>
-                    <td class="number"><?= $purchaseDay ? $purchaseDay->number : 0 ?></td>
-                    <td><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_rate : $purchaseDay->inquiry->tax_rate) : 0 ?></td>
-                    <td class="price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->price : $purchaseDay->inquiry->price) : 0 ?></td></td>
-                    <td class="tax_price"><?= $purchaseDay ? ($purchaseDay->type ? $purchaseDay->stock->tax_price : $purchaseDay->inquiry->tax_price) : 0 ?></td>
-                    <td class="stressColor"><?= $purchaseDay && $purchaseDay->inquiry ? $purchaseDay->inquiry->delivery_time : '' ?></td>
-                    <td><?= $purchaseDay ? ($purchaseDay->stockLog ? ceil((strtotime($purchaseDay->stockLog->operate_time) - strtotime($purchaseDay->purchase_date))/(3600*24)) : '') : '' ?></td>
-                    <td><?= $purchaseDay ? $purchaseDay->orderPurchase->admin->username : '' ?></td>
-                    <td><?= $purchaseDay ? substr($purchaseDay->created_at, 0, 10) : '' ?></td>
-                    <td><?= $purchaseDay ? ($purchaseDay->stockLog ? substr($purchaseDay->stockLog->operate_time, 0, 10) : '') : '' ?></td>
-                    <td><?= $purchaseDay ? Html::a($purchaseDay->order->order_sn, Url::to(['order/detail', 'id' => $purchaseDay->order_id])) : ''?></td>
-                    <td><?= $purchaseDay ? Html::a($purchaseDay->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchaseDay->order_purchase_id])) : ''?></td>
-                    <td class="all_price"></td>
-                    <td class="all_tax_price"></td>
+                    <td class="stressColor"><?= $paymentDay ? $paymentDay->supplier->name : '' ?></td>
+                    <td class="number"><?= $paymentDay ? $paymentDay->number : 0 ?></td>
+                    <td><?= $paymentDay ? $paymentDay->tax_rate : 0 ?></td>
+                    <td><b class="color"><?= $paymentDay ? $paymentDay->fixed_price : 0 ?></b></td>
+                    <td class="tax_price"><?= $paymentDay ? $paymentDay->fixed_tax_price : 0 ?></td>
+                    <td class="stressColor"><b class="color"><?= $paymentDay ? $paymentDay->delivery_time : 0 ?></b></td>
+                    <td><?= $paymentDay ? (isset($adminList[$paymentDay->inquiry_admin_id]) ? $adminList[$paymentDay->inquiry_admin_id]->username : '') : '' ?></td>
+                    <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->agreement_at, 0, 10): '') : '' ?></td>
+                    <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->stock_at, 0, 10): '') : '' ?></td>
+                    <td>
+                        <?php
+                        if ($paymentDay && $paymentDay->orderPayment->stock_at) {
+                            echo number_format((strtotime($paymentDay->orderPayment->stock_at) - strtotime($paymentDay->orderPayment->agreement_at))/(3600*24), 2, '.', '') . '天';
+                        }
+                        ?>
+                    </td>
+                    <td><?= $paymentDay ? Html::a($paymentDay->order->order_sn, Url::to(['order/detail', 'id' => $paymentDay->order_id])) : ''?></td>
+                    <td><?= $paymentDay ? Html::a($paymentDay->order_payment_sn, Url::to(['order-payment/detail', 'id' => $paymentDay->order_payment_id])) : ''?></td>
+                    <td><?= $paymentDay ? $paymentDay->number * $paymentDay->fixed_tax_price : 0 ?></td>
                 </tr>
                 </thead>
             </table>
