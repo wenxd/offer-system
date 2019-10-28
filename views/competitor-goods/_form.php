@@ -10,11 +10,13 @@ use app\models\{CompetitorGoods, Competitor, Customer, SystemConfig};
 /* @var $this yii\web\View */
 /* @var $model app\models\CompetitorGoods */
 /* @var $form yii\widgets\ActiveForm */
-$model->tax_rate = SystemConfig::find()->select('value')->where([
+$tax_rate = SystemConfig::find()->select('value')->where([
     'title'  => SystemConfig::TITLE_TAX,
     'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 if (!$model->isNewRecord) {
     $model->offer_date = substr($model->offer_date, 0, 10);
+} else {
+    $model->tax_rate = $tax_rate;
 }
 ?>
 <style>
