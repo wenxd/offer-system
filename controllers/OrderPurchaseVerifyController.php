@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Inquiry;
+use app\models\InquiryGoods;
 use app\models\Order;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
@@ -11,6 +13,7 @@ use app\models\SystemNotice;
 use Yii;
 use yii\filters\VerbFilter;
 use app\models\OrderPaymentVerifySearch;
+use yii\helpers\ArrayHelper;
 
 /**
  * OrderPurchaseController implements the CRUD actions for OrderPurchase model.
@@ -312,6 +315,50 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPurchase->save();
         }
 
+        //获取采购零件列表保存为询价记录
+        $paymentGoodsList = PaymentGoods::find()->where(['order_payment_id' => $id])->all();
+        $data = [];
+        $goods_ids = ArrayHelper::getColumn($paymentGoodsList, 'goods_id');
+        Inquiry::updateAll(['is_newest' => 0], ['good_id' => $goods_ids]);
+        foreach ($paymentGoodsList as $key => $paymentGoods) {
+            $item = [];
+            $item[] = $paymentGoods['goods_id'];
+            $item[] = $paymentGoods['supplier_id'];
+            $item[] = $paymentGoods['fixed_price'];
+            $item[] = $paymentGoods['fixed_tax_price'];
+            $item[] = $paymentGoods['tax_rate'];
+            $item[] = $paymentGoods['fixed_all_tax_price'];
+            $item[] = $paymentGoods['fixed_all_price'];
+            $item[] = $paymentGoods['fixed_number'];
+            $item[] = $paymentGoods['created_at'];
+            $item[] = $paymentGoods['delivery_time'];
+            $item[] = $paymentGoods['inquiry_admin_id'];
+            $item[] = $paymentGoods['order_id'];
+            $item[] = 1;
+            $item[] = date('Y-m-d H:i:s');
+            $item[] = date('Y-m-d H:i:s');
+            $data[] = $item;
+        }
+
+        $keys = [
+            'good_id',
+            'supplier_id',
+            'price',
+            'tax_price',
+            'tax_rate',
+            'all_tax_price',
+            'all_price',
+            'number',
+            'inquiry_datetime',
+            'delivery_time',
+            'admin_id',
+            'order_id',
+            'is_newest',
+            'created_at',
+            'updated_at',
+        ];
+
+        $res = Yii::$app->db->createCommand()->batchInsert(Inquiry::tableName(), $keys, $data)->execute();
 
         return $this->redirect(['index']);
     }
