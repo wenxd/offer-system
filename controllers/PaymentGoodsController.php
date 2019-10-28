@@ -124,4 +124,37 @@ class PaymentGoodsController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionCopyInquiry()
+    {
+        $id = Yii::$app->request->post('id');
+        $paymentGoods = PaymentGoods::findOne($id);
+
+        $keys = [
+            'good_id',
+            'supplier_id',
+            'price',
+            'tax_price',
+            'tax_rate',
+            'all_tax_price',
+            'all_price',
+            'number',
+            'inquiry_datetime',
+            'is_better',
+            'is_newest',
+            'is_priority',
+            'is_deleted',
+            'offer_date',
+            'remark',
+            'better_reason',
+            'delivery_time',
+            'admin_id',
+            'order_id',
+            'order_inquiry_id',
+            'inquiry_goods_id',
+            'is_confirm_better'
+        ];
+
+        $res = Yii::$app->db->createCommand()->batchInsert(InquiryTemp::tableName(), $keys, $inquiryList)->execute();
+    }
 }
