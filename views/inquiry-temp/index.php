@@ -56,10 +56,14 @@ $userId   = Yii::$app->user->identity->id;
                     'format'         => 'raw',
                     'label'          => '厂家号',
                     'contentOptions' =>['style'=>'min-width: 100px;'],
-                    'filter'         => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
-                    'value'          => function ($model, $key, $index, $column) {
+                    'filter'         => Html::activeTextInput($searchModel, 'goods_number_b', ['class'=>'form-control']),
+                    'value'          => function ($model, $key, $index, $column) use($userId, $adminIds) {
                         if ($model->goods) {
-                            return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            if (in_array($userId, $adminIds)) {
+                                return $model->goods->goods_number_b;
+                            } else {
+                                return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            }
                         } else {
                             return '';
                         }

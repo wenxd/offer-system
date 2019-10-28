@@ -276,6 +276,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>合同签订日期</th>
                 <th>订单号</th>
                 <th>收入合同单号</th>
+                <th>含税总价</th>
             </tr>
             <tr>
                 <td>最新</td>
@@ -288,6 +289,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$agreementGoodsNew ? substr($agreementGoodsNew->orderAgreement->sign_date, 0, 10) : 0 ?></td>
                 <td><?=$agreementGoodsNew ? Html::a($agreementGoodsNew->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsNew->order_id])) : ''?></td>
                 <td><?=$agreementGoodsNew ? Html::a($agreementGoodsNew->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsNew->order_agreement_id])) : '' ?></td>
+                <td><?=$agreementGoodsNew ? $agreementGoodsNew->quote_tax_price * $agreementGoodsNew->number : 0 ?></td>
             </tr>
             <tr>
                 <td>最高价</td>
@@ -300,6 +302,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$agreementGoodsHigh ? substr($agreementGoodsHigh->orderAgreement->sign_date, 0, 10) : 0 ?></td>
                 <td><?=$agreementGoodsHigh ? Html::a($agreementGoodsHigh->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsHigh->order_id])) : ''?></td>
                 <td><?=$agreementGoodsHigh ? Html::a($agreementGoodsHigh->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsHigh->order_agreement_id])) : '' ?></td>
+                <td><?=$agreementGoodsHigh ? $agreementGoodsHigh->quote_tax_price * $agreementGoodsHigh->number : 0 ?></td>
             </tr>
             <tr>
                 <td>最低价</td>
@@ -312,6 +315,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$agreementGoodsLow ? substr($agreementGoodsLow->orderAgreement->sign_date, 0, 10) : 0 ?></td>
                 <td><?=$agreementGoodsLow ? Html::a($agreementGoodsLow->order->order_sn, Url::to(['order/detail', 'id' => $agreementGoodsLow->order_id])) : ''?></td>
                 <td><?=$agreementGoodsLow ? Html::a($agreementGoodsLow->order_agreement_sn, Url::to(['order-agreement/view', 'id' => $agreementGoodsLow->order_agreement_id])) : '' ?></td>
+                <td><?=$agreementGoodsLow ? $agreementGoodsLow->quote_tax_price * $agreementGoodsLow->number : 0 ?></td>
             </tr>
             </thead>
         </table>
@@ -327,8 +331,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>货期</th>
+                <th>库存数量</th>
                 <th>报价时间</th>
-                <th>备注</th>
+                <th>含税总价</th>
             </tr>
             <tr>
                 <td>发行价</td>
@@ -339,8 +344,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><b class="color"><?=$competitorGoodsIssue ? $competitorGoodsIssue->price : ''?></b></td>
                 <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->tax_price : ''?></td>
                 <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->delivery_time : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->stock_number : 0?></td>
                 <td><?=$competitorGoodsIssue ? substr($competitorGoodsIssue->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->remark : ''?></td>
+                <td><?=$competitorGoodsIssue ? $competitorGoodsIssue->tax_price * $competitorGoodsIssue->number : 0?></td>
             </tr>
             <tr>
                 <td>最新</td>
@@ -351,8 +357,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><b class="color"><?=$competitorGoodsNew ? $competitorGoodsNew->price : ''?></b></td>
                 <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price : ''?></td>
                 <td><?=$competitorGoodsNew ? $competitorGoodsNew->delivery_time : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->stock_number : 0?></td>
                 <td><?=$competitorGoodsNew ? substr($competitorGoodsNew->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsNew ? $competitorGoodsNew->remark : ''?></td>
+                <td><?=$competitorGoodsNew ? $competitorGoodsNew->tax_price * $competitorGoodsNew->number : 0?></td>
             </tr>
             <tr>
                 <td>最高价</td>
@@ -363,8 +370,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><b class="color"><?=$competitorGoodsHigh ? $competitorGoodsHigh->price : ''?></b></td>
                 <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->tax_price : ''?></td>
                 <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->delivery_time : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->stock_number : 0?></td>
                 <td><?=$competitorGoodsHigh ? substr($competitorGoodsHigh->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->remark : ''?></td>
+                <td><?=$competitorGoodsHigh ? $competitorGoodsHigh->tax_price * $competitorGoodsHigh->number : 0?></td>
             </tr>
             <tr>
                 <td>最低价</td>
@@ -375,8 +383,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><b class="color"><?=$competitorGoodsLow ? $competitorGoodsLow->price : ''?></b></td>
                 <td><?=$competitorGoodsLow ? $competitorGoodsLow->tax_price : ''?></td>
                 <td><?=$competitorGoodsLow ? $competitorGoodsLow->delivery_time : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->stock_number : 0?></td>
                 <td><?=$competitorGoodsLow ? substr($competitorGoodsLow->offer_date, 0, 10) : ''?></td>
-                <td><?=$competitorGoodsLow ? $competitorGoodsLow->remark : ''?></td>
+                <td><?=$competitorGoodsLow ? $competitorGoodsLow->tax_price * $competitorGoodsLow->number : 0?></td>
             </tr>
             </thead>
         </table>
