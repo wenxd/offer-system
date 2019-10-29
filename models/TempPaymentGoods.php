@@ -131,4 +131,9 @@ class TempPaymentGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(OrderPayment::className(), ['id' => 'order_payment_id']);
     }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'inquiry_admin_id']);
+    }
 }

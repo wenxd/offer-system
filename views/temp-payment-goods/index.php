@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Helper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -18,6 +19,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns' => [
+            [
+                'attribute' => 'inquiry_admin_id',
+                'label'     => '采购员',
+                'filter'    => Helper::getAdminList(['系统管理员', '采购员']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
             'id',
             [
                 'attribute' => 'goods_number',
