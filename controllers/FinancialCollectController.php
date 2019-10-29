@@ -82,7 +82,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
-            $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
@@ -103,7 +103,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->payment_at = date('Y-m-d H:i:s');
         if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
-            $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
         $orderAgreement->remain_price = 0;
         if ($orderAgreement->save()) {
@@ -125,7 +125,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->bill_at = date('Y-m-d H:i:s');
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
-            $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
 
         if ($orderAgreement->save()) {
