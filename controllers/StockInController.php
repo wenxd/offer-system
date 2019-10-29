@@ -61,6 +61,8 @@ class StockInController extends BaseController
     {
         $params = Yii::$app->request->post();
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+        $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
+        $orderPayment->save();
 
         $stockLog = StockLog::find()->where([
             'order_id'          => $orderPayment['order_id'],
@@ -148,6 +150,8 @@ class StockInController extends BaseController
             $paymentGoods = PaymentGoods::findAll(['id' => $ids]);
             $orderPaymentId = $paymentGoods[0]->order_payment_id;
             $orderPayment = OrderPayment::findOne($orderPaymentId);
+            $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
+            $orderPayment->save();
             foreach ($paymentGoods as $key => $paymentGood) {
                 $stockLog = StockLog::find()->where([
                     'order_id' => $orderPayment['order_id'],

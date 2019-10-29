@@ -66,6 +66,9 @@ class StockOutController extends BaseController
         $agreementGoods = AgreementGoods::findOne($params['id']);
 
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
+        $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
+        $orderAgreement->save();
+
         $order_id = $orderAgreement->order_id;
 
         //采购
@@ -149,6 +152,8 @@ class StockOutController extends BaseController
         $agreementGoods = AgreementGoods::findAll(['id' => $params['ids']]);
 
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
+        $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
+        $orderAgreement->save();
         $order_id = $orderAgreement->order_id;
 
         foreach ($agreementGoods as $agreementGood) {
