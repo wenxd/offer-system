@@ -106,7 +106,7 @@ class Supplier extends ActiveRecord
             'updated_at'           => '更新时间',
             'created_at'           => '创建时间',
             'full_name'            => '供应商全称',
-            'admin_id'             => '询价员',
+            'admin_id'             => '申请人',
         ];
     }
 
