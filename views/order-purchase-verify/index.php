@@ -15,11 +15,6 @@ use app\models\OrderPayment;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
 $userId   = Yii::$app->user->identity->id;
 
 $this->title = '采购审核列表';
@@ -50,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;
@@ -70,10 +65,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
-                    $html = Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-info btn-xs btn-flat',
-                    ]);
+                    $html = '';
+                    if (!in_array($userId, $adminIds)) {
+                        $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-info btn-xs btn-flat',
+                        ]);
+                    }
                     if (in_array($userId, $adminIds)) {
                         if ($model->purchase_status == 1 && !$model->is_agreement) {
                             $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
