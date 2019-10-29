@@ -78,7 +78,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     <td>
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
@@ -100,8 +99,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td>
                         <select class="form-control" name="is_stock">
                             <option value=""></option>
-                            <option value="0" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
+                            <option value="0" <?=isset($_GET['is_stock']) ? ($_GET['is_stock'] === "$value->id" ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_stock']) ? ($_GET['is_stock'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
                     <td></td>
@@ -275,6 +274,9 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 switch ($(e).attr('name')) {
                     case 'supplier_id':
                         parameter += '&supplier_id=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_stock':
+                        parameter += '&is_stock=' + $(e).find("option:selected").val();
                         break;
                     default:
                         break;

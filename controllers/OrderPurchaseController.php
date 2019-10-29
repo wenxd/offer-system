@@ -227,11 +227,14 @@ class OrderPurchaseController extends BaseController
             ->leftJoin('goods g', 'pg.goods_id=g.id')
             ->leftJoin('inquiry i', 'pg.relevance_id=i.id')
             ->where(['pg.order_purchase_id' => $id]);
+        if (isset($request['original_company']) && $request['original_company']) {
+            $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
         if (isset($request['supplier_id']) && $request['supplier_id']) {
             $purchaseQuery->andWhere(['i.supplier_id' => $request['supplier_id']]);
         }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        if (isset($request['is_stock']) && $request['is_stock'] !== '') {
+            $purchaseQuery->andWhere(['pg.is_stock' => $request['is_stock']]);
         }
         $purchaseGoods         = $purchaseQuery->orderBy('serial')->all();
 
