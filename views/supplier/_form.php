@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use yii\helpers\Url;
 use app\models\{Supplier, AuthAssignment};
 
