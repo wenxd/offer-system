@@ -49,7 +49,7 @@ class OrderPurchaseSearch extends OrderPurchase
         $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         if (in_array($userId, $adminIds)) {
-            $query = static::find()->where(['is_purchase' => static::IS_PURCHASE_NO]);
+            $query = static::find()->where(['is_purchase' => static::IS_PURCHASE_NO, 'admin_id' => $userId]);
         } else {
             $query = static::find();
         }
