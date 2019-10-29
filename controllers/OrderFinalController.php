@@ -345,19 +345,18 @@ class OrderFinalController extends BaseController
                     $purchaseGoods->type                = $finalGoods->type;
                     $purchaseGoods->relevance_id        = $finalGoods->relevance_id;
                     $purchaseGoods->number              = $finalGoods->number;
-                    $purchaseGoods->tax_rate            = $finalGoods->inquiry->tax_rate;
-                    $purchaseGoods->price               = $finalGoods->inquiry->price;
-                    $purchaseGoods->tax_price           = $finalGoods->inquiry->tax_price;
-                    $purchaseGoods->all_price           = $finalGoods->number * $finalGoods->inquiry->price;
-                    $purchaseGoods->all_tax_price       = $finalGoods->number * $finalGoods->inquiry->tax_price;
-                    $purchaseGoods->fixed_price         = $finalGoods->inquiry->price;
-                    $purchaseGoods->fixed_tax_price     = $finalGoods->inquiry->tax_price;
+                    $purchaseGoods->tax_rate            = $finalGoods->tax;
+                    $purchaseGoods->price               = $finalGoods->price;
+                    $purchaseGoods->tax_price           = $finalGoods->tax_price;
+                    $purchaseGoods->all_price           = $item['number'] * $finalGoods->price;
+                    $purchaseGoods->all_tax_price       = $item['number'] * $finalGoods->tax_price;
+                    $purchaseGoods->fixed_price         = $item['number'] * $finalGoods->price;
+                    $purchaseGoods->fixed_tax_price     = $item['number'] * $finalGoods->tax_price;
                     $purchaseGoods->fixed_number        = $item['number'];
-                    $purchaseGoods->inquiry_admin_id    = $finalGoods->inquiry->admin_id;
+                    $purchaseGoods->inquiry_admin_id    = $params['admin_id'];
                     $purchaseGoods->delivery_time       = $item['delivery_time'];
 
                     //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
-                    $purchaseGoods->purchase_date       = $params['end_date'];
                     $purchaseGoods->save();
                 }
             }
