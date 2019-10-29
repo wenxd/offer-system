@@ -1,13 +1,17 @@
 <?php
 
-use app\models\SystemConfig;
-use yii\helpers\Html;
+use app\models\AuthAssignment;use app\models\SystemConfig;
+use yii\helpers\ArrayHelper;use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <style>
     /*零件号*/
@@ -36,18 +40,18 @@ use yii\widgets\ActiveForm;
 <div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <div class="box-header">
-        <?= Html::a('下载模板', Url::to(['download']), [
-            'data-pjax' => '0',
-            'class'     => 'btn btn-primary btn-flat',
-        ])?>
-        <?= Html::button('批量入库', [
-            'class' => 'btn btn-success upload',
-            'name'  => 'submit-button',
-        ])?>
-    </div>
-
+    <?php if (!in_array($userId, $adminIds)):?>
+        <div class="box-header">
+            <?= Html::a('下载模板', Url::to(['download']), [
+                'data-pjax' => '0',
+                'class'     => 'btn btn-primary btn-flat',
+            ])?>
+            <?= Html::button('批量入库', [
+                'class' => 'btn btn-success upload',
+                'name'  => 'submit-button',
+            ])?>
+        </div>
+    <?php endif;?>
     <div class="box-body">
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>

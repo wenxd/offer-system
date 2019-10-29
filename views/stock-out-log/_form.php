@@ -1,5 +1,7 @@
 <?php
 
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -9,7 +11,9 @@ use app\models\Customer;
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
-
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <style>
     /*零件号*/
@@ -37,7 +41,7 @@ use app\models\Customer;
 <div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
-
+    <?php if (!in_array($userId, $adminIds)):?>
     <div class="box-header">
         <?= Html::a('下载模板', Url::to(['download-excel']), [
             'data-pjax' => '0',
@@ -48,7 +52,7 @@ use app\models\Customer;
             'name'  => 'submit-button',
         ])?>
     </div>
-
+    <?php endif;?>
     <div class="box-body">
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
