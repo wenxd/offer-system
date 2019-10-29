@@ -393,7 +393,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 layer.msg('使用库存数不能大于库存数', {time:2000});
                 return false;
             }
-return ;
+
             var order_purchase_id = $('.data').data('order_purchase_id');
             var admin_id          = $('#orderpurchase-admin_id').val();
             var end_date          = $('#orderpurchase-end_date').val();

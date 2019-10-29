@@ -81,6 +81,7 @@ class StockInController extends BaseController
         $stockLog->type              = StockLog::TYPE_IN;
         $stockLog->operate_time      = date('Y-m-d H:i:s');
         $stockLog->admin_id          = Yii::$app->user->identity->id;
+        $stockLog->position          = $params['position'];
         if ($stockLog->save()) {
             $stock = Stock::findOne(['good_id' => $params['goods_id']]);
             $paymentGoods = PaymentGoods::findOne([
