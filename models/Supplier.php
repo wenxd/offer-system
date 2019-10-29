@@ -99,7 +99,7 @@ class Supplier extends ActiveRecord
             'email'                => '供应商邮箱',
             'sort'                 => '排序',
             'grade'                => '评级',
-            'grade_reason'         => '评级理由',
+            'grade_reason'         => '入库原因',
             'advantage_product'    => '优势产品',
             'is_confirm'           => '确认',
             'is_deleted'           => '是否删除：0未删除 1已删除',
