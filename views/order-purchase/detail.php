@@ -148,7 +148,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="agreement_number"><?=$item->number?></td>
                     <td class="use_number"><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
-                    <td><?=$item->stock ? $item->stock->number : 0?></td>
+                    <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
                                 $status = '无';
@@ -350,9 +350,10 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 return false;
             }
             var goods_info          = [];
-            var supplier_flag       = false;
             var supplier_name       = '';
             var long_delivery_time  = 0;
+            var supplier_flag       = false;
+            var stock_flag          = false;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var s_name = $(element).parent().parent().find('.supplier_name').text();
@@ -374,6 +375,12 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     }
                     item.delivery_time     = delivery_time;
                     goods_info.push(item);
+
+                    var use_num = parseFloat($(element).parent().parent().find('.use_number').text());
+                    var stock_num = parseFloat($(element).parent().parent().find('.stock_number').text());
+                    if (use_num > stock_num) {
+                        stock_flag = true;
+                    }
                 }
             });
 
@@ -382,6 +389,11 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             //     return false;
             // }
 
+            if (stock_flag) {
+                layer.msg('使用库存数不能大于库存数', {time:2000});
+                return false;
+            }
+return ;
             var order_purchase_id = $('.data').data('order_purchase_id');
             var admin_id          = $('#orderpurchase-admin_id').val();
             var end_date          = $('#orderpurchase-end_date').val();
