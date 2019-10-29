@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
                     <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
                     <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
-                    <td><?=$inquiryBetter ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
+                    <td><?=$inquiryBetter ? ($inquiryBetter->number * $inquiryBetter->tax_price) : 0 ?></td>
                     <td>
                         <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/create&goods_id=<?=$goods ? $goods->id : ''?>" target="_blank"><i class="fa fa-plus"></i>添加记录</a>
                     </td>
@@ -141,7 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </td>
                 </tr>
                 <tr class="inquiry_list">
-                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryBetter ? $inquiryBetter->id : ''?>"></td>
+                    <td><input type="radio" name="relevance" class="relevance" data-type="0" data-select_id="<?=$inquiryNew ? $inquiryNew->id : ''?>"></td>
                     <td>最新</td>
                     <td class="stressColor"><?= $inquiryNew ? $inquiryNew->supplier->name : '' ?></td>
                     <td class="number"><?=$inquiryNew ? $inquiryNew->number : 0?></td>
