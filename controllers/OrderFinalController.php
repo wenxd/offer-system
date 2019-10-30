@@ -350,8 +350,8 @@ class OrderFinalController extends BaseController
                     $purchaseGoods->tax_price           = $finalGoods->tax_price;
                     $purchaseGoods->all_price           = $item['number'] * $finalGoods->price;
                     $purchaseGoods->all_tax_price       = $item['number'] * $finalGoods->tax_price;
-                    $purchaseGoods->fixed_price         = $item['number'] * $finalGoods->price;
-                    $purchaseGoods->fixed_tax_price     = $item['number'] * $finalGoods->tax_price;
+                    $purchaseGoods->fixed_price         = $finalGoods->price;
+                    $purchaseGoods->fixed_tax_price     = $finalGoods->tax_price;
                     $purchaseGoods->fixed_number        = $item['number'];
                     $purchaseGoods->inquiry_admin_id    = $params['admin_id'];
                     $purchaseGoods->delivery_time       = $item['delivery_time'];
