@@ -272,7 +272,7 @@ class OrderPurchaseVerifyController extends BaseController
                     $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_REJECT;
                     $purchaseGoods->fixed_price = $purchaseGoods->price;
                     $purchaseGoods->fixed_tax_price = $purchaseGoods->tax_price;
-                    $purchaseGoods->fixed_number = $purchaseGoods->number;
+                    $purchaseGoods->fixed_number = $paymentGoods->number;
                     $purchaseGoods->save();
                 }
                 $paymentGoods->delete();
