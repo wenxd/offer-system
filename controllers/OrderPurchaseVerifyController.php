@@ -90,6 +90,8 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->purchase_goods_id    = $value['purchase_goods_id'];
 
                 $purchaseGoods = PurchaseGoods::findOne($value['purchase_goods_id']);
+                //先把采购零件的数量保存到支出合同的零件数量
+                $paymentGoods->number               = $purchaseGoods->fixed_number;
                 $before_delivery_time = $purchaseGoods->delivery_time;
                 $purchaseGoods->fixed_price      = $value['fix_price'];
                 $purchaseGoods->fixed_tax_price  = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
@@ -102,7 +104,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->serial               = $purchaseGoods->serial;
                 $paymentGoods->goods_id             = $purchaseGoods->goods_id;;
                 $paymentGoods->relevance_id         = $purchaseGoods->relevance_id;
-                $paymentGoods->number               = $purchaseGoods->number;
+
                 $paymentGoods->tax_rate             = $purchaseGoods->tax_rate;
                 $paymentGoods->price                = $purchaseGoods->price;
                 $paymentGoods->tax_price            = $purchaseGoods->tax_price;
