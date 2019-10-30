@@ -158,13 +158,22 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>订单号</th>
                 <th>收入合同单号</th>
+                <th>收入合同金额</th>
             </tr>
+            <?php $orderAgreementPrice = 0;?>
             <?php foreach ($orderAgreement as $agreement):?>
                 <tr>
                     <td><?=$agreement->order_id?></td>
                     <td><?=Html::a($agreement->agreement_sn, Url::to(['order-agreement/view', 'id' => $agreement->id]))?></td>
+                    <td><?=$agreement->payment_price?></td>
                 </tr>
+                <?php $orderAgreementPrice += $agreement->payment_price?>
             <?php endforeach;?>
+            <tr>
+                <td></td>
+                <td>汇总</td>
+                <td><?=$orderAgreementPrice?></td>
+            </tr>
             </thead>
 
             <thead>
@@ -173,22 +182,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>支出合同单号</th>
                 <th>支出合同金额</th>
             </tr>
-            <?php $order_price = 0;?>
+            <?php $orderPaymentPrice = 0;?>
             <?php foreach ($orderPayment as $payment):?>
                 <tr>
                     <td><?=$payment->order_id?></td>
                     <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
                     <td><?=$payment->payment_price?></td>
                 </tr>
-                <?php $order_price += $payment->payment_price?>
+                <?php $orderPaymentPrice += $payment->payment_price?>
             <?php endforeach;?>
                 <tr>
                     <td></td>
                     <td>汇总</td>
-                    <td><?=$order_price?></td>
+                    <td><?=$orderPaymentPrice?></td>
                 </tr>
             </thead>
 
+            <thead>
+            <tr>
+                <th></th>
+                <th>利润率公式</th>
+                <th>结果</th>
+            </tr>
+            <tr>
+                <th></th>
+                <td>（收入-支出）/ 收入</td>
+                <td><?=number_format((($orderAgreementPrice - $orderPaymentPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' ?></td>
+            </tr>
+            </thead>
         </table>
     </div>
 </div>
