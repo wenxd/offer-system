@@ -207,7 +207,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th></th>
                 <td>（收入-支出）/ 收入</td>
-                <td><?=number_format((($orderAgreementPrice - $orderPaymentPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' ?></td>
+                <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
             </tr>
             </thead>
         </table>
