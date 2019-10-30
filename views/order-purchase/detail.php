@@ -33,7 +33,7 @@ $i = 0;
 $model->delivery_date = date('Y-m-d');
 
 //收入合同交货日期
-$model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->orderAgreement->agreement_date, 0, 10) : '2999-01-01';
+$model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->orderAgreement->agreement_date, 0, 10) : $orderPurchase->end_date;
 
 ?>
 
