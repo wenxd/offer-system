@@ -171,13 +171,22 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>订单号</th>
                 <th>支出合同单号</th>
+                <th>支出合同金额</th>
             </tr>
+            <?php $order_price = 0;?>
             <?php foreach ($orderPayment as $payment):?>
                 <tr>
                     <td><?=$payment->order_id?></td>
                     <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
+                    <td><?=$payment->payment_price?></td>
                 </tr>
+                <?php $order_price += $payment->payment_price?>
             <?php endforeach;?>
+                <tr>
+                    <td></td>
+                    <td>汇总</td>
+                    <td><?=$order_price?></td>
+                </tr>
             </thead>
 
         </table>
