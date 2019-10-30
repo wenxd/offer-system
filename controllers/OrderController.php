@@ -555,8 +555,9 @@ class OrderController extends BaseController
             ])->one();
             if (!$isHaveFinalGoods) {
                 $inquiry = Inquiry::find()->where([
-                    'good_id'   => $value->goods_id,
-                    'is_better' => Inquiry::IS_BETTER_YES
+                    'good_id'           => $value->goods_id,
+                    'is_better'         => Inquiry::IS_BETTER_YES,
+                    'is_confirm_better' => 1
                 ])->one();
                 if (!$inquiry) {
                     continue;
