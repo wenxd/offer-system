@@ -45,7 +45,14 @@ class OrderFinancialCollectSearch extends OrderAgreement
      */
     public function search($params)
     {
-        $query = static::find();
+        $action = Yii::$app->request->getQueryParam('r');
+        list($controller, $function) = explode('/', $action);
+        if ($function == 'list') {
+            $query = static::find()->where(['is_payment' => self::IS_PAYMENT_NO]);
+        } else {
+            $query = static::find();
+        }
+
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

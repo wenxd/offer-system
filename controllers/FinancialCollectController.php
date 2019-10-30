@@ -101,6 +101,9 @@ class FinancialCollectController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['id']);
         $orderAgreement->is_payment = OrderPayment::IS_PAYMENT_YES;
         $orderAgreement->payment_at = date('Y-m-d H:i:s');
+        $orderAgreement->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
+        $orderAgreement->remain_price     = 0;
+        $orderAgreement->payment_ratio    = 100;
         if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
@@ -140,7 +143,7 @@ class FinancialCollectController extends BaseController
      */
     public function actionList()
     {
-        $searchModel = new OrderAgreementSearch();
+        $searchModel = new OrderFinancialCollectSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('agreement-list', [
