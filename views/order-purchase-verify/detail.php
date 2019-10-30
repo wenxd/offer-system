@@ -8,13 +8,13 @@ use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
 use app\models\Helper;
+use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
 $this->title = '支出合同审核';
 $this->params['breadcrumbs'][] = $this->title;
 
-
-
+$tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
@@ -63,9 +63,9 @@ $userId = Yii::$app->user->identity->id;
                     <td><?=$item->goods->original_company?></td>
                     <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
                     <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
-                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td class="tax"><?=$tax?></td>
                     <?php
-                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->estimate_publish_price;
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '');
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
