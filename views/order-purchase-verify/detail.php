@@ -14,7 +14,10 @@ use app\models\AuthAssignment;
 $this->title = '支出合同审核';
 $this->params['breadcrumbs'][] = $this->title;
 
-$tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
+$tax = SystemConfig::find()->select('value')->where([
+        'title'      => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO
+])->scalar();
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 

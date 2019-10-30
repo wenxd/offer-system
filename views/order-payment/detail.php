@@ -66,7 +66,7 @@ $userId = Yii::$app->user->identity->id;
                     <td class="tax"><?=$tax_rate?></td>
                     <?php if (!in_array($userId, $adminIds)):?>
                     <?php
-                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->estimate_publish_price;
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax_rate/100), 2, '.', '');
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
