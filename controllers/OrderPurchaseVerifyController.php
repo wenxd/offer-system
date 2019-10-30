@@ -322,6 +322,7 @@ class OrderPurchaseVerifyController extends BaseController
         Inquiry::updateAll(['is_newest' => 0], ['good_id' => $goods_ids]);
         foreach ($paymentGoodsList as $key => $paymentGoods) {
             $item = [];
+
             $item[] = $paymentGoods['goods_id'];
             $item[] = $paymentGoods['supplier_id'];
             $item[] = $paymentGoods['fixed_price'];
@@ -337,6 +338,8 @@ class OrderPurchaseVerifyController extends BaseController
             $item[] = 1;
             $item[] = date('Y-m-d H:i:s');
             $item[] = date('Y-m-d H:i:s');
+            $item[] = Inquiry::IS_PURCHASE_YES;
+
             $data[] = $item;
         }
 
@@ -356,6 +359,7 @@ class OrderPurchaseVerifyController extends BaseController
             'is_newest',
             'created_at',
             'updated_at',
+            'is_purchase',
         ];
 
         $res = Yii::$app->db->createCommand()->batchInsert(Inquiry::tableName(), $keys, $data)->execute();

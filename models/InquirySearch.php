@@ -29,7 +29,7 @@ class InquirySearch extends Inquiry
     {
         return [
             [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number',
-                'admin_id', 'is_upload', 'is_confirm_better'], 'integer'],
+                'admin_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'is_process', 'goods_number_b'], 'safe'],
@@ -107,6 +107,7 @@ class InquirySearch extends Inquiry
             'inquiry.admin_id'          => $this->admin_id,
             'inquiry.is_upload'         => $this->is_upload,
             'inquiry.is_confirm_better' => $this->is_confirm_better,
+            'inquiry.is_purchase'       => $this->is_purchase,
         ]);
 
         $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);

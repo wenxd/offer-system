@@ -109,6 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <th>税率</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
+                <th>是否采购记录</th>
                 <th>货期</th>
                 <th>询价员</th>
                 <th>询价时间</th>
@@ -123,6 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryBetter ? $inquiryBetter->tax_rate : 0 ?></td>
                 <td><b class="color"><?= $inquiryBetter ? $inquiryBetter->price : 0 ?></b></td>
                 <td class="tax_price"><?= $inquiryBetter ? $inquiryBetter->tax_price : 0 ?></td>
+                <td><?= $inquiryBetter ? Inquiry::$purchase[$inquiryBetter->is_purchase] : '否' ?></td>
                 <td class="stressColor"><b class="color"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></b></td>
                 <td><?=$inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
                 <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
@@ -137,6 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryPrice ? $inquiryPrice->tax_rate : 0 ?></td>
                 <td><b class="color"><?= $inquiryPrice ? $inquiryPrice->price : 0 ?></b></td>
                 <td class="tax_price"><?= $inquiryPrice ? $inquiryPrice->tax_price : 0 ?></td>
+                <td><?= $inquiryPrice ? Inquiry::$purchase[$inquiryPrice->is_purchase] : '否' ?></td>
                 <td class="stressColor"><b class="color"><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
                 <td><?= $inquiryPrice ? substr($inquiryPrice->inquiry_datetime, 0, 10) : '' ?></td>
@@ -151,6 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryTime ? $inquiryTime->tax_rate : 0 ?></td>
                 <td><b class="color"><?= $inquiryTime ? $inquiryTime->price : 0 ?></b></td>
                 <td class="tax_price"><?= $inquiryTime ? $inquiryTime->tax_price : 0 ?></td>
+                <td><?= $inquiryTime ? Inquiry::$purchase[$inquiryTime->is_purchase] : '否' ?></td>
                 <td class="stressColor"><b class="color"><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></b></td>
                 <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
                 <td><?= $inquiryTime ? substr($inquiryTime->inquiry_datetime, 0, 10) : '' ?></td>
@@ -165,6 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $inquiryNew ? $inquiryNew->tax_rate : 0 ?></td>
                 <td><b class="color"><?= $inquiryNew ? $inquiryNew->price : 0 ?></b></td>
                 <td class="tax_price"><?= $inquiryNew ? $inquiryNew->tax_price : 0 ?></td>
+                <td><?= $inquiryNew ? Inquiry::$purchase[$inquiryNew->is_purchase] : '否' ?></td>
                 <td class="stressColor"><b class="color"><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></b></td>
                 <td><?=$inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
                 <td><?=$inquiryNew ? substr($inquiryNew->inquiry_datetime, 0, 10) : '' ?></td>
