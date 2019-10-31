@@ -34,6 +34,7 @@ use Yii;
  * @property string $purchase_date
  * @property string $is_stock
  * @property string $delivery_time
+ * @property string $fixed_delivery_time
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
@@ -78,7 +79,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
             , 'order_purchase_id', 'is_stock'], 'integer'],
-            [['updated_at', 'created_at', 'fixed_number', 'delivery_time'], 'safe'],
+            [['updated_at', 'created_at', 'fixed_number', 'delivery_time', 'fixed_delivery_time'], 'safe'],
             [['order_purchase_sn', 'goods_number', 'order_sn', 'serial'], 'string', 'max' => 255],
         ];
     }
@@ -89,22 +90,23 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                => 'ID',
-            'order_id'          => '订单ID',
-            'order_sn'          => '订单号',
-            'order_final_id'    => '最终订单ID',
-            'order_purchase_id' => '采购订单ID',
-            'order_purchase_sn' => '采购订单号',
-            'goods_id'          => '零件ID',
-            'goods_number'      => '厂家号',
-            'type'              => '关联类型  0询价  1库存',
-            'number'            => '采购数量',
-            'relevance_id'      => '关联ID（询价或库存）',
-            'is_purchase'       => '采购',
-            'is_deleted'        => '是否删除：0未删除 1已删除',
-            'updated_at'        => '更新时间',
-            'created_at'        => '创建时间',
-            'delivery_time'     => '货期',
+            'id'                    => 'ID',
+            'order_id'              => '订单ID',
+            'order_sn'              => '订单号',
+            'order_final_id'        => '最终订单ID',
+            'order_purchase_id'     => '采购订单ID',
+            'order_purchase_sn'     => '采购订单号',
+            'goods_id'              => '零件ID',
+            'goods_number'          => '厂家号',
+            'type'                  => '关联类型  0询价  1库存',
+            'number'                => '采购数量',
+            'relevance_id'          => '关联ID（询价或库存）',
+            'is_purchase'           => '采购',
+            'is_deleted'            => '是否删除：0未删除 1已删除',
+            'updated_at'            => '更新时间',
+            'created_at'            => '创建时间',
+            'delivery_time'         => '货期',
+            'fixed_delivery_time'   => '修改后货期',
         ];
     }
 

@@ -94,13 +94,14 @@ class OrderPurchaseVerifyController extends BaseController
                 $purchaseGoods = PurchaseGoods::findOne($value['purchase_goods_id']);
                 //先把采购零件的数量保存到支出合同的零件数量
                 $paymentGoods->number               = $purchaseGoods->fixed_number;
-                $before_delivery_time = $purchaseGoods->delivery_time;
-                $purchaseGoods->fixed_price      = $value['fix_price'];
-                $purchaseGoods->fixed_tax_price  = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
-                $purchaseGoods->fixed_number     = $value['fix_number'];
-                $purchaseGoods->reason           = '';
-                $purchaseGoods->apply_status     = PurchaseGoods::APPLY_STATUS_CREATE;
-                $purchaseGoods->delivery_time    = $value['delivery_time'];
+                $paymentGoods->before_delivery_time = $purchaseGoods->delivery_time;
+
+                $purchaseGoods->fixed_price         = $value['fix_price'];
+                $purchaseGoods->fixed_tax_price     = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
+                $purchaseGoods->fixed_number        = $value['fix_number'];
+                $purchaseGoods->reason              = '';
+                $purchaseGoods->apply_status        = PurchaseGoods::APPLY_STATUS_CREATE;
+                $purchaseGoods->fixed_delivery_time = $value['delivery_time'];
                 $purchaseGoods->save();
 
                 $paymentGoods->serial               = $purchaseGoods->serial;
@@ -121,7 +122,6 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->supplier_id          = $params['supplier_id'];
                 $paymentGoods->before_supplier_id   = $purchaseGoods->inquiry->supplier_id;
                 $paymentGoods->delivery_time        = $value['delivery_time'];
-                $paymentGoods->before_delivery_time = $before_delivery_time;
                 $paymentGoods->save();
 
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
@@ -272,11 +272,12 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
                 if ($paymentGoods) {
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
-                    $purchaseGoods->reason          = $params['reason'];
-                    $purchaseGoods->apply_status    = PurchaseGoods::APPLY_STATUS_REJECT;
-                    $purchaseGoods->fixed_price     = $purchaseGoods->price;
-                    $purchaseGoods->fixed_tax_price = $purchaseGoods->tax_price;
-                    $purchaseGoods->fixed_number    = $paymentGoods->number;
+                    $purchaseGoods->reason              = $params['reason'];
+                    $purchaseGoods->apply_status        = PurchaseGoods::APPLY_STATUS_REJECT;
+                    $purchaseGoods->fixed_price         = $purchaseGoods->price;
+                    $purchaseGoods->fixed_tax_price     = $purchaseGoods->tax_price;
+                    $purchaseGoods->fixed_number        = $paymentGoods->number;
+                    $purchaseGoods->fixed_delivery_time = 0;
 
                     $purchaseGoods->save();
                 }

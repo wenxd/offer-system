@@ -670,6 +670,7 @@ ALTER TABLE `purchase_goods` ADD COLUMN `reason` varchar(255) NOT NULL DEFAULT '
 ALTER TABLE `purchase_goods` ADD COLUMN `apply_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '审核状态 0无 1审核中 2审核通过 3被驳回';
 ALTER TABLE `purchase_goods` ADD COLUMN `delivery_time`decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '修改后采购货期（周）';
 
 
 ALTER TABLE `order_purchase` ADD COLUMN `payment_sn`   varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
