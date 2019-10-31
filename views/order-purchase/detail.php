@@ -78,6 +78,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td>
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>

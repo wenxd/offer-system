@@ -70,7 +70,7 @@ $is_show = in_array($userId, $adminIds);
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_final_list">
                     <td class="serial"><?=$item->serial?></td>
-                    <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <td><?=$is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <?php if (!$is_show) :?>
                     <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <?php endif;?>
