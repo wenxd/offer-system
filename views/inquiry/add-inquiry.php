@@ -6,7 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Supplier;
-use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGoods};
+use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGoods, Helper};
 /* @var $this yii\web\View */
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
@@ -50,14 +50,14 @@ if (in_array(Yii::$app->user->identity->id, $superAdminIds)) {
     $is_super = true;
 }
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
-$admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
+if ($is_super) {
+    $admins = Helper::getAdminList(['系统管理员', '询价员']);
+    unset($admins['']);
+} else {
+    $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 }
+
 //通过inquiry_goods_id查询数量
 $model->number           = $inquiryGoods->number;
 $model->order_id         = $inquiryGoods->order_id;
