@@ -74,8 +74,10 @@ $tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TI
                 <th>低储</th>
             </tr>
             <tr id="w3-filters" class="filters">
-                <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
-                <td></td>
+                <td><button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button></td>
+                <td>
+                    <?=Html::a('复位', '?r=order-final/create-purchase&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>

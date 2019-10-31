@@ -56,7 +56,9 @@ if ($model->isNewRecord) {
         <table id="example2" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <th>
+                        <input type="checkbox" name="select_all" class="select_all">
+                    </th>
                     <th>序号</th>
                     <th>零件号</th>
                     <th>厂家号</th>
@@ -78,8 +80,12 @@ if ($model->isNewRecord) {
                     <th>询价单号</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
-                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
-                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button>
+                    </td>
+                    <td>
+                        <?=Html::a('复位', '?r=order/create-inquiry&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                    </td>
                     <td>
                         <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
                     </td>

@@ -246,7 +246,7 @@ class Goods extends ActiveRecord
                 $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
             }
         }
-        
+
         $this->description_en = strtoupper($this->description_en);
 
         $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();

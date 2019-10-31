@@ -71,8 +71,10 @@ $model->agreement_date = substr($orderAgreement->agreement_date, 0, 10);
                     <th>低储</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
-                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
-                    <td></td>
+                    <td><button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button></td>
+                    <td>
+                        <?=Html::a('复位', '?r=order-agreement/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
