@@ -166,7 +166,7 @@ class Goods extends ActiveRecord
                 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
-                'import_mark'], 'string', 'max' => 255],
+                'import_mark'], 'safe'],
             [
                 ['goods_number'],
                 'required',
