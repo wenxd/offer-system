@@ -76,10 +76,11 @@ class FinancialCollectController extends BaseController
         $payment_ratio_price = $params['price'] * 100;
 
         $orderAgreement = OrderAgreement::findOne($params['id']);
-        $orderAgreement->payment_ratio    = number_format($payment_ratio_price / $orderAgreement->payment_price, 2, '.', '');
-        $orderAgreement->remain_price     = $orderAgreement->payment_price - $params['price'];
-        $orderAgreement->is_advancecharge = $orderAgreement::IS_ADVANCECHARGE_YES;
-        $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
+        $orderAgreement->payment_ratio      = number_format($payment_ratio_price / $orderAgreement->payment_price, 2, '.', '');
+        $orderAgreement->remain_price       = $orderAgreement->payment_price - $params['price'];
+        $orderAgreement->is_advancecharge   = $orderAgreement::IS_ADVANCECHARGE_YES;
+        $orderAgreement->advancecharge_at   = date('Y-m-d H:i:s');
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
@@ -104,9 +105,10 @@ class FinancialCollectController extends BaseController
         if (!$orderAgreement->is_advancecharge) {
             $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
         }
-        $orderAgreement->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
-        $orderAgreement->remain_price     = 0;
-        $orderAgreement->payment_ratio    = 100;
+        $orderAgreement->is_advancecharge   = OrderPayment::IS_ADVANCECHARGE_YES;
+        $orderAgreement->remain_price       = 0;
+        $orderAgreement->payment_ratio      = 100;
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
@@ -127,8 +129,9 @@ class FinancialCollectController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderAgreement = OrderAgreement::findOne($params['id']);
-        $orderAgreement->is_bill = OrderPayment::IS_BILL_YES;
-        $orderAgreement->bill_at = date('Y-m-d H:i:s');
+        $orderAgreement->is_bill            = OrderPayment::IS_BILL_YES;
+        $orderAgreement->bill_at            = date('Y-m-d H:i:s');
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
             $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
