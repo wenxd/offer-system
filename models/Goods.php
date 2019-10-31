@@ -240,12 +240,14 @@ class Goods extends ActiveRecord
             if (isset($this->device_info['name'])) {
                 foreach ($this->device_info['name'] as $key => $item) {
                     if ($item) {
-                        $arr[$item] = $this->device_info['number'][$key];
+                        $arr[strtoupper($item)] = $this->device_info['number'][$key];
                     }
                 }
                 $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
             }
         }
+        
+        $this->description_en = strtoupper($this->description_en);
 
         $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();
         if ($insert && $is_goods_number) {

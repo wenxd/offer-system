@@ -390,7 +390,7 @@ class GoodsController extends BaseController
                                 $goods->remark = (string)trim($value['W']);
                             }
                             if ($value['P'] && $value['S']) {
-                                $deviceName   = trim($value['P']);
+                                $deviceName   = strtoupper(trim($value['P']));
                                 $deviceNumber = trim($value['S']);
                                 $device = [];
                                 $device[$deviceName] = $deviceNumber;
