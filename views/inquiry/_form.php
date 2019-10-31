@@ -11,14 +11,14 @@ use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGood
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
 //获取税率
-$model->tax_rate = SystemConfig::find()->select('value')->where([
-        'title'  => SystemConfig::TITLE_TAX,
-    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 if ($model->isNewRecord) {
+    $model->tax_rate = SystemConfig::find()->select('value')->where([
+        'title'  => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
         $goods = Goods::findOne($_GET['goods_id']);
-        $model->goods_number = $goods->goods_number;
+        $model->goods_number   = $goods->goods_number;
         $model->goods_number_b = $goods->goods_number_b;
     }
     $model->inquiry_datetime = date('Y-m-d');
