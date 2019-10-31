@@ -203,8 +203,8 @@ class Inquiry extends ActiveRecord
             }
         }
 
-        if ($this->is_better) {
-            self::updateAll(['is_better' => self::IS_BETTER_NO, 'is_confirm_better' => 1], ['good_id' => $this->good_id]);
+        if ($insert && $this->is_better) {
+            self::updateAll(['is_better' => self::IS_BETTER_NO, 'is_confirm_better' => 0], ['good_id' => $this->good_id]);
         }
 
         if ($function == 'add') {
