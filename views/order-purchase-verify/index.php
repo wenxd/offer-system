@@ -31,15 +31,23 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                    if (in_array($userId, $adminIds)) {
+                        return $model->payment_sn;
+                    } else {
+                        return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                    }
                 }
             ],
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                    if (in_array($userId, $adminIds)) {
+                        return $model->order_purchase_sn;
+                    } else {
+                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                    }
                 }
             ],
             [
