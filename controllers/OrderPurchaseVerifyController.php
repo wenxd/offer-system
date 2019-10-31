@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Admin;
+use app\models\AuthAssignment;
 use app\models\Inquiry;
 use app\models\InquiryGoods;
 use app\models\Order;
@@ -184,18 +186,20 @@ class OrderPurchaseVerifyController extends BaseController
 //                $systemNotice->notice_at = date('Y-m-d H:i:s');
 //                $systemNotice->save();
 //            }
+            $superAdmin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+            $admin   = Admin::findOne($params['admin_id']);
             if ($noticeOpen || $noticeDeliveryOpen || $noticeSupplierOpen || $noticeNumberOpen) {
                 $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '采购生成支出合同有修改,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->admin_id  = $superAdmin->user_id;
+                $systemNotice->content   = $admin->username . '生成支出合同有修改,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
 
             if (strtotime($params['delivery_date']) > strtotime($params['order_agreement_date'])) {
                 $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $params['admin_id'];
-                $systemNotice->content   = '支出合同交货时间比收入合同交货时间晚,支出合同号为' . $orderPayment->payment_sn;
+                $systemNotice->admin_id  = $superAdmin->user_id;
+                $systemNotice->content   = $admin->username . '支出合同交货时间比收入合同交货时间晚,支出合同号为' . $orderPayment->payment_sn;
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }

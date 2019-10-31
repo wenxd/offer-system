@@ -61,7 +61,8 @@ class SystemNoticeController extends BaseController
     public function actionReadAll()
     {
         $ids = Yii::$app->request->post('ids');
-        $num = SystemNotice::updateAll(['is_read' => SystemNotice::IS_READ_YES], ['id' => $ids]);
+        $admin_id = Yii::$app->user->identity->id;
+        $num = SystemNotice::updateAll(['is_read' => SystemNotice::IS_READ_YES], ['id' => $ids, 'admin_id' => $admin_id]);
         if ($num) {
             return json_encode(['code' => 200, 'msg' => '全部已读']);
         }

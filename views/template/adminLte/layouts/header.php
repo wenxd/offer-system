@@ -8,6 +8,7 @@ $identity = Yii::$app->user->getIdentity();
 $notice_number = SystemNotice::find()->where([
         'is_deleted' => SystemNotice::IS_DELETED_NO,
         'is_read'    => SystemNotice::IS_READ_NO,
+        'admin_id'   => Yii::$app->user->identity->id,
 ])->count();
 
 ?>
