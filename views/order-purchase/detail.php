@@ -144,7 +144,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
-                    <td class="delivery_time"><input type="text" value="<?=$item->fixed_delivery_time ? $item->fixed_delivery_time : $item->delivery_time?>" style="width: 100px;"></td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
                     <td class="agreement_number"><?=$item->number?></td>

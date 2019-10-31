@@ -60,9 +60,9 @@ class OrderPurchaseVerifyController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderPurchase = OrderPurchase::findOne($params['order_purchase_id']);
-        $orderPurchase->supplier_id  = $params['supplier_id'];
-        $orderPurchase->apply_reason = trim($params['apply_reason']);
-        $orderPurchase->save();
+//        $orderPurchase->supplier_id  = $params['supplier_id'];
+//        $orderPurchase->apply_reason = trim($params['apply_reason']);
+//        $orderPurchase->save();
         //保存支出单
         $orderPayment = new OrderPayment();
         $orderPayment->payment_sn           = $params['payment_sn'];
@@ -96,13 +96,13 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->number               = $purchaseGoods->fixed_number;
                 $paymentGoods->before_delivery_time = $purchaseGoods->delivery_time;
 
-                $purchaseGoods->fixed_price         = $value['fix_price'];
-                $purchaseGoods->fixed_tax_price     = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
-                $purchaseGoods->fixed_number        = $value['fix_number'];
-                $purchaseGoods->reason              = '';
-                $purchaseGoods->apply_status        = PurchaseGoods::APPLY_STATUS_CREATE;
-                $purchaseGoods->fixed_delivery_time = $value['delivery_time'];
-                $purchaseGoods->save();
+                //$purchaseGoods->fixed_price         = $value['fix_price'];
+                //$purchaseGoods->fixed_tax_price     = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
+                //$purchaseGoods->fixed_number        = $value['fix_number'];
+                //$purchaseGoods->reason              = '';
+                //$purchaseGoods->apply_status        = PurchaseGoods::APPLY_STATUS_CREATE;
+                //$purchaseGoods->fixed_delivery_time = $value['delivery_time'];
+                //$purchaseGoods->save();
 
                 $paymentGoods->serial               = $purchaseGoods->serial;
                 $paymentGoods->goods_id             = $purchaseGoods->goods_id;;
