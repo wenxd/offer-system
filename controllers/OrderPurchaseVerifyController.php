@@ -289,6 +289,13 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPurchase->is_complete = OrderPurchase::IS_COMPLETE_NO;
             $orderPurchase->save();
 
+            //给采购员发通知
+            $systemNotice = new SystemNotice();
+            $systemNotice->admin_id  = $orderPayment->admin_id;
+            $systemNotice->content   = '你提交的支出申请被驳回,采购合同单号为' . $orderPurchase->purchase_sn;
+            $systemNotice->notice_at = date('Y-m-d H:i:s');
+            $systemNotice->save();
+
             $orderPayment->delete();
         } catch (\Exception $e) {
             return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
