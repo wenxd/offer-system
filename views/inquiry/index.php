@@ -212,7 +212,10 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            'tax_rate',
+            [
+                'attribute'      => 'tax_rate',
+                'contentOptions' => ['style'=>'min-width: 80px;']
+            ],
             'price',
             'tax_price',
             'number',
