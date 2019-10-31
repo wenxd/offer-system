@@ -99,6 +99,9 @@ class FinancialController extends BaseController
         $orderPayment = OrderPayment::findOne($params['id']);
         $orderPayment->is_payment       = OrderPayment::IS_PAYMENT_YES;
         $orderPayment->payment_at       = date('Y-m-d H:i:s');
+        if (!$orderPayment->is_advancecharge) {
+            $orderPayment->advancecharge_at = date('Y-m-d H:i:s');
+        }
         $orderPayment->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderPayment->remain_price     = 0;
         $orderPayment->payment_ratio    = 100;

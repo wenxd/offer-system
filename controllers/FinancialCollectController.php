@@ -101,6 +101,9 @@ class FinancialCollectController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['id']);
         $orderAgreement->is_payment = OrderPayment::IS_PAYMENT_YES;
         $orderAgreement->payment_at = date('Y-m-d H:i:s');
+        if (!$orderAgreement->is_advancecharge) {
+            $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
+        }
         $orderAgreement->is_advancecharge = OrderPayment::IS_ADVANCECHARGE_YES;
         $orderAgreement->remain_price     = 0;
         $orderAgreement->payment_ratio    = 100;
