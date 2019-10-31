@@ -299,23 +299,23 @@ class GoodsController extends BaseController
                             }
                             //中文描述
                             if ($value['B']) {
-                                $goods->description = trim($value['B']);
+                                $goods->description = (string)trim($value['B']);
                             }
                             //英文描述
                             if ($value['C']) {
-                                $goods->description_en = trim($value['C']);
+                                $goods->description_en = (string)trim($value['C']);
                             }
                             //原厂家
                             if ($value['D']) {
-                                $goods->original_company = trim($value['D']);
+                                $goods->original_company = (string)trim($value['D']);
                             }
                             //厂家号
                             if ($value['E']) {
-                                $goods->goods_number_b = trim($value['E']);
+                                $goods->goods_number_b = (string)trim($value['E']);
                             }
                             //材质
                             if ($value['F']) {
-                                $goods->material = trim($value['F']);
+                                $goods->material = (string)trim($value['F']);
                             }
                             //是否TZ
                             if ($value['G'] && $value['G'] == '是') {
@@ -373,21 +373,21 @@ class GoodsController extends BaseController
                             }
                             //所属部位
                             if ($value['Q']) {
-                                $goods->part = trim($value['Q']);
+                                $goods->part = (string)trim($value['Q']);
                             }
                             //单位
                             $goods->unit = $value['T'] ? trim($value['T']) : '件';
                             //技术备注、技术
                             if ($value['U']) {
-                                $goods->technique_remark = trim($value['U']);
+                                $goods->technique_remark = (string)trim($value['U']);
                             }
                             //原厂家备注
                             if ($value['V']) {
-                                $goods->original_company_remark = trim($value['V']);
+                                $goods->original_company_remark = (string)trim($value['V']);
                             }
                             //零件备注
                             if ($value['W']) {
-                                $goods->remark = trim($value['W']);
+                                $goods->remark = (string)trim($value['W']);
                             }
                             if ($value['P'] && $value['S']) {
                                 $deviceName   = trim($value['P']);
@@ -423,11 +423,11 @@ class GoodsController extends BaseController
                             }
                             //物资编码
                             if ($value['AA']) {
-                                $goods->material_code = trim($value['AA']);
+                                $goods->material_code = (string)trim($value['AA']);
                             }
                             //物资编码
                             if ($value['AB']) {
-                                $goods->import_mark = trim($value['AB']);
+                                $goods->import_mark = (string)trim($value['AB']);
                             }
                             //发行税率
                             if ($value['AC']) {
