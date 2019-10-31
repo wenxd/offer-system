@@ -23,6 +23,9 @@ $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId = Yii::$app->user->identity->id;
+
+//收入合同交货日期
+$model->income_deliver_time = $model->purchase ? $model->purchase->end_date : '';
 ?>
 
 <div class="box table-responsive">
@@ -100,6 +103,8 @@ $userId = Yii::$app->user->identity->id;
         </table>
 
         <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
+
+        <?= $form->field($model, 'income_deliver_time')->textInput(['readonly' => true])->label('收入合同交货日期') ?>
 
         <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('支出合同签订时间'); ?>
 

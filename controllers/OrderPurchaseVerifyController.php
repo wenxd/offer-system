@@ -272,11 +272,12 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
                 if ($paymentGoods) {
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
-                    $purchaseGoods->reason = $params['reason'];
-                    $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_REJECT;
-                    $purchaseGoods->fixed_price = $purchaseGoods->price;
+                    $purchaseGoods->reason          = $params['reason'];
+                    $purchaseGoods->apply_status    = PurchaseGoods::APPLY_STATUS_REJECT;
+                    $purchaseGoods->fixed_price     = $purchaseGoods->price;
                     $purchaseGoods->fixed_tax_price = $purchaseGoods->tax_price;
-                    $purchaseGoods->fixed_number = $paymentGoods->number;
+                    $purchaseGoods->fixed_number    = $paymentGoods->number;
+
                     $purchaseGoods->save();
                 }
                 $paymentGoods->delete();
