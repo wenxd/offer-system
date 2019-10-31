@@ -5,6 +5,8 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "{{%inquiry}}".
  *
@@ -61,11 +63,11 @@ class Inquiry extends ActiveRecord
 
     public static $priority = [
         self::IS_PRIORITY_NO   => '否',
-        self::IS_UPLOAD_YES  => '是',
+        self::IS_UPLOAD_YES    => '是',
     ];
 
     public static $upload = [
-        self::IS_UPLOAD_NO   => '否',
+        self::IS_UPLOAD_NO     => '否',
         self::IS_PRIORITY_YES  => '是',
     ];
 
@@ -202,7 +204,21 @@ class Inquiry extends ActiveRecord
         }
 
         if ($this->is_better) {
-            self::updateAll(['is_better' => self::IS_BETTER_NO], ['good_id' => $this->good_id]);
+            self::updateAll(['is_better' => self::IS_BETTER_NO, 'is_confirm_better' => 1], ['good_id' => $this->good_id]);
+        }
+
+        if ($function == 'add') {
+            $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+            $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+            $admin_id = Yii::$app->user->identity->id;
+            if (in_array($admin_id, $adminIds)) {
+                $superAdmin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $superAdmin->user_id;
+                $systemNotice->content   = Yii::$app->user->identity->username . '有优选询价记录，请确认';
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
         }
 
         return parent::beforeSave($insert);
