@@ -45,6 +45,7 @@ class OrderPayment extends \yii\db\ActiveRecord
     public $reason;
     public $purchase_id;
     public $price;
+    public $income_deliver_time;
 
     const PURCHASE_STATUS_CREATE = '0'; // 新的
     const PURCHASE_STATUS_PASS   = '1'; // 通过

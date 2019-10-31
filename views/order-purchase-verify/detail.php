@@ -23,8 +23,10 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $admins = [];
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
-
 $userId = Yii::$app->user->identity->id;
+
+//收入合同交货日期
+$model->income_deliver_time = $model->purchase ? $model->purchase->end_date : '';
 ?>
 
 <div class="box table-responsive">
@@ -103,6 +105,8 @@ $userId = Yii::$app->user->identity->id;
         </table>
 
         <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('采购申请备注'); ?>
+
+        <?= $form->field($model, 'income_deliver_time')->textInput(['readonly' => true])->label('收入合同交货日期'); ?>
 
         <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
 
