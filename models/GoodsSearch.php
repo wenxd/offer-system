@@ -165,10 +165,9 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.technique_remark', $this->technique_remark])
               ->andFilterWhere(['like', 'goods.img_id', $this->img_id])
               ->andFilterWhere(['like', 'goods.material', $this->material])
-              ->andFilterWhere(['like', 'goods.material', $this->material])
-              ->andFilterWhere(['like', 'goods.part', $this->material])
+              ->andFilterWhere(['like', 'goods.part', $this->part])
               ->andFilterWhere(['like', 'goods.material_code', $this->material_code])
-              ->andFilterWhere(['like', 'goods.remark', $this->device_info]);
+              ->andFilterWhere(['like', 'goods.remark', $this->remark]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
