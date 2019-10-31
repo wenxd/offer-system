@@ -829,6 +829,8 @@ CREATE TABLE `inquiry_temp` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='临时询价表';
 
+ALTER TABLE `inquiry_temp` ADD COLUMN  `is_purchase`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否采购记录 0否 1是'
+
 CREATE TABLE `temp_payment_goods` (
   `id`               int(11) NOT NULL AUTO_INCREMENT,
   `order_id`         int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
