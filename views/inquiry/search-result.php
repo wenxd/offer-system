@@ -200,12 +200,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 </thead>
             </table>
         </div>
-        <div class="box-footer">
-            <?= Html::button('关联最终订单', [
-                    'class' => 'btn btn-success relevance_save',
-                    'name'  => 'submit-button']
-            )?>
-        </div>
+        <?php if (isset($_GET['agreement_goods_id'])):?>
+            <div class="box-footer">
+                <?= Html::button('关联采购订单', [
+                        'class' => 'btn btn-success purchase_save',
+                        'name'  => 'submit-button']
+                )?>
+            </div>
+        <?php else:?>
+            <div class="box-footer">
+                <?= Html::button('关联最终订单', [
+                        'class' => 'btn btn-success relevance_save',
+                        'name'  => 'submit-button']
+                )?>
+            </div>
+        <?php endif;?>
     </div>
 </section>
 
@@ -256,6 +265,42 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (res && res.code == 200){
                     layer.msg(res.msg, {time:2000});
                     location.replace("?r=order/create-final&id=" + order_id + '&key=' + key);
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    });
+
+    //关联采购记录
+    $('.purchase_save').click(function (e) {
+        var a = $("[name=relevance]:checked").val();
+        if (!a) {
+            layer.msg('请选择一个记录关联', {time:2000});
+            return false;
+        }
+        var select_id = 0;
+        $('.relevance').each(function (i, element) {
+            if ($(this).is(":checked")) {
+                select_id = $(element).data("select_id");
+            }
+        });
+        if (!select_id) {
+            layer.msg('请先添加记录', {time:2000});
+            return false;
+        }
+        var agreement_goods_id = "<?=$_GET['agreement_goods_id'] ?? ''?>";
+        var order_agreement_id = "<?=$_GET['order_agreement_id'] ?? ''?>";
+        $.ajax({
+            type:"post",
+            url:'?r=agreement-goods/relevance',
+            data:{inquiry_id:select_id, agreement_goods_id:agreement_goods_id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    location.replace("?r=order-agreement/detail&id=" + order_agreement_id);
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;

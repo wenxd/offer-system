@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Inquiry;
 use Yii;
 use app\models\AgreementGoods;
 use app\models\AgreementGoodsSearch;
@@ -123,5 +124,24 @@ class AgreementGoodsController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionRelevance()
+    {
+        $params = Yii::$app->request->post();
+
+        $inquiry = Inquiry::findOne($params['inquiry_id']);
+        $agreementGoods = AgreementGoods::findOne($params['agreement_goods_id']);
+
+        $agreementGoods->price              = $inquiry->price;
+        $agreementGoods->tax_price          = $inquiry->tax_price;
+        $agreementGoods->all_price          = $inquiry->all_price;
+        $agreementGoods->all_tax_price      = $inquiry->all_tax_price;
+        $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
+        $agreementGoods->relevance_id       = $inquiry->id;
+
+        if ($agreementGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        }
     }
 }

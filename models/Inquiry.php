@@ -30,6 +30,8 @@ use yii\helpers\ArrayHelper;
  * @property string $better_reason
  * @property string $delivery_time
  * @property string $is_purchase
+ * @property string $all_tax_price
+ * @property string $admin_id
  */
 class Inquiry extends ActiveRecord
 {

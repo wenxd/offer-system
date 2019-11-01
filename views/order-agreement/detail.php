@@ -52,6 +52,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
                     <th>序号</th>
+                    <th>操作</th>
                     <th>零件号</th>
                     <th>厂家号</th>
                     <th>中文描述</th>
@@ -88,6 +89,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                     <td>
                         <?=Html::a('复位', '?r=order-agreement/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -147,6 +149,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
 data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>" : ""?>
                 </td>
                 <td><?=$item->serial?></td>
+                <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
