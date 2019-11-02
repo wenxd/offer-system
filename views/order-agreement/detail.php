@@ -189,25 +189,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             </tr>
             <?php endforeach;?>
                 <tr style="background-color: #acccb9">
-                    <td colspan="11" rowspan="2">汇总统计</td>
-                    <td>最低总价</td>
+                    <td colspan="13" rowspan="2">汇总统计</td>
                     <td>最低含税总价</td>
                     <td>最低最长货期</td>
-                    <td>货期最短总价</td>
+                    <td rowspan="2"></td>
                     <td>货期最短含税总价</td>
                     <td>货期最短最长货期</td>
                     <td colspan="3" rowspan="2"></td>
                     <td>采购含税总价</td>
-                    <td>最长货期</td>
+                    <td>采购最长货期</td>
                     <td></td>
                     <td>合同最长货期</td>
                     <td colspan="8"></td>
                 </tr>
                 <tr style="background-color: #acccb9">
-                    <td class="stat_low_price_all"></td>
                     <td class="stat_low_tax_price_all"></td>
                     <td class="most_low_deliver"></td>
-                    <td class="stat_short_price_all"></td>
                     <td class="stat_short_tax_price_all"></td>
                     <td class="most_short_deliver"></td>
                     <td class="purchase_all_price"></td>
