@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Inquiry;
+use app\models\SystemConfig;
 use Yii;
 use app\models\AgreementGoods;
 use app\models\AgreementGoodsSearch;
@@ -133,10 +134,15 @@ class AgreementGoodsController extends Controller
         $inquiry = Inquiry::findOne($params['inquiry_id']);
         $agreementGoods = AgreementGoods::findOne($params['agreement_goods_id']);
 
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+
         $agreementGoods->price              = $inquiry->price;
-        $agreementGoods->tax_price          = $inquiry->tax_price;
-        $agreementGoods->all_price          = $inquiry->all_price;
-        $agreementGoods->all_tax_price      = $inquiry->all_tax_price;
+        $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax/100), 2, '.', '');
+        $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
+        $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
         $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
         $agreementGoods->relevance_id       = $inquiry->id;
 
