@@ -204,11 +204,7 @@ class Inquiry extends ActiveRecord
                 return false;
             }
         }
-
-        if ($insert && $this->is_better) {
-            self::updateAll(['is_better' => self::IS_BETTER_NO, 'is_confirm_better' => 0], ['good_id' => $this->good_id]);
-        }
-
+        
         if ($function == 'add') {
             $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
             $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
