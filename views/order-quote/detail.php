@@ -75,7 +75,7 @@ $is_show = in_array($userId, $adminIds);
                     <td><?=$item->goods->original_company_remark?></td>
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
-                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>" style="width: 80px;"></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <?php endif;?>
@@ -83,11 +83,11 @@ $is_show = in_array($userId, $adminIds);
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '')?></td>
                     <?php endif;?>
-                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
+                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"  style="width: 80px;"></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
                     <td class="all_tax_price"></td>
                     <td class="afterNumber">
-                        <input type="number" class="number" min="1" value="<?=$item->number?>">
+                        <input type="number" class="number" min="1" value="<?=$item->number?>"  style="width: 80px;">
                     </td>
                 </tr>
             <?php endforeach;?>
@@ -183,14 +183,7 @@ $is_show = in_array($userId, $adminIds);
             $(this).parent().parent().find('.all_tax_price').text(all_tax_price.toFixed(2));
 
             //计算总价
-            var sta_all_tax_price = 0;
-            $('.order_quote_list').each(function (i, e) {
-                var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
-                if (all_tax_price) {
-                    sta_all_tax_price += all_tax_price;
-                }
-            });
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            statPrice();
         });
 
         //修改单价
@@ -203,8 +196,20 @@ $is_show = in_array($userId, $adminIds);
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            console.log(price);
+            statPrice();
         });
+
+        //计算总价
+        function statPrice() {
+            var sta_all_tax_price = 0;
+            $('.order_quote_list').each(function (i, e) {
+                var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
+                if (all_tax_price) {
+                    sta_all_tax_price += all_tax_price;
+                }
+            });
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        }
 
         //统一修改货期
         $('#orderagreement-quote_delivery_time').bind('input propertychange', function (e) {
