@@ -55,7 +55,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         ])?>
     </div>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
@@ -89,7 +89,9 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td>
                         <?=Html::a('复位', '?r=order-purchase/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
                     </td>
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td></td>
+                    <?php endif;?>
                     <td></td>
                     <td></td>
                     <td>
@@ -182,7 +184,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="12" rowspan="2">汇总统计</td>
+                <td colspan="<?=in_array($userId, $adminIds) ? 11 : 12?>" rowspan="2">汇总统计</td>
                 <td>含税总价合计</td>
                 <td colspan="8" rowspan="2"></td>
             </tr>
