@@ -145,6 +145,7 @@ class AgreementGoodsController extends Controller
         $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
         $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
         $agreementGoods->relevance_id       = $inquiry->id;
+        $agreementGoods->delivery_time      = $inquiry->delivery_time;
 
         if ($agreementGoods->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
