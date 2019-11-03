@@ -49,8 +49,12 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'purchase_sn',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'purchase_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use($userId, $adminIds) {
+                    if (in_array($userId, $adminIds) && $model->is_agreement){
+                        return $model->purchase_sn;
+                    } else {
+                        return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                    }
                 }
             ],
             [

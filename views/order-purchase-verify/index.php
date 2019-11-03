@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
-                    if (in_array($userId, $adminIds)) {
+                    if (in_array($userId, $adminIds) && $model->is_complete) {
                         return $model->payment_sn;
                     } else {
                         return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
