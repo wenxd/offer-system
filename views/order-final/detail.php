@@ -113,8 +113,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
                 <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                 <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$publish_tax_price * $competitor_ratio/100?>"></td>
-                <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio/100 * $item->number?></td>
+                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$publish_tax_price * $competitor_ratio?>"></td>
+                <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio * $item->number?></td>
                 <td class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
