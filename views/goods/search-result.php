@@ -130,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
                 <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
                 <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
-                <td><?=$inquiryBetter ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
+                <td><?=$inquiryBetter ? ($inquiryBetter->number * $inquiryBetter->tax_price) : 0 ?></td>
             </tr>
             <tr class="inquiry_list">
                 <td>价格</td>
