@@ -260,7 +260,7 @@ class OrderInquiryController extends BaseController
             //给超管通知
             $notice = new SystemNotice();
             $notice->admin_id  = $user_super->user_id;
-            $notice->content   = $admin_name . '寻不出零件' . $inquiryGoods->goods->goods_number . '的价格';
+            $notice->content   = $admin_name . '寻不出零件' . $inquiryGoods->goods->goods_number . '的价格,询价单号' . $inquiryGoods->inquiry_sn;
             $notice->notice_at = date('Y-m-d H:i:s');
             $notice->save();
             return json_encode(['code' => 200, 'msg' => '成功']);
