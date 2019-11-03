@@ -53,27 +53,25 @@ $competitor_ratio = SystemConfig::find()->select('value')->where([
                 <th>零件号</th>
                 <th>厂家号</th>
                 <th>中文描述</th>
-                <th>英文描述</th>
                 <th>原厂家</th>
-                <th>原厂家备注</th>
                 <th>订单需求数量</th>
                 <th>库存数量</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>发行价含税单价</th>
-                <th>发行价含税总价</th>
-                <th>发行价货期</th>
-                <th>竞争对手名称</th>
-                <th>竞争对手最低含税单价</th>
-                <th>竞争对手最低含税总价</th>
-                <th>竞争对手预估含税报价</th>
-                <th>竞争对手预估含税总价</th>
-                <th>成本未税单价</th>
-                <th>成本含税单价</th>
-                <th>成本未税总价</th>
-                <th>成本含税总价</th>
-                <th>成本货期(周)</th>
+                <th>发含单</th>
+                <th>发含总</th>
+                <th>发货期</th>
+                <th>竞名称</th>
+                <th>竞低含单</th>
+                <th>竞低含总</th>
+                <th>竞预含单</th>
+                <th>竞预含总</th>
+                <th>成未单</th>
+                <th>成含单</th>
+                <th>成未总</th>
+                <th>成含总</th>
+                <th>成货期</th>
                 <th>报价未税单价</th>
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
@@ -92,9 +90,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
-                <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
-                <td><?=$item->goods->original_company_remark?></td>
                 <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
                         '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $item->number . '" 
     onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
@@ -134,7 +130,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="13" rowspan="2">汇总统计</td>
+                <td colspan="11" rowspan="2">汇总统计</td>
                 <td rowspan="2">发行价</td>
                 <td>发行总价</td>
                 <td>货期</td>
