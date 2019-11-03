@@ -20,6 +20,7 @@ class InquirySearch extends Inquiry
     public $technique_remark;
     public $is_process;
     public $img_id;
+    public $inquiry_sn;
 
     public $supplier_name;
     /**
@@ -32,7 +33,7 @@ class InquirySearch extends Inquiry
                 'admin_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
-                'is_process', 'goods_number_b', 'tax_rate'], 'safe'],
+                'is_process', 'goods_number_b', 'tax_rate', 'inquiry_sn'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number', 'min' => 0],
             [['id', 'good_id', 'supplier_id', 'supplier_name', 'price', 'tax_price', 'all_price', 'all_tax_price', 'remark'], 'trim']
         ];
@@ -91,6 +92,11 @@ class InquirySearch extends Inquiry
         if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = inquiry.supplier_id');
             $query->andFilterWhere(['like', 's.name', $this->supplier_name]);
+        }
+
+        if ($this->inquiry_sn) {
+            $query->leftJoin('order_inquiry as oi', 'oi.id = inquiry.order_inquiry_id');
+            $query->andFilterWhere(['like', 'oi.inquiry_sn', $this->inquiry_sn]);
         }
         // grid filtering conditions
         $query->andFilterWhere([
