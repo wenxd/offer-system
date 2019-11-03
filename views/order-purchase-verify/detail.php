@@ -32,7 +32,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 1500px;">
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
                 <tr>
                     <th>序号</th>
@@ -41,12 +41,12 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
-                    <th>供应商</th>
-                    <th>货期(周)</th>
                     <th>税率</th>
                     <th>发行含税单价</th>
                     <th>发行含税总价</th>
                     <th>发行货期</th>
+                    <th>供应商</th>
+                    <th>货期(周)</th>
                     <th>含税单价</th>
                     <th>含税总价</th>
                     <th>数量</th>
@@ -66,8 +66,6 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
                     <td><?=$item->goods->original_company?></td>
-                    <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
-                    <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                     <td class="tax"><?=$tax?></td>
                     <?php
                         $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '');
@@ -75,6 +73,8 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                    <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
+                    <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                     <td class="before_tax_price"><?=$item->tax_price?></td>
                     <td class="before_all_tax_price"><?=$item->all_tax_price?></td>
                     <td class="before_number"><?=$item->number?></td>
@@ -87,9 +87,9 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <?php endforeach;?>
 
             <tr style="background-color: #acccb9">
-                <td colspan="10" rowspan="2">汇总统计</td>
+                <td colspan="8" rowspan="2">汇总统计</td>
                 <td>发行含税总价合计</td>
-                <td colspan="2" rowspan="2"></td>
+                <td colspan="4" rowspan="2"></td>
                 <td>修改前含税总价</td>
                 <td colspan="4" rowspan="2"></td>
                 <td>支出合同含税总价</td>
