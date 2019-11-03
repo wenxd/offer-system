@@ -54,7 +54,7 @@ class StockSearch extends Stock
      */
     public function search($params)
     {
-        $query = Stock::find();
+        $query = Stock::find()->rightJoin('goods as a', 'a.id = stock.good_id');
 
         // add conditions that should always apply here
 
@@ -76,7 +76,7 @@ class StockSearch extends Stock
             return $dataProvider;
         }
         if ($this->goods_number || $this->description || $this->description_en || $this->is_emerg !== '') {
-            $query->leftJoin('goods as a', 'a.id = stock.good_id');
+            //$query->rightJoin('goods as a', 'a.id = stock.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
             $query->andFilterWhere(['like', 'a.description', $this->description]);
             $query->andFilterWhere(['like', 'a.description_en', $this->description_en]);
@@ -123,10 +123,10 @@ class StockSearch extends Stock
             ->andFilterWhere(['like', 'stock.position', $this->position]);
 
         if ($this->is_zero && !$this->number) {
-            if ($this->is_zero == 0) {
-                $query->andFilterWhere(['stock.number' => 0]);
-            } else {
+            if ($this->is_zero == 1) {
                 $query->andFilterWhere(['!=', 'stock.number', 0]);
+            } else {
+                $query->andFilterWhere(['stock.number' => 0]);
             }
         }
 

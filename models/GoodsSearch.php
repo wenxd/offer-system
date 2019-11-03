@@ -167,6 +167,7 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.material', $this->material])
               ->andFilterWhere(['like', 'goods.part', $this->part])
               ->andFilterWhere(['like', 'goods.material_code', $this->material_code])
+              ->andFilterWhere(['like', 'goods.device_info', $this->device_info])
               ->andFilterWhere(['like', 'goods.remark', $this->remark]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
