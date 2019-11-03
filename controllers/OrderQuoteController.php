@@ -63,6 +63,7 @@ class OrderQuoteController extends Controller
 
         return $this->render('view', [
             'model'        => $orderQuote,
+            'orderQuote'   => $orderQuote,
             'quoteGoods'   => $quoteGoods,
             'inquiryGoods' => $inquiryGoods
         ]);
@@ -143,15 +144,16 @@ class OrderQuoteController extends Controller
 
         $orderFinal = OrderFinal::findOne($params['order_final_id']);
 
-        $orderQuote                 = new OrderQuote();
-        $orderQuote->quote_sn       = $params['quote_sn'];
-        $orderQuote->order_id       = $orderFinal->order_id;
-        $orderQuote->order_final_id = $params['order_final_id'];
-        $orderQuote->goods_info     = json_encode($params['goods_info']);
-        $orderQuote->admin_id       = $params['admin_id'];
-        $orderQuote->quote_ratio    = $params['quote_ratio'];
-        $orderQuote->delivery_ratio = $params['delivery_ratio'];
-        $orderQuote->customer_id    = $orderFinal->customer_id;
+        $orderQuote                    = new OrderQuote();
+        $orderQuote->quote_sn          = $params['quote_sn'];
+        $orderQuote->order_id          = $orderFinal->order_id;
+        $orderQuote->order_final_id    = $params['order_final_id'];
+        $orderQuote->goods_info        = json_encode($params['goods_info']);
+        $orderQuote->admin_id          = $params['admin_id'];
+        $orderQuote->quote_ratio       = $params['quote_ratio'];
+        $orderQuote->delivery_ratio    = $params['delivery_ratio'];
+        $orderQuote->customer_id       = $orderFinal->customer_id;
+        $orderQuote->competitor_ratio  = $params['competitor_ratio'];
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;

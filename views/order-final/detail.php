@@ -524,13 +524,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 return false;
             }
 
+            var competitor_ratio = $('#orderquote-competitor_ratio').val();
+            if (!competitor_ratio) {
+                layer.msg('请填写竞报价系数', {time:2000});
+                return false;
+            }
+
             var order_final_id = $('.data').data('order_final_id');
 
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
                 data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
-                    delivery_ratio:delivery_ratio, goods_info:goods_info},
+                    delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

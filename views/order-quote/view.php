@@ -25,11 +25,6 @@ $userId   = Yii::$app->user->identity->id;
 
 //报价员权限
 $is_show = in_array($userId, $adminIds);
-//竞争对手报价系数
-$competitor_ratio = SystemConfig::find()->select('value')->where([
-    'is_deleted' => SystemConfig::IS_DELETED_NO,
-    'title'      => SystemConfig::TITLE_COMPETITOR_RATIO
-])->scalar();
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -112,8 +107,8 @@ $competitor_ratio = SystemConfig::find()->select('value')->where([
                     <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
                     <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                     <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                    <td class="competitor_public_tax_price"><?=$publish_tax_price * $competitor_ratio/100?></td>
-                    <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio/100 * $item->number?></td>
+                    <td class="competitor_public_tax_price"><?=$publish_tax_price * $orderQuote->competitor_ratio?></td>
+                    <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $orderQuote->competitor_ratio * $item->number?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
