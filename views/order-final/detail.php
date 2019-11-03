@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\CompetitorGoods;
 use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
@@ -35,6 +36,11 @@ $model->delivery_ratio = SystemConfig::find()->select('value')
 
 $model->quote_publish_price_ratio = 1;
 
+//竞争对手报价系数
+$competitor_ratio = SystemConfig::find()->select('value')->where([
+        'is_deleted' => SystemConfig::IS_DELETED_NO,
+        'title'      => SystemConfig::TITLE_COMPETITOR_RATIO
+    ])->scalar();
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -58,6 +64,11 @@ $model->quote_publish_price_ratio = 1;
                 <th>发行价含税单价</th>
                 <th>发行价含税总价</th>
                 <th>发行价货期</th>
+                <th>竞争对手名称</th>
+                <th>竞争对手最低含税单价</th>
+                <th>竞争对手最低含税总价</th>
+                <th>竞争对手预估含税报价</th>
+                <th>竞争对手预估含税总价</th>
                 <th>成本未税单价</th>
                 <th>成本含税单价</th>
                 <th>成本未税总价</th>
@@ -85,7 +96,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
                 <td class="afterNumber"><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->number :
-                        '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $orderGoods[$item->goods_id]->number . '" 
+                        '<input type="number" size="4" class="number" min="1" style="width: 100px;" value="' . $item->number . '" 
     onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
     onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}">'?>
                 </td>
@@ -93,9 +104,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$item->tax?></td>
-                <td class="publish_tax_price"><?=number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '')?></td>
+                <?php
+                    $public_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
+                ?>
+                <td class="publish_tax_price"><?=$public_tax_price?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                <?php
+                    $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $item->goods_id])->orderBy('price asc')->one();
+                    $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax/100), 2, '.', '') : 0;
+                ?>
+                <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
+                <td class="competitor_tax_price"><?=$competitorGoodsTaxPrice?></td>
+                <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
+                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$public_tax_price * $competitor_ratio/100?>"></td>
+                <td class="competitor_public_tax_price_all"><?=$public_tax_price * $competitor_ratio/100 * $item->number?></td>
                 <td class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
@@ -115,16 +138,14 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td rowspan="2">发行价</td>
                 <td>发行总价</td>
                 <td>货期</td>
-                <td rowspan="2"></td>
+                <td colspan="4" rowspan="2"></td>
+                <td>预估含税总价</td>
+                <td colspan="2" rowspan="2"></td>
                 <td rowspan="2">成本单</td>
-                <td></td>
-<!--                <td>成本未税总价合计</td>-->
                 <td>成本总价</td>
                 <td>货期</td>
-                <td rowspan="2"></td>
+                <td colspan="2" rowspan="2"></td>
                 <td rowspan="2">报价单</td>
-                <td></td>
-<!--                <td>报价未税总价合计</td>-->
                 <td>报价总价</td>
                 <td>货期</td>
                 <td colspan="3" rowspan="2"></td>
@@ -132,12 +153,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
-<!--                <td class="sta_all_price"></td>-->
-                <td></td>
+                <td class="sta_competitor_public_tax_price_all"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
-<!--                <td class="sta_quote_all_price"></td>-->
-                <td></td>
                 <td class="sta_quote_all_tax_price"></td>
                 <td class="most_quote_delivery_time"></td>
             </tr>
@@ -185,6 +203,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var sta_quote_all_price         = 0;
             var sta_quote_all_tax_price     = 0;
             var most_quote_delivery_time    = 0;
+            var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 if (delivery_time > mostLongTime) {
@@ -239,6 +258,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;
                 }
+
+                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
+                if (competitor_public_tax_price_all) {
+                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
+                }
             });
             $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
             $('.most_publish_delivery_time').text(most_publish_delivery_time);
@@ -248,6 +272,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
+            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
         }
 
         //全选
@@ -305,15 +330,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var a = number.replace(/[\D]/g,'');
             $(this).val(a);
 
-            var publish_price = $(this).parent().parent().find('.publish_tax_price').text();
-            var price = $(this).parent().parent().find('.price').text();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
-            var quote_price = $(this).parent().parent().find('.quote_price input').val();
-            var quote_tax_price = $(this).parent().parent().find('.quote_tax_price').text();
+            var publish_price               = $(this).parent().parent().find('.publish_tax_price').text();
+            var price                       = $(this).parent().parent().find('.price').text();
+            var tax_price                   = $(this).parent().parent().find('.tax_price').text();
+            var quote_price                 = $(this).parent().parent().find('.quote_price input').val();
+            var quote_tax_price             = $(this).parent().parent().find('.quote_tax_price').text();
+            var competitor_tax_price        = parseFloat($(this).parent().parent().find('.competitor_tax_price').text());
+            var competitor_public_tax_price = parseFloat($(this).parent().parent().find('.competitor_public_tax_price input').val());
 
             $(this).parent().parent().find('.all_publish_tax_price').text(parseFloat(publish_price * number).toFixed(2));
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+
+            $(this).parent().parent().find('.competitor_tax_price_all').text(parseFloat(competitor_tax_price * number).toFixed(2));
+            $(this).parent().parent().find('.competitor_public_tax_price_all').text(parseFloat(competitor_public_tax_price * number).toFixed(2));
+
             $(this).parent().parent().find('.quote_all_price').text(parseFloat(quote_price * number).toFixed(2));
             $(this).parent().parent().find('.quote_all_tax_price').text(parseFloat(quote_tax_price * number).toFixed(2));
 
@@ -322,6 +353,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var sta_quote_all_price         = 0;
             var sta_quote_all_tax_price     = 0;
             var sta_all_publish_tax_price   = 0;
+            var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var all_price               = $(e).find('.all_price').text();
                 var all_tax_price           = $(e).find('.all_tax_price').text();
@@ -343,12 +375,33 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 if (all_publish_tax_price) {
                     sta_all_publish_tax_price += parseFloat(all_publish_tax_price);
                 }
+                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
+                if (competitor_public_tax_price_all) {
+                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
+                }
             });
             $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
+        });
+
+        //输入竞争对手预估含税报价
+        $(".competitor_public_tax_price input").bind('input propertychange', function (e) {
+            var price    = parseFloat($(this).val());
+            var number   = parseFloat($(this).parent().parent().find('.afterNumber input').val());
+            var competitor_public_tax_price_all = number * price;
+            $('.competitor_public_tax_price_all').text(competitor_public_tax_price_all.toFixed(2));
+            var sta_competitor_public_tax_price_all = 0;
+            $('.order_final_list').each(function (i, e) {
+                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
+                if (competitor_public_tax_price_all) {
+                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
+                }
+            });
+            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
         });
 
         //输入报价系数
