@@ -21,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at 创建时间
  * @property string $full_name
  * @property string $admin_id
+ * @property string $agree_at
  */
 class Supplier extends ActiveRecord
 {
@@ -73,7 +74,7 @@ class Supplier extends ActiveRecord
     {
         return [
             [['sort', 'is_deleted', 'is_confirm', 'admin_id'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['updated_at', 'created_at', 'agree_at'], 'safe'],
             [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
                 'full_name', 'contacts'], 'string', 'max' => 255],
             [
@@ -107,6 +108,7 @@ class Supplier extends ActiveRecord
             'created_at'           => '创建时间',
             'full_name'            => '供应商全称',
             'admin_id'             => '申请人',
+            'agree_at'             => '入库时间',
         ];
     }
 

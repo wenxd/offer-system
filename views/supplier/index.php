@@ -89,6 +89,30 @@ if (in_array($userId, $adminIds)) {
                 }
             ],
             [
+                'attribute' => 'created_at',
+                'format'    => 'raw',
+                'label'     => '申请时间',
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'SupplierSearch[created_at]',
+                    'value' => Yii::$app->request->get('SupplierSearch')['created_at'],
+                ]),
+                'value'     => function($model) {
+                    return substr($model->created_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'agree_at',
+                'format'    => 'raw',
+                'label'     => '入库时间',
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'SupplierSearch[agree_at]',
+                    'value' => Yii::$app->request->get('SupplierSearch')['agree_at'],
+                ]),
+                'value'     => function($model) {
+                    return substr($model->agree_at, 0, 10);
+                }
+            ],
+            [
                 'class'         => ActionColumn::className(),
                 'visible'       => !in_array($userId, $adminIds),
                 'contentOptions'=>['style'=>'min-width: 150px;'],

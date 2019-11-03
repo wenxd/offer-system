@@ -21,7 +21,7 @@ class SupplierSearch extends Supplier
         return [
             [['id', 'sort', 'is_deleted', 'is_confirm', 'admin_id'], 'integer'],
             [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade',
-                'grade_reason', 'advantage_product', 'full_name', 'contacts'], 'safe'],
+                'grade_reason', 'advantage_product', 'full_name', 'contacts', 'agree_at'], 'safe'],
             [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
                 'full_name', 'contacts'], 'trim']
         ];
@@ -108,6 +108,12 @@ class SupplierSearch extends Supplier
             $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
         }
 
+        if ($this->agree_at && strpos($this->agree_at, ' - ')) {
+            list($agree_at_start, $agree_at_end) = explode(' - ', $this->agree_at);
+            $agree_at_start .= ' 00:00:00';
+            $agree_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'agree_at', $agree_at_start, $agree_at_end]);
+        }
         return $dataProvider;
     }
 }
