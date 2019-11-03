@@ -47,7 +47,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 3000px;">
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
@@ -152,7 +152,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
-                <td><?=$item->goods->description?></td>
+                <td style="width: 100px;"><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
