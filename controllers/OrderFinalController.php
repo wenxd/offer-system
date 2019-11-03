@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Inquiry;
 use app\models\OrderQuote;
 use app\models\QuoteGoods;
+use app\models\SystemConfig;
 use Yii;
 use app\models\OrderFinal;
 use app\models\OrderFinalSearch;
@@ -363,6 +365,30 @@ class OrderFinalController extends BaseController
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
+        }
+    }
+
+    public function actionRelevancePurchase()
+    {
+        $params = Yii::$app->request->post();
+
+        $inquiry = Inquiry::findOne($params['inquiry_id']);
+        $finalGoods = FinalGoods::findOne($params['final_goods_id']);
+
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+
+        $finalGoods->price              = $inquiry->price;
+        $finalGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax/100), 2, '.', '');
+        $finalGoods->all_price          = $finalGoods->number * $inquiry->price;
+        $finalGoods->all_tax_price      = $finalGoods->number * $finalGoods->tax_price;
+        $finalGoods->delivery_time      = $inquiry->delivery_time;
+        $finalGoods->relevance_id       = $inquiry->id;
+
+        if ($finalGoods->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
     }
 }

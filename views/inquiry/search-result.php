@@ -207,6 +207,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'name'  => 'submit-button']
                 )?>
             </div>
+        <?php elseif(isset($_GET['final_goods_id'])):?>
+            <div class="box-footer">
+                <?= Html::button('关联采购订单', [
+                        'class' => 'btn btn-success purchase_save_final',
+                        'name'  => 'submit-button']
+                )?>
+            </div>
         <?php else:?>
             <div class="box-footer">
                 <?= Html::button('关联最终订单', [
@@ -273,7 +280,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     });
 
-    //关联采购记录
+    //关联采购记录(项目订单)
     $('.purchase_save').click(function (e) {
         var a = $("[name=relevance]:checked").val();
         if (!a) {
@@ -301,6 +308,42 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (res && res.code == 200){
                     layer.msg(res.msg, {time:2000});
                     location.replace("?r=order-agreement/detail&id=" + order_agreement_id);
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    });
+
+    //关联采购记录(非项目订单)
+    $('.purchase_save_final').click(function (e) {
+        var a = $("[name=relevance]:checked").val();
+        if (!a) {
+            layer.msg('请选择一个记录关联', {time:2000});
+            return false;
+        }
+        var select_id = 0;
+        $('.relevance').each(function (i, element) {
+            if ($(this).is(":checked")) {
+                select_id = $(element).data("select_id");
+            }
+        });
+        if (!select_id) {
+            layer.msg('请先添加记录', {time:2000});
+            return false;
+        }
+        var final_goods_id = "<?=$_GET['final_goods_id'] ?? ''?>";
+        var order_final_id = "<?=$_GET['order_final_id'] ?? ''?>";
+        $.ajax({
+            type:"post",
+            url:'?r=order-final/relevance-purchase',
+            data:{inquiry_id:select_id, final_goods_id:final_goods_id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    location.replace("?r=order-final/create-purchase&id=" + order_final_id);
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;
