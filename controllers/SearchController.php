@@ -36,7 +36,7 @@ class SearchController extends BaseController
      */
     public function actionGetGoodNumber()
     {
-        $good_number = (string)Yii::$app->request->get('good_number');
+        $good_number = (string)trim(Yii::$app->request->get('good_number'));
 
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->all();
@@ -50,7 +50,7 @@ class SearchController extends BaseController
      */
     public function actionGetGoodNumberB()
     {
-        $good_number_b = (string)Yii::$app->request->get('good_number_b');
+        $good_number_b = (string)trim(Yii::$app->request->get('good_number_b'));
 
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number_b', $good_number_b])->all();
         $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number_b');
@@ -63,7 +63,7 @@ class SearchController extends BaseController
      */
     public function actionGetNewGoodNumber()
     {
-        $good_number = (string)Yii::$app->request->get('good_number');
+        $good_number = (string)trim(Yii::$app->request->get('good_number'));
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
         $goodsIds = ArrayHelper::getColumn($goodsList, 'id');
@@ -84,7 +84,7 @@ class SearchController extends BaseController
      */
     public function actionGetGoodNumberInStock()
     {
-        $good_number = (string)Yii::$app->request->get('good_number');
+        $good_number = (string)trim(Yii::$app->request->get('good_number'));
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->all();
         //获取最后一次采购单
@@ -114,7 +114,7 @@ class SearchController extends BaseController
      */
     public function actionGetNewGoodNumberB()
     {
-        $good_number_b = (string)Yii::$app->request->get('good_number_b');
+        $good_number_b = (string)trim(Yii::$app->request->get('good_number_b'));
         $goodsList = Goods::find()->filterWhere(['like', 'goods_number_b', $good_number_b])
             ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
         return json_encode(['code' => 200, 'data' => $goodsList]);
@@ -125,7 +125,7 @@ class SearchController extends BaseController
      */
     public function actionGetSupplier()
     {
-        $supplier_name = (string)Yii::$app->request->get('supplier_name');
+        $supplier_name = (string)trim(Yii::$app->request->get('supplier_name'));
 
         $supplierList       = Supplier::find()->filterWhere(['like', 'name', $supplier_name])
             ->andWhere([
@@ -143,7 +143,7 @@ class SearchController extends BaseController
     public function actionSearch()
     {
         $data = [];
-        $good_number = (string)Yii::$app->request->get('good_number');
+        $good_number = (string)trim(Yii::$app->request->get('good_number'));
 
         $goods = Goods::find()->where(['goods_number' => $good_number])->one();
 
