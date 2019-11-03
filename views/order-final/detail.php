@@ -134,7 +134,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td rowspan="2">发行价</td>
                 <td>发行总价</td>
                 <td>货期</td>
-                <td colspan="4" rowspan="2"></td>
+                <td colspan="2" rowspan="2"></td>
+                <td>最低总价</td>
+                <td rowspan="2"></td>
                 <td>预估含税总价</td>
                 <td colspan="2" rowspan="2"></td>
                 <td rowspan="2">成本单</td>
@@ -149,6 +151,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
+                <td class="sta_competitor_low_tax_price_all"></td>
                 <td class="sta_competitor_public_tax_price_all"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
@@ -199,6 +202,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var sta_quote_all_price         = 0;
             var sta_quote_all_tax_price     = 0;
             var most_quote_delivery_time    = 0;
+            var sta_competitor_low_tax_price_all    = 0;
             var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
@@ -254,6 +258,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;
                 }
+                var competitor_tax_price_all = parseFloat($(e).find('.competitor_tax_price_all').text());
+                if (competitor_tax_price_all) {
+                    sta_competitor_low_tax_price_all += competitor_tax_price_all;
+                }
 
                 var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
                 if (competitor_public_tax_price_all) {
@@ -268,6 +276,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
+            $('.sta_competitor_low_tax_price_all').text(sta_competitor_low_tax_price_all.toFixed(2));
             $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
         }
 
@@ -344,44 +353,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $(this).parent().parent().find('.quote_all_price').text(parseFloat(quote_price * number).toFixed(2));
             $(this).parent().parent().find('.quote_all_tax_price').text(parseFloat(quote_tax_price * number).toFixed(2));
 
-            var sta_all_price               = 0;
-            var sta_all_tax_price           = 0;
-            var sta_quote_all_price         = 0;
-            var sta_quote_all_tax_price     = 0;
-            var sta_all_publish_tax_price   = 0;
-            var sta_competitor_public_tax_price_all = 0;
-            $('.order_final_list').each(function (i, e) {
-                var all_price               = $(e).find('.all_price').text();
-                var all_tax_price           = $(e).find('.all_tax_price').text();
-                var quote_all_price         = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price     = $(e).find('.quote_all_tax_price').text();
-                var all_publish_tax_price   = $(e).find('.all_publish_tax_price').text();
-                if (all_price) {
-                    sta_all_price      += parseFloat(all_price);
-                }
-                if (all_tax_price) {
-                    sta_all_tax_price  += parseFloat(all_tax_price);
-                }
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
-                if (all_publish_tax_price) {
-                    sta_all_publish_tax_price += parseFloat(all_publish_tax_price);
-                }
-                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
-                if (competitor_public_tax_price_all) {
-                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
-                }
-            });
-            $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
-            $('.sta_all_price').text(sta_all_price.toFixed(2));
-            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
-            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
+            statPrice();
         });
 
         //输入竞争对手预估含税报价
@@ -389,7 +361,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var price    = parseFloat($(this).val());
             var number   = parseFloat($(this).parent().parent().find('.afterNumber input').val());
             var competitor_public_tax_price_all = number * price;
-            $('.competitor_public_tax_price_all').text(competitor_public_tax_price_all.toFixed(2));
+            $(this).parent().parent().find('.competitor_public_tax_price_all').text(competitor_public_tax_price_all.toFixed(2));
             var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
@@ -569,5 +541,53 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 }
             });
         });
+
+        //计算总价
+        function statPrice() {
+            var sta_all_price               = 0;
+            var sta_all_tax_price           = 0;
+            var sta_quote_all_price         = 0;
+            var sta_quote_all_tax_price     = 0;
+            var sta_all_publish_tax_price   = 0;
+            var sta_competitor_low_tax_price_all    = 0;
+            var sta_competitor_public_tax_price_all = 0;
+            $('.order_final_list').each(function (i, e) {
+                var all_price               = $(e).find('.all_price').text();
+                var all_tax_price           = $(e).find('.all_tax_price').text();
+                var quote_all_price         = $(e).find('.quote_all_price').text();
+                var quote_all_tax_price     = $(e).find('.quote_all_tax_price').text();
+                var all_publish_tax_price   = $(e).find('.all_publish_tax_price').text();
+                if (all_price) {
+                    sta_all_price      += parseFloat(all_price);
+                }
+                if (all_tax_price) {
+                    sta_all_tax_price  += parseFloat(all_tax_price);
+                }
+                if (quote_all_price) {
+                    sta_quote_all_price += parseFloat(quote_all_price);
+                }
+                if (quote_all_tax_price) {
+                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
+                }
+                if (all_publish_tax_price) {
+                    sta_all_publish_tax_price += parseFloat(all_publish_tax_price);
+                }
+                var competitor_tax_price_all = parseFloat($(e).find('.competitor_tax_price_all').text());
+                if (competitor_tax_price_all) {
+                    sta_competitor_low_tax_price_all += competitor_tax_price_all;
+                }
+                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
+                if (competitor_public_tax_price_all) {
+                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
+                }
+            });
+            $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
+            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+            $('.sta_competitor_low_tax_price_all').text(sta_competitor_low_tax_price_all.toFixed(2));
+            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
+        }
     });
 </script>
