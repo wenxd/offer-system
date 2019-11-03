@@ -60,6 +60,7 @@ if (in_array($userId, $adminIds)) {
             [
                 'attribute' => 'grade',
                 'format'    => 'raw',
+                'contentOptions'=>['style'=>'min-width: 80px;'],
                 'filter'    => Supplier::$grade,
                 'value'     => function ($model, $key, $index, $column) {
                     return $model->grade ? Supplier::$grade[$model->grade] : '';

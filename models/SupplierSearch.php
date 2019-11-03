@@ -89,9 +89,9 @@ class SupplierSearch extends Supplier
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'telephone', $this->telephone])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'grade_reason', $this->email])
-            ->andFilterWhere(['like', 'advantage_product', $this->email])
-            ->andFilterWhere(['like', 'contacts', $this->email])
+            ->andFilterWhere(['like', 'grade_reason', $this->grade_reason])
+            ->andFilterWhere(['like', 'advantage_product', $this->advantage_product])
+            ->andFilterWhere(['like', 'contacts', $this->contacts])
             ->andFilterWhere(['like', 'full_name', $this->full_name]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
