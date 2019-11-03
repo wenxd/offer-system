@@ -105,9 +105,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$item->tax?></td>
                 <?php
-                    $public_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
+                    $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
                 ?>
-                <td class="publish_tax_price"><?=$public_tax_price?></td>
+                <td class="publish_tax_price"><?=$publish_tax_price?></td>
                 <td class="all_publish_tax_price"></td>
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                 <?php
@@ -115,10 +115,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax/100), 2, '.', '') : 0;
                 ?>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
-                <td class="competitor_tax_price"><?=$competitorGoodsTaxPrice?></td>
+                <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                 <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$public_tax_price * $competitor_ratio/100?>"></td>
-                <td class="competitor_public_tax_price_all"><?=$public_tax_price * $competitor_ratio/100 * $item->number?></td>
+                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$publish_tax_price * $competitor_ratio/100?>"></td>
+                <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio/100 * $item->number?></td>
                 <td class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
@@ -518,6 +518,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     item.quote_all_price     = $(element).parent().parent().find('.quote_all_price').text();
                     item.quote_all_tax_price = $(element).parent().parent().find('.quote_all_tax_price').text();
                     item.quote_delivery_time = $(element).parent().parent().find('.quote_delivery_time input').val();
+
+                    item.competitor_goods_id                    = $(element).parent().parent().find('.competitor_tax_price').data('competitor_goods_id');
+                    item.competitor_goods_tax_price             = parseFloat($(element).parent().parent().find('.competitor_tax_price').text());
+                    item.competitor_goods_tax_price_all         = parseFloat($(element).parent().parent().find('.competitor_tax_price_all').text());
+                    item.competitor_goods_quote_tax_price       = parseFloat($(element).parent().parent().find('.competitor_public_tax_price input').val());
+                    item.competitor_goods_quote_tax_price_all   = parseFloat($(element).parent().parent().find('.competitor_public_tax_price_all').text());
 
                     goods_info.push(item);
                 }

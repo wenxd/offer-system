@@ -1,5 +1,7 @@
 <?php
 
+use app\models\CompetitorGoods;
+use app\models\SystemConfig;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -23,7 +25,11 @@ $userId   = Yii::$app->user->identity->id;
 
 //报价员权限
 $is_show = in_array($userId, $adminIds);
-
+//竞争对手报价系数
+$competitor_ratio = SystemConfig::find()->select('value')->where([
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+    'title'      => SystemConfig::TITLE_COMPETITOR_RATIO
+])->scalar();
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -53,6 +59,11 @@ $is_show = in_array($userId, $adminIds);
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
+                <th>竞争对手名称</th>
+                <th>竞争对手最低含税单价</th>
+                <th>竞争对手最低含税总价</th>
+                <th>竞争对手预估含税报价</th>
+                <th>竞争对手预估含税总价</th>
                 <th>成本未税单价</th>
                 <th>成本含税单价</th>
                 <th>成本未税总价</th>
@@ -94,6 +105,15 @@ $is_show = in_array($userId, $adminIds);
                     <td class="publish_tax_price"><?=$publish_tax_price?></td>
                     <td class="all_publish_tax_price"><?=$publish_tax_price * $item->number?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                    <?php
+                        $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $item->goods_id])->orderBy('price asc')->one();
+                        $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax_rate/100), 2, '.', '') : 0;
+                    ?>
+                    <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
+                    <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
+                    <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
+                    <td class="competitor_public_tax_price"><?=$publish_tax_price * $competitor_ratio/100?></td>
+                    <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio/100 * $item->number?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
@@ -113,6 +133,8 @@ $is_show = in_array($userId, $adminIds);
                 <td rowspan="2">发行</td>
                 <td>发行含税总价合计</td>
                 <td>发行最长货期</td>
+                <td colspan="4" rowspan="2"></td>
+                <td>预估含税总价</td>
                 <td rowspan="2"></td>
                 <td rowspan="2">成本单</td>
                 <td>成本未税总价合计</td>
@@ -129,6 +151,7 @@ $is_show = in_array($userId, $adminIds);
                 <?php if (!$is_show) :?>
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
+                <td class="sta_competitor_public_tax_price_all"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
                 <td class="mostLongTime"></td>
@@ -169,6 +192,7 @@ $is_show = in_array($userId, $adminIds);
             var sta_quote_all_price         = 0;
             var sta_quote_all_tax_price     = 0;
             var most_quote_delivery_time    = 0;
+            var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var publish_tax_price = parseFloat($(e).find('.all_publish_tax_price').text());
                 if (publish_tax_price) {
@@ -204,9 +228,15 @@ $is_show = in_array($userId, $adminIds);
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;
                 }
+                var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
+                if (competitor_public_tax_price_all) {
+                    sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
+                }
             });
             $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
             $('.most_publish_delivery_time').text(most_publish_delivery_time.toFixed(2));
+
+            $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
 
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
