@@ -625,6 +625,7 @@ ALTER TABLE `order_quote` ADD COLUMN `quote_at` NOT NULL DEFAULT CURRENT_TIMESTA
 ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
 ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
 ALTER TABLE `order_quote` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_quote` ADD COLUMN `competitor_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '竞争者报价系数';
 
 ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';

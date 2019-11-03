@@ -171,6 +171,8 @@ $competitor_ratio = SystemConfig::find()->select('value')->where([
         <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
 
         <?= $form->field($model, 'delivery_ratio')->textInput(['readonly' => true]) ?>
+
+        <?= $form->field($model, 'competitor_ratio')->textInput(['readonly' => true]) ?>
         <?php endif;?>
     </div>
     <?php ActiveForm::end(); ?>

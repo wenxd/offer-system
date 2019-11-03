@@ -37,7 +37,7 @@ $model->delivery_ratio = SystemConfig::find()->select('value')
 $model->quote_publish_price_ratio = 1;
 
 //竞争对手报价系数
-$competitor_ratio = SystemConfig::find()->select('value')->where([
+$model->competitor_ratio = $competitor_ratio = SystemConfig::find()->select('value')->where([
         'is_deleted' => SystemConfig::IS_DELETED_NO,
         'title'      => SystemConfig::TITLE_COMPETITOR_RATIO
     ])->scalar();
@@ -170,6 +170,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         <?= $form->field($model, 'delivery_ratio')->textInput() ?>
 
         <?= $form->field($model, 'quote_publish_price_ratio')->textInput()->label('发行价系数') ?>
+
+        <?= $form->field($model, 'competitor_ratio')->textInput()->label('竞报价系数') ?>
     </div>
     <div class="box-footer">
         <?= Html::button('保存报价单', [
@@ -589,5 +591,18 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_competitor_low_tax_price_all').text(sta_competitor_low_tax_price_all.toFixed(2));
             $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
         }
+        
+        //输入竞争者报价系数
+        $('#orderquote-competitor_ratio').bind('input propertychange', function (e) {
+            var competitor_ratio = parseFloat($(this).val());
+            $('.order_final_list').each(function (i, e) {
+                var number = parseFloat($(e).find('.afterNumber input').val());
+                var public_tax_price = parseFloat($(e).find('.publish_tax_price').text());
+                var competitor_public_tax_price = public_tax_price * competitor_ratio;
+                $(e).find('.competitor_public_tax_price input').val(competitor_public_tax_price.toFixed(2));
+                $(e).find('.competitor_public_tax_price_all').text((public_tax_price * number).toFixed(2));
+            });
+            statPrice();
+        });
     });
 </script>
