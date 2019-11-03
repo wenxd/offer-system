@@ -119,7 +119,7 @@ class Order extends ActiveRecord
             'order_price'     => '订单总金额',
             'remark'          => '备注',
             'type'            => '订单类型',
-            'status'          => '询价',
+            'status'          => '全部确认询价完成',
             'is_deleted'      => '是否删除：0未删除 1已删除',
             'provide_date'    => '报价截止日期',
             'updated_at'      => '更新时间',
