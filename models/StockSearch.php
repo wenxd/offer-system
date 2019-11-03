@@ -54,7 +54,7 @@ class StockSearch extends Stock
      */
     public function search($params)
     {
-        $query = Stock::find()->rightJoin('goods as a', 'a.id = stock.good_id');
+        $query = Stock::find()->rightJoin('goods as a', 'a.id = stock.good_id')->where(['a.is_deleted' => 0]);
 
         // add conditions that should always apply here
 
