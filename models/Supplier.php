@@ -137,6 +137,9 @@ class Supplier extends ActiveRecord
             $notice->notice_at = date('Y-m-d H:i:s');
             $notice->save();
         }
+        if ($this->is_confirm && !$this->agree_at) {
+            $this->agree_at = date('Y-m-d H:i:s');
+        }
         return parent::beforeSave($insert);
     }
 

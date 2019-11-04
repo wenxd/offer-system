@@ -32,7 +32,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover" style="width: 2100px; table-layout: auto">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px; table-layout: auto">
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
                 <tr>
                     <th>序号</th>
