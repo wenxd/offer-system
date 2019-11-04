@@ -83,9 +83,13 @@ if ($isShow) {
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        if ($isShow) {
+                            return $model->goods->goods_number;
+                        } else {
+                            return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        }
                     } else {
                         return '';
                     }
