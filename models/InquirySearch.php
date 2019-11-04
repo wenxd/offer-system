@@ -67,7 +67,7 @@ class InquirySearch extends Inquiry
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'price', 'tax_price', 'inquiry_datetime', 'updated_at', 'created_at']
+                'attributes' => ['id', 'price', 'tax_price', 'delivery_time', 'inquiry_datetime', 'updated_at', 'created_at']
             ]
         ]);
 

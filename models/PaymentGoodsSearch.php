@@ -61,7 +61,7 @@ class PaymentGoodsSearch extends PaymentGoods
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'fixed_number', 'updated_at', 'created_at']
+                'attributes' => ['id', 'delivery_time', 'fixed_price', 'fixed_number', 'updated_at', 'created_at']
             ],
         ]);
 
