@@ -190,7 +190,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => Helper::getAdminList(['系统管理员', '采购员', '询价员']),
+                'filter'    => in_array($userId, $purchaseAdminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '采购员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if (isset(Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id])) {
                         return Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id];
@@ -227,8 +227,11 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'visible'        => !in_array($userId, $adminIds),
-                'value'          => function ($model, $key, $index, $column){
+                'value'          => function ($model, $key, $index, $column) use($userId, $purchaseAdminIds) {
                     $html = '';
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $html;
+                    }
                     $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
