@@ -23,14 +23,14 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
     <div class="box table-responsive">
         <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
-            <table id="example2" class="table table-bordered table-hover">
+            <table id="example2" class="table table-bordered table-hover" style="width: 2000px; table-layout: auto">
                 <thead>
                     <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>" data-key="<?=$_GET['key']?>">
                         <th>序号</th>
-                        <th>零件号</th>
-                        <th>厂家号</th>
-                        <th>中文描述</th>
-                        <th>英文描述</th>
+                        <th style="width: 150px;">零件号</th>
+                        <th style="width: 150px;">厂家号</th>
+                        <th style="width: 200px;">中文描述</th>
+                        <th style="width: 200px;">英文描述</th>
                         <th>原厂家</th>
                         <th>原厂家备注</th>
                         <th>单位</th>
@@ -93,7 +93,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                     <tr style="background-color: #acccb9">
                         <td colspan="11">汇总统计</td>
                         <td class="sta_publish_tax_price"></td>
-                        <td></td>
+                        <td class="sta_publish_delivery_time"></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -178,32 +178,41 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                 }
             });
         });
-        var sta_all_price           = 0;
-        var sta_all_tax_price       = 0;
-        var mostLongTime            = 0;
-        var sta_publish_tax_price   = 0;
-        $('.goods_list').each(function (i, e) {
-            var delivery_time       = parseFloat($(e).find('.delivery_time').text());
-            var number              = $(e).find('.number').text();
-            var price               = $(e).find('.price').text();
-            var tax_price           = $(e).find('.tax_price').text();
-            var publish_tax_price   = parseFloat($(e).find('.publish_tax_price').text());
-            var all_price           = number * price;
-            var all_tax_price       = number * tax_price;
-            var all_publish_tax_price = number * publish_tax_price;
-            sta_all_price += all_price;
-            sta_all_tax_price += all_tax_price;
-            if (delivery_time > mostLongTime) {
-                mostLongTime = delivery_time;
-            }
-            sta_publish_tax_price += all_publish_tax_price;
-            $(e).find('.all_price').text(all_price.toFixed(2));
-            $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
-            $(e).find('.all_publish_tax_price').text(all_publish_tax_price.toFixed(2));
-        });
-        $('.sta_publish_tax_price').text(sta_publish_tax_price);
-        $('.sta_all_price').text(sta_all_price.toFixed(2));
-        $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
-        $('.mostLongTime').text(mostLongTime);
+        init();
+        function init() {
+            var sta_all_price           = 0;
+            var sta_all_tax_price       = 0;
+            var mostLongTime            = 0;
+            var sta_publish_tax_price   = 0;
+            var sta_publish_delivery_time = 0;
+            $('.goods_list').each(function (i, e) {
+                var delivery_time       = parseFloat($(e).find('.delivery_time').text());
+                var number              = $(e).find('.number').text();
+                var price               = $(e).find('.price').text();
+                var tax_price           = $(e).find('.tax_price').text();
+                var publish_tax_price   = parseFloat($(e).find('.publish_tax_price').text());
+                var all_price           = number * price;
+                var all_tax_price       = number * tax_price;
+                var all_publish_tax_price = number * publish_tax_price;
+                sta_all_price += all_price;
+                sta_all_tax_price += all_tax_price;
+                if (delivery_time > mostLongTime) {
+                    mostLongTime = delivery_time;
+                }
+                sta_publish_tax_price += all_publish_tax_price;
+                $(e).find('.all_price').text(all_price.toFixed(2));
+                $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
+                $(e).find('.all_publish_tax_price').text(all_publish_tax_price.toFixed(2));
+                var publish_delivery_time = parseFloat($(e).find('.publish_delivery_time').text());
+                if (publish_delivery_time > sta_publish_delivery_time) {
+                    sta_publish_delivery_time = publish_delivery_time;
+                }
+            });
+            $('.sta_publish_tax_price').text(sta_publish_tax_price);
+            $('.sta_publish_delivery_time').text(sta_publish_delivery_time);
+            $('.sta_all_price').text(sta_all_price.toFixed(2));
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+            $('.mostLongTime').text(mostLongTime);
+        }
     });
 </script>
