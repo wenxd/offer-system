@@ -293,4 +293,13 @@ class InquiryController extends BaseController
             }
         }
     }
+
+    public function actionConfirm($id)
+    {
+        $inquiry = Inquiry::findOne($id);
+        $inquiry->is_confirm_better = 1;
+        $inquiry->save();
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['index']);
+    }
 }
