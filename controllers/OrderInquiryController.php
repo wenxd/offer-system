@@ -306,8 +306,8 @@ class OrderInquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率', '含税单价', '询价数量', '单位',
-            '货期(周)', '供应商', '备注', '是否优选', '优选理由'];
+        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率*', '含税单价*', '询价数量', '单位',
+            '货期(周)*', '供应商*', '备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
