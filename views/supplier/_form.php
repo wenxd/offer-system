@@ -11,8 +11,12 @@ use app\models\{Supplier, AuthAssignment};
 /* @var $form yii\widgets\ActiveForm */
 $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-
 $userId = Yii::$app->user->identity->id;
+
+if ($model->isNewRecord) {
+    $model->is_confirm = Supplier::IS_CONFIRM_NO;
+}
+
 ?>
 
 <div class="box">
