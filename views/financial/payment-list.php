@@ -31,9 +31,12 @@ $userId   = Yii::$app->user->identity->id;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Html::button('刷新', [
-            'class'   => 'btn btn-success upload',
+            'class'   => 'btn btn-info upload',
             'name'    => 'submit-button',
             'onclick' => 'javascript:location.reload();',
+        ])?>
+        <?= Html::a('复位', Url::to(['index']), [
+            'class'   => 'btn btn-success',
         ])?>
     </div>
     <div class="box-body">

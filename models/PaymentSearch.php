@@ -57,7 +57,7 @@ class PaymentSearch extends OrderPayment
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id']
+                'attributes' => ['id', 'take_time']
             ],
             'pagination' => ['pageSize' => 10000]
         ]);

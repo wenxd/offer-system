@@ -20,7 +20,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
                 'is_payment', 'is_bill', 'is_stock', 'is_complete'], 'integer'],
-            [['agreement_date', 'updated_at', 'created_at'], 'safe'],
+            [['agreement_date', 'updated_at', 'created_at', 'payment_price', 'payment_ratio', 'remain_price'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
             [['id'], 'trim'],
@@ -88,6 +88,9 @@ class OrderFinancialCollectSearch extends OrderAgreement
             'order_agreement.is_payment'       => $this->is_payment,
             'order_agreement.is_bill'          => $this->is_bill,
             'order_agreement.is_complete'      => $this->is_complete,
+            'order_agreement.payment_price'    => $this->payment_price,
+            'order_agreement.payment_ratio'    => $this->payment_ratio,
+            'order_agreement.remain_price'     => $this->remain_price,
         ]);
 
 
