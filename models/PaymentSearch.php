@@ -90,6 +90,8 @@ class PaymentSearch extends OrderPayment
             'order_payment.payment_ratio'    => $this->payment_ratio,
         ]);
 
+        $query->andFilterWhere(['like', 'order_payment.payment_sn', $this->payment_sn]);
+
         if ($this->take_time && strpos($this->take_time, ' - ')) {
             list($take_time_start, $take_time_end) = explode(' - ', $this->take_time);
             $take_time_start .= ' 00:00:00';

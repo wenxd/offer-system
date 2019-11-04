@@ -60,7 +60,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id']
+                'attributes' => ['id', 'payment_at']
             ],
         ]);
 
@@ -92,7 +92,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
             'order_agreement.payment_ratio'    => $this->payment_ratio,
             'order_agreement.remain_price'     => $this->remain_price,
         ]);
-
+        $query->andFilterWhere(['like', 'order_agreement.agreement_sn', $this->agreement_sn]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);
