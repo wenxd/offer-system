@@ -80,7 +80,7 @@ $userId    = Yii::$app->user->identity->id;
                             <td><?=$item->goods->description_en?></td>
                             <td><?=$item->goods->unit?></td>
                             <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
-                            <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
+                            <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                             <td><?=$item->number?></td>
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                             <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
@@ -111,8 +111,8 @@ $userId    = Yii::$app->user->identity->id;
                                 <td><?=$item->goods->description?></td>
                                 <td><?=$item->goods->description_en?></td>
                                 <td><?=$item->goods->unit?></td>
-                                <td><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></td>
-                                <td><?=Html::img($item->goods->img_url, ['width' => '100px'])?></td>
+                                <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
+                                <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                                 <td><?=$item->number?></td>
                                 <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                                 <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
