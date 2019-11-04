@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use app\models\OrderInquiry;
 use app\models\Admin;
+use app\models\Helper;
 use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -102,7 +103,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '询价员',
-                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '询价员']),
+                'filter'    => in_array($userId, $adminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

@@ -46,7 +46,7 @@ $userId   = Yii::$app->user->identity->id;
                     'format'    => 'raw',
                     'label'     => '询价员',
                     'contentOptions' =>['style'=>'min-width: 100px;'],
-                    'filter'    => $admins,
+                    'filter'    => in_array($userId, $adminIds) ? [$userId => Yii::$app->user->identity->username] : $admins,
                     'value'     => function ($model, $key, $index, $column) {
                         return $model->admin ? $model->admin->username : '';
                     }
