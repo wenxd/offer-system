@@ -47,19 +47,19 @@ $system_tax = SystemConfig::find()->select('value')->where([
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover" style="width: 3000px;">
+        <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
                     <th>序号</th>
                     <th>操作</th>
-                    <th>零件号</th>
-                    <th>厂家号</th>
-                    <th>中文描述</th>
-                    <th>英文描述</th>
+                    <th style="width: 100px;">零件号</th>
+                    <th style="width: 100px;">厂家号</th>
+                    <th style="width: 100px;">中文描述</th>
+                    <th style="max-width: 150px;">英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
-                    <th>供应商</th>
+                    <th style="width: 100px;">供应商</th>
                     <th>询价员</th>
                     <th>税率</th>
                     <th>最低未税单价</th>
@@ -152,7 +152,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
                 <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
-                <td style="width: 100px;"><?=$item->goods->description?></td>
+                <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->description_en?></td>
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
