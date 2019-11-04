@@ -110,9 +110,9 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
 
         <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
 
-        <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('合同签订时间'); ?>
+        <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('支出合同签订时间'); ?>
 
-        <?= $form->field($model, 'delivery_date')->textInput(['readonly' => true, 'value' => substr($model->delivery_date, 0, 10)])->label('交货日期'); ?>
+        <?= $form->field($model, 'delivery_date')->textInput(['readonly' => true, 'value' => substr($model->delivery_date, 0, 10)])->label('支出合同交货日期'); ?>
 
         <?= $form->field($model, 'payment_sn')->textInput(['readonly' => true])->label('支出合同单号'); ?>
 
