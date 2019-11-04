@@ -140,10 +140,10 @@ $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
                 'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
                 'name'  => 'submit-button']
         )?>
+        <?php if ($is_super) :?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
         ])?>
-        <?php if ($is_super) :?>
         <?= Html::a('下载模板', Url::to(['download']), [
             'data-pjax' => '0',
             'class'     => 'btn btn-primary btn-flat',
@@ -230,9 +230,11 @@ $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
                 'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
                 'name'  => 'submit-button']
         )?>
+        <?php if ($is_super):?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
         ])?>
+        <?php endif;?>
     </div>
 
     <?php ActiveForm::end(); ?>
