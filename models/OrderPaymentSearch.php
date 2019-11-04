@@ -72,7 +72,7 @@ class OrderPaymentSearch extends OrderPayment
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id']
+                'attributes' => ['id', 'agreement_at', 'delivery_date', 'stock_at']
             ],
         ]);
 
