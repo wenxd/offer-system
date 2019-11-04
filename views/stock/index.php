@@ -24,10 +24,10 @@ $userId    = Yii::$app->user->identity->id;
 $isShow    = in_array($userId, $adminIds);
 
 if ($isShow) {
-    $func = '{gen}';
+    $func = '{gen} {index}';
     $operate = '{view}';
 } else {
-    $func = '{gen} {delete} {stock_in} {stock_out} {download}';
+    $func = '{gen} {delete} {stock_in} {stock_out} {download} {index}';
     $operate = '{view} {update}';
 }
 
@@ -52,6 +52,12 @@ if ($isShow) {
                     return Html::a('<i class="fa fa-download"></i> 导出', Url::to(['download']), [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
                     ]);
                 }
             ]

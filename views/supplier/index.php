@@ -5,6 +5,7 @@ use app\models\AuthAssignment;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 use app\models\Supplier;
 use app\extend\widgets\Bar;
@@ -23,15 +24,23 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
 if (in_array($userId, $adminIds)) {
-    $control = '{create}';
+    $control = '{create} {index}';
 } else {
-    $control = '{create} {delete}';
+    $control = '{create} {delete} {index}';
 }
 ?>
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
             'template' => $control,
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
         ])?>
     </div>
     <div class="box-body">

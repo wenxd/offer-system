@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {inquiry}',
+            'template' => '{create} {delete} {download} {upload} {inquiry} {index}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -39,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class'     => 'btn btn-primary btn-flat add_inquiry',
                     ]);
                 },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
             ]
         ])?>
     </div>

@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload}',
+            'template' => '{create} {delete} {download} {upload} {index}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -34,6 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a('<i class="fa fa-upload"></i> 上传导入', 'Javascript: void(0)', [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-info btn-flat upload',
+                    ]);
+                },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
                     ]);
                 }
             ]

@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use app\models\Admin;
 use app\models\AuthAssignment;
 use yii\helpers\ArrayHelper;
@@ -23,6 +24,19 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

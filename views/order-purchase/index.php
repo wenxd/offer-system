@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use app\models\OrderPayment;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -29,6 +30,19 @@ foreach ($adminList as $key => $admin) {
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
