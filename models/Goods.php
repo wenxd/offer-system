@@ -234,6 +234,19 @@ class Goods extends ActiveRecord
 
     public function beforeSave($insert)
     {
+        $this->goods_number             = strtoupper($this->goods_number);
+        $this->goods_number_b           = strtoupper($this->goods_number_b);
+        $this->description              = strtoupper($this->description);
+        $this->description_en           = strtoupper($this->description_en);
+        $this->original_company         = strtoupper($this->original_company);
+        $this->original_company_remark  = strtoupper($this->original_company_remark);
+        $this->unit                     = strtoupper($this->unit);
+        $this->material                 = strtoupper($this->material);
+        $this->material_code            = strtoupper($this->material_code);
+        $this->import_mark              = strtoupper($this->import_mark);
+        $this->part                     = strtoupper($this->part);
+        $this->remark                   = strtoupper($this->remark);
+
         //设备信息处理
         if ($this->device_info != $this->getOldAttribute('device_info')) {
             $arr = [];
