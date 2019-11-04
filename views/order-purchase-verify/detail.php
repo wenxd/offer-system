@@ -32,20 +32,20 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover" style="width: 1500px;">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2100px; table-layout: auto">
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
                 <tr>
                     <th>序号</th>
-                    <th>零件号</th>
-                    <th>厂家号</th>
-                    <th>中文描述</th>
-                    <th>英文描述</th>
+                    <th style="width: 100px;">零件号</th>
+                    <th style="width: 100px;">厂家号</th>
+                    <th style="width: 100px;">中文描述</th>
+                    <th style="max-width: 150px;">英文描述</th>
                     <th>原厂家</th>
                     <th>税率</th>
                     <th>发行含税单价</th>
                     <th>发行含税总价</th>
                     <th>发行货期</th>
-                    <th>供应商</th>
+                    <th style="width: 100px;">供应商</th>
                     <th>货期(周)</th>
                     <th>含税单价</th>
                     <th>含税总价</th>
