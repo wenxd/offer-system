@@ -3,7 +3,15 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\{Order, OrderAgreement, OrderPurchase, InquiryGoods, AgreementGoods, PurchaseGoods};
+use app\models\{Inquiry,
+    Order,
+    OrderAgreement,
+    OrderPurchase,
+    InquiryGoods,
+    AgreementGoods,
+    PurchaseGoods,
+    Stock,
+    SystemConfig};
 use app\models\OrderAgreementSearch;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -180,5 +188,76 @@ class OrderAgreementController extends Controller
         $data['order']          = Order::findOne($orderAgreement->order_id);
 
         return $this->render('detail', $data);
+    }
+
+    /**
+     * 一键走最低
+     */
+    public function actionLow($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('price asc')->one();
+            if ($inquiry) {
+                $agreementGoods->price              = $inquiry->price;
+                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
+                $agreementGoods->relevance_id       = $inquiry->id;
+                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
+    }
+
+    /**
+     * 一键最短
+     */
+    public function actionShort($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('delivery_time asc')->one();
+            if ($inquiry) {
+                $agreementGoods->price              = $inquiry->price;
+                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
+                $agreementGoods->relevance_id       = $inquiry->id;
+                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
+    }
+
+    /**
+     * 一键走库存
+     */
+    public function actionStock($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+            if ($stock) {
+                $agreementGoods->purchase_number = $agreementGoods->number > $stock->number ? $agreementGoods->number - $stock->number : 0;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
     }
 }

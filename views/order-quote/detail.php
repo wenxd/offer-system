@@ -258,6 +258,7 @@ $is_show = in_array($userId, $adminIds);
                 item.price           = $(ele).find('.change_price').val();
                 item.tax_price       = $(ele).find('.tax_price').text();
                 item.delivery_time   = $(ele).find('.delivery_time input').val();
+                item.purchase_number  = $(ele).find('.number').val();
                 goods_info.push(item);
 
             });

@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -45,6 +46,31 @@ $system_tax = SystemConfig::find()->select('value')->where([
 
 </style>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{low} {short} {stock}',
+            'buttons' => [
+                'low' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'short' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最短', Url::to(['short', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+                'stock' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">
@@ -178,7 +204,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
                 <td class="oldNumber"><?=$item->number?></td>
                 <td class="afterNumber">
-                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$purchase_number ? $purchase_number : $item->number?>">
+                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->purchase_number?>">
                 </td>
                 <td><?=$item->goods->unit?></td>
                 <td class="use_stock"></td>
