@@ -48,7 +48,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{low} {short} {stock}',
+            'template' => '{low} {short} {stock} {recover}',
             'buttons' => [
                 'low' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
@@ -64,6 +64,12 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 },
                 'stock' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'recover' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键恢复', Url::to(['recover', 'id' => $_GET['id']]), [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat',
                     ]);
@@ -290,36 +296,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             var stat_short_tax_price_all= 0;
             var most_short_deliver      = 0;
             $('.order_agreement_list').each(function (i, e) {
-                //最低
-                var low_price       = parseFloat($(e).find('.low_price').text());
-                var low_tax_price   = parseFloat($(e).find('.low_tax_price').text());
-                var low_delivery    = parseFloat($(e).find('.low_delivery').text());
-                if (low_price) {
-                    stat_low_price_all += low_price;
-                }
-                if (low_tax_price){
-                    stat_low_tax_price_all += low_tax_price;
-                }
-                if (low_delivery > most_low_deliver) {
-                    most_low_deliver = low_delivery;
-                }
-                //最短
-                var short_price     = parseFloat($(e).find('.short_price').text());
-                var short_tax_price = parseFloat($(e).find('.short_tax_price').text());
-                var short_delivery  = parseFloat($(e).find('.short_delivery').text());
-                if (short_price) {
-                    stat_short_price_all += short_price;
-                }
-                if (short_tax_price){
-                    stat_short_tax_price_all += short_tax_price;
-                }
-                if (short_delivery > most_short_deliver) {
-                    most_short_deliver = short_delivery;
-                }
-
                 var price           = $(e).find('.price').text();
                 var tax_price       = $(e).find('.tax_price').text();
-                var number          = $(e).find('.oldNumber').text();
+                var number          = parseFloat($(e).find('.number').val());
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 var purchase_number = $(e).find('.number').val();
 
@@ -348,11 +327,32 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 if (quote_delivery_time > quote_mostLongTime) {
                     quote_mostLongTime = quote_delivery_time;
                 }
+
+                //最低
+                var low_price       = parseFloat($(e).find('.low_price').text());
+                var low_tax_price   = low_price * (1 + '<?=$system_tax?>' / 100);
+                var low_delivery    = parseFloat($(e).find('.low_delivery').text());
+                if (low_tax_price){
+                    $(e).find('.low_tax_price').text(parseFloat(low_tax_price * number).toFixed(2));
+                    stat_low_tax_price_all += low_tax_price * number;
+                }
+                if (low_delivery > most_low_deliver) {
+                    most_low_deliver = low_delivery;
+                }
+                //最短
+                var short_price     = parseFloat($(e).find('.short_price').text());
+                var short_tax_price = short_price * (1 + '<?=$system_tax?>' / 100);
+                var short_delivery  = parseFloat($(e).find('.short_delivery').text());
+                if (short_tax_price){
+                    $(e).find('.short_tax_price').text(parseFloat(short_tax_price * number).toFixed(2));
+                    stat_short_tax_price_all += short_tax_price * number;
+                }
+                if (short_delivery > most_short_deliver) {
+                    most_short_deliver = short_delivery;
+                }
             });
-            $('.stat_low_price_all').text(stat_low_price_all.toFixed(2));
             $('.stat_low_tax_price_all').text(stat_low_tax_price_all.toFixed(2));
             $('.most_low_deliver').text(most_low_deliver);
-            $('.stat_short_price_all').text(stat_short_price_all.toFixed(2));
             $('.stat_short_tax_price_all').text(stat_short_tax_price_all.toFixed(2));
             $('.most_short_deliver').text(most_short_deliver);
             $('.mostLongTime').text(mostLongTime);

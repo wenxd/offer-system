@@ -260,4 +260,12 @@ class OrderAgreementController extends Controller
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
         return $this->redirect(['detail', 'id' => $id]);
     }
+
+    /**
+     * 一键恢复
+     */
+    public function actionRecover()
+    {
+
+    }
 }
