@@ -30,15 +30,15 @@ $is_show = in_array($userId, $adminIds);
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
                 <th>零件号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>厂家号</th>
                 <?php endif;?>
-                <th>中文描述</th>
-                <th>英文描述</th>
+                <th style="width: 200px;">中文描述</th>
+                <th style="width: 200px;">英文描述</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>原厂家</th>
                 <th>原厂家备注</th>

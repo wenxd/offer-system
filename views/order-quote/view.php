@@ -29,7 +29,7 @@ $is_show = in_array($userId, $adminIds);
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 3000px;">
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
@@ -37,8 +37,8 @@ $is_show = in_array($userId, $adminIds);
                 <?php if (!$is_show) :?>
                 <th>厂家号</th>
                 <?php endif;?>
-                <th>中文描述</th>
-                <th>英文描述</th>
+                <th style="width: 200px;">中文描述</th>
+                <th style="width: 200px;">英文描述</th>
                 <?php if (!$is_show) :?>
                 <th>原厂家</th>
                 <th>原厂家备注</th>

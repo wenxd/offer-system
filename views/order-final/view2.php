@@ -14,14 +14,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box table-responsive">
         <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
-            <table id="example2" class="table table-bordered table-hover">
+            <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
                 <thead>
                 <tr class="goods">
                     <th>序号</th>
                     <th>零件号</th>
                     <th>厂家号</th>
-                    <th>中文描述</th>
-                    <th>英文描述</th>
+                    <th style="width: 200px;">中文描述</th>
+                    <th style="width: 200px;">英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>单位</th>

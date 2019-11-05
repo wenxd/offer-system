@@ -45,14 +45,14 @@ $model->competitor_ratio = $competitor_ratio = SystemConfig::find()->select('val
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
                 <th>零件号</th>
                 <th>厂家号</th>
-                <th>中文描述</th>
+                <th style="width: 200px;">中文描述</th>
                 <th>原厂家</th>
                 <th>订单需求数量</th>
                 <th>库存数量</th>
