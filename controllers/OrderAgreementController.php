@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\{Inquiry,
+use app\models\{AgreementGoodsBak,
+    Inquiry,
     Order,
     OrderAgreement,
     OrderPurchase,
@@ -264,8 +265,23 @@ class OrderAgreementController extends Controller
     /**
      * 一键恢复
      */
-    public function actionRecover()
+    public function actionRecover($id)
     {
-
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $agreementGoodsBak = AgreementGoodsBak::find()->where(['order_agreement_id' => $id, 'agreement_goods_id' => $agreementGoods->id])->one();
+            if ($agreementGoodsBak) {
+                $agreementGoods->tax_rate        = $agreementGoodsBak->tax_rate;
+                $agreementGoods->price           = $agreementGoodsBak->price;
+                $agreementGoods->tax_price       = $agreementGoodsBak->tax_price;
+                $agreementGoods->all_price       = $agreementGoodsBak->all_price;
+                $agreementGoods->all_tax_price   = $agreementGoodsBak->all_tax_price;
+                $agreementGoods->purchase_number = $agreementGoodsBak->purchase_number;
+                $agreementGoods->delivery_time   = $agreementGoodsBak->delivery_time;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
     }
 }

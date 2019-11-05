@@ -8,7 +8,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
-use app\models\{Goods, Inquiry, InquiryGoods, Order, OrderAgreement, OrderQuote, OrderFinal, QuoteGoods};
+use app\models\{AgreementGoodsBak,
+    Goods,
+    Inquiry,
+    InquiryGoods,
+    Order,
+    OrderAgreement,
+    OrderQuote,
+    OrderFinal,
+    QuoteGoods};
 use app\models\OrderQuoteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -303,6 +311,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->all_price           = $quoteGoods->all_price;
                 $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
                 $agreementGoods->delivery_time       = $quoteGoods->delivery_time;
+
                 //用item的值
                 $agreementGoods->quote_price         = $item['price'];
                 $agreementGoods->quote_tax_price     = $item['tax_price'];
@@ -313,6 +322,20 @@ class OrderQuoteController extends Controller
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->purchase_number     = $item['purchase_number'];
                 $agreementGoods->save();
+
+                //用于一键恢复
+                $agreementGoodsBak = new AgreementGoodsBak();
+                $agreementGoodsBak->order_agreement_id = $orderAgreement->primaryKey;
+                $agreementGoodsBak->order_agreement_sn = $orderAgreement->agreement_sn;
+                $agreementGoodsBak->agreement_goods_id = $agreementGoods->primaryKey;
+                $agreementGoodsBak->tax_rate           = $quoteGoods->tax_rate;
+                $agreementGoodsBak->price              = $quoteGoods->price;
+                $agreementGoodsBak->tax_price          = $quoteGoods->tax_price;
+                $agreementGoodsBak->all_price          = $quoteGoods->all_price;
+                $agreementGoodsBak->all_tax_price      = $quoteGoods->all_tax_price;
+                $agreementGoodsBak->purchase_number    = $item['purchase_number'];
+                $agreementGoodsBak->delivery_time      = $quoteGoods->delivery_time;
+                $agreementGoodsBak->save();
 
                 $money += $agreementGoods->quote_all_tax_price;
             }

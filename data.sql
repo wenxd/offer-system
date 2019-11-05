@@ -877,3 +877,18 @@ CREATE TABLE `temp_payment_goods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='临时支出合同单与零件ID对应表(采购记录表)';
 
+CREATE TABLE `agreement_goods_bak` (
+  `id`                  int(11)         NOT NULL                AUTO_INCREMENT,
+  `order_agreement_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '合同订单ID',
+  `order_agreement_sn`  varchar(255)    NOT NULL DEFAULT ''     COMMENT '合同订单号',
+  `agreement_goods_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '合同零件表ID主键',
+  `tax_rate`            decimal(4,2)    NOT NULL DEFAULT '0.00' COMMENT '税率',
+  `price`               decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `tax_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税单价',
+  `all_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `purchase_number`     int(11)         NOT NULL DEFAULT '0'    COMMENT '采购数量',
+  `delivery_time`       decimal(10,1)   NOT NULL DEFAULT '0.0'  COMMENT '成本货期（周）',
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
