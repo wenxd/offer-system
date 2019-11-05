@@ -24,7 +24,7 @@ class OrderAgreementSearch extends OrderAgreement
             [['id', 'order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted',
                 'is_payment', 'is_bill', 'is_stock', 'is_advancecharge', 'is_purchase', 'is_complete'], 'integer'],
             [['agreement_sn', 'goods_info', 'agreement_date', 'updated_at', 'created_at', 'order_sn',
-                'customer_name', 'sign_date', 'stock_at', 'payment_price', 'order_quote_sn'], 'safe'],
+                'customer_name', 'sign_date', 'stock_at', 'payment_price', 'order_quote_sn', 'expect_at'], 'safe'],
             [['id', 'order_quote_sn', 'order_sn', 'customer_name', 'payment_price', 'payment_ratio', 'remain_price'], 'trim'],
             [['payment_price', 'payment_ratio', 'remain_price'], 'number'],
         ];
@@ -135,6 +135,12 @@ class OrderAgreementSearch extends OrderAgreement
             $query->andFilterWhere(['between', 'order_agreement.stock_at', $stock_at_start, $stock_at_end]);
         }
 
+        if ($this->expect_at && strpos($this->expect_at, ' - ')) {
+            list($expect_at_start, $expect_at_end) = explode(' - ', $this->expect_at);
+            $expect_at_start .= ' 00:00:00';
+            $expect_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_agreement.expect_at', $expect_at_start, $expect_at_end]);
+        }
         return $dataProvider;
     }
 }

@@ -709,26 +709,27 @@ ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`   int(11) NOT NULL D
 ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
 
 
-ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_payment`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开发票 0否  1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否出库  0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预收款时间';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_at`        datetime  COMMENT '收全款时间';
-ALTER TABLE `order_agreement` ADD COLUMN `bill_at`           datetime  COMMENT '开发票时间';
-ALTER TABLE `order_agreement` ADD COLUMN `stock_at`          datetime  COMMENT '出库时间';
-ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',
-ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
-ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
-ALTER TABLE `order_agreement` ADD COLUMN `sign_date`         datetime  COMMENT '合同签订时间';
-ALTER TABLE `order_agreement` ADD COLUMN `is_instock`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `customer_id`       int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单总金额';
-ALTER TABLE `order_agreement` ADD COLUMN `remain_price`   decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单剩余金额 总金额减去预收款金额';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预收款比例';
-ALTER TABLE `order_agreement` ADD COLUMN `is_purchase`    tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否派送采购员  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_payment`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_bill`              tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开发票 0否  1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_stock`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否出库  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `advancecharge_at`     datetime  COMMENT '预收款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_at`           datetime  COMMENT '收全款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `bill_at`              datetime  COMMENT '开发票时间';
+ALTER TABLE `order_agreement` ADD COLUMN `stock_at`             datetime  COMMENT '出库时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',
+ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`     varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
+ALTER TABLE `order_agreement` ADD COLUMN `sign_date`            datetime  COMMENT '合同签订时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_instock`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `customer_id`          int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_price`        decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单总金额';
+ALTER TABLE `order_agreement` ADD COLUMN `remain_price`         decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单剩余金额 总金额减去预收款金额';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_ratio`        int(11) NOT NULL DEFAULT '0' COMMENT '预收款比例';
+ALTER TABLE `order_agreement` ADD COLUMN `is_purchase`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否派送采购员  0否 1是';
 ALTER TABLE `order_agreement` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
 ALTER TABLE `order_agreement` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `expect_at`            datetime  COMMENT '预计收全款时间';
 
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';

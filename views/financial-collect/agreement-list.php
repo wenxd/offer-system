@@ -59,14 +59,14 @@ $userId   = Yii::$app->user->identity->id;
                 'payment_ratio',
                 'remain_price',
                 [
-                    'attribute'      => 'payment_at',
+                    'attribute'      => 'expect_at',
                     'contentOptions' => ['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
-                        'name'  => 'OrderAgreementSearch[payment_at]',
-                        'value' => Yii::$app->request->get('OrderAgreementSearch')['payment_at'],
+                        'name'  => 'OrderAgreementSearch[expect_at]',
+                        'value' => Yii::$app->request->get('OrderAgreementSearch')['expect_at'],
                     ]),
                     'value'     => function($model){
-                        return substr($model->payment_at, 0, 10);
+                        return substr($model->expect_at, 0, 10);
                     }
                 ],
             ],

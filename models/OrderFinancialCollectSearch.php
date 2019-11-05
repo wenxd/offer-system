@@ -60,7 +60,7 @@ class OrderFinancialCollectSearch extends OrderAgreement
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'payment_at']
+                'attributes' => ['id', 'payment_at', 'expect_at']
             ],
         ]);
 

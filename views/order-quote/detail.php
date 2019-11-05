@@ -108,6 +108,17 @@ $is_show = in_array($userId, $adminIds);
 
         <?= $form->field($model, 'quote_delivery_time')->textInput()->label('统一报价货期') ?>
 
+        <?= $form->field($model, 'expect_at')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
+
         <?= $form->field($model, 'agreement_sn')->textInput() ?>
 
         <?= $form->field($model, 'sign_date')->widget(DateTimePicker::className(), [
@@ -251,6 +262,12 @@ $is_show = in_array($userId, $adminIds);
 
             });
 
+            var expect_at = $('#orderagreement-expect_at').val();
+            if (!expect_at) {
+                layer.msg('请输入预计收全款时间', {time:2000});
+                return false;
+            }
+
             var agreement_sn = $('#orderagreement-agreement_sn').val();
             if (!agreement_sn) {
                 layer.msg('请输入合同号', {time:2000});
@@ -279,7 +296,8 @@ $is_show = in_array($userId, $adminIds);
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/create-agreement',
-                data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date, goods_info:goods_info},
+                data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date,
+                    goods_info:goods_info, expect_at:expect_at},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
