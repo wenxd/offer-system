@@ -892,3 +892,22 @@ CREATE TABLE `agreement_goods_bak` (
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
+
+CREATE TABLE `agreement_stock` (
+  `id`                  int(11)         NOT NULL                AUTO_INCREMENT,
+  `order_id`            int(11)         NOT NULL DEFAULT '0'    COMMENT '订单ID',
+  `order_agreement_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '收入合同订单ID',
+  `order_agreement_sn`  varchar(255)    NOT NULL DEFAULT ''     COMMENT '收入合同订单号',
+  `order_purchase_id`   int(11)         NOT NULL DEFAULT '0'    COMMENT '采购单ID',
+  `order_purchase_sn`   varchar(255)    NOT NULL DEFAULT ''     COMMENT '采购单号',
+  `order_payment_id`    int(11)         NOT NULL DEFAULT '0'    COMMENT '支出合同订单ID',
+  `order_payment_sn`    varchar(255)    NOT NULL DEFAULT ''     COMMENT '支出合同订单号',
+  `goods_id`            int(11)         NOT NULL DEFAULT '0'    COMMENT '零件ID',
+  `price`               decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `tax_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税单价',
+  `use_number`          int(11)         NOT NULL DEFAULT '0'    COMMENT '使用库存数量',
+  `all_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
