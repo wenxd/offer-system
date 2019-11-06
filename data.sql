@@ -908,6 +908,7 @@ CREATE TABLE `agreement_stock` (
   `use_number`          int(11)         NOT NULL DEFAULT '0'    COMMENT '使用库存数量',
   `all_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '未税总价',
   `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
-
+  `updated_at`          datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at`          datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单使用库存表';

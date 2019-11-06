@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "agreement_stock".
@@ -21,9 +23,28 @@ use Yii;
  * @property int $use_number 使用库存数量
  * @property string $all_price 未税总价
  * @property string $all_tax_price 含税总价
+ * @property string $updated_at
+ * @property string $created_at
  */
 class AgreementStock extends \yii\db\ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    # 创建之前
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    # 修改之前
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at']
+                ],
+                #设置默认值
+                'value' => date('Y-m-d H:i:s', time())
+            ]
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,20 +71,32 @@ class AgreementStock extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '订单ID',
-            'order_agreement_id' => '收入合同订单ID',
-            'order_agreement_sn' => '收入合同订单号',
-            'order_purchase_id' => '采购单ID',
-            'order_purchase_sn' => '采购单号',
-            'order_payment_id' => '支出合同订单ID',
-            'order_payment_sn' => '支出合同订单号',
-            'goods_id' => '零件ID',
-            'price' => '单价',
-            'tax_price' => '含税单价',
-            'use_number' => '使用库存数量',
-            'all_price' => '未税总价',
-            'all_tax_price' => '含税总价',
+            'id'                    => 'ID',
+            'order_id'              => '订单ID',
+            'order_agreement_id'    => '收入合同订单ID',
+            'order_agreement_sn'    => '收入合同订单号',
+            'order_purchase_id'     => '采购单ID',
+            'order_purchase_sn'     => '采购单号',
+            'order_payment_id'      => '支出合同订单ID',
+            'order_payment_sn'      => '支出合同订单号',
+            'goods_id'              => '零件ID',
+            'price'                 => '单价',
+            'tax_price'             => '含税单价',
+            'use_number'            => '使用库存数量',
+            'all_price'             => '未税总价',
+            'all_tax_price'         => '含税总价',
+            'updated_at'            => '更新时间',
+            'created_at'            => '更新时间',
         ];
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 }
