@@ -167,21 +167,23 @@ class OrderPurchaseController extends BaseController
                     $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
 
                     //处理保存使用库存记录
-                    $agreementStock = new AgreementStock();
-                    $agreementStock->order_id           = $orderAgreement->order_id;
-                    $agreementStock->order_agreement_id = $orderAgreement->id;
-                    $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
-                    $agreementStock->order_purchase_id  = $orderPurchase->id;
-                    $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
-                    $agreementStock->goods_id           = $agreementGoods->goods_id;
-                    $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
-                    $agreementStock->price              = $stock ? $stock->price : 0;
-                    $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
                     $use_stock_number = $agreementGoods->number >= $item['number'] ?  $agreementGoods->number - $item['number'] : 0;
-                    $agreementStock->use_number         = $use_stock_number;
-                    $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
-                    $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
-                    $agreementStock->save();
+                    if ($use_stock_number) {
+                        $agreementStock = new AgreementStock();
+                        $agreementStock->order_id = $orderAgreement->order_id;
+                        $agreementStock->order_agreement_id = $orderAgreement->id;
+                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                        $agreementStock->order_purchase_id = $orderPurchase->id;
+                        $agreementStock->order_purchase_sn = $orderPurchase->purchase_sn;
+                        $agreementStock->goods_id = $agreementGoods->goods_id;
+                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                        $agreementStock->price = $stock ? $stock->price : 0;
+                        $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
+                        $agreementStock->use_number = $use_stock_number;
+                        $agreementStock->all_price = $agreementStock->price * $use_stock_number;
+                        $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
+                        $agreementStock->save();
+                    }
 
                     if ($item['number'] > 0) {
                         if ($agreementGoods) {
@@ -218,7 +220,9 @@ class OrderPurchaseController extends BaseController
                 //判断是否全部生成采购单
                 $agreementGoodsCount = AgreementGoods::find()->where([
                     'order_agreement_id' => $orderAgreement->id,
-                    'is_deleted'         => 0])->count();
+                    'is_deleted'         => 0,
+                    'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+                ])->count();
                 $purchaseGoodsCount  = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
                 if ($agreementGoodsCount == $purchaseGoodsCount) {
                     $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
