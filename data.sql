@@ -903,6 +903,7 @@ CREATE TABLE `agreement_stock` (
   `order_payment_id`    int(11)         NOT NULL DEFAULT '0'    COMMENT '支出合同订单ID',
   `order_payment_sn`    varchar(255)    NOT NULL DEFAULT ''     COMMENT '支出合同订单号',
   `goods_id`            int(11)         NOT NULL DEFAULT '0'    COMMENT '零件ID',
+  `serial`              varchar(255)    NOT NULL DEFAULT ''     COMMENT '序号',
   `price`               decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '单价',
   `tax_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税单价',
   `use_number`          int(11)         NOT NULL DEFAULT '0'    COMMENT '使用库存数量',

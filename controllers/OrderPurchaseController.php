@@ -151,9 +151,8 @@ class OrderPurchaseController extends BaseController
                 $open = true;
             }
         }
+        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         if ($open) {
-            $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
-
             $orderPurchase                     = new OrderPurchase();
             $orderPurchase->purchase_sn        = $params['purchase_sn'];
             $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
@@ -231,6 +230,23 @@ class OrderPurchaseController extends BaseController
                 return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
             }
         } else {
+            foreach ($params['goods_info'] as $item) {
+                $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                //处理保存使用库存记录
+                $agreementStock = new AgreementStock();
+                $agreementStock->order_id           = $orderAgreement->order_id;
+                $agreementStock->order_agreement_id = $orderAgreement->id;
+                $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                $agreementStock->goods_id           = $agreementGoods->goods_id;
+                $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                $agreementStock->price = $stock ? $stock->price : 0;
+                $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
+                $use_stock_number = $agreementGoods->number >= $item['number'] ? $agreementGoods->number - $item['number'] : 0;
+                $agreementStock->use_number = $use_stock_number;
+                $agreementStock->all_price = $agreementStock->price * $use_stock_number;
+                $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
+                $agreementStock->save();
+            }
             $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
             AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
