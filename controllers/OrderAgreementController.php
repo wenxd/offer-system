@@ -246,6 +246,64 @@ class OrderAgreementController extends Controller
     }
 
     /**
+     * 一键优选
+     */
+    public function actionBetter($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $inquiry = Inquiry::find()->where([
+                'good_id'           => $agreementGoods->goods_id,
+                'is_better'         => Inquiry::IS_BETTER_YES,
+                'is_confirm_better' => 1
+            ])->one();
+            if ($inquiry) {
+                $agreementGoods->price              = $inquiry->price;
+                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
+                $agreementGoods->relevance_id       = $inquiry->id;
+                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
+    }
+
+    /**
+     * 一键优选
+     */
+    public function actionNew($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('created_at Desc')->one();
+            if ($inquiry) {
+                $agreementGoods->price              = $inquiry->price;
+                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
+                $agreementGoods->relevance_id       = $inquiry->id;
+                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['detail', 'id' => $id]);
+    }
+
+    /**
      * 一键走库存
      */
     public function actionStock($id)
@@ -268,21 +326,28 @@ class OrderAgreementController extends Controller
     public function actionRecover($id)
     {
         $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $agreementGoodsBak = AgreementGoodsBak::find()->where(['order_agreement_id' => $id, 'agreement_goods_id' => $agreementGoods->id])->one();
             if ($agreementGoodsBak) {
-                $agreementGoods->tax_rate        = $agreementGoodsBak->tax_rate;
-                $agreementGoods->price           = $agreementGoodsBak->price;
-                $agreementGoods->tax_price       = $agreementGoodsBak->tax_price;
-                $agreementGoods->all_price       = $agreementGoodsBak->all_price;
-                $agreementGoods->all_tax_price   = $agreementGoodsBak->all_tax_price;
-                $agreementGoods->purchase_number = $agreementGoodsBak->purchase_number;
-                $agreementGoods->delivery_time   = $agreementGoodsBak->delivery_time;
+                $agreementGoods->tax_rate         = $agreementGoodsBak->tax_rate;
+                $agreementGoods->price            = $agreementGoodsBak->price;
+                $agreementGoods->tax_price        = $agreementGoodsBak->tax_price;
+                $agreementGoods->all_price        = $agreementGoodsBak->all_price;
+                $agreementGoods->all_tax_price    = $agreementGoodsBak->all_tax_price;
+                $agreementGoods->purchase_number  = $agreementGoodsBak->purchase_number;
+                $agreementGoods->delivery_time    = $agreementGoodsBak->delivery_time;
+                $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_YES;
                 $agreementGoods->save();
             }
         }
+
+        $orderAgreement = OrderAgreement::findOne($id);
+        $orderAgreement->is_merge = OrderAgreement::IS_MERGE_NO;
+        $orderAgreement->save();
+
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
-        return $this->redirect(['detail', 'id' => $id]);
+        return $this->redirect(['index']);
     }
 
     /**一键合并

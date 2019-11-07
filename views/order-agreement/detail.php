@@ -48,7 +48,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{low} {short} {stock} {recover}',
+            'template' => '{low} {short} {stock} {better} {new} {recover}',
             'buttons' => [
                 'low' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
@@ -66,6 +66,18 @@ $system_tax = SystemConfig::find()->select('value')->where([
                     return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'better' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'new' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最新', Url::to(['new', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
                     ]);
                 },
                 'recover' => function () {
