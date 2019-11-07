@@ -338,6 +338,7 @@ class OrderAgreementController extends Controller
                 $agreementGoods->purchase_number  = $agreementGoodsBak->purchase_number;
                 $agreementGoods->delivery_time    = $agreementGoodsBak->delivery_time;
                 $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_YES;
+                $agreementGoods->order_number     = $agreementGoods->number;
                 $agreementGoods->save();
             }
         }
@@ -382,6 +383,7 @@ class OrderAgreementController extends Controller
             ])->one();
 
             $purchase_number = $agreementGoods->purchase_number;
+            $order_number    = $agreementGoods->order_number;
             $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_NO;
             $agreementGoods->save();
 
@@ -392,6 +394,7 @@ class OrderAgreementController extends Controller
                 'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
             ])->one();
             $lastAgreementGoods->purchase_number += $purchase_number;
+            $lastAgreementGoods->order_number    += $order_number;
             $lastAgreementGoods->save();
         }
         $orderAgreement->is_merge = OrderAgreement::IS_MERGE_YES;

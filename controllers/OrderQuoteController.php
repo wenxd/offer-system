@@ -319,6 +319,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->quote_all_tax_price = $item['tax_price'] * $item['number'];
                 $agreementGoods->quote_delivery_time = $item['delivery_time'];
                 $agreementGoods->number              = $item['number'];
+                $agreementGoods->order_number        = $item['number'];
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->purchase_number     = $item['purchase_number'];
                 $agreementGoods->save();

@@ -220,7 +220,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="delivery_time" style="background-color:#0099FF"><?=$item->delivery_time?></td>
                 <td><?=$order_purchase_sn?></td>
                 <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
-                <td class="oldNumber"><?=$item->number?></td>
+                <td class="oldNumber"><?=$item->order_number?></td>
                 <td class="afterNumber">
                     <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->purchase_number?>">
                 </td>
