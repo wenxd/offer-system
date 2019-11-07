@@ -39,6 +39,7 @@ use Yii;
  * @property string $delivery_time
  * @property string $is_quality
  * @property string $purchase_number
+ * @property string $purchase_is_show
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
@@ -47,6 +48,9 @@ class AgreementGoods extends \yii\db\ActiveRecord
 
     const IS_QUALITY_NO  = '0';
     const IS_QUALITY_YES = '1';
+
+    const IS_SHOW_NO     = '0';
+    const IS_SHOW_YES    = '1';
 
     /**
      * {@inheritdoc}
@@ -63,7 +67,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement',
-                'is_deleted', 'order_quote_id', 'is_quality'], 'integer'],
+                'is_deleted', 'order_quote_id', 'is_quality', 'purchase_is_show'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
             [['updated_at', 'created_at', 'quote_delivery_time', 'delivery_time', 'purchase_number'], 'safe'],

@@ -156,7 +156,7 @@ class OrderAgreementController extends Controller
         $orderAgreement = OrderAgreement::findOne($id);
         $agreementGoodsQuery = AgreementGoods::find()->from('agreement_goods ag')
             ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0]);
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1]);
         if (isset($request['admin_id'])) {
             $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
         }
@@ -283,5 +283,55 @@ class OrderAgreementController extends Controller
         }
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
         return $this->redirect(['detail', 'id' => $id]);
+    }
+
+    /**一键合并
+     * @param $id
+     * @return \yii\web\Response
+     */
+    public function actionMerge($id)
+    {
+        $orderAgreement = OrderAgreement::findOne($id);
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+            'is_deleted'         => 0,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+        ])->all();
+
+        $goods_ids     = [];
+        $more_goods_id = [];
+        foreach ($agreementGoodsList as $key => $agreementGoods) {
+            if (in_array($agreementGoods->goods_id, $goods_ids)) {
+                $more_goods_id[] = $agreementGoods->goods_id;
+            } else {
+                $goods_ids[] = $agreementGoods->goods_id;
+            }
+        }
+
+        foreach ($more_goods_id as $goods_id) {
+            $agreementGoods = AgreementGoods::find()->where([
+                'order_agreement_id' => $id,
+                'is_deleted'         => 0,
+                'goods_id'           => $goods_id,
+                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            ])->one();
+
+            $purchase_number = $agreementGoods->purchase_number;
+            $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_NO;
+            $agreementGoods->save();
+
+            $lastAgreementGoods = AgreementGoods::find()->where([
+                'order_agreement_id' => $id,
+                'is_deleted'         => 0,
+                'goods_id'           => $goods_id,
+                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            ])->one();
+            $lastAgreementGoods->purchase_number += $purchase_number;
+            $lastAgreementGoods->save();
+        }
+        $orderAgreement->is_merge = OrderAgreement::IS_MERGE_YES;
+        $orderAgreement->save();
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['index']);
     }
 }

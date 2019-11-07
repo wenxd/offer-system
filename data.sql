@@ -660,6 +660,7 @@ ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2)        NOT NULL DEF
 ALTER TABLE `agreement_goods` ADD COLUMN `is_quality` tinyint(2)    NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `agreement_goods` ADD COLUMN `delivery_time`            decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '成本货期（周）';
 ALTER TABLE `agreement_goods` ADD COLUMN `purchase_number`          int(11) NOT NULL DEFAULT '0' COMMENT  '采购数量';
+ALTER TABLE `agreement_goods` ADD COLUMN `purchase_is_show`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '生成采购单的时候合并数据后不显示  0默认显示 1为不显示';
 
 
 
@@ -681,31 +682,31 @@ ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '
 ALTER TABLE `purchase_goods` ADD COLUMN `fixed_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '修改后采购货期（周）';
 
 
-ALTER TABLE `order_purchase` ADD COLUMN `payment_sn`   varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
-ALTER TABLE `order_purchase` ADD COLUMN `is_complete`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
-ALTER TABLE `order_purchase` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是';
-ALTER TABLE `order_purchase` ADD COLUMN `supplier_id`  int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
+ALTER TABLE `order_purchase` ADD COLUMN `payment_sn`    varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
+ALTER TABLE `order_purchase` ADD COLUMN `is_complete`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
+ALTER TABLE `order_purchase` ADD COLUMN `is_agreement`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是';
+ALTER TABLE `order_purchase` ADD COLUMN `supplier_id`   int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
 ALTER TABLE `order_purchase` ADD COLUMN `apply_reason`  varchar(255) NOT NULL DEFAULT '' COMMENT '申请备注';
 
 
-ALTER TABLE `order_payment` ADD COLUMN `is_verify`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预付款 0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否接收发票 0否  1是';
-ALTER TABLE `order_payment` ADD COLUMN `stock_at`          datetime  COMMENT '入库时间';
-ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预付款时间';
-ALTER TABLE `order_payment` ADD COLUMN `bill_at`           datetime  COMMENT '收到发票时间';
-ALTER TABLE `order_payment` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
-ALTER TABLE `order_payment` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
-ALTER TABLE `order_payment` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单总金额';
-ALTER TABLE `order_payment` ADD COLUMN `remain_price`   decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单剩余金额 总金额减去预付款金额';
-ALTER TABLE `order_payment` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预付款比例';
-ALTER TABLE `order_payment` ADD COLUMN `take_time`      datetime  COMMENT '收货时间 = 支出合同签订日加最长货期';
-ALTER TABLE `order_payment` ADD COLUMN `is_agreement`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `apply_reason`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购申请支出备注';
-ALTER TABLE `order_payment` ADD COLUMN `agreement_at`   datetime  COMMENT '生成支出合同的时间 支出合同签订时间';
-ALTER TABLE `order_payment` ADD COLUMN `delivery_date`  datetime  COMMENT '支出合同交货时间';
-ALTER TABLE `order_payment` ADD COLUMN `supplier_id`    int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
+ALTER TABLE `order_payment` ADD COLUMN `is_verify`            tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_stock`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_advancecharge`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预付款 0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_bill`              tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否接收发票 0否  1是';
+ALTER TABLE `order_payment` ADD COLUMN `stock_at`             datetime  COMMENT '入库时间';
+ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`     datetime  COMMENT '预付款时间';
+ALTER TABLE `order_payment` ADD COLUMN `bill_at`              datetime  COMMENT '收到发票时间';
+ALTER TABLE `order_payment` ADD COLUMN `financial_remark`     varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_payment` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
+ALTER TABLE `order_payment` ADD COLUMN `payment_price`        decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单总金额';
+ALTER TABLE `order_payment` ADD COLUMN `remain_price`         decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单剩余金额 总金额减去预付款金额';
+ALTER TABLE `order_payment` ADD COLUMN `payment_ratio`        int(11) NOT NULL DEFAULT '0' COMMENT '预付款比例';
+ALTER TABLE `order_payment` ADD COLUMN `take_time`            datetime  COMMENT '收货时间 = 支出合同签订日加最长货期';
+ALTER TABLE `order_payment` ADD COLUMN `is_agreement`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `apply_reason`         varchar(255) NOT NULL DEFAULT '' COMMENT '采购申请支出备注';
+ALTER TABLE `order_payment` ADD COLUMN `agreement_at`         datetime  COMMENT '生成支出合同的时间 支出合同签订时间';
+ALTER TABLE `order_payment` ADD COLUMN `delivery_date`        datetime  COMMENT '支出合同交货时间';
+ALTER TABLE `order_payment` ADD COLUMN `supplier_id`          int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
 ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
 ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
 
@@ -731,6 +732,7 @@ ALTER TABLE `order_agreement` ADD COLUMN `is_purchase`          tinyint(4) NOT N
 ALTER TABLE `order_agreement` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
 ALTER TABLE `order_agreement` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
 ALTER TABLE `order_agreement` ADD COLUMN `expect_at`            datetime  COMMENT '预计收全款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_merge`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否合并';
 
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
@@ -889,7 +891,8 @@ CREATE TABLE `agreement_goods_bak` (
   `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
   `purchase_number`     int(11)         NOT NULL DEFAULT '0'    COMMENT '采购数量',
   `delivery_time`       decimal(10,1)   NOT NULL DEFAULT '0.0'  COMMENT '成本货期（周）',
-
+  `updated_at`          datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at`          datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
 
