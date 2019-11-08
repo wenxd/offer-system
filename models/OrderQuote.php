@@ -25,6 +25,7 @@ use Yii;
  * @property string $order_final_id
  * @property string $customer_id
  * @property string $competitor_ratio
+ * @property string $publish_ratio
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
@@ -43,8 +44,6 @@ class OrderQuote extends \yii\db\ActiveRecord
         self::IS_QUOTE_YES  => '是',
     ];
 
-    public $quote_publish_price_ratio;
-
     /**
      * {@inheritdoc}
      */
@@ -61,7 +60,7 @@ class OrderQuote extends \yii\db\ActiveRecord
         return [
             [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio', 'customer_id',
-                'competitor_ratio'], 'safe'],
+                'competitor_ratio', 'publish_ratio'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string'],
         ];
@@ -91,6 +90,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             'is_send'           => '是否发送',
             'customer_id'       => '客户ID',
             'competitor_ratio'  => '竞报价系数',
+            'publish_ratio'     => '发行价系数',
         ];
     }
 

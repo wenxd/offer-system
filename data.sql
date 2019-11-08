@@ -626,6 +626,7 @@ ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '
 ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
 ALTER TABLE `order_quote` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
 ALTER TABLE `order_quote` ADD COLUMN `competitor_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '竞争者报价系数';
+ALTER TABLE `order_quote` ADD COLUMN `publish_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '发行价系数';
 
 ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';

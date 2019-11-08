@@ -34,7 +34,7 @@ $model->quote_ratio = SystemConfig::find()->select('value')
 $model->delivery_ratio = SystemConfig::find()->select('value')
     ->where(['title' => SystemConfig::TITLE_QUOTE_DELIVERY_RATIO])->scalar();
 
-$model->quote_publish_price_ratio = 1;
+$model->publish_ratio = 1;
 
 //竞争对手报价系数
 $model->competitor_ratio = $competitor_ratio = SystemConfig::find()->select('value')->where([
@@ -169,7 +169,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
         <?= $form->field($model, 'delivery_ratio')->textInput() ?>
 
-        <?= $form->field($model, 'quote_publish_price_ratio')->textInput()->label('发行价系数') ?>
+        <?= $form->field($model, 'publish_ratio')->textInput()->label('发行价系数') ?>
 
         <?= $form->field($model, 'competitor_ratio')->textInput()->label('竞报价系数') ?>
     </div>
@@ -424,7 +424,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         });
 
         //输入发行价系数
-        $('#orderquote-quote_publish_price_ratio').bind('input propertychange', function (e) {
+        $('#orderquote-publish_ratio').bind('input propertychange', function (e) {
             var quote_publish_price_ratio = parseFloat($(this).val());
             var quote_publish_price_all = 0;
             $('.order_final_list').each(function (i, e) {
@@ -532,18 +532,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             var order_final_id = $('.data').data('order_final_id');
 
-            var sta_quote_all_tax_price     = parseFloat($('.sta_quote_all_tax_price').text());
-            var sta_all_tax_price           = parseFloat($('.sta_all_tax_price').text());
-            var most_quote_delivery_time    = parseFloat($('.most_quote_delivery_time').text());
-            var mostLongTime                = parseFloat($('.mostLongTime').text());
-
+            var sta_quote_all_tax_price  = parseFloat($('.sta_quote_all_tax_price').text());
+            var sta_all_tax_price        = parseFloat($('.sta_all_tax_price').text());
+            var most_quote_delivery_time = parseFloat($('.most_quote_delivery_time').text());
+            var mostLongTime             = parseFloat($('.mostLongTime').text());
+            var publish_ratio            = parseFloat($('#orderquote-publish_ratio').val());
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
                 data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
                     delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio,
                     sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
-                    most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime},
+                    most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime,
+                    publish_ratio:publish_ratio},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

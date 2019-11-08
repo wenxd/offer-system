@@ -168,6 +168,7 @@ class OrderQuoteController extends Controller
 
         $orderQuote->customer_id       = $orderFinal->customer_id;
         $orderQuote->competitor_ratio  = $params['competitor_ratio'];
+        $orderQuote->publish_ratio     = $params['publish_ratio'];
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
