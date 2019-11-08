@@ -274,7 +274,7 @@ class OrderFinalController extends BaseController
             ->from('final_goods fg')
             ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
             ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
-            ->where(['order_final_id' => $id]);
+            ->where(['order_final_id' => $id, 'purchase_is_show' => FinalGoods::IS_SHOW_YES]);
         if (isset($request['admin_id'])) {
             $finalGoodsQuery->andFilterWhere(['i.admin_id' => $request['admin_id']]);
         }
@@ -390,5 +390,172 @@ class OrderFinalController extends BaseController
         if ($finalGoods->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
+    }
+
+    public function actionMerge($id)
+    {
+        $orderFinal = OrderFinal::findOne($id);
+        $finalGoodsList = FinalGoods::find()->where(['order_final_id' => $id])->all();
+
+        $goods_ids     = [];
+        $more_goods_id = [];
+        foreach ($finalGoodsList as $key => $finalGoods) {
+            if (in_array($finalGoods->goods_id, $goods_ids)) {
+                $more_goods_id[] = $finalGoods->goods_id;
+            } else {
+                $goods_ids[] = $finalGoods->goods_id;
+            }
+        }
+
+        foreach ($more_goods_id as $goods_id) {
+            $finalGoods = FinalGoods::find()->where([
+                'order_final_id'    => $id,
+                'is_deleted'        => 0,
+                'goods_id'          => $goods_id,
+                'purchase_is_show'  => FinalGoods::IS_SHOW_YES,
+            ])->one();
+
+            $purchase_number = $finalGoods->number;
+
+            $finalGoods->purchase_is_show = FinalGoods::IS_SHOW_NO;
+            $finalGoods->save();
+
+            $lastFinalGoods = FinalGoods::find()->where([
+                'order_final_id'    => $id,
+                'is_deleted'        => 0,
+                'goods_id'          => $goods_id,
+                'purchase_is_show'  => FinalGoods::IS_SHOW_YES,
+            ])->one();
+            $lastFinalGoods->number += $purchase_number;
+            $lastFinalGoods->save();
+        }
+        $orderFinal->is_merge = OrderFinal::IS_MERGE_YES;
+        $orderFinal->save();
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * 一键最低
+     */
+    public function actionLow($id)
+    {
+        $finalGoodsList = FinalGoods::find()->where([
+            'order_final_id'    => $id,
+            'is_deleted'        => 0,
+            'purchase_is_show'  => FinalGoods::IS_SHOW_YES
+        ])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($finalGoodsList as $key => $finalGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $finalGoods->goods_id])->orderBy('price asc')->one();
+            if ($inquiry) {
+                $finalGoods->price              = $inquiry->price;
+                $finalGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $finalGoods->all_price          = $finalGoods->number * $inquiry->price;
+                $finalGoods->all_tax_price      = $finalGoods->number * $finalGoods->tax_price;
+                $finalGoods->relevance_id       = $inquiry->id;
+                $finalGoods->delivery_time      = $inquiry->delivery_time;
+                $finalGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['create-purchase', 'id' => $id]);
+    }
+
+    /**
+     * 一键最短
+     */
+    public function actionShort($id)
+    {
+        $finalGoodsList = FinalGoods::find()->where([
+            'order_final_id'    => $id,
+            'is_deleted'        => 0,
+            'purchase_is_show'  => FinalGoods::IS_SHOW_YES
+        ])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($finalGoodsList as $key => $finalGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $finalGoods->goods_id])->orderBy('delivery_time asc')->one();
+            if ($inquiry) {
+                $finalGoods->price              = $inquiry->price;
+                $finalGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $finalGoods->all_price          = $finalGoods->number * $inquiry->price;
+                $finalGoods->all_tax_price      = $finalGoods->number * $finalGoods->tax_price;
+                $finalGoods->relevance_id       = $inquiry->id;
+                $finalGoods->delivery_time      = $inquiry->delivery_time;
+                $finalGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['create-purchase', 'id' => $id]);
+    }
+
+    /**
+     * 一键优选
+     */
+    public function actionBetter($id)
+    {
+        $finalGoodsList = FinalGoods::find()->where([
+            'order_final_id'    => $id,
+            'is_deleted'        => 0,
+            'purchase_is_show'  => FinalGoods::IS_SHOW_YES
+        ])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($finalGoodsList as $key => $finalGoods) {
+            $inquiry = Inquiry::find()->where([
+                'good_id'           => $finalGoods->goods_id,
+                'is_better'         => Inquiry::IS_BETTER_YES,
+                'is_confirm_better' => 1
+            ])->one();
+            if ($inquiry) {
+                $finalGoods->price              = $inquiry->price;
+                $finalGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $finalGoods->all_price          = $finalGoods->number * $inquiry->price;
+                $finalGoods->all_tax_price      = $finalGoods->number * $finalGoods->tax_price;
+                $finalGoods->relevance_id       = $inquiry->id;
+                $finalGoods->delivery_time      = $inquiry->delivery_time;
+                $finalGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['create-purchase', 'id' => $id]);
+    }
+
+    /**
+     * 一键最新
+     */
+    public function actionNew($id)
+    {
+        $finalGoodsList = FinalGoods::find()->where([
+            'order_final_id'    => $id,
+            'is_deleted'        => 0,
+            'purchase_is_show'  => FinalGoods::IS_SHOW_YES
+        ])->all();
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+            'title'      => SystemConfig::TITLE_TAX,
+        ])->scalar();
+        foreach ($finalGoodsList as $key => $finalGoods) {
+            $inquiry = Inquiry::find()->where(['good_id' => $finalGoods->goods_id])->orderBy('created_at Desc')->one();
+            if ($inquiry) {
+                $finalGoods->price              = $inquiry->price;
+                $finalGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $finalGoods->all_price          = $finalGoods->number * $inquiry->price;
+                $finalGoods->all_tax_price      = $finalGoods->number * $finalGoods->tax_price;
+                $finalGoods->relevance_id       = $inquiry->id;
+                $finalGoods->delivery_time      = $inquiry->delivery_time;
+                $finalGoods->save();
+            }
+        }
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['create-purchase', 'id' => $id]);
     }
 }

@@ -164,10 +164,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         if (!$model->is_purchase) {
-                            return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-success btn-xs btn-flat',
-                            ]);
+                            if ($model->is_merge) {
+                                return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-success btn-xs btn-flat',
+                                ]);
+                            } else {
+                                return Html::a('<i class="fa fa-d"></i> 合并采购数据', Url::to(['merge', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-info btn-xs btn-flat',
+                                ]);
+                            }
                         } else {
                             return '';
                         }

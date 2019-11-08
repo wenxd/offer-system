@@ -277,7 +277,7 @@ class OrderAgreementController extends Controller
     }
 
     /**
-     * 一键优选
+     * 一键最新
      */
     public function actionNew($id)
     {

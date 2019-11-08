@@ -17,6 +17,7 @@ use Yii;
  * @property string $is_quote 是否生成报价单 0否 1是
  * @property string $customer_id
  * @property string $is_purchase
+ * @property string $is_merge
  */
 class OrderFinal extends \yii\db\ActiveRecord
 {
@@ -28,6 +29,9 @@ class OrderFinal extends \yii\db\ActiveRecord
 
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
+
+    const IS_MERGE_NO    = '0';
+    const IS_MERGE_YES   = '1';
 
     public static $quote = [
         self::IS_QUOTE_NO  => '否',
@@ -54,7 +58,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase'], 'integer'],
+            [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase', 'is_merge'], 'integer'],
             [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],

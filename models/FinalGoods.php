@@ -28,9 +28,13 @@ use Yii;
  * @property string $all_price
  * @property string $all_tax_price
  * @property string $delivery_time
+ * @property string $purchase_is_show
  */
 class FinalGoods extends \yii\db\ActiveRecord
 {
+    const IS_SHOW_NO     = '0';
+    const IS_SHOW_YES    = '1';
+
     /**
      * {@inheritdoc}
      */
@@ -46,7 +50,7 @@ class FinalGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'goods_id', 'type', 'relevance_id', 'is_purchase', 'purchase_id', 'is_deleted', 'number'
-            , 'order_final_id'], 'integer'],
+            , 'order_final_id', 'purchase_is_show'], 'integer'],
             [['updated_at', 'created_at', 'tax', 'price', 'tax_price', 'all_price', 'all_tax_price', 'delivery_time'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
         ];

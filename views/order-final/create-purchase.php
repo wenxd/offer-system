@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use app\models\Inquiry;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -46,6 +47,37 @@ $system_tax= SystemConfig::find()->select('value')->where([
 
 </style>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{low} {short} {stock} {better} {new} {recover}',
+            'buttons' => [
+                'low' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'short' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最短', Url::to(['short', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+                'better' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'new' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最新', Url::to(['new', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+            ]
+        ])?>
+    </div>
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">

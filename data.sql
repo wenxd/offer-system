@@ -753,10 +753,11 @@ ALTER TABLE `stock_log` ADD COLUMN  `source` varchar(255) NOT NULL DEFAULT '' CO
 ALTER TABLE `stock_log` ADD COLUMN  `position` varchar(255) NOT NULL DEFAULT '' COMMENT '库存位置';
 
 
-ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
-ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
-ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
-ALTER TABLE `order_final` ADD COLUMN  `is_purchase` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_quote`     tinyint(2)  NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
+ALTER TABLE `order_final` ADD COLUMN `customer_id`  int(11)     NOT NULL DEFAULT '0' COMMENT '客户ID';
+ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4)  NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_purchase`  tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_merge`     tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否合并 0否 1是';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
@@ -774,14 +775,15 @@ ALTER TABLE `competitor_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT N
 ALTER TABLE `competitor_goods` ADD COLUMN  `is_issue`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否发行价 0否 1是'
 
 
-ALTER TABLE `final_goods` ADD COLUMN  `serial`          VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
-ALTER TABLE `final_goods` ADD COLUMN  `number`          int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
-ALTER TABLE `final_goods` ADD COLUMN  `tax`             decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '税率';
-ALTER TABLE `final_goods` ADD COLUMN  `price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税单价';
-ALTER TABLE `final_goods` ADD COLUMN  `tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税单价';
-ALTER TABLE `final_goods` ADD COLUMN  `all_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税总价';
-ALTER TABLE `final_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税总价';
-ALTER TABLE `final_goods` ADD COLUMN  `delivery_time`   decimal(10,1) NOT NULL DEFAULT '0.00'  COMMENT '货期';
+ALTER TABLE `final_goods` ADD COLUMN  `serial`              VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
+ALTER TABLE `final_goods` ADD COLUMN  `number`              int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
+ALTER TABLE `final_goods` ADD COLUMN  `tax`                 decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '税率';
+ALTER TABLE `final_goods` ADD COLUMN  `price`               decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `tax_price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `delivery_time`       decimal(10,1) NOT NULL DEFAULT '0.00'  COMMENT '货期';
+ALTER TABLE `final_goods` ADD COLUMN  `purchase_is_show`    tinyint(4) NOT NULL DEFAULT '1' COMMENT '生成采购单的时候合并数据后不显示  1默认显示 0为不显示';
 
 
 ALTER TABLE `customer` ADD COLUMN  `taxpayer` varchar(255) NOT NULL DEFAULT '' COMMENT '纳税人识别号';
@@ -811,6 +813,7 @@ ALTER TABLE `goods` ADD COLUMN  `publish_price` decimal(10,2) NOT NULL DEFAULT '
 ALTER TABLE `goods` ADD COLUMN  `publish_tax` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT '发行税率';
 
 ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
+
 
 ALTER TABLE `order_inquiry` ADD COLUMN `final_at` datetime DEFAULT NULL COMMENT '询价完成时间';
 
