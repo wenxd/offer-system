@@ -205,6 +205,6 @@ class OrderPayment extends \yii\db\ActiveRecord
 
     public function getAgreementStock()
     {
-        return $this->hasOne(AgreementStock::className(), ['id' => 'order_payment_id']);
+        return $this->hasOne(AgreementStock::className(), ['order_payment_id' => 'id']);
     }
 }

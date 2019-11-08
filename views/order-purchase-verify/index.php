@@ -89,7 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         if (!$model->is_verify) {
-                            if ($model->agreementStock && $model->agreementStock->is_confirm && $model->agreementStock->use_number) {
+                            if (($model->agreementStock && $model->agreementStock->use_number != 0 && $model->agreementStock->is_confirm)
+                                || ($model->agreementStock && $model->agreementStock->use_number == 0)) {
                                 $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-info btn-xs btn-flat',
