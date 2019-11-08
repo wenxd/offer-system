@@ -25,6 +25,10 @@ $userId   = Yii::$app->user->identity->id;
 
 //报价员权限
 $is_show = in_array($userId, $adminIds);
+
+if (floatval($model->quote_all_tax_price) > 0) {
+    $model->estimate_profit_ratio = number_format(($model->quote_all_tax_price - $model->all_tax_price) / $model->quote_all_tax_price, 2, '.', '');
+}
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -163,13 +167,15 @@ $is_show = in_array($userId, $adminIds);
         <?= $form->field($model, 'quote_sn')->textInput(['readonly' => true]) ?>
 
         <?php if (!$is_show) :?>
-        <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'estimate_profit_ratio')->textInput(['readonly' => true])->label('预估利润率') ?>
 
-        <?= $form->field($model, 'delivery_ratio')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
 
-        <?= $form->field($model, 'publish_ratio')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'delivery_ratio')->textInput(['readonly' => true]) ?>
 
-        <?= $form->field($model, 'competitor_ratio')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'publish_ratio')->textInput(['readonly' => true]) ?>
+
+            <?= $form->field($model, 'competitor_ratio')->textInput(['readonly' => true]) ?>
         <?php endif;?>
     </div>
     <?php ActiveForm::end(); ?>

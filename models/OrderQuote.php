@@ -26,6 +26,8 @@ use Yii;
  * @property string $customer_id
  * @property string $competitor_ratio
  * @property string $publish_ratio
+ * @property string $quote_all_tax_price
+ * @property string $all_tax_price
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
@@ -44,6 +46,8 @@ class OrderQuote extends \yii\db\ActiveRecord
         self::IS_QUOTE_YES  => '是',
     ];
 
+    public $estimate_profit_ratio;
+
     /**
      * {@inheritdoc}
      */
@@ -60,7 +64,7 @@ class OrderQuote extends \yii\db\ActiveRecord
         return [
             [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio', 'customer_id',
-                'competitor_ratio', 'publish_ratio'], 'safe'],
+                'competitor_ratio', 'publish_ratio', 'quote_all_tax_price', 'all_tax_price'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string'],
         ];
@@ -72,25 +76,27 @@ class OrderQuote extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                => 'ID',
-            'quote_sn'          => '报价单号',
-            'order_id'          => '订单ID',
-            'order_sn'          => '订单编号',
-            'goods_info'        => '零件信息 json，包括ID',
-            'agreement_date'    => '报价截止时间',
-            'is_quote'          => '报价',
-            'quote_ratio'       => '报价系数',
-            'delivery_ratio'    => '货期系数',
-            'admin_id'          => '报价员ID',
-            'is_deleted'        => '是否删除：0未删除 1已删除',
-            'updated_at'        => '更新时间',
-            'created_at'        => '创建时间',
-            'quote_at'          => '报价时间',
-            'quote_only_one'    => '是否唯一',
-            'is_send'           => '是否发送',
-            'customer_id'       => '客户ID',
-            'competitor_ratio'  => '竞报价系数',
-            'publish_ratio'     => '发行价系数',
+            'id'                    => 'ID',
+            'quote_sn'              => '报价单号',
+            'order_id'              => '订单ID',
+            'order_sn'              => '订单编号',
+            'goods_info'            => '零件信息 json，包括ID',
+            'agreement_date'        => '报价截止时间',
+            'is_quote'              => '报价',
+            'quote_ratio'           => '报价系数',
+            'delivery_ratio'        => '货期系数',
+            'admin_id'              => '报价员ID',
+            'is_deleted'            => '是否删除：0未删除 1已删除',
+            'updated_at'            => '更新时间',
+            'created_at'            => '创建时间',
+            'quote_at'              => '报价时间',
+            'quote_only_one'        => '是否唯一',
+            'is_send'               => '是否发送',
+            'customer_id'           => '客户ID',
+            'competitor_ratio'      => '竞报价系数',
+            'publish_ratio'         => '发行价系数',
+            'quote_all_tax_price'   => '报价含税总价',
+            'all_tax_price'         => '成本含税总价',
         ];
     }
 

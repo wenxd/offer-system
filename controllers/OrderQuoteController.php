@@ -166,9 +166,11 @@ class OrderQuoteController extends Controller
             $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time']/$params['mostLongTime'], 2, '.', '');
         }
 
-        $orderQuote->customer_id       = $orderFinal->customer_id;
-        $orderQuote->competitor_ratio  = $params['competitor_ratio'];
-        $orderQuote->publish_ratio     = $params['publish_ratio'];
+        $orderQuote->customer_id            = $orderFinal->customer_id;
+        $orderQuote->competitor_ratio       = $params['competitor_ratio'];
+        $orderQuote->publish_ratio          = $params['publish_ratio'];
+        $orderQuote->quote_all_tax_price    = $params['sta_quote_all_tax_price'];
+        $orderQuote->all_tax_price          = $params['sta_all_tax_price'];
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
