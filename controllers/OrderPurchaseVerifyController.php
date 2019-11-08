@@ -146,11 +146,13 @@ class OrderPurchaseVerifyController extends BaseController
                         $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
                         $agreementStock->goods_id           = $purchaseGoods->goods_id;
                     }
-                    $agreementStock->price          = $stock ? $stock->price : 0;
-                    $agreementStock->tax_price      = $stock ? $stock->tax_price : 0;
-                    $agreementStock->use_number     = $use_stock_number;
-                    $agreementStock->all_price      = $agreementStock->price * $use_stock_number;
-                    $agreementStock->all_tax_price  = $agreementStock->tax_price * $use_stock_number;
+                    $agreementStock->order_payment_id   = $orderPayment->id;
+                    $agreementStock->order_payment_sn   = $orderPayment->payment_sn;
+                    $agreementStock->price              = $stock ? $stock->price : 0;
+                    $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+                    $agreementStock->use_number         = $use_stock_number;
+                    $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
+                    $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
                     $agreementStock->save();
                 }
 
