@@ -35,7 +35,7 @@ $userId   = Yii::$app->user->identity->id;
             'name'    => 'submit-button',
             'onclick' => 'javascript:location.reload();',
         ])?>
-        <?= Html::a('复位', Url::to(['index']), [
+        <?= Html::a('复位', Url::to(['payment-list']), [
             'class'   => 'btn btn-success',
         ])?>
     </div>

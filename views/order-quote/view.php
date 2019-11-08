@@ -167,7 +167,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
         <?= $form->field($model, 'quote_sn')->textInput(['readonly' => true]) ?>
 
         <?php if (!$is_show) :?>
-            <?= $form->field($model, 'estimate_profit_ratio')->textInput(['readonly' => true])->label('预估利润率') ?>
+            <?= $form->field($model, 'estimate_profit_ratio')->textInput(['readonly' => true])->label('报价单利润率') ?>
 
             <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
 
