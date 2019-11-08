@@ -89,10 +89,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         if (!$model->is_verify) {
-                            $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-info btn-xs btn-flat',
-                            ]);
+                            if ($model->agreementStock && $model->agreementStock->is_confirm && $model->agreementStock->use_number) {
+                                $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-info btn-xs btn-flat',
+                                ]);
+                            }
                         } else {
                             if (!$model->is_agreement) {
                                 $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
@@ -102,6 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         }
                     }
+
                     return $html;
                 }
             ],

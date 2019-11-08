@@ -124,4 +124,13 @@ class AgreementStockController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionConfirm($id)
+    {
+        $agreementStock = AgreementStock::findOne($id);
+        $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_YES;
+        $agreementStock->save();
+
+        return $this->redirect(['index']);
+    }
 }

@@ -25,9 +25,18 @@ use yii\db\ActiveRecord;
  * @property string $all_tax_price 含税总价
  * @property string $updated_at
  * @property string $created_at
+ * @property string $is_confirm
  */
 class AgreementStock extends \yii\db\ActiveRecord
 {
+    const IS_CONFIRM_NO  = '0';
+    const IS_CONFIRM_YES = '1';
+
+    public static $confirm = [
+        self::IS_CONFIRM_NO  => '否',
+        self::IS_CONFIRM_YES => '是'
+    ];
+
     public function behaviors()
     {
         return [
@@ -59,7 +68,7 @@ class AgreementStock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number'], 'integer'],
+            [['order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number', 'is_confirm'], 'integer'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn'], 'string', 'max' => 255],
         ];
@@ -87,6 +96,7 @@ class AgreementStock extends \yii\db\ActiveRecord
             'all_tax_price'         => '含税总价',
             'updated_at'            => '更新时间',
             'created_at'            => '更新时间',
+            'is_confirm'            => '是否确认',
         ];
     }
 

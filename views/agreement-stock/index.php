@@ -2,11 +2,13 @@
 
 use app\models\Admin;
 use app\models\AuthAssignment;
+use kartik\daterange\DateRangePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use app\models\AgreementStock;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AgreementStockSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -69,6 +71,41 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             'order_agreement_sn',
+            [
+                'attribute' => 'is_confirm',
+                'format'    => 'raw',
+                'filter'    => AgreementStock::$confirm,
+                'value'     => function ($model, $key, $index, $column) {
+                    return AgreementStock::$confirm[$model->is_confirm];
+                }
+            ],
+            [
+                'attribute'      => 'created_at',
+                'label'          => '创建时间',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'filter'         => DateRangePicker::widget([
+                    'name'       => 'AgreementStockSearch[created_at]',
+                    'value'      => Yii::$app->request->get('AgreementStockSearch')['created_at'],
+                ]),
+                'value' => function($model){
+                    return substr($model->created_at, 0, 10);
+                }
+            ],
+            [
+                'attribute'      => '操作',
+                'format'         => 'raw',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                    $html = '';
+                    if (!$model->is_confirm && !in_array($userId, $adminIds)) {
+                        $html .= Html::a('<i class="fa fa-heart"></i> 确认', Url::to(['confirm', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-success btn-xs btn-flat',
+                        ]);
+                    }
+                    return $html;
+                }
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

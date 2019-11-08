@@ -22,7 +22,7 @@ class AgreementStockSearch extends AgreementStock
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number'], 'integer'],
+            [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number', 'is_confirm'], 'integer'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number'], 'trim'],
@@ -93,11 +93,19 @@ class AgreementStockSearch extends AgreementStock
             'agreement_stock.use_number'            => $this->use_number,
             'agreement_stock.all_price'             => $this->all_price,
             'agreement_stock.all_tax_price'         => $this->all_tax_price,
+            'agreement_stock.is_confirm'            => $this->is_confirm,
         ]);
 
         $query->andFilterWhere(['like', 'agreement_stock.order_agreement_sn', $this->order_agreement_sn])
             ->andFilterWhere(['like', 'agreement_stock.order_purchase_sn', $this->order_purchase_sn])
             ->andFilterWhere(['like', 'agreement_stock.order_payment_sn', $this->order_payment_sn]);
+
+        if ($this->created_at && strpos($this->created_at, ' - ')) {
+            list($created_at_start, $created_at_end) = explode(' - ', $this->created_at);
+            $created_at_start .= ' 00:00:00';
+            $created_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'agreement_stock.created_at', $created_at_start, $created_at_end]);
+        }
 
         return $dataProvider;
     }
