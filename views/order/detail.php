@@ -201,21 +201,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <thead>
             <tr>
                 <th></th>
-                <th>走库存</th>
-                <th>走库存金额</th>
+                <th>使用库存</th>
+                <th>使用库存金额</th>
             </tr>
             <?php $stockPrice = 0;?>
             <?php foreach ($orderUseStock as $orderStock):?>
-                <tr>
-                    <td></td>
-                    <td><?=$orderStock->order_payment_sn?></td>
-                    <td><?=$orderStock->all_tax_price?></td>
-                </tr>
                 <?php $stockPrice += $orderStock->all_tax_price?>
             <?php endforeach;?>
             <tr>
                 <td></td>
-                <td>汇总</td>
+                <td><?=Html::a('汇总明细',Url::to(['agreement-stock/index', "AgreementStockSearch[order_sn]" => $model->order_sn]))?></td>
                 <td><?=$stockPrice?></td>
             </tr>
             </thead>

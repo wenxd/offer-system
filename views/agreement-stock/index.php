@@ -85,7 +85,7 @@ $userId   = Yii::$app->user->identity->id;
                 'contentOptions' =>['style'=>'min-width: 150px;'],
                 'filter'         => DateRangePicker::widget([
                     'name'       => 'AgreementStockSearch[created_at]',
-                    'value'      => Yii::$app->request->get('AgreementStockSearch')['created_at'],
+                    'value'      => Yii::$app->request->get('AgreementStockSearch')['created_at'] ?? '',
                 ]),
                 'value' => function($model){
                     return substr($model->created_at, 0, 10);
