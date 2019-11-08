@@ -532,11 +532,18 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             var order_final_id = $('.data').data('order_final_id');
 
+            var sta_quote_all_tax_price     = parseFloat($('.sta_quote_all_tax_price').text());
+            var sta_all_tax_price           = parseFloat($('.sta_all_tax_price').text());
+            var most_quote_delivery_time    = parseFloat($('.most_quote_delivery_time').text());
+            var mostLongTime                = parseFloat($('.mostLongTime').text());
+
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
                 data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
-                    delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio},
+                    delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio,
+                    sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
+                    most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
@@ -606,7 +613,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 var public_tax_price = parseFloat($(e).find('.publish_tax_price').text());
                 var competitor_public_tax_price = public_tax_price * competitor_ratio;
                 $(e).find('.competitor_public_tax_price input').val(competitor_public_tax_price.toFixed(2));
-                $(e).find('.competitor_public_tax_price_all').text((public_tax_price * number).toFixed(2));
+                $(e).find('.competitor_public_tax_price_all').text((competitor_public_tax_price * number).toFixed(2));
             });
             statPrice();
         });

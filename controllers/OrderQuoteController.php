@@ -158,8 +158,14 @@ class OrderQuoteController extends Controller
         $orderQuote->order_final_id    = $params['order_final_id'];
         $orderQuote->goods_info        = json_encode($params['goods_info']);
         $orderQuote->admin_id          = $params['admin_id'];
-        $orderQuote->quote_ratio       = $params['quote_ratio'];
-        $orderQuote->delivery_ratio    = $params['delivery_ratio'];
+
+        if ($params['sta_all_tax_price']) {
+            $orderQuote->quote_ratio   = number_format($params['sta_quote_all_tax_price']/$params['sta_all_tax_price'], 2, '.', '');
+        }
+        if ($params['mostLongTime']) {
+            $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time']/$params['mostLongTime'], 2, '.', '');
+        }
+
         $orderQuote->customer_id       = $orderFinal->customer_id;
         $orderQuote->competitor_ratio  = $params['competitor_ratio'];
         if ($orderQuote->save()) {
