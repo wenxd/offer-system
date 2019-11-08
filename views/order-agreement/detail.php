@@ -310,9 +310,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             $('.order_agreement_list').each(function (i, e) {
                 var price           = $(e).find('.price').text();
                 var tax_price       = $(e).find('.tax_price').text();
-                var number          = parseFloat($(e).find('.number').val());
+                var number          = parseFloat($(e).find('.oldNumber').text());
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
-                var purchase_number = $(e).find('.number').val();
+                var purchase_number = parseFloat($(e).find('.number').val());
 
                 if (delivery_time > mostLongTime) {
                     mostLongTime = delivery_time;
@@ -345,8 +345,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 var low_tax_price   = low_price * (1 + '<?=$system_tax?>' / 100);
                 var low_delivery    = parseFloat($(e).find('.low_delivery').text());
                 if (low_tax_price){
-                    $(e).find('.low_tax_price').text(parseFloat(low_tax_price * number).toFixed(2));
-                    stat_low_tax_price_all += low_tax_price * number;
+                    $(e).find('.low_tax_price').text(parseFloat(low_tax_price * purchase_number).toFixed(2));
+                    stat_low_tax_price_all += low_tax_price * purchase_number;
                 }
                 if (low_delivery > most_low_deliver) {
                     most_low_deliver = low_delivery;
@@ -356,8 +356,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 var short_tax_price = short_price * (1 + '<?=$system_tax?>' / 100);
                 var short_delivery  = parseFloat($(e).find('.short_delivery').text());
                 if (short_tax_price){
-                    $(e).find('.short_tax_price').text(parseFloat(short_tax_price * number).toFixed(2));
-                    stat_short_tax_price_all += short_tax_price * number;
+                    $(e).find('.short_tax_price').text(parseFloat(short_tax_price * purchase_number).toFixed(2));
+                    stat_short_tax_price_all += short_tax_price * purchase_number;
                 }
                 if (short_delivery > most_short_deliver) {
                     most_short_deliver = short_delivery;
