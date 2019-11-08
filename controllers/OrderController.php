@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementStock;
 use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
@@ -224,6 +225,7 @@ class OrderController extends BaseController
         $orderPurchase  = OrderPurchase::findAll(['order_id' => $id]);
         $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
         $orderPayment   = OrderPayment::findAll(['order_id' => $id]);
+        $orderUseStock  = AgreementStock::find()->where(['order_id' => $id])->all();
 
         $data['model']          = $order;
         $data['orderGoods']     = $orderGoods;
@@ -233,6 +235,7 @@ class OrderController extends BaseController
         $data['orderPurchase']  = $orderPurchase;
         $data['orderAgreement'] = $orderAgreement;
         $data['orderPayment']   = $orderPayment;
+        $data['orderUseStock']     = $orderUseStock;
 
         return $this->render('detail', $data);
     }

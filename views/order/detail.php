@@ -201,13 +201,35 @@ $this->params['breadcrumbs'][] = $this->title;
             <thead>
             <tr>
                 <th></th>
+                <th>走库存</th>
+                <th>走库存金额</th>
+            </tr>
+            <?php $stockPrice = 0;?>
+            <?php foreach ($orderUseStock as $orderStock):?>
+                <tr>
+                    <td></td>
+                    <td><?=$orderStock->order_payment_sn?></td>
+                    <td><?=$orderStock->all_tax_price?></td>
+                </tr>
+                <?php $stockPrice += $orderStock->all_tax_price?>
+            <?php endforeach;?>
+            <tr>
+                <td></td>
+                <td>汇总</td>
+                <td><?=$stockPrice?></td>
+            </tr>
+            </thead>
+
+            <thead>
+            <tr>
+                <th></th>
                 <th>利润率公式</th>
                 <th>结果</th>
             </tr>
             <tr>
                 <th></th>
-                <td>（收入-支出）/ 收入</td>
-                <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
+                <td>（收入-支出-库存）/ 收入</td>
+                <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice - $stockPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
             </tr>
             </thead>
         </table>
