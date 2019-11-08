@@ -167,7 +167,7 @@ class OrderPurchaseController extends BaseController
                     $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
 
                     //处理保存使用库存记录
-                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->number - $item['number'] : 0;
+                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
                     if ($use_stock_number) {
                         $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
                         $agreementStock = new AgreementStock();
@@ -237,7 +237,7 @@ class OrderPurchaseController extends BaseController
             foreach ($params['goods_info'] as $item) {
                 $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
                 //处理保存使用库存记录
-                $use_stock_number = $agreementGoods->number >= $item['number'] ? $agreementGoods->number - $item['number'] : 0;
+                $use_stock_number = $agreementGoods->order_number >= $item['number'] ? $agreementGoods->order_number - $item['number'] : 0;
                 $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
 
                 $agreementStock = new AgreementStock();
