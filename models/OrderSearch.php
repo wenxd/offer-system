@@ -19,7 +19,7 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'type', 'status', 'is_deleted', 'order_type', 'is_final'], 'integer'],
+            [['id', 'customer_id', 'type', 'status', 'is_deleted', 'order_type', 'is_final', 'is_dispatch'], 'integer'],
             [['order_sn', 'description', 'remark', 'provide_date', 'updated_at', 'created_at', 'customer_name'], 'safe'],
             [['order_price'], 'number'],
             [['id', 'order_sn', 'description', 'order_price', 'remark', 'customer_name'], 'trim'],
@@ -68,13 +68,14 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order.id' => $this->id,
+            'order.id'          => $this->id,
             'order.customer_id' => $this->customer_id,
             'order.order_price' => $this->order_price,
             'order.order_type'  => $this->order_type,
             'order.status'      => $this->status,
             'order.is_deleted'  => $this->is_deleted,
             'order.is_final'    => $this->is_final,
+            'order.is_dispatch' => $this->is_dispatch,
         ]);
 
         if ($this->customer_name) {

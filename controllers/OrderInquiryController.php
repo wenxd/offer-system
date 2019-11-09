@@ -153,12 +153,14 @@ class OrderInquiryController extends BaseController
                 $data[] = $row;
             }
             self::insertInquiryGoods($data);
-//            $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
-//            $orderGoodsCount = OrderGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
-//            if ($count >= $orderGoodsCount) {
-//                $order = Order::findOne($params['order_id']);
-//
-//            }
+            //是否全部派送询价员
+            $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+            $orderGoodsCount = OrderGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+            if ($count >= $orderGoodsCount) {
+                $order = Order::findOne($params['order_id']);
+                $order->is_dispatch = Order::IS_DISPATCH_YES;
+                $order->save();
+            }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderInquiry->getErrors()]);

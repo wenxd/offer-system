@@ -153,7 +153,7 @@ if ($model->isNewRecord) {
                         }
                     ?>
                     <td>
-                        <?=$str?>
+                        <?=$open ?  '' : $str?>
                     </td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
@@ -210,12 +210,14 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'order_id')->hiddenInput(['value' => $order->id])->label(false) ?>
         <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
     </div>
-    <div class="box-footer">
-        <?= Html::button('保存询价单', [
-                'class' => 'btn btn-success inquiry_save',
-                'name'  => 'submit-button']
-        )?>
-    </div>
+    <?php if (!$order->is_dispatch):?>
+        <div class="box-footer">
+            <?= Html::button('保存询价单', [
+                    'class' => 'btn btn-success inquiry_save',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
+    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 

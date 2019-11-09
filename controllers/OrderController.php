@@ -6,6 +6,7 @@ use app\models\AgreementStock;
 use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
+use app\models\InquiryGoods;
 use app\models\OrderAgreement;
 use app\models\OrderFinal;
 use app\models\OrderGoods;
@@ -240,6 +241,84 @@ class OrderController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /**生成询价单
+     * @param $id
+     * @return false|string
+     */
+    public function actionCreateInquiry($id)
+    {
+        $request = Yii::$app->request->get();
+        $order     = Order::findOne($id);
+        if (!$order) {
+            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
+        }
+        $goods_ids            = json_decode($order->goods_ids, true);
+        $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
+        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+
+        //询价记录
+        $inquiryListOld = Inquiry::find()->all();
+        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
+
+        $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
+            ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
+            ->where(['order_id' => $order->id]);
+        if (isset($request['goods_number']) && $request['goods_number']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
+        }
+        if (isset($request['goods_number_b']) && $request['goods_number_b']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number_b', $request['goods_number_b']]);
+        }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        if (isset($request['is_process']) && $request['is_process'] !== '') {
+            $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
+        }
+        if (isset($request['is_special']) && $request['is_special'] !== '') {
+            $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
+        }
+        if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
+            $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
+        }
+        if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
+            $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
+        }
+        if (isset($request['is_inquiry']) && $request['is_inquiry'] !== '') {
+            $inquiryGoodsIds = ArrayHelper::getColumn($inquiryListOld, 'good_id');
+            if ($request['is_inquiry']) {
+                $orderGoodsQuery->andWhere(['goods_id' => $inquiryGoodsIds]);
+            } else {
+                $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
+            }
+        }
+        $orderGoods           = $orderGoodsQuery->all();
+
+        //库存数量
+        $stockList = Stock::find()->indexBy('good_id')->all();
+
+        $date = date('ymd_');
+        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $inquirySn = explode('_', $orderI->inquiry_sn);
+            $number = sprintf("%03d", $inquirySn[1]+1);
+        } else {
+            $number = '001';
+        }
+
+        $data      = [];
+        $data['orderInquiry'] = $orderInquiry;
+        $data['goods']        = $goods;
+        $data['model']        = new OrderInquiry();
+        $data['order']        = $order;
+        $data['orderGoods']   = $orderGoods;
+        $data['number']       = $number;
+        $data['inquiryList']  = $inquiryList;
+        $data['stockList']    = $stockList;
+
+        return $this->render('create-inquiry', $data);
+    }
+
     //生成最终报价单
     public function actionFinalQuote()
     {
@@ -458,80 +537,6 @@ class OrderController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $order->getErrors()]);
         }
-    }
-
-    public function actionCreateInquiry($id)
-    {
-        $request = Yii::$app->request->get();
-        $data      = [];
-        $order     = Order::findOne($id);
-        if (!$order) {
-            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
-        }
-        $goods_ids            = json_decode($order->goods_ids, true);
-        $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
-        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
-
-        //询价记录
-        $inquiryListOld = Inquiry::find()->all();
-        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
-
-        $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
-            ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
-            ->where(['order_id' => $order->id]);
-        if (isset($request['goods_number']) && $request['goods_number']) {
-            $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
-        }
-        if (isset($request['goods_number_b']) && $request['goods_number_b']) {
-            $orderGoodsQuery->andWhere(['like', 'goods_number_b', $request['goods_number_b']]);
-        }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
-        }
-        if (isset($request['is_process']) && $request['is_process'] !== '') {
-            $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
-        }
-        if (isset($request['is_special']) && $request['is_special'] !== '') {
-            $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
-        }
-        if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
-            $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
-        }
-        if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
-            $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
-        }
-        if (isset($request['is_inquiry']) && $request['is_inquiry'] !== '') {
-            $inquiryGoodsIds = ArrayHelper::getColumn($inquiryListOld, 'good_id');
-            if ($request['is_inquiry']) {
-                $orderGoodsQuery->andWhere(['goods_id' => $inquiryGoodsIds]);
-            } else {
-                $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
-            }
-        }
-        $orderGoods           = $orderGoodsQuery->all();
-
-        //库存数量
-        $stockList = Stock::find()->indexBy('good_id')->all();
-
-        $date = date('ymd_');
-        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
-        if ($orderI) {
-            $inquirySn = explode('_', $orderI->inquiry_sn);
-            $number = sprintf("%03d", $inquirySn[1]+1);
-        } else {
-            $number = '001';
-        }
-
-        $data['orderInquiry'] = $orderInquiry;
-        $data['goods']        = $goods;
-        $data['model']        = new OrderInquiry();
-        $data['order']        = $order;
-        $data['orderGoods']   = $orderGoods;
-        $data['number']       = $number;
-        $data['inquiryList']  = $inquiryList;
-        $data['stockList']    = $stockList;
-
-        return $this->render('create-inquiry', $data);
     }
 
     public function actionCreateFinal($id, $key = 0)

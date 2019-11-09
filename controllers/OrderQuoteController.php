@@ -156,7 +156,7 @@ class OrderQuoteController extends Controller
         $orderQuote->quote_sn          = $params['quote_sn'];
         $orderQuote->order_id          = $orderFinal->order_id;
         $orderQuote->order_final_id    = $params['order_final_id'];
-        $orderQuote->goods_info        = json_encode($params['goods_info']);
+        $orderQuote->goods_info        = [];
         $orderQuote->admin_id          = $params['admin_id'];
 
         if ($params['sta_all_tax_price']) {

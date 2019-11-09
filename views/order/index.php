@@ -84,6 +84,14 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 ],
                 [
+                    'attribute' => 'is_dispatch',
+                    'format'    => 'raw',
+                    'filter'    => Order::$dispatch,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Order::$dispatch[$model->is_dispatch];
+                    }
+                ],
+                [
                     'attribute' => 'is_final',
                     'format'    => 'raw',
                     'filter'    => Order::$final,
