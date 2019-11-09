@@ -137,24 +137,30 @@ class OrderPurchaseVerifyController extends BaseController
                         'order_purchase_id' => $orderPurchase->id,
                         'goods_id' => $purchaseGoods->goods_id
                     ])->one();
-                    if (!$agreementStock) {
-                        $agreementStock = new AgreementStock();
-                        $agreementStock->order_id = $orderPurchase->order_id;
-                        $agreementStock->order_agreement_id = $orderPurchase->order_agreement_id;
-                        $agreementStock->order_agreement_sn = $orderPurchase->agreement_sn;
-                        $agreementStock->order_purchase_id = $orderPurchase->id;
-                        $agreementStock->order_purchase_sn = $orderPurchase->purchase_sn;
-                        $agreementStock->goods_id = $purchaseGoods->goods_id;
+                    if ($use_stock_number) {
+                        if (!$agreementStock) {
+                            $agreementStock = new AgreementStock();
+                            $agreementStock->order_id = $orderPurchase->order_id;
+                            $agreementStock->order_agreement_id = $orderPurchase->order_agreement_id;
+                            $agreementStock->order_agreement_sn = $orderPurchase->agreement_sn;
+                            $agreementStock->order_purchase_id = $orderPurchase->id;
+                            $agreementStock->order_purchase_sn = $orderPurchase->purchase_sn;
+                            $agreementStock->goods_id = $purchaseGoods->goods_id;
+                        }
+                        $agreementStock->order_payment_id = $orderPayment->id;
+                        $agreementStock->order_payment_sn = $orderPayment->payment_sn;
+                        $agreementStock->price = $stock ? $stock->price : 0;
+                        $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
+                        $agreementStock->use_number = $use_stock_number;
+                        $agreementStock->all_price = $agreementStock->price * $use_stock_number;
+                        $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
+                        $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_NO;
+                        $agreementStock->save();
+                    } else {
+                        if ($agreementStock) {
+                            $agreementStock->delete();
+                        }
                     }
-                    $agreementStock->order_payment_id = $orderPayment->id;
-                    $agreementStock->order_payment_sn = $orderPayment->payment_sn;
-                    $agreementStock->price = $stock ? $stock->price : 0;
-                    $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
-                    $agreementStock->use_number = $use_stock_number;
-                    $agreementStock->all_price = $agreementStock->price * $use_stock_number;
-                    $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
-                    $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_NO;
-                    $agreementStock->save();
                 }
                 if ($paymentGoods->price != $paymentGoods->fixed_price) {
                     $noticeOpen = true;
