@@ -10,6 +10,7 @@ use yii\widgets\Pjax;
 use app\extend\widgets\Bar;
 use app\models\Inquiry;
 use app\models\Goods;
+use app\models\Helper;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
 use kartik\daterange\DateRangePicker;
@@ -87,7 +88,7 @@ $userId   = Yii::$app->user->identity->id;
                 'visible'   => !in_array($userId, $adminIds),
                 'label'     => '询价员',
                 'contentOptions' =>['style'=>'min-width: 100px;'],
-                'filter'    => $admins,
+                'filter'    => Helper::getAdminList(['系统管理员', '询价员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     return $model->admin ? $model->admin->username : '';
                 }
