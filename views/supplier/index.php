@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use app\models\Helper;
 use app\models\Supplier;
 use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
@@ -80,7 +81,7 @@ if (in_array($userId, $adminIds)) {
             [
                 'attribute' => 'admin_id',
                 'label'     => '申请人',
-                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '询价员']),
+                'filter'    => in_array($userId, $adminIds) ? Helper::getAdminList(['询价员', '采购员']) : Helper::getAdminList(['系统管理员', '询价员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

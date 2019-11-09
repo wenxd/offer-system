@@ -48,8 +48,11 @@ class SupplierSearch extends Supplier
         $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $userId   = Yii::$app->user->identity->id;
+
+        $super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
         if (in_array($userId, $adminIds)) {
-            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES]);
+            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES])
+            ->andWhere(['!=', 'admin_id', $super->user_id]);
         } else {
             $query = Supplier::find();
         }
