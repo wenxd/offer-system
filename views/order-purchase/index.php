@@ -9,6 +9,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\OrderPurchase;
 use kartik\daterange\DateRangePicker;
+use app\models\Helper;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -28,6 +29,7 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 $userId   = Yii::$app->user->identity->id;
+$userName = Yii::$app->user->identity->username;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
@@ -127,7 +129,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => in_array($userId, $adminIds) ? [$userId => $userName] : Helper::getAdminList(['系统管理员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;
