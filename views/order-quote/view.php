@@ -111,10 +111,10 @@ if (floatval($model->quote_all_tax_price) > 0) {
                         $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax_rate/100), 2, '.', '') : 0;
                     ?>
                     <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
-                    <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
-                    <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                    <td class="competitor_public_tax_price"><?=$publish_tax_price * $orderQuote->competitor_ratio?></td>
-                    <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $orderQuote->competitor_ratio * $item->number?></td>
+                    <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$item->competitor_goods_tax_price?></td>
+                    <td class="competitor_tax_price_all"><?=$item->competitor_goods_tax_price_all?></td>
+                    <td class="competitor_public_tax_price"><?=$item->competitor_goods_quote_tax_price?></td>
+                    <td class="competitor_public_tax_price_all"><?=$item->competitor_goods_quote_tax_price_all?></td>
                     <td class="price"><?=$item->price?></td>
                     <td class="tax_price"><?=$item->tax_price?></td>
                     <td class="all_price"><?=$item->all_price?></td>
@@ -129,7 +129,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?= $is_show ? 9 : 12?>" rowspan="2">汇总统计</td>
+                <td colspan="<?= $is_show ? 10 : 13?>" rowspan="2">汇总统计</td>
                 <?php if (!$is_show) :?>
                     <td rowspan="2">发行</td>
                     <td>发行含税总价合计</td>

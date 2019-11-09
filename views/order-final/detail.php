@@ -445,7 +445,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 var publish_price     = parseFloat($(e).find('.publish_price').text());
                 var publish_tax_price = (publish_price * (1 + tax/100) * quote_publish_price_ratio).toFixed(2);
                 $(e).find('.publish_tax_price').text(publish_tax_price);
-                var new_all_publish_tax_price = publish_price * tax * quote_publish_price_ratio * number;
+                var new_all_publish_tax_price = publish_price * (1 + tax/100) * quote_publish_price_ratio * number;
                 $(e).find('.all_publish_tax_price').text(new_all_publish_tax_price.toFixed(2));
                 if (new_all_publish_tax_price) {
                     quote_publish_price_all += new_all_publish_tax_price;
