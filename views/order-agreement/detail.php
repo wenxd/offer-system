@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\Helper;
 use app\models\Inquiry;
 use app\models\SystemConfig;
 use app\models\AuthAssignment;
@@ -261,7 +262,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
         </table>
         <?= $form->field($model, 'purchase_sn')->textInput()->label('采购订单号') ?>
 
-        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
+        <?= $form->field($model, 'admin_id')->dropDownList(Helper::getAdminList(['系统管理员', '采购员']))->label('选择采购员') ?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
