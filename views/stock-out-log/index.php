@@ -22,10 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
+    <?php if (!in_array($userId, $adminIds)):?>
     <div class="box-header">
         <?= Bar::widget([
             'template' => '{download}',
@@ -39,6 +39,7 @@ $userId   = Yii::$app->user->identity->id;
             ]
         ])?>
     </div>
+    <?php endif;?>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
