@@ -95,8 +95,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'class' => 'btn btn-info btn-xs btn-flat',
                                 ]);
                             }
-                            if (($model->agreementStock && $model->agreementStock->use_number != 0 && $model->agreementStock->is_confirm)
-                                || ($model->agreementStock && $model->agreementStock->use_number == 0)) {
+                            $res = OrderPayment::isConfirm($model->id);
+                            if (!$res) {
                                 $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-info btn-xs btn-flat',

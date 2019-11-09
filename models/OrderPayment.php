@@ -207,4 +207,10 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AgreementStock::className(), ['order_payment_id' => 'id']);
     }
+
+    public static function isConfirm($id)
+    {
+        $res = AgreementStock::find()->where(['order_payment_id' => $id, 'is_confirm' => 0])->one();
+        return $res;
+    }
 }
