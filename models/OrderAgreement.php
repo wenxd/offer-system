@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "order_agreement".
@@ -174,5 +175,29 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    public static function isEnoughStock($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+        ])->all();
+        $goods_id = ArrayHelper::getColumn($agreementGoodsList, 'goods_id');
+        $stockGoods = Stock::find()->where(['good_id' => $goods_id])->indexBy('good_id')->asArray()->all();
+        $isEnough = 1;
+        foreach ($agreementGoodsList as $key => $value) {
+            //订单需求数
+            if ($value->order_number) {
+                if (isset($stockGoods[$value->goods_id])) {
+                    if ($stockGoods[$value->goods_id]['number'] < $value->order_number) {
+                        $isEnough = 0;
+                    }
+                } else {
+                    $isEnough = 0;
+                    break;
+                }
+            }
+        }
+        return $isEnough;
     }
 }

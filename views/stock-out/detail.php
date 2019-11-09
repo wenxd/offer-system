@@ -56,6 +56,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>数量</th>
                 <th>库存数量</th>
                 <th>库存位置</th>
+                <th>到齐</th>
                 <th>出库</th>
                 <th>质检</th>
                 <th>操作</th>
@@ -63,7 +64,7 @@ $isShow = in_array($userId, $adminIds);
             </thead>
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
-                <tr class="order_final_list">
+                <tr class="order_agreement_list">
                     <?php
                         $str = "<input type='checkbox' class='select_id' value={$item->id}>";
                     ?>
@@ -79,8 +80,9 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
                     <td class="number"><?=$item->number?></td>
-                    <td><?=$item->stock ? $item->stock->number : 0?></td>
+                    <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->position : ''?></td>
+                    <td class="is_enough"></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
                     <td class="is_quality"><?=$item->is_quality ? '是' : '否'?></td>
                     <td>
@@ -103,6 +105,21 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        init();
+        function init()
+        {
+            $('.order_agreement_list').each(function (i, e) {
+                var number       = parseFloat($(e).find('.number').text());
+                var stock_number = parseFloat($(e).find('.stock_number').text());
+                console.log(number);
+                console.log(stock_number);
+                if (number > stock_number) {
+                    $(e).find('.is_enough').text('否')
+                } else {
+                    $(e).find('.is_enough').text('是')
+                }
+            });
+        }
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked",$(this).prop("checked"));
