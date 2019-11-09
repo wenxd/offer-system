@@ -303,6 +303,7 @@ class StockInLogController extends Controller
                                 $stockLog->admin_id     = Yii::$app->user->identity->id;
                                 $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
                                 $stockLog->source       = trim($value['D']);
+                                $stockLog->position     = trim($value['C']);
                                 if ($stockLog->save()) {
                                     foreach ($systemList as $k => $item) {
                                         if ($item['title'] == SystemConfig::TITLE_TAX) {
