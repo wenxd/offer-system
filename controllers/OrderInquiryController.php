@@ -234,8 +234,12 @@ class OrderInquiryController extends BaseController
                 $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
                 $orderInquiry->final_at   = $info->inquiry_at;
                 $orderInquiry->save();
+            }
+            //判断订单是否都确认询价
+            $res = InquiryGoods::find()->where(['order_id' => $info->order_id, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
+            if (!$res) {
                 //订单改状态
-                $order = Order::findOne($orderInquiry->order_id);
+                $order = Order::findOne($info->order_id);
                 $order->status = Order::STATUS_YES;
                 $order->save();
             }
