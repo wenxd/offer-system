@@ -13,7 +13,7 @@ use app\models\OrderAgreementSearch;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OrderAgreementSearch */
+/* @var $searchModel app\models\OrderFinancialCollectSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '待收款页面';
@@ -62,8 +62,8 @@ $userId   = Yii::$app->user->identity->id;
                     'attribute'      => 'expect_at',
                     'contentOptions' => ['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
-                        'name'  => 'OrderAgreementSearch[expect_at]',
-                        'value' => Yii::$app->request->get('OrderAgreementSearch')['expect_at'],
+                        'name'  => 'OrderFinancialCollectSearch[expect_at]',
+                        'value' => Yii::$app->request->get('OrderFinancialCollectSearch')['expect_at'],
                     ]),
                     'value'     => function($model){
                         return substr($model->expect_at, 0, 10);
