@@ -94,13 +94,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-info btn-xs btn-flat',
                                 ]);
-                            }
-                            $res = OrderPayment::isConfirm($model->id);
-                            if (!$res) {
-                                $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
-                                    'data-pjax' => '0',
-                                    'class' => 'btn btn-info btn-xs btn-flat',
-                                ]);
+                            } else {
+                                $res = OrderPayment::isConfirm($model->id);
+                                if (!$res) {
+                                    $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-info btn-xs btn-flat',
+                                    ]);
+                                }
                             }
                         } else {
                             if (!$model->is_agreement) {
