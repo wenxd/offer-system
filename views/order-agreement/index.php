@@ -19,7 +19,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '收入合同订单管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -50,6 +50,19 @@ $userId   = Yii::$app->user->identity->id;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'order_sn',
+                'visible'   => !in_array($userId, $adminIds),
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'agreement_sn',
                 'format'    => 'raw',
@@ -109,19 +122,6 @@ $userId   = Yii::$app->user->identity->id;
                 'filter'    => OrderAgreementSearch::$purchase,
                 'value'     => function ($model, $key, $index, $column) {
                     return OrderAgreementSearch::$purchase[$model->is_purchase];
-                }
-            ],
-            [
-                'attribute' => 'order_sn',
-                'visible'   => !in_array($userId, $adminIds),
-                'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
-                    } else {
-                        return '';
-                    }
                 }
             ],
 //            [

@@ -1,5 +1,8 @@
 <?php
 
+use app\models\Admin;
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use app\models\Order;
@@ -9,7 +12,9 @@ use yii\widgets\DetailView;
 
 $this->title = '订单详情';
 $this->params['breadcrumbs'][] = $this->title;
-
+$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
     <?= DetailView::widget([
@@ -100,60 +105,61 @@ $this->params['breadcrumbs'][] = $this->title;
             </tbody>
         </table>
         <table id="example2" class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th>订单号</th>
-                <th>询价单号</th>
-                <th>询价完成</th>
-            </tr>
-            <?php foreach ($orderInquiry as $inquiry):?>
-            <tr>
-                <td><?=$inquiry->order_id?></td>
-                <td><?=Html::a($inquiry->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $inquiry->id]))?></td>
-                <td><?=OrderInquiry::$Inquiry[$inquiry->is_inquiry]?></td>
-            </tr>
-            <?php endforeach;?>
-            </thead>
-
-            <thead>
-            <tr>
-                <th>订单号</th>
-                <th>成本单号</th>
-            </tr>
-            <?php foreach ($orderFinal as $final):?>
+            <?php if (!in_array($userId, $adminIds)):?>
+                <thead>
                 <tr>
-                    <td><?=$final->order_id?></td>
-                    <td><?=Html::a($final->final_sn, Url::to(['order-final/view', 'id' => $final->id]))?></td>
+                    <th>订单号</th>
+                    <th>询价单号</th>
+                    <th>询价完成</th>
                 </tr>
-            <?php endforeach;?>
-            </thead>
-
-            <thead>
-            <tr>
-                <th>订单号</th>
-                <th>报价单号</th>
-            </tr>
-            <?php foreach ($orderQuote as $quote):?>
+                <?php foreach ($orderInquiry as $inquiry):?>
                 <tr>
-                    <td><?=$quote->order_id?></td>
-                    <td><?=Html::a($quote->quote_sn, Url::to(['order-quote/view', 'id' => $quote->id]))?></td>
+                    <td><?=$inquiry->order_id?></td>
+                    <td><?=Html::a($inquiry->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $inquiry->id]))?></td>
+                    <td><?=OrderInquiry::$Inquiry[$inquiry->is_inquiry]?></td>
                 </tr>
-            <?php endforeach;?>
-            </thead>
+                <?php endforeach;?>
+                </thead>
 
-            <thead>
-            <tr>
-                <th>订单号</th>
-                <th>采购单号</th>
-            </tr>
-            <?php foreach ($orderPurchase as $purchse):?>
+                <thead>
                 <tr>
-                    <td><?=$purchse->order_id?></td>
-                    <td><?=Html::a($purchse->purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchse->id]))?></td>
+                    <th>订单号</th>
+                    <th>成本单号</th>
                 </tr>
-            <?php endforeach;?>
-            </thead>
+                <?php foreach ($orderFinal as $final):?>
+                    <tr>
+                        <td><?=$final->order_id?></td>
+                        <td><?=Html::a($final->final_sn, Url::to(['order-final/view', 'id' => $final->id]))?></td>
+                    </tr>
+                <?php endforeach;?>
+                </thead>
 
+                <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>报价单号</th>
+                </tr>
+                <?php foreach ($orderQuote as $quote):?>
+                    <tr>
+                        <td><?=$quote->order_id?></td>
+                        <td><?=Html::a($quote->quote_sn, Url::to(['order-quote/view', 'id' => $quote->id]))?></td>
+                    </tr>
+                <?php endforeach;?>
+                </thead>
+
+                <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>采购单号</th>
+                </tr>
+                <?php foreach ($orderPurchase as $purchse):?>
+                    <tr>
+                        <td><?=$purchse->order_id?></td>
+                        <td><?=Html::a($purchse->purchase_sn, Url::to(['order-purchase/detail', 'id' => $purchse->id]))?></td>
+                    </tr>
+                <?php endforeach;?>
+                </thead>
+            <?php endif;?>
             <thead>
             <tr>
                 <th>订单号</th>
