@@ -209,7 +209,7 @@ class Inquiry extends ActiveRecord
             self::updateAll(['is_confirm_better' => 0], ['good_id' => $this->good_id]);
         }
 
-        if ($function == 'add' && $this->is_better) {
+        if (($function == 'add' || $function == 'upload') && $this->is_better) {
             $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
             $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
             $admin_id = Yii::$app->user->identity->id;
