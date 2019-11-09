@@ -15,6 +15,7 @@ use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\OrderQuote;
 use app\models\Stock;
+use app\models\Supplier;
 use app\models\TempNotGoods;
 use app\models\TempNotGoodsB;
 use app\models\TempOrderGoods;
@@ -305,8 +306,9 @@ class OrderController extends BaseController
         } else {
             $number = '001';
         }
+        $supplierList = Supplier::find()->where(['is_deleted' => 0, 'is_confirm' => 1])->all();
 
-        $data      = [];
+        $data                 = [];
         $data['orderInquiry'] = $orderInquiry;
         $data['goods']        = $goods;
         $data['model']        = new OrderInquiry();
@@ -315,6 +317,7 @@ class OrderController extends BaseController
         $data['number']       = $number;
         $data['inquiryList']  = $inquiryList;
         $data['stockList']    = $stockList;
+        $data['supplierList'] = $supplierList;
 
         return $this->render('create-inquiry', $data);
     }

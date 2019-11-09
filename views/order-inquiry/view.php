@@ -38,7 +38,7 @@ $userId    = Yii::$app->user->identity->id;
     </div>
 
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 1500px;">
             <thead>
             <tr>
                 <th>序号</th>
@@ -50,6 +50,7 @@ $userId    = Yii::$app->user->identity->id;
                 <th>厂家号</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
+                <th>推荐供应商</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>单位</th>
@@ -76,6 +77,7 @@ $userId    = Yii::$app->user->identity->id;
                             <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                             <td><?=$item->goods->original_company?></td>
                             <td><?=$item->goods->original_company_remark?></td>
+                            <td><?=$item->supplier ? $item->supplier->name : ''?></td>
                             <td><?=$item->goods->description?></td>
                             <td><?=$item->goods->description_en?></td>
                             <td><?=$item->goods->unit?></td>
@@ -108,6 +110,7 @@ $userId    = Yii::$app->user->identity->id;
                                 <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                                 <td><?=$item->goods->original_company?></td>
                                 <td><?=$item->goods->original_company_remark?></td>
+                                <td><?=$item->supplier ? $item->supplier->name : ''?></td>
                                 <td><?=$item->goods->description?></td>
                                 <td><?=$item->goods->description_en?></td>
                                 <td><?=$item->goods->unit?></td>

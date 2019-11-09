@@ -50,10 +50,11 @@ if ($model->isNewRecord) {
         color : #5dcc6e;
     }
 </style>
+
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-striped table-bordered">
+        <table id="example2" class="table table-bordered table-hover" style="width: 1800px; table-layout: auto">
             <thead>
                 <tr>
                     <th>
@@ -62,6 +63,7 @@ if ($model->isNewRecord) {
                     <th>序号</th>
                     <th>零件号</th>
                     <th>厂家号</th>
+                    <th style="width: 200px;">推荐供应商</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
@@ -92,6 +94,7 @@ if ($model->isNewRecord) {
                     <td>
                         <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td>
@@ -160,6 +163,14 @@ if ($model->isNewRecord) {
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
                             ['target' => 'blank'])?></td>
                     <td><?= $item->goods->goods_number_b?></td>
+                    <td>
+                        <select class="form-control" name="recommend_supplier">
+                            <option value="0"></option>
+                            <?php foreach ($supplierList as $supplier):?>
+                                <option value="<?=$supplier->id?>"><?=$supplier->name?></option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
                     <td><?= $item->goods->description?></td>
                     <td><?= $item->goods->description_en?></td>
                     <td><?= $item->goods->original_company?></td>
@@ -250,9 +261,11 @@ if ($model->isNewRecord) {
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var item = {};
-                    item.goods_id = $(element).val();
-                    item.number   = $(element).parent().parent().find('.number').text();
-                    item.serial   = $(element).parent().parent().find('.serial').text();
+                    item.goods_id    = $(element).val();
+                    item.number      = $(element).parent().parent().find('.number').text();
+                    item.serial      = $(element).parent().parent().find('.serial').text();
+                    var supplier_id  = $(element).parent().parent().find('select option:selected').val();
+                    item.supplier_id = supplier_id;
                     goods_info.push(item);
                 }
             });
