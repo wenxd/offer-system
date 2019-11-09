@@ -55,6 +55,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 <?php endif;?>
                 <th>税率</th>
                 <?php if (!$is_show) :?>
+                <th>发行未税单价</th>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
@@ -98,6 +99,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                     <?php endif;?>
                     <td class="ratio"><?=$item->tax_rate?></td>
                     <?php if (!$is_show) :?>
+                    <td class="publish_price"><?=$item->goods->publish_price?></td>
                     <?php
                         $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '');
                     ?>

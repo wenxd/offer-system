@@ -28,11 +28,15 @@ foreach ($adminList as $key => $admin) {
 $customer_name = $order->customer ? $order->customer->short_name : '';
 $model->quote_sn = 'Q' . date('ymd_') . $customer_name . '_' . $number;
 
-$model->quote_ratio = SystemConfig::find()->select('value')
-    ->where(['title' => SystemConfig::TITLE_QUOTE_PRICE_RATIO])->scalar();
+$model->quote_ratio = SystemConfig::find()->select('value')->where([
+            'title'      => SystemConfig::TITLE_QUOTE_PRICE_RATIO,
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+    ])->scalar();
 
-$model->delivery_ratio = SystemConfig::find()->select('value')
-    ->where(['title' => SystemConfig::TITLE_QUOTE_DELIVERY_RATIO])->scalar();
+$model->delivery_ratio = SystemConfig::find()->select('value')->where([
+        'title'      => SystemConfig::TITLE_QUOTE_DELIVERY_RATIO,
+        'is_deleted' => SystemConfig::IS_DELETED_NO,
+])->scalar();
 
 $model->publish_ratio = 1;
 
@@ -41,6 +45,12 @@ $model->competitor_ratio = $competitor_ratio = SystemConfig::find()->select('val
         'is_deleted' => SystemConfig::IS_DELETED_NO,
         'title'      => SystemConfig::TITLE_COMPETITOR_RATIO
     ])->scalar();
+
+//系数税率
+$tax = SystemConfig::find()->select('value')->where([
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+    'title'      => SystemConfig::TITLE_TAX
+])->scalar();
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -52,26 +62,27 @@ $model->competitor_ratio = $competitor_ratio = SystemConfig::find()->select('val
                 <th>序号</th>
                 <th>零件号</th>
                 <th>厂家号</th>
-                <th style="width: 200px;">中文描述</th>
+                <th style="max-width: 200px;">中文描述</th>
                 <th>原厂家</th>
                 <th>订单需求数量</th>
                 <th>库存数量</th>
                 <th>单位</th>
                 <th>供应商</th>
                 <th>税率</th>
-                <th>发含单</th>
-                <th>发含总</th>
+                <th>发行价未税单价</th>
+                <th>发行价含税单价</th>
+                <th>发行价含税总价</th>
                 <th>发货期</th>
-                <th>竞名称</th>
+                <th>竞争者名称</th>
                 <th>竞低含单</th>
                 <th>竞低含总</th>
                 <th>竞预含单</th>
                 <th>竞预含总</th>
-                <th>成未单</th>
-                <th>成含单</th>
-                <th>成未总</th>
-                <th>成含总</th>
-                <th>成货期</th>
+                <th>成本未税单</th>
+                <th>成本含税单</th>
+                <th>成本未税总</th>
+                <th>成本含税总</th>
+                <th>成本货期</th>
                 <th>报价未税单价</th>
                 <th>报价含税单价</th>
                 <th>报价未税总价</th>
@@ -99,7 +110,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->inquiry->supplier->name?></td>
-                <td class="ratio"><?=$item->tax?></td>
+                <td class="ratio"><?=$tax?></td>
+                <td class="publish_price"><?=$item->goods->publish_price?></td>
                 <?php
                     $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
                 ?>
@@ -113,8 +125,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
                 <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                 <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$publish_tax_price * $competitor_ratio?>"></td>
-                <td class="competitor_public_tax_price_all"><?=$publish_tax_price * $competitor_ratio * $item->number?></td>
+                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$item->goods->publish_price * $competitor_ratio?>"></td>
+                <td class="competitor_public_tax_price_all"><?=$item->goods->publish_price * $competitor_ratio * $item->number?></td>
                 <td class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
@@ -130,7 +142,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="11" rowspan="2">汇总统计</td>
+                <td colspan="12" rowspan="2">汇总统计</td>
                 <td rowspan="2">发行价</td>
                 <td>发行总价</td>
                 <td>货期</td>
@@ -425,12 +437,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
         //输入发行价系数
         $('#orderquote-publish_ratio').bind('input propertychange', function (e) {
-            var quote_publish_price_ratio = parseFloat($(this).val());
+            var quote_publish_price_ratio = parseFloat($(this).val()) ? parseFloat($(this).val()) : 0;
             var quote_publish_price_all = 0;
             $('.order_final_list').each(function (i, e) {
+                var tax               = parseFloat($(e).find('.ratio').text());
                 var number            = parseFloat($(e).find('.afterNumber input').val());
-                var publish_tax_price = parseFloat($(e).find('.publish_tax_price').text());
-                var new_all_publish_tax_price = number * publish_tax_price * quote_publish_price_ratio;
+                var publish_price     = parseFloat($(e).find('.publish_price').text());
+                var publish_tax_price = (publish_price * (1 + tax/100) * quote_publish_price_ratio).toFixed(2);
+                $(e).find('.publish_tax_price').text(publish_tax_price);
+                var new_all_publish_tax_price = publish_price * tax * quote_publish_price_ratio * number;
                 $(e).find('.all_publish_tax_price').text(new_all_publish_tax_price.toFixed(2));
                 if (new_all_publish_tax_price) {
                     quote_publish_price_all += new_all_publish_tax_price;
@@ -610,9 +625,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
         $('#orderquote-competitor_ratio').bind('input propertychange', function (e) {
             var competitor_ratio = parseFloat($(this).val());
             $('.order_final_list').each(function (i, e) {
-                var number = parseFloat($(e).find('.afterNumber input').val());
-                var public_tax_price = parseFloat($(e).find('.publish_tax_price').text());
-                var competitor_public_tax_price = public_tax_price * competitor_ratio;
+                var tax          = parseFloat($(e).find('.ratio').text());
+                var number       = parseFloat($(e).find('.afterNumber input').val());
+                var public_price = parseFloat($(e).find('.publish_price').text());
+                var competitor_public_tax_price = public_price * (1 + tax/100) * competitor_ratio;
                 $(e).find('.competitor_public_tax_price input').val(competitor_public_tax_price.toFixed(2));
                 $(e).find('.competitor_public_tax_price_all').text((competitor_public_tax_price * number).toFixed(2));
             });
