@@ -116,7 +116,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <?= $form->field($model, 'reason')->textInput(); ?>
         <?php endif;?>
     </div>
-    <?php if (!$model->is_verify):?>
+    <?php if (!$model->is_verify && !in_array($userId, $adminIds)):?>
         <div class="box-footer">
             <?= Html::button('审核通过', [
                     'class' => 'btn btn-success verify_save',
