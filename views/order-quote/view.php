@@ -129,17 +129,20 @@ if (floatval($model->quote_all_tax_price) > 0) {
             <tr style="background-color: #acccb9">
                 <td colspan="<?= $is_show ? 9 : 12?>" rowspan="2">汇总统计</td>
                 <?php if (!$is_show) :?>
-                <td rowspan="2">发行</td>
-                <td>发行含税总价合计</td>
-                <td>发行最长货期</td>
-                <td colspan="4" rowspan="2"></td>
-                <td>预估含税总价</td>
-                <td rowspan="2"></td>
-                <td rowspan="2">成本单</td>
-                <td>成本未税总价合计</td>
-                <td>成本含税总价合计</td>
-                <td>成本最长货期</td>
-                <td rowspan="2"></td>
+                    <td rowspan="2">发行</td>
+                    <td>发行含税总价合计</td>
+                    <td>发行最长货期</td>
+                    <td rowspan="2"></td>
+                    <td rowspan="2">竞争对手</td>
+                    <td>竞争对手总价</td>
+                    <td rowspan="2"></td>
+                    <td>预估含税总价</td>
+                    <td rowspan="2"></td>
+                    <td rowspan="2">成本单</td>
+                    <td>成本未税总价合计</td>
+                    <td>成本含税总价合计</td>
+                    <td>成本最长货期</td>
+                    <td rowspan="2"></td>
                 <?php endif;?>
                 <td rowspan="2">报价单</td>
                 <td>报价未税总价合计</td>
@@ -150,6 +153,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 <?php if (!$is_show) :?>
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="most_publish_delivery_time"></td>
+                <td class="sta_competitor_tax_price_all"></td>
                 <td class="sta_competitor_public_tax_price_all"></td>
                 <td class="sta_all_price"></td>
                 <td class="sta_all_tax_price"></td>
@@ -197,6 +201,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
             var sta_quote_all_price         = 0;
             var sta_quote_all_tax_price     = 0;
             var most_quote_delivery_time    = 0;
+            var sta_competitor_tax_price_all        = 0;
             var sta_competitor_public_tax_price_all = 0;
             $('.order_final_list').each(function (i, e) {
                 var publish_tax_price = parseFloat($(e).find('.all_publish_tax_price').text());
@@ -233,6 +238,12 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;
                 }
+                //竞争者预估
+                var competitor_tax_price_all = parseFloat($(e).find('.competitor_tax_price_all').text());
+                if (competitor_tax_price_all) {
+                    sta_competitor_tax_price_all += competitor_tax_price_all;
+                }
+                //竞争者最低
                 var competitor_public_tax_price_all = parseFloat($(e).find('.competitor_public_tax_price_all').text());
                 if (competitor_public_tax_price_all) {
                     sta_competitor_public_tax_price_all += competitor_public_tax_price_all;
@@ -241,6 +252,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
             $('.sta_all_publish_tax_price').text(sta_publish_tax_price.toFixed(2));
             $('.most_publish_delivery_time').text(most_publish_delivery_time.toFixed(2));
 
+            $('.sta_competitor_tax_price_all').text(sta_competitor_tax_price_all.toFixed(2));
             $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
 
             $('.sta_all_price').text(sta_all_price.toFixed(2));
