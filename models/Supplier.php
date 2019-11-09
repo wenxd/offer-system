@@ -22,6 +22,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $full_name
  * @property string $admin_id
  * @property string $agree_at
+ * @property string $is_confirm
  */
 class Supplier extends ActiveRecord
 {

@@ -124,9 +124,17 @@ if (in_array($userId, $adminIds)) {
             [
                 'class'         => ActionColumn::className(),
                 'visible'       => !in_array($userId, $adminIds),
-                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'contentOptions'=>['style'=>'min-width: 200px;'],
                 'header'        => '操作',
-                'template'      => '{view} {update}',
+                'template'      => '{confirm} {view} {update}',
+                'buttons' => [
+                    'confirm' => function ($url, $model, $key) {
+                        return Html::a('<i class="fa fa-reload"></i> 确认', Url::to(['confirm', 'id' => $model->id]), [
+                            'data-pjax' => '0',
+                            'class'     => 'btn btn-success btn-flat btn-xs',
+                        ]);
+                    }
+                ],
             ],
         ],
     ]); ?>

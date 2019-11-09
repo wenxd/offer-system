@@ -70,4 +70,14 @@ class SupplierController extends BaseController
             'model' => $model,
         ]);
     }
+
+    public function actionConfirm($id)
+    {
+        $supplier = Supplier::findOne($id);
+        $supplier->is_confirm = Supplier::IS_CONFIRM_YES;
+        $supplier->save();
+
+        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        return $this->redirect(['index']);
+    }
 }
