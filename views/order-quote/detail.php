@@ -51,7 +51,7 @@ $tax = SystemConfig::find()->select('value')->where([
                 <th>原厂家备注</th>
                 <?php endif;?>
                 <th>单位</th>
-                <th>收入合同货期</th>
+                <th>数量</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>供应商</th>
                 <?php endif;?>
@@ -62,7 +62,7 @@ $tax = SystemConfig::find()->select('value')->where([
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
-                <th>数量</th>
+                <th>收入合同货期</th>
             </tr>
             </thead>
             <tbody>
@@ -82,7 +82,9 @@ $tax = SystemConfig::find()->select('value')->where([
                     <td><?=$item->goods->original_company_remark?></td>
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
-                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>" style="width: 80px;"></td>
+                    <td class="afterNumber">
+                        <input type="number" class="number" min="1" value="<?=$item->number?>"  style="width: 80px;">
+                    </td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <?php endif;?>
@@ -93,22 +95,17 @@ $tax = SystemConfig::find()->select('value')->where([
                     <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>" style="width: 80px;"></td>
                     <td class="tax_price"><input type="text" class="change_tax_price" value="<?=$item->quote_tax_price?>" style="width: 80px;"></td>
                     <td class="all_tax_price"></td>
-                    <td class="afterNumber">
-                        <input type="number" class="number" min="1" value="<?=$item->number?>"  style="width: 80px;">
-                    </td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>" style="width: 80px;"></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?= $is_show ? 4 : 7?>" rowspan="2">汇总统计</td>
-                <td>最长合同货期</td>
-                <td colspan="<?= $is_show ? 3 : 5?>" rowspan="2"></td>
+                <td colspan="<?= $is_show ? 8 : 13?>" rowspan="2">汇总统计</td>
                 <td>合同总价</td>
-                <td></td>
+                <td>最长合同货期</td>
             </tr>
             <tr style="background-color: #acccb9">
-                <td class="mostLongTime"></td>
                 <td class="sta_all_tax_price"></td>
-                <td></td>
+                <td class="mostLongTime"></td>
             </tr>
             </tbody>
         </table>
@@ -266,14 +263,14 @@ $tax = SystemConfig::find()->select('value')->where([
 
             $('.order_quote_list').each(function (i, ele) {
                 var item = {};
-                item.quote_goods_id  = $(ele).find('.goods_id').data('quote_goods_id');
-                item.goods_id        = $(ele).find('.goods_id').data('goods_id');
-                item.type            = $(ele).find('.goods_id').data('goods_type');
-                item.relevance_id    = $(ele).find('.goods_id').data('relevance_id');
-                item.number          = $(ele).find('.number').val();
-                item.price           = $(ele).find('.change_price').val();
-                item.tax_price       = $(ele).find('.tax_price').text();
-                item.delivery_time   = $(ele).find('.delivery_time input').val();
+                item.quote_goods_id   = $(ele).find('.goods_id').data('quote_goods_id');
+                item.goods_id         = $(ele).find('.goods_id').data('goods_id');
+                item.type             = $(ele).find('.goods_id').data('goods_type');
+                item.relevance_id     = $(ele).find('.goods_id').data('relevance_id');
+                item.number           = $(ele).find('.number').val();
+                item.price            = $(ele).find('.change_price').val();
+                item.tax_price        = $(ele).find('.change_tax_price').val();
+                item.delivery_time    = $(ele).find('.delivery_time input').val();
                 item.purchase_number  = $(ele).find('.number').val();
                 goods_info.push(item);
 
