@@ -19,6 +19,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$finance_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
@@ -65,7 +69,7 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'order_sn',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => !in_array($userId, array_merge($adminIds, $finance_adminIds)),
                 'label'     => '订单编号',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
@@ -125,6 +129,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
+                'visible'        => !in_array($userId, $finance_adminIds),
                 'contentOptions' =>['style'=>'min-width: 80px;'],
                 'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     $html = '';
