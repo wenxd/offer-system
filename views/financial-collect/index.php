@@ -104,7 +104,7 @@ $userId   = Yii::$app->user->identity->id;
                     'format'    => 'raw',
                     'filter'    => Html::activeTextInput($searchModel, 'agreement_sn',['class'=>'form-control']),
                     'value'     => function ($model, $key, $index, $column) {
-                        return Html::a($model->agreement_sn, Url::to(['order-agreement/detail', 'id' => $model->id]));
+                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
                     }
                 ],
                 [
