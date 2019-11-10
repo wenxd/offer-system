@@ -58,6 +58,20 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'order_sn',
+                'label'     => '订单编号',
+                'format'    => 'raw',
+                'visible'   => !in_array($userId, $purchaseAdminIds),
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'is_stock',
                 'label'     => '完成入库',
                 'format'    => 'raw',
@@ -103,20 +117,6 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             'payment_price',
-            [
-                'attribute' => 'order_sn',
-                'label'     => '订单编号',
-                'format'    => 'raw',
-                'visible'   => !in_array($userId, array_merge($adminIds, $purchaseAdminIds)),
-                'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
-                    } else {
-                        return '';
-                    }
-                }
-            ],
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
