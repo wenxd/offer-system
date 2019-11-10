@@ -146,24 +146,24 @@ $userId   = Yii::$app->user->identity->id;
                     if ($model->is_send) {
                         $html .= ' ' . Html::button('<i class="fa"></i> 已发送', [
                                 'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
+                                'class' => 'btn btn-info btn-xs btn-flat',
                             ]);
                     } else {
                         $html .= ' ' . Html::a('<i class="fa fa-send"></i> 发送报价单', Url::to(['send', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
+                                'class' => 'btn btn-warning btn-xs btn-flat',
                             ]);
                     }
                     if ($model->quote_only_one) {
                         if ($model->quote_only_one == 1) {
                             $html .= ' ' . Html::a('<i class="fa fa-eye"></i> 生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
                                     'data-pjax' => '0',
-                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                    'class' => 'btn btn-danger btn-xs btn-flat',
                                 ]);
                         } else {
                             $html .= ' ' . Html::button('<i class="fa"></i> 已生成收入合同', [
                                     'data-pjax' => '0',
-                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                    'class' => 'btn btn-success btn-xs btn-flat',
                                 ]);
                         }
                     }
