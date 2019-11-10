@@ -66,6 +66,7 @@ $userId   = Yii::$app->user->identity->id;
     ])?>
     
     <div class="box-body">
+        <?php if (!in_array($userId, $adminIds)):?>
         <table id="example2" class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -104,6 +105,7 @@ $userId   = Yii::$app->user->identity->id;
             <?php endforeach;?>
             </tbody>
         </table>
+        <?php endif;?>
         <table id="example2" class="table table-bordered table-hover">
             <?php if (!in_array($userId, $adminIds)):?>
                 <thead>
