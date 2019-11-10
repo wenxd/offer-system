@@ -38,7 +38,7 @@ $userId    = Yii::$app->user->identity->id;
     </div>
 
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover" style="width: 1500px;">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead>
             <tr>
                 <th>序号</th>
