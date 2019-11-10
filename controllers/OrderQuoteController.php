@@ -168,7 +168,7 @@ class OrderQuoteController extends Controller
         if ($params['publish_ratio'] == 0) {
             return json_encode(['code' => 500, 'msg' => '不能为0']);
         }
-        $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_competitor_public_tax_price_all'] / $params['publish_ratio']);
+        $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
 
         $orderQuote->customer_id            = $orderFinal->customer_id;
         $orderQuote->competitor_ratio       = $competitor_ratio;
