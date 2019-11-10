@@ -2,6 +2,7 @@
 
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\Helper;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -54,8 +55,14 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             'use_number',
-            'tax_price',
-            'all_tax_price',
+            [
+                'attribute' => 'tax_price',
+                'visible'   => !in_array($userId, $adminIds),
+            ],
+            [
+                'attribute' => 'all_tax_price',
+                'visible'   => !in_array($userId, $adminIds),
+            ],
             [
                 'attribute' => 'order_sn',
                 'visible'   => !in_array($userId, $adminIds),
@@ -80,6 +87,18 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'admin_id',
+                'label'     => '采购员',
+                'filter'    => in_array($userId, $adminIds) ? [$userId => $userName] : Helper::getAdminList(['系统管理员', '库管员']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute'      => 'created_at',
                 'label'          => '创建时间',
                 'contentOptions' =>['style'=>'min-width: 150px;'],
@@ -89,6 +108,18 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value' => function($model){
                     return substr($model->created_at, 0, 10);
+                }
+            ],
+            [
+                'attribute'      => 'confirm_at',
+                'label'          => '确认时间',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'filter'         => DateRangePicker::widget([
+                    'name'       => 'AgreementStockSearch[confirm_at]',
+                    'value'      => Yii::$app->request->get('AgreementStockSearch')['confirm_at'] ?? '',
+                ]),
+                'value' => function($model){
+                    return substr($model->confirm_at, 0, 10);
                 }
             ],
             [

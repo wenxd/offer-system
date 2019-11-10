@@ -22,8 +22,10 @@ class AgreementStockSearch extends AgreementStock
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number', 'is_confirm'], 'integer'],
-            [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number'], 'safe'],
+            [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number',
+                'is_confirm'], 'integer'],
+            [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number',
+                'admin_id', 'confirm_at'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number'], 'trim'],
         ];

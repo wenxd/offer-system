@@ -129,6 +129,8 @@ class AgreementStockController extends Controller
     {
         $agreementStock = AgreementStock::findOne($id);
         $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_YES;
+        $agreementStock->confirm_at = date('Y-m-d H:i:s');
+        $agreementStock->admin_id   = Yii::$app->user->identity->id;
         $agreementStock->save();
 
         return $this->redirect(['index']);

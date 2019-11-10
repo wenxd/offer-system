@@ -924,3 +924,6 @@ CREATE TABLE `agreement_stock` (
   `created_at`          datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单使用库存表';
+
+ALTER TABLE `agreement_stock` ADD COLUMN `admin_id` int(11)  NOT NULL DEFAULT '0' COMMENT '操作人ID';
+ALTER TABLE `agreement_stock` ADD COLUMN `confirm_at` datetime DEFAULT NULL COMMENT '确认时间';

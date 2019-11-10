@@ -26,6 +26,8 @@ use yii\db\ActiveRecord;
  * @property string $updated_at
  * @property string $created_at
  * @property string $is_confirm
+ * @property string $confirm_at
+ * @property string $admin_id
  */
 class AgreementStock extends \yii\db\ActiveRecord
 {
@@ -68,8 +70,10 @@ class AgreementStock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number', 'is_confirm'], 'integer'],
+            [['order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number',
+                'is_confirm'], 'integer'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
+            [['confirm_at', 'admin_id'], 'safe'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn'], 'string', 'max' => 255],
         ];
     }
@@ -97,6 +101,7 @@ class AgreementStock extends \yii\db\ActiveRecord
             'updated_at'            => '更新时间',
             'created_at'            => '更新时间',
             'is_confirm'            => '是否确认',
+            'admin_id'              => '操作人',
         ];
     }
 
@@ -108,5 +113,10 @@ class AgreementStock extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
 }
