@@ -117,7 +117,7 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods->all_price            = $purchaseGoods->all_price;
                 $paymentGoods->all_tax_price        = $purchaseGoods->all_tax_price;
                 $paymentGoods->fixed_price          = $value['fix_price'];
-                $paymentGoods->fixed_tax_price      = $value['fix_price'] * (1 + $purchaseGoods->tax_rate/100);
+                $paymentGoods->fixed_tax_price      = $value['fix_tax_price'];
                 $paymentGoods->fixed_all_price      = $value['fix_price'] * $value['fix_number'];
                 $paymentGoods->fixed_all_tax_price  = $paymentGoods->fixed_tax_price * $value['fix_number'];
                 $paymentGoods->fixed_number         = $value['fix_number'];

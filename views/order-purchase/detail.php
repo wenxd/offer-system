@@ -158,7 +158,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
                     </td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
-                    <td class="tax_price"><?=$item->fixed_tax_price?></td>
+                    <td class="tax_price"><input type="text" value="<?=$item->fixed_tax_price?>" style="width: 100px;"></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
@@ -271,7 +271,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         function init(){
             $('.order_purchase_list').each(function (i, e) {
                 var price     = $(e).find('.price input').val();
-                var tax_price = $(e).find('.tax_price').text();
+                var tax_price = $(e).find('.tax_price input').val();
                 var number    = $(e).find('.afterNumber input').val();
                 $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
                 $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
@@ -315,11 +315,23 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         //输入未税单价
         $(".price input").bind('input propertychange', function (e) {
-            var tax       = $(this).parent().parent().find('.tax').text();
-            var price     = $(this).val();
-            var tax_price = parseFloat(price * (1 + tax/100)).toFixed(2);
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var price     = parseFloat($(this).val());
+            var tax_price = (price * (1 + tax/100)).toFixed(2);
             var number    = $(this).parent().parent().find('.number').val();
-            $(this).parent().parent().find('.tax_price').text(tax_price);
+            $(this).parent().parent().find('.tax_price input').val(tax_price);
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            stat();
+        });
+
+        //输入含税单价
+        $(".tax_price input").bind('input propertychange', function (e) {
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var tax_price = parseFloat($(this).val());
+            var price     = (tax_price / (1 + tax / 100)).toFixed(2);
+            var number    = $(this).parent().parent().find('.number').val();
+            $(this).parent().parent().find('.price input').val(price);
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             stat();
@@ -336,8 +348,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             $(this).val(a);
 
             var agreement_number = $(this).parent().parent().find('.agreement_number').text();
-            var price            = $(this).parent().parent().find('.price input').val();
-            var tax_price        = $(this).parent().parent().find('.tax_price').text();
+            var price            = parseFloat($(this).parent().parent().find('.price input').val());
+            var tax_price        = parseFloat($(this).parent().parent().find('.tax_price input').val());
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
@@ -397,7 +409,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     var item = {};
                     item.purchase_goods_id = $(element).parent().parent().find('.purchase_detail').data('purchase_goods_id');
                     item.goods_id          = $(element).val();
-                    item.fix_price         = $(element).parent().parent().find('.price input').val();
+                    item.fix_price         = parseFloat($(element).parent().parent().find('.price input').val());
+                    item.fix_tax_price     = parseFloat($(element).parent().parent().find('.tax_price input').val());
                     item.fix_number        = $(element).parent().parent().find('.afterNumber input').val();
                     var delivery_time = parseFloat($(element).parent().parent().find('.delivery_time input').val());
                     if (delivery_time > long_delivery_time) {
@@ -491,7 +504,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         });
 
         //进行输入序号筛选
-
         $('.select_ack').click(function (e) {
             var input_val = $('.select_serial').val();
             if (input_val == '') {
