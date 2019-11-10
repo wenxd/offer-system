@@ -264,10 +264,6 @@ if (floatval($model->quote_all_tax_price) > 0) {
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
-
-            var competitor_ratio = sta_competitor_tax_price_all / sta_all_publish_tax_price;
-            $('#orderquote-competitor_ratio').val(competitor_ratio.toFixed(2));
-
         }
     });
 </script>
