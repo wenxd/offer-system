@@ -649,6 +649,8 @@ ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_tax_price`           deci
 ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_tax_price_all`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
 ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_quote_tax_price`     decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
 ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_quote_tax_price_all` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
+ALTER TABLE `quote_goods` ADD COLUMN `publish_tax_price`                    decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行含税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `publish_tax_price_all`                decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行含税总价';
 
 ALTER TABLE `agreement_goods` ADD COLUMN `serial`                   varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate`                 decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';

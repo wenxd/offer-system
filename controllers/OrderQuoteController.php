@@ -165,12 +165,17 @@ class OrderQuoteController extends Controller
         if ($params['mostLongTime']) {
             $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time']/$params['mostLongTime'], 2, '.', '');
         }
+        if ($params['publish_ratio'] == 0) {
+            return json_encode(['code' => 500, 'msg' => '不能为0']);
+        }
+        $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_competitor_public_tax_price_all'] / $params['publish_ratio']);
 
         $orderQuote->customer_id            = $orderFinal->customer_id;
-        $orderQuote->competitor_ratio       = $params['competitor_ratio'];
+        $orderQuote->competitor_ratio       = $competitor_ratio;
         $orderQuote->publish_ratio          = $params['publish_ratio'];
         $orderQuote->quote_all_tax_price    = $params['sta_quote_all_tax_price'];
         $orderQuote->all_tax_price          = $params['sta_all_tax_price'];
+
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
@@ -206,6 +211,8 @@ class OrderQuoteController extends Controller
                 $row[] = $item['competitor_goods_tax_price_all'];
                 $row[] = $item['competitor_goods_quote_tax_price'];
                 $row[] = $item['competitor_goods_quote_tax_price_all'];
+                $row[] = $item['publish_tax_price'];
+                $row[] = $item['all_publish_tax_price'];
 
                 $data[] = $row;
             }
@@ -223,7 +230,7 @@ class OrderQuoteController extends Controller
             'type', 'relevance_id', 'number', 'serial', 'tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price',
              'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time',
             'competitor_goods_id', 'competitor_goods_tax_price', 'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price',
-            'competitor_goods_quote_tax_price_all'];
+            'competitor_goods_quote_tax_price_all', 'publish_tax_price', 'publish_tax_price_all'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
 

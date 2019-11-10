@@ -103,8 +103,8 @@ if (floatval($model->quote_all_tax_price) > 0) {
                     <?php
                         $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '');
                     ?>
-                    <td class="publish_tax_price"><?=$publish_tax_price?></td>
-                    <td class="all_publish_tax_price"><?=$publish_tax_price * $item->number?></td>
+                    <td class="publish_tax_price"><?=$item->publish_tax_price?></td>
+                    <td class="all_publish_tax_price"><?=$item->publish_tax_price_all?></td>
                     <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                     <?php
                         $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $item->goods_id])->orderBy('price asc')->one();

@@ -509,6 +509,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     item.competitor_goods_tax_price_all         = parseFloat($(element).parent().parent().find('.competitor_tax_price_all').text());
                     item.competitor_goods_quote_tax_price       = parseFloat($(element).parent().parent().find('.competitor_public_tax_price input').val());
                     item.competitor_goods_quote_tax_price_all   = parseFloat($(element).parent().parent().find('.competitor_public_tax_price_all').text());
+                    item.publish_tax_price       = parseFloat($(element).parent().parent().find('.publish_tax_price').text());
+                    item.all_publish_tax_price   = parseFloat($(element).parent().parent().find('.all_publish_tax_price').text());
 
                     goods_info.push(item);
                 }
@@ -552,6 +554,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var most_quote_delivery_time = parseFloat($('.most_quote_delivery_time').text());
             var mostLongTime             = parseFloat($('.mostLongTime').text());
             var publish_ratio            = parseFloat($('#orderquote-publish_ratio').val());
+
+            //两个总价
+            var sta_all_publish_tax_price           = parseFloat($('.sta_all_publish_tax_price').text());
+            var sta_competitor_public_tax_price_all = parseFloat($('.sta_competitor_public_tax_price_all').text());
+
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
@@ -559,7 +566,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio,
                     sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
                     most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime,
-                    publish_ratio:publish_ratio},
+                    publish_ratio:publish_ratio, sta_all_publish_tax_price:sta_all_publish_tax_price,
+                    sta_competitor_public_tax_price_all:sta_competitor_public_tax_price_all},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
