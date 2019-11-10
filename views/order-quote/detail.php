@@ -268,8 +268,8 @@ $tax = SystemConfig::find()->select('value')->where([
                 item.type             = $(ele).find('.goods_id').data('goods_type');
                 item.relevance_id     = $(ele).find('.goods_id').data('relevance_id');
                 item.number           = $(ele).find('.number').val();
-                item.price            = $(ele).find('.change_price').val();
-                item.tax_price        = $(ele).find('.change_tax_price').val();
+                item.price            = parseFloat($(ele).find('.change_price').val());
+                item.tax_price        = parseFloat($(ele).find('.change_tax_price').val());
                 item.delivery_time    = $(ele).find('.delivery_time input').val();
                 item.purchase_number  = $(ele).find('.number').val();
                 goods_info.push(item);
