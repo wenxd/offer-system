@@ -120,13 +120,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                 <?php
                     $competitorGoods = CompetitorGoods::find()->where(['goods_id' => $item->goods_id])->orderBy('price asc')->one();
-                    $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax/100), 2, '.', '') : 0;
+                    $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $tax/100), 2, '.', '') : 0;
                 ?>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
                 <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                 <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
-                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$item->goods->publish_price * $competitor_ratio?>"></td>
-                <td class="competitor_public_tax_price_all"><?=$item->goods->publish_price * $competitor_ratio * $item->number?></td>
+                <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$item->goods->publish_price * (1 + $tax/100) * $competitor_ratio?>"></td>
+                <td class="competitor_public_tax_price_all"><?=$item->goods->publish_price * (1 + $tax/100) * $item->number * $competitor_ratio?></td>
                 <td class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
