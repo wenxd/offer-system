@@ -76,7 +76,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
                     <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                     <td class="before_tax_price"><?=$item->tax_price?></td>
-                    <td class="before_all_tax_price"><?=$item->all_tax_price?></td>
+                    <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
                     <td class="before_number"><?=$item->number?></td>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
