@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use app\models\SystemConfig;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -26,6 +27,12 @@ foreach ($adminList as $key => $admin) {
 }
 $userId   = Yii::$app->user->identity->id;
 $is_show = in_array($userId, $adminIds);
+
+$tax = SystemConfig::find()->select('value')->where([
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+    'title'      => SystemConfig::TITLE_TAX
+])->scalar();
+
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -79,12 +86,12 @@ $is_show = in_array($userId, $adminIds);
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <?php endif;?>
-                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td class="tax"><?=$tax?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
-                    <td><?=number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '')?></td>
+                    <td><?=number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '')?></td>
                     <?php endif;?>
-                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"  style="width: 80px;"></td>
-                    <td class="tax_price"><?=$item->quote_tax_price?></td>
+                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>" style="width: 80px;"></td>
+                    <td class="tax_price"><input type="text" class="change_tax_price" value="<?=$item->quote_tax_price?>" style="width: 80px;"></td>
                     <td class="all_tax_price"></td>
                     <td class="afterNumber">
                         <input type="number" class="number" min="1" value="<?=$item->number?>"  style="width: 80px;">
@@ -165,7 +172,7 @@ $is_show = in_array($userId, $adminIds);
             var mostLongTime      = 0;
             $('.order_quote_list').each(function (i, e) {
                 var price           = parseFloat($(e).find('.change_price').val());
-                var tax_price       = parseFloat($(e).find('.tax_price').text());
+                var tax_price       = parseFloat($(e).find('.tax_price input').val());
                 var number          = parseFloat($(e).find('.afterNumber').find('input').val());
                 var all_tax_price   = parseFloat(tax_price * number);
                 $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
@@ -187,26 +194,35 @@ $is_show = in_array($userId, $adminIds);
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
             $(this).val(number);
-            var price     = parseFloat($(this).parent().parent().find('.change_price').val());
-            var tax_price = parseFloat($(this).parent().parent().find('.tax_price').text());
+            var tax_price     = parseFloat($(this).parent().parent().find('.tax_price input').val());
             var all_tax_price = parseFloat(tax_price * number);
-            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(all_tax_price.toFixed(2));
 
             //计算总价
             statPrice();
         });
 
-        //修改单价
+        //修改未税单价
         $('.change_price').bind('input propertychange', function (e) {
-            var price = $(this).val();
-            var tax   = $(this).parent().parent().find('.tax').text();
+            var price     = parseFloat($(this).val());
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
             var tax_price = (price * (1 + tax / 100));
             var number    = $(this).parent().parent().find('.number').val();
-            $(this).parent().parent().find('.tax_price').text(parseFloat(tax_price).toFixed(2));
-
-            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.price input').val(price);
+            $(this).parent().parent().find('.tax_price input').val(tax_price.toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            statPrice();
+        });
+
+        //修改含税单价
+        $('.change_tax_price').bind('input propertychange', function (e) {
+            var tax_price = parseFloat($(this).val());
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var price     = parseFloat(tax_price / (1 + tax / 100));
+            var number    = parseFloat($(this).parent().parent().find('.number').val());
+            $(this).parent().parent().find('.price input').val(price.toFixed(2));
+            $(this).parent().parent().find('.tax_price input').val(tax_price);
+            $(this).parent().parent().find('.all_tax_price').text(tax_price * number);
             statPrice();
         });
 
