@@ -89,7 +89,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => in_array($userId, $adminIds) ? [$userId => $userName] : Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => in_array($userId, $adminIds) ? Helper::getAdminList(['库管员']) : Helper::getAdminList(['系统管理员', '库管员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;
@@ -128,7 +128,7 @@ $userId   = Yii::$app->user->identity->id;
                 'contentOptions' =>['style'=>'min-width: 80px;'],
                 'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     $html = '';
-                    if (!$model->is_confirm && !in_array($userId, $adminIds)) {
+                    if (!$model->is_confirm) {
                         $html .= Html::a('<i class="fa fa-heart"></i> 确认', Url::to(['confirm', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-success btn-xs btn-flat',
