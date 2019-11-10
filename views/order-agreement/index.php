@@ -19,13 +19,17 @@ use kartik\daterange\DateRangePicker;
 $this->title = '收入合同订单管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$final_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
 $userId   = Yii::$app->user->identity->id;
 
 ?>
@@ -205,7 +209,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => !in_array($userId, array_merge($adminIds, $final_adminIds)),
                 'value'          => function ($model, $key, $index, $column){
                     if ($model->is_purchase) {
                         return '';
