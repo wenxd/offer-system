@@ -43,7 +43,7 @@ class SystemNoticeSearch extends SystemNotice
      */
     public function search($params)
     {
-        $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '库管员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $userId   = Yii::$app->user->identity->id;
         if (in_array($userId, $adminIds)) {

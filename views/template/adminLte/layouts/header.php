@@ -9,7 +9,7 @@ use app\models\SystemNotice;
 $identity = Yii::$app->user->getIdentity();
 $user_id = $identity->id;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '采购员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '采购员', '库管员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 //统计每次气泡数量
