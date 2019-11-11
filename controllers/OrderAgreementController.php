@@ -344,7 +344,8 @@ class OrderAgreementController extends Controller
         }
 
         $orderAgreement = OrderAgreement::findOne($id);
-        $orderAgreement->is_merge = OrderAgreement::IS_MERGE_NO;
+        $orderAgreement->is_merge     = OrderAgreement::IS_MERGE_NO;
+        $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_NO;
         $orderAgreement->save();
 
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
