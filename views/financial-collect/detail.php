@@ -77,7 +77,7 @@ if ($model->payment_ratio == '0.00') {
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->quote_price?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
-                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td class="delivery_time"><?=$item->quote_delivery_time?></td>
                     <td class="all_price"><?=$item->quote_all_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td class="number"><?=$item->number?></td>
