@@ -252,9 +252,12 @@ if ($model->isNewRecord) {
         });
         //保存询价单
         $('.inquiry_save').click(function (e) {
+            //防止双击
+            $(".inquiry_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".inquiry_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var goods_info = [];
@@ -270,9 +273,9 @@ if ($model->isNewRecord) {
                 }
             });
 
-            var admin_id = $('#orderinquiry-admin_id').val();
-            var end_date = $('#orderinquiry-end_date').val();
-            var order_id = $('#orderinquiry-order_id').val();
+            var admin_id   = $('#orderinquiry-admin_id').val();
+            var end_date   = $('#orderinquiry-end_date').val();
+            var order_id   = $('#orderinquiry-order_id').val();
             var inquiry_sn = $('#orderinquiry-inquiry_sn').val();
 
             $.ajax({

@@ -124,6 +124,8 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
     $(document).ready(function () {
         //保存成本订单
         $('.final_save').click(function (e) {
+            //防止双击
+            $(".final_save").attr("disabled", true).addClass("disabled");
             var flag = false;
             $('.relevance').each(function (i, element) {
                 if ($(element).text() == '否') {
@@ -132,12 +134,14 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
             });
             if (flag) {
                 layer.msg('所有的零件需关联询价', {time:2000});
+                $(".final_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var final_sn  = $('#orderfinal-final_sn').val();
             if (!final_sn) {
                 layer.msg('请输入成本单号', {time:2000});
+                $(".final_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
