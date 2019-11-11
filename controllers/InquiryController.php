@@ -298,8 +298,16 @@ class InquiryController extends BaseController
     {
         $inquiry = Inquiry::findOne($id);
         $inquiry->is_confirm_better = 1;
-        $inquiry->save();
-        yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        if ($inquiry->save()){
+            yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        } else {
+            $errors = $inquiry->getErrors();
+            $err = '';
+            foreach ($errors as $v) {
+                $err .= $v[0] . '<br>';
+            }
+            Yii::$app->getSession()->setFlash('error', $err);
+        }
         return $this->redirect(['index']);
     }
 }

@@ -163,6 +163,11 @@ class Inquiry extends ActiveRecord
             return parent::beforeSave($insert);
         }
 
+        if (!$this->is_better && $this->is_confirm_better) {
+            $this->addError('id', '优选是否的不能确认优选');
+            return false;
+        }
+
         if ($insert) {
             self::updateAll(['is_newest' => self::IS_NEWEST_NO], ['good_id' => $this->good_id]);
             $this->is_newest = self::IS_NEWEST_YES;
