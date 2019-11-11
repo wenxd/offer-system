@@ -739,6 +739,7 @@ ALTER TABLE `order_agreement` ADD COLUMN `financial_admin_id`   int(11) NOT NULL
 ALTER TABLE `order_agreement` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
 ALTER TABLE `order_agreement` ADD COLUMN `expect_at`            datetime  COMMENT '预计收全款时间';
 ALTER TABLE `order_agreement` ADD COLUMN `is_merge`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否合并';
+ALTER TABLE `order_agreement` ADD COLUMN `is_all_stock`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否全部走库存 0否 1是';
 
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';

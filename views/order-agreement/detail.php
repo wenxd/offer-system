@@ -84,7 +84,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 'recover' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 一键恢复', Url::to(['recover', 'id' => $_GET['id']]), [
                         'data-pjax' => '0',
-                        'class'     => 'btn btn-primary btn-flat',
+                        'class'     => 'btn btn-danger btn-flat',
                     ]);
                 }
             ]

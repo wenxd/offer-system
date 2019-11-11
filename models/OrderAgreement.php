@@ -40,6 +40,7 @@ use yii\helpers\ArrayHelper;
  * @property string $financial_admin_id
  * @property string $expect_at
  * @property string $is_merge
+ * @property string $is_all_stock
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -72,6 +73,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
     const IS_MERGE_NO    = '0';
     const IS_MERGE_YES   = '1';
 
+    const IS_ALL_STOCK_NO  = '0';
+    const IS_ALL_STOCK_YES = '1';
+
     public static $stock = [
         self::IS_STOCK_NO   => '否',
         self::IS_STOCK_YES  => '是',
@@ -102,6 +106,11 @@ class OrderAgreement extends \yii\db\ActiveRecord
         self::IS_COMPLETE_YES  => '是',
     ];
 
+    public static $allStock = [
+        self::IS_ALL_STOCK_NO   => '否',
+        self::IS_ALL_STOCK_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -116,9 +125,9 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
-                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id',
-                'is_purchase', 'stock_admin_id', 'financial_admin_id', 'is_merge'], 'integer'],
+            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge', 'is_payment',
+                'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'is_all_stock', 'is_purchase',
+                'stock_admin_id', 'financial_admin_id', 'is_merge'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at', 'sign_date', 'expect_at'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -159,6 +168,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'is_purchase'       => '是否生成采购单',
             'expect_at'         => '预计收全款时间',
             'is_merge'          => '是否合并过',
+            'is_all_stock'      => '全部走库存',
         ];
     }
 

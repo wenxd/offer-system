@@ -128,6 +128,14 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderAgreementSearch::$purchase[$model->is_purchase];
                 }
             ],
+            [
+                'attribute' => 'is_all_stock',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$allStock,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$allStock[$model->is_all_stock];
+                }
+            ],
 //            [
 //                'attribute' => 'order_quote_sn',
 //                'format'    => 'raw',
@@ -215,10 +223,14 @@ $userId   = Yii::$app->user->identity->id;
                         return '';
                     } else {
                         if ($model->is_merge) {
-                            return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['detail', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
-                            ]);
+                            if (!$model->is_all_stock) {
+                                return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['detail', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                            } else {
+                                return '';
+                            }
                         } else {
                             return Html::a('<i class="fa fa-d"></i> 合并采购数据', Url::to(['merge', 'id' => $model['id']]), [
                                 'data-pjax' => '0',

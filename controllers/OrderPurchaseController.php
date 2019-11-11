@@ -165,7 +165,6 @@ class OrderPurchaseController extends BaseController
                 $agreement_goods_ids = [];
                 foreach ($params['goods_info'] as $item) {
                     $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
-
                     //处理保存使用库存记录
                     $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
                     if ($use_stock_number) {
@@ -214,9 +213,9 @@ class OrderPurchaseController extends BaseController
                         }
                     } else {
                         $agreement_goods_ids[] = $item['agreement_goods_id'];
-                        AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                     }
                 }
+                AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                 //判断是否全部生成采购单
                 $agreementGoodsCount = AgreementGoods::find()->where([
                     'order_agreement_id' => $orderAgreement->id,
@@ -228,8 +227,6 @@ class OrderPurchaseController extends BaseController
                     $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
                     $orderAgreement->save();
                 }
-
-                return json_encode(['code' => 200, 'msg' => '保存成功']);
             } else {
                 return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
             }
@@ -254,8 +251,23 @@ class OrderPurchaseController extends BaseController
             }
             $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
             AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
+
+        //处理是否全部走库存
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $orderAgreement->id,
+            'is_deleted'         => 0,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+        ])->all();
+        $purchaseNumber = 0;
+        foreach ($agreementGoodsList as $value) {
+            $purchaseNumber += $value['purchase_number'];
+        }
+        if ($purchaseNumber == 0) {
+            $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_YES;
+            $orderAgreement->save();
+        }
+        return json_encode(['code' => 200, 'msg' => '保存成功']);
     }
 
     public function actionDetail($id)
