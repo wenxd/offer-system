@@ -220,18 +220,34 @@ class OrderInquiryController extends BaseController
     //询价确认接口
     public function actionConfirm($id)
     {
+        $use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+        $super_user_id = $use_admin->user_id;
+
         $info = InquiryGoods::findOne($id);
+
+        //询价单
+        $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
+
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
 //        $info->reason     = '';
 //        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
         $info->admin_id   = Yii::$app->user->identity->id;
         $info->inquiry_at = date('Y-m-d H:i:s');
         if ($info->save()) {
+            //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
+            if ($super_user_id == Yii::$app->user->identity->id && $info->is_result) {
+                $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $orderInquiry->admin_id])->one();
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $stockAdmin->user_id;
+                $systemNotice->content   = '询不出的厂家号' . $info->goods->goods_number_b . '管理员已近确认询价';
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+
             //如果都询价了，本订单和询价单就是已询价
             $res = InquiryGoods::find()->where(['inquiry_sn' => $info->inquiry_sn, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
             if (!$res) {
-                //询价单改状态
-                $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
+
                 $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
                 $orderInquiry->final_at   = $info->inquiry_at;
                 $orderInquiry->save();
