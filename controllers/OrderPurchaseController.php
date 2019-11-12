@@ -4,11 +4,13 @@ namespace app\controllers;
 
 use app\models\AgreementGoods;
 use app\models\AgreementStock;
+use app\models\AuthAssignment;
 use app\models\OrderAgreement;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
 use app\models\Stock;
 use app\models\Supplier;
+use app\models\SystemNotice;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -266,6 +268,16 @@ class OrderPurchaseController extends BaseController
         if ($purchaseNumber == 0) {
             $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_YES;
             $orderAgreement->save();
+        }
+
+        if (count($agreement_goods_ids)) {
+            //采购数量是0，给库管员通知
+            $stockAdmin = AuthAssignment::find()->where(['item_name' => '库管员'])->one();
+            $systemNotice = new SystemNotice();
+            $systemNotice->admin_id  = $stockAdmin->user_id;
+            $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要点货';
+            $systemNotice->notice_at = date('Y-m-d H:i:s');
+            $systemNotice->save();
         }
         return json_encode(['code' => 200, 'msg' => '保存成功']);
     }
