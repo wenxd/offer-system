@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="stressColor"><b class="color"><?= $inquiryBetter ? $inquiryBetter->delivery_time : 0 ?></b></td>
                     <td><?=$inquiryBetter ? ($inquiryBetter->admin_id ? $inquiryBetter->admin->username : '') : '' ?></td>
                     <td><?=$inquiryBetter ? substr($inquiryBetter->inquiry_datetime, 0, 10) : '' ?></td>
-                    <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_id ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order_id ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
+                    <td><?=$inquiryBetter ? Html::a($inquiryBetter->order ? $inquiryBetter->order->order_sn : '', $inquiryBetter->order ? Url::to(['order/detail', 'id' => $inquiryBetter->order_id]) : '') : '' ?></td>
                     <td><?=$inquiryBetter ? Html::a($inquiryBetter->order_inquiry_id ? $inquiryBetter->orderInquiry->inquiry_sn : '', $inquiryBetter->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryBetter->order_inquiry_id]) : '') : '' ?></td>
                     <td><?=$inquiryBetter ? ($inquiryBetter->number * $inquiryBetter->tax_price) : 0 ?></td>
                     <td>
@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="stressColor"><b class="color"><?= $inquiryPrice ? $inquiryPrice->delivery_time : 0 ?></b></td>
                     <td><?= $inquiryPrice ? ($inquiryPrice->admin_id ? $inquiryPrice->admin->username : '') : '' ?></td>
                     <td><?= $inquiryPrice ? substr($inquiryPrice->inquiry_datetime, 0, 10) : '' ?></td>
-                    <td><?= $inquiryPrice ? Html::a($inquiryPrice->order_id ? $inquiryPrice->order->order_sn : '', $inquiryPrice->order_id ? Url::to(['order/detail', 'id' => $inquiryPrice->order_id]) : '') : '' ?></td>
+                    <td><?= $inquiryPrice ? Html::a($inquiryPrice->order ? $inquiryPrice->order->order_sn : '', $inquiryPrice->order ? Url::to(['order/detail', 'id' => $inquiryPrice->order_id]) : '') : '' ?></td>
                     <td><?= $inquiryPrice ? Html::a($inquiryPrice->order_inquiry_id ? $inquiryPrice->orderInquiry->inquiry_sn : '', $inquiryPrice->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryPrice->order_inquiry_id]) : '') : '' ?></td>
                     <td><?= $inquiryPrice ? ($inquiryPrice->number * $inquiryPrice->tax_price) : 0 ?></td>
                     <td>
@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="stressColor"><b class="color"><?= $inquiryTime ? $inquiryTime->delivery_time : 0 ?></b></td>
                     <td><?= $inquiryTime ? ($inquiryTime->admin_id ? $inquiryTime->admin->username : '') : '' ?></td>
                     <td><?= $inquiryTime ? substr($inquiryTime->inquiry_datetime, 0, 10) : '' ?></td>
-                    <td><?= $inquiryTime ? Html::a($inquiryTime->order_id ? $inquiryTime->order->order_sn : '', $inquiryTime->order_id ? Url::to(['order/detail', 'id' => $inquiryTime->order_id]) : '') : '' ?></td>
+                    <td><?= $inquiryTime ? Html::a($inquiryTime->order ? $inquiryTime->order->order_sn : '', $inquiryTime->order ? Url::to(['order/detail', 'id' => $inquiryTime->order_id]) : '') : '' ?></td>
                     <td><?= $inquiryTime ? Html::a($inquiryTime->order_inquiry_id ? $inquiryTime->orderInquiry->inquiry_sn : '', $inquiryTime->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryTime->order_inquiry_id]) : '') : '' ?></td>
                     <td><?= $inquiryTime ? ($inquiryTime->number * $inquiryTime->tax_price) : 0 ?></td>
                     <td>
@@ -156,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="stressColor"><b class="color"><?= $inquiryNew ? $inquiryNew->delivery_time : 0 ?></b></td>
                     <td><?=$inquiryNew ? ($inquiryNew->admin_id ? $inquiryNew->admin->username : '') : '' ?></td>
                     <td><?=$inquiryNew ? substr($inquiryNew->inquiry_datetime, 0, 10) : '' ?></td>
-                    <td><?=$inquiryNew ? Html::a($inquiryNew->order_id ? $inquiryNew->order->order_sn : '', $inquiryNew->order_id ? Url::to(['order/detail', 'id' => $inquiryNew->order_id]) : '') : '' ?></td>
+                    <td><?=$inquiryNew ? Html::a($inquiryNew->order ? $inquiryNew->order->order_sn : '', $inquiryNew->order ? Url::to(['order/detail', 'id' => $inquiryNew->order_id]) : '') : '' ?></td>
                     <td><?=$inquiryNew ? Html::a($inquiryNew->order_inquiry_id ? $inquiryNew->orderInquiry->inquiry_sn : '', $inquiryNew->order_inquiry_id ? Url::to(['order-inquiry/view', 'id' => $inquiryNew->order_inquiry_id]) : '') : '' ?></td>
                     <td><?=$inquiryNew ? ($inquiryNew->number * $inquiryNew->tax_price) : 0 ?></td>
                     <td>
