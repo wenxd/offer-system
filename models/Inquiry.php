@@ -113,11 +113,13 @@ class Inquiry extends ActiveRecord
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
                  'order_id', 'order_inquiry_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
+            [['price', 'tax_price', 'number'], 'required'],
+            [['number'], 'integer', 'min' => 1],
             [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b'], 'safe'],
-            [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price', 'delivery_time'], 'number', 'min' => 0],
+            [['price', 'tax_rate', 'tax_price', 'all_price', 'all_tax_price', 'delivery_time'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
             [['good_id', 'supplier_name', 'inquiry_datetime'], 'required', "on" => ["create", "update"]],
-            [['price', 'tax_rate', 'tax_price', 'number', 'all_price', 'all_tax_price', 'delivery_time'], 'default', 'value' => 0],
+            [['price', 'tax_rate', 'tax_price', 'all_price', 'all_tax_price', 'delivery_time'], 'default', 'value' => 0],
         ];
     }
 

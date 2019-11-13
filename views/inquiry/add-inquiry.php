@@ -176,7 +176,7 @@ $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
         <?= $form->field($model, 'original_company')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $goods->original_company])->label('原厂家') ?>
         <?= $form->field($model, 'description')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $goods->description])->label('中文描述') ?>
 
-        <div class="form-group field-inquiry-price">
+        <div class="form-group field-inquiry-supplier_name">
             <label class="control-label" for="inquiry-supplier_name">供应商</label>
             <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
                    value="<?=$model->supplier_name?>" autocomplete="off" aria-invalid="false">
