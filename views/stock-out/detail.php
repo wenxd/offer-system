@@ -136,6 +136,8 @@ $isShow = in_array($userId, $adminIds);
 
         //出库
         $('.stock_out').click(function (e) {
+            //防止双击
+            $(".stock_out").attr("disabled", true).addClass("disabled");
             var order_agreement_id = $('.data').data('order_agreement_id');
             var id       = $(this).data('id');
             var number   = $(this).parent().parent().find('.number').text();
@@ -143,12 +145,14 @@ $isShow = in_array($userId, $adminIds);
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('出库数量不能为空', {time:2000});
+                $(".stock_out").removeAttr("disabled").removeClass("disabled");
                 return;
             }
 
             var quality = $(this).parent().parent().find('.is_quality').text();
             if (quality == '否') {
                 layer.msg('请先质检', {time:2000});
+                $(".stock_out").removeAttr("disabled").removeClass("disabled");
                 return;
             }
 
@@ -171,9 +175,12 @@ $isShow = in_array($userId, $adminIds);
 
         //批量出库
         $('.more-stock').click(function () {
+            //防止双击
+            $(".more-stock").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var quality_flag = false;
@@ -191,6 +198,7 @@ $isShow = in_array($userId, $adminIds);
 
             if (quality_flag) {
                 layer.msg('请先质检', {time:2000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return;
             }
 
@@ -214,6 +222,8 @@ $isShow = in_array($userId, $adminIds);
 
         //质检
         $('.quality').click(function (e) {
+            //防止双击
+            $(".quality").attr("disabled", true).addClass("disabled");
             var agreement_goods_id = $(this).data('id');
             $.ajax({
                 type:"post",
@@ -234,9 +244,12 @@ $isShow = in_array($userId, $adminIds);
 
         //批量质检
         $('.more-quality').click(function () {
+            //防止双击
+            $(".more-quality").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-quality").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var agreementGoods_ids = [];

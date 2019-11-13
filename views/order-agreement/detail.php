@@ -449,9 +449,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
         //保存
         $('.purchase_save').click(function (e) {
+            //防止双击
+            $(".purchase_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
@@ -505,33 +508,39 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
             if (purchase_number_flag) {
                 layer.msg('使用库存数量不能比库存大', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             if (flag_stock) {
                 layer.msg('需求数量大于库存数量时，采购数量不能为0', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             if (number_flag) {
                 layer.msg('请给选中的行输入数量', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var purchase_sn = $('#orderagreement-purchase_sn').val();
             if (!purchase_sn) {
                 layer.msg('请输入采购单号', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var admin_id = $('#orderagreement-admin_id').val();
             if (!admin_id) {
                 layer.msg('请选择采购员', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var agreement_date = $('#orderagreement-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入收入合同交货日期', {time:2000});
+                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 

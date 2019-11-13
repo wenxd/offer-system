@@ -206,6 +206,8 @@ if ($model->payment_ratio == '0.00') {
 
         var id = $('.data').data('order_agreement_id');
         $('.save_remark').click(function (e) {
+            //防止双击
+            $(".save_remark").attr("disabled", true).addClass("disabled");
             var remark = $('#orderagreement-financial_remark').val();
             $.ajax({
                 type:"post",
@@ -225,6 +227,8 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_advance').click(function (e) {
+            //防止双击
+            $(".save_advance").attr("disabled", true).addClass("disabled");
             var price = $('#orderagreement-price').val();
             $.ajax({
                 type:"post",
@@ -244,6 +248,8 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_payment').click(function (e) {
+            //防止双击
+            $(".save_payment").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-payment',
@@ -262,6 +268,8 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_bill').click(function (e) {
+            //防止双击
+            $(".save_bill").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-bill',

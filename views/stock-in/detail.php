@@ -130,6 +130,8 @@ $isShow = in_array($userId, $adminIds);
 
         //质检
         $('.quality').click(function (e) {
+            //防止双击
+            $(".quality").attr("disabled", true).addClass("disabled");
             var payment_goods_id = $(this).data('id');
             $.ajax({
                 type:"post",
@@ -150,9 +152,12 @@ $isShow = in_array($userId, $adminIds);
 
         //批量质检
         $('.more-quality').click(function () {
+            //防止双击
+            $(".more-quality").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-quality").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var paymentGoods_ids = [];
@@ -181,9 +186,12 @@ $isShow = in_array($userId, $adminIds);
 
         //入库
         $('.stock_in').click(function (e) {
+            //防止双击
+            $(".stock_in").attr("disabled", true).addClass("disabled");
             var quality = $(this).parent().parent().find('.quality_text').text();
             if (quality == '否') {
                 layer.msg('请先质检', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var order_payment_id = $('.data').data('order_payment_id');
@@ -192,11 +200,13 @@ $isShow = in_array($userId, $adminIds);
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('入库数量不能为空', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
                 return;
             }
             var position = $(this).parent().parent().find('.position input').val();
             if (position == '') {
                 layer.msg('请输入库存位置', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
                 return;
             }
 
@@ -219,9 +229,12 @@ $isShow = in_array($userId, $adminIds);
 
         //批量入库
         $('.more-stock').click(function () {
+            //防止双击
+            $(".more-stock").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
@@ -238,6 +251,7 @@ $isShow = in_array($userId, $adminIds);
             });
             if (position_open) {
                 layer.msg('请先单独给没有库存位置的零件入库', {time:3000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             $.ajax({

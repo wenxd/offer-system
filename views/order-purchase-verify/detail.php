@@ -204,6 +204,9 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
     });
 
     function verify(action) {
+        //防止双击
+        $(".verify_save").attr("disabled", true).addClass("disabled");
+        $(".verify_reject").attr("disabled", true).addClass("disabled");
         var order_payment_id = $('.data').data('order_payment_id');
         var goods_info = [];
         $('.order_payment_list').each(function (i, e) {
@@ -217,6 +220,8 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             var reason = $('#orderpayment-reason').val();
             if (!reason) {
                 layer.msg('请填写驳回原因', {time:2000});
+                $(".verify_save").removeAttr("disabled").removeClass("disabled");
+                $(".verify_reject").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             urls = '?r=order-purchase-verify/verify-reject';

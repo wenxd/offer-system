@@ -472,9 +472,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
         //保存
         $('.quote_save').click(function (e) {
+            //防止双击
+            $(".quote_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
@@ -518,32 +521,38 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
             if (number_flag) {
                 layer.msg('请给选中的行输入数量', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var admin_id = $('#orderquote-admin_id').val();
             if (!admin_id) {
                 layer.msg('请选择采购员', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var quote_sn = $('#orderquote-quote_sn').val();
             if (!quote_sn) {
                 layer.msg('请填写报价单号', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var quote_ratio = $('#orderquote-quote_ratio').val();
             if (!quote_ratio) {
                 layer.msg('请填写报价系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var delivery_ratio = $('#orderquote-delivery_ratio').val();
             if (!delivery_ratio) {
                 layer.msg('请填写货期系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var competitor_ratio = $('#orderquote-competitor_ratio').val();
             if (!competitor_ratio) {
                 layer.msg('请填写竞报价系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 

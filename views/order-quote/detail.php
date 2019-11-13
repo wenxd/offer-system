@@ -259,6 +259,8 @@ $tax = SystemConfig::find()->select('value')->where([
         });
 
         $('.quote_complete').click(function (e) {
+            //防止双击
+            $(".quote_complete").attr("disabled", true).addClass("disabled");
             var goods_info = [];
 
             $('.order_quote_list').each(function (i, ele) {
@@ -279,24 +281,28 @@ $tax = SystemConfig::find()->select('value')->where([
             var expect_at = $('#orderagreement-expect_at').val();
             if (!expect_at) {
                 layer.msg('请输入预计收全款时间', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var agreement_sn = $('#orderagreement-agreement_sn').val();
             if (!agreement_sn) {
                 layer.msg('请输入合同号', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var sign_date = $('#orderagreement-sign_date').val();
             if (!sign_date) {
                 layer.msg('请输入合同签订日期', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var agreement_date = $('#orderagreement-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入合同交货日期', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 

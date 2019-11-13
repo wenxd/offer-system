@@ -320,6 +320,8 @@ $tax_rate = SystemConfig::find()->select('value')->where([
         $('.box-search-b').addClass('cancel');
     }
     $('.order_save').click(function (e) {
+        //防止双击
+        $(".order_save").attr("disabled", true).addClass("disabled");
         var goods  = $('.goods_id');
         var goodsIds = [];
         var goodsInfo = [];

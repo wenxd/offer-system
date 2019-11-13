@@ -132,9 +132,12 @@ $userId   = Yii::$app->user->identity->id;
     }
 
     $('.stock-created').click(function (e) {
+        //防止双击
+        $(".stock-created").attr("disabled", true).addClass("disabled");
         var goods_id = $('#stocklog-goods_id').val();
         if (!goods_id) {
             layer.msg('请输入厂家号', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 
@@ -142,6 +145,7 @@ $userId   = Yii::$app->user->identity->id;
         var reg = /^\+?[1-9][0-9]*$/;
         if (!reg.test(number)) {
             layer.msg('请输入正整数', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 

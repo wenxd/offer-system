@@ -386,9 +386,12 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         //保存支出合同
         $(".payment_save").click(function () {
+            //防止双击
+            $(".payment_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var goods_info          = [];
@@ -434,6 +437,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
             if (stock_flag) {
                 layer.msg('使用库存数不能大于库存数', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
@@ -444,6 +448,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             var supplier_id       = $('#orderpurchase-supplier_id option:selected').val();
             if (!supplier_id) {
                 layer.msg('请选择供应商', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var apply_reason      = $('#orderpurchase-apply_reason').val();
