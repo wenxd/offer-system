@@ -39,7 +39,7 @@ use dmstr\widgets\Alert;
     <div class="pull-right hidden-xs">
         <b>Version</b> 2.0
     </div>
-    <strong>Copyright &copy; 2018-2019 <a href="/">询价系统</a></strong>
+    <strong>Copyright &copy; 2018-2019 <a href="/">订单管理系统</a></strong>
 </footer>
 
 <!-- Control Sidebar -->
