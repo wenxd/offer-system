@@ -18,7 +18,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '待付款订单';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;

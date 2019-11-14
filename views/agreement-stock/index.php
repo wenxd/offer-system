@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $finance_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;

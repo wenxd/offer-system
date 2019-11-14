@@ -12,7 +12,7 @@ use yii\widgets\DetailView;
 
 $this->title = '订单详情';
 $this->params['breadcrumbs'][] = $this->title;
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
 ?>

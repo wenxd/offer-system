@@ -27,7 +27,7 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
 $final_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;

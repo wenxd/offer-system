@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 $this->title = '待付款订单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');

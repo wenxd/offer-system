@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $model->agreement_date = substr($model->agreement_date, 0, 10);
 $model->sign_date = substr($model->sign_date, 0, 10);
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;

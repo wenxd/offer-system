@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
 $this->title = '支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
@@ -213,11 +213,11 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'financial_admin_id',
-                'label'     => '财务',
-                'filter'    => Helper::getAdminList(['系统管理员', '财务']),
+                'label'     => '收款财务',
+                'filter'    => Helper::getAdminList(['系统管理员', '收款财务']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '收款财务'])[$model->financial_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '收款财务'])[$model->financial_admin_id];
                     } else {
                         return '';
                     }
