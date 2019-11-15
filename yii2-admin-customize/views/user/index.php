@@ -1,12 +1,9 @@
 <?php
 
-use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use mdm\admin\components\Helper;
 use mdm\admin\models\User;
-use yii\web\View;
-
 /* @var $this yii\web\View */
 /* @var $searchModel mdm\admin\models\searchs\User */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -61,5 +58,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]);
-    ?>
+        ?>
 </div>
