@@ -44,7 +44,7 @@ $notice_number = SystemNotice::find()->where([
                     </a>
                 </li>
                 <li>
-                    <a href="?r=admin/user/change-password&id=<?=$user_id?>">修改密码</a>
+                    <a href="?r=admin-user/change-password&id=<?=$user_id?>">修改密码</a>
                 </li>
                 <?php if (in_array($user_id, $adminIds)):?>
                     <li>
