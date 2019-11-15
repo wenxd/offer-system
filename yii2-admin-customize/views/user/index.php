@@ -1,9 +1,12 @@
 <?php
 
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use mdm\admin\components\Helper;
 use mdm\admin\models\User;
+use yii\web\View;
+
 /* @var $this yii\web\View */
 /* @var $searchModel mdm\admin\models\searchs\User */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -33,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => Helper::filterActionColumn(['view', 'activate', 'delete', 'update-password']),
+                'template' => Helper::filterActionColumn(['view', 'activate', 'delete', 'update-password', 'change-password']),
                 'buttons' => [
                     'activate' => function($url, $model) {
                         if ($model->status == 10) {
@@ -52,11 +55,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         $options = [
                             'title' => '修改密码',
                         ];
-                        return Html::a('<span class="glyphicon glyphicon-user"></span>', $url, $options);
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span>', $url, $options);
                     }
-                    ]
-                ],
+                ]
             ],
-        ]);
-        ?>
+        ],
+    ]);
+    ?>
 </div>

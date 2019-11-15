@@ -43,6 +43,9 @@ $notice_number = SystemNotice::find()->where([
                         <i class="glyphicon glyphicon-user"></i> <span><?= $identity->username ?></span>
                     </a>
                 </li>
+                <li>
+                    <a href="?r=admin/user/change-password&id=<?=$user_id?>">修改密码</a>
+                </li>
                 <?php if (in_array($user_id, $adminIds)):?>
                     <li>
                         <a href="?r=system-notice/index">
