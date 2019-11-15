@@ -17,6 +17,9 @@ class PaymentGoodsSearch extends PaymentGoods
     public $description_en;
     public $original_company;
     public $order_sn;
+    public $agreement_at;
+    public $delivery_date;
+    public $stock_at;
     /**
      * {@inheritdoc}
      */
@@ -26,10 +29,12 @@ class PaymentGoodsSearch extends PaymentGoods
             [['id', 'order_id', 'order_payment_id', 'order_purchase_id', 'purchase_goods_id', 'goods_id', 'type',
                 'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id', 'is_quality', 'supplier_id', 'before_supplier_id'], 'integer'],
             [['order_payment_sn', 'order_purchase_sn', 'serial', 'updated_at', 'created_at', 'goods_number',
-                'goods_number_b', 'description', 'description_en', 'original_company'], 'safe'],
+                'goods_number_b', 'description', 'description_en', 'original_company', 'agreement_at', 'delivery_date',
+                'stock_at'], 'safe'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price',
                 'fixed_all_price', 'fixed_all_tax_price', 'delivery_time', 'before_delivery_time'], 'number'],
-            [['id', 'order_payment_sn', 'order_sn', 'goods_number', 'goods_number_b', 'description', 'description_en', 'original_company'], 'trim'],
+            [['id', 'order_payment_sn', 'order_sn', 'goods_number', 'goods_number_b', 'description', 'description_en',
+                'original_company', 'agreement_at', 'delivery_date', 'stock_at'], 'trim'],
         ];
     }
 
@@ -51,7 +56,7 @@ class PaymentGoodsSearch extends PaymentGoods
      */
     public function search($params)
     {
-        $query = PaymentGoods::find()->where(['is_payment' => self::IS_PAYMENT_YES]);
+        $query = PaymentGoods::find()->where(['payment_goods.is_payment' => self::IS_PAYMENT_YES]);
 
         // add conditions that should always apply here
 
@@ -85,6 +90,28 @@ class PaymentGoodsSearch extends PaymentGoods
         if ($this->order_sn) {
             $query->leftJoin('order as b', 'b.id = payment_goods.order_id');
             $query->andFilterWhere(['like', 'b.order_sn', $this->order_sn]);
+        }
+
+        if ($this->agreement_at || $this->delivery_date || $this->stock_at) {
+            $query->leftJoin('order_payment as op', 'op.id = payment_goods.order_payment_id');
+            if ($this->agreement_at && strpos($this->agreement_at, ' - ')) {
+                list($agreement_at_start, $agreement_at_end) = explode(' - ', $this->agreement_at);
+                $agreement_at_start .= ' 00:00:00';
+                $agreement_at_end   .= ' 23::59:59';
+                $query->andFilterWhere(['between', 'op.agreement_at', $agreement_at_start, $agreement_at_end]);
+            }
+            if ($this->delivery_date && strpos($this->delivery_date, ' - ')) {
+                list($delivery_date_start, $delivery_date_end) = explode(' - ', $this->delivery_date);
+                $delivery_date_start .= ' 00:00:00';
+                $delivery_date_end   .= ' 23::59:59';
+                $query->andFilterWhere(['between', 'op.delivery_date', $delivery_date_start, $delivery_date_end]);
+            }
+            if ($this->stock_at && strpos($this->stock_at, ' - ')) {
+                list($stock_at_start, $stock_at_end) = explode(' - ', $this->stock_at);
+                $stock_at_start .= ' 00:00:00';
+                $stock_at_end   .= ' 23::59:59';
+                $query->andFilterWhere(['between', 'op.stock_at', $stock_at_start, $stock_at_end]);
+            }
         }
 
         // grid filtering conditions
