@@ -202,10 +202,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'stock_admin_id',
                 'label'     => '库管员',
-                'filter'    => Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => Helper::getAdminList(['系统管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '库管员', '库管员B'])[$model->stock_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '库管员', '库管员B'])[$model->stock_admin_id];
                     } else {
                         return '';
                     }

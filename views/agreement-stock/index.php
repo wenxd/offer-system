@@ -17,7 +17,7 @@ use app\models\AgreementStock;
 $this->title = '使用库存列表';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
@@ -93,7 +93,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => in_array($userId, $adminIds) ? Helper::getAdminList(['库管员']) : Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => in_array($userId, $adminIds) ? Helper::getAdminList(['库管员', '库管员B']) : Helper::getAdminList(['系统管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

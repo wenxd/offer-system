@@ -19,7 +19,7 @@ use app\models\StockLog;
 $this->title = '入库记录';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
@@ -95,7 +95,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '操作员',
-                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

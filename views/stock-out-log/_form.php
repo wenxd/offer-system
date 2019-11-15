@@ -11,7 +11,7 @@ use app\models\Customer;
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
 ?>

@@ -18,7 +18,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
 $isShow    = in_array($userId, $adminIds);

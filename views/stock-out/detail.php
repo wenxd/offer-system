@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
 $isShow = in_array($userId, $adminIds);

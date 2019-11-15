@@ -181,7 +181,7 @@ class StockOutLogController extends Controller
      */
     public function actionDownload()
     {
-        $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '系统管理员']])->all();
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B', '系统管理员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
         $adminList = Admin::find()->where(['id' => $adminIds])->all();

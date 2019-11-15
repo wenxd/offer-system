@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'username')->label('用户名')?>
                 <?= $form->field($model, 'email')->label('邮箱') ?>
                 <?= $form->field($model, 'password')->passwordInput()->label('登录密码') ?>
+                <?= $form->field($model, 'retypePassword')->passwordInput()->label('重复密码') ?>
                 <div class="form-group">
                     <?= Html::submitButton('保存', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                 </div>
