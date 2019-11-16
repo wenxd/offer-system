@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description',
                 'format'    => 'raw',
                 'label'     => '中文描述',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -75,6 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description_en',
                 'format'    => 'raw',
                 'label'     => '英文描述',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description_en',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
