@@ -189,6 +189,7 @@ if ($isShow) {
         ],
     ]); ?>
     <?php Pjax::end(); ?>
+        <?php if (!$isShow) :?>
         <table id="example2" class="table table-bordered table-hover">
             <thead>
                 <tr>
@@ -197,6 +198,7 @@ if ($isShow) {
                 </tr>
             </thead>
         </table>
+        <?php endif;?>
     </div>
 </div>
 
