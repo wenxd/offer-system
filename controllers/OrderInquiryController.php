@@ -329,8 +329,8 @@ class OrderInquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-        $tableHeader = ['ID', '询价单号', '厂家号', '原厂家', '中文描述', '英文描述', '税率*', '含税单价*（不带符号）', '询价数量', '单位',
-            '货期(周)*', '供应商准确名称*', '备注', '是否优选', '优选理由'];
+        $tableHeader = ['ID', '询价单号', '原厂家', '厂家号', '中文描述', '询价数量', '单位', '含税单价*（不带符号）',
+            '货期(周)*', '税率*', '供应商准确名称*', '英文描述', '备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -346,23 +346,23 @@ class OrderInquiryController extends BaseController
                 //询价单号
                 $excel->setCellValue($letter[$i+1] . ($key + 2), $inquiry->inquiry_sn);
                 if ($inquiry->goods) {
-                    //厂家号
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->goods_number_b);
                     //原厂家
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->original_company);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->original_company);
+                    //厂家号
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->goods_number_b);
                     //中文描述
                     $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description);
                     //英文描述
-                    $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->goods->description_en);
+                    $excel->setCellValue($letter[$i+11] . ($key + 2), $inquiry->goods->description_en);
                 }
                 //税率
-                $excel->setCellValue($letter[$i+6] . ($key + 2), $tax);
+                $excel->setCellValue($letter[$i+9] . ($key + 2), $tax);
                 //含税单价
                 //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
-                $excel->setCellValue($letter[$i+8] . ($key + 2), $inquiry->number);
+                $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->number);
                 //单位
-                $excel->setCellValue($letter[$i+9] . ($key + 2), $inquiry->goods->unit);
+                $excel->setCellValue($letter[$i+6] . ($key + 2), $inquiry->goods->unit);
                 //货期(周)
                 //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
@@ -444,17 +444,17 @@ class OrderInquiryController extends BaseController
                                     $inquiry                    = new Inquiry();
                                     $inquiry->inquiry_goods_id  = trim($value['A']);
                                     $inquiry->order_inquiry_id  = $orderInquiry->id;
-                                    $inquiry->tax_rate          = trim($value['G']);
+                                    $inquiry->tax_rate          = trim($value['J']);
                                     $inquiry->price             = trim($value['H']) / ((100 + $inquiry->tax_rate) / 100);
-                                    $inquiry->number            = trim($value['I']);
+                                    $inquiry->number            = trim($value['F']);
                                     $inquiry->tax_price         = trim($value['H']);
                                     $inquiry->good_id           = $goods->id;
-                                    $inquiry->supplier_id       = $supplierList[trim($value['L'])]->id;
+                                    $inquiry->supplier_id       = $supplierList[trim($value['K'])]->id;
                                     $inquiry->all_price         = $inquiry->price * $inquiry->number;
                                     $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
                                     $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
                                     $inquiry->remark            = trim($value['M']);
-                                    $inquiry->delivery_time     = trim($value['K']);
+                                    $inquiry->delivery_time     = trim($value['I']);
                                     $inquiry->admin_id          = Yii::$app->user->identity->id;
                                     $inquiry->order_id          = $orderInquiry->order_id;
                                     $inquiry->is_upload         = Inquiry::IS_UPLOAD_YES;
