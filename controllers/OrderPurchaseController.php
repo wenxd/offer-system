@@ -168,23 +168,23 @@ class OrderPurchaseController extends BaseController
                 foreach ($params['goods_info'] as $item) {
                     $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
                     //处理保存使用库存记录
-                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
-                    if ($use_stock_number) {
-                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
-                        $agreementStock = new AgreementStock();
-                        $agreementStock->order_id           = $orderAgreement->order_id;
-                        $agreementStock->order_agreement_id = $orderAgreement->id;
-                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
-                        $agreementStock->order_purchase_id  = $orderPurchase->id;
-                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
-                        $agreementStock->goods_id           = $agreementGoods->goods_id;
-                        $agreementStock->price              = $stock ? $stock->price : 0;
-                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
-                        $agreementStock->use_number         = $use_stock_number;
-                        $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
-                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
-                        $agreementStock->save();
-                    }
+//                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
+//                    if ($use_stock_number) {
+//                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+//                        $agreementStock = new AgreementStock();
+//                        $agreementStock->order_id           = $orderAgreement->order_id;
+//                        $agreementStock->order_agreement_id = $orderAgreement->id;
+//                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+//                        $agreementStock->order_purchase_id  = $orderPurchase->id;
+//                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
+//                        $agreementStock->goods_id           = $agreementGoods->goods_id;
+//                        $agreementStock->price              = $stock ? $stock->price : 0;
+//                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+//                        $agreementStock->use_number         = $use_stock_number;
+//                        $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
+//                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
+//                        $agreementStock->save();
+//                    }
 
                     if ($item['number'] > 0) {
                         if ($agreementGoods) {
@@ -215,6 +215,21 @@ class OrderPurchaseController extends BaseController
                         }
                     } else {
                         $agreement_goods_ids[] = $item['agreement_goods_id'];
+                        //处理保存使用库存记录
+                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                        $agreementStock = new AgreementStock();
+                        $agreementStock->order_id           = $orderAgreement->order_id;
+                        $agreementStock->order_agreement_id = $orderAgreement->id;
+                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                        $agreementStock->order_purchase_id  = $orderPurchase->id;
+                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
+                        $agreementStock->goods_id           = $agreementGoods->goods_id;
+                        $agreementStock->price              = $stock ? $stock->price : 0;
+                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+                        $agreementStock->use_number         = $agreementGoods->order_number;
+                        $agreementStock->all_price          = $agreementStock->price * $agreementGoods->order_number;
+                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $agreementGoods->order_number;
+                        $agreementStock->save();
                     }
                 }
                 AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
@@ -236,7 +251,7 @@ class OrderPurchaseController extends BaseController
             foreach ($params['goods_info'] as $item) {
                 $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
                 //处理保存使用库存记录
-                $use_stock_number = $agreementGoods->order_number >= $item['number'] ? $agreementGoods->order_number - $item['number'] : 0;
+                $use_stock_number = $agreementGoods->order_number;
                 $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
 
                 $agreementStock = new AgreementStock();
