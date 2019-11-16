@@ -131,6 +131,13 @@ if ($isShow) {
                 'attribute' => 'tax_price',
                 'visible'   => !$isShow,
             ],
+            [
+                'attribute' => '含税总价',
+                'visible'   => !$isShow,
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->number * $model->tax_price;
+                }
+            ],
             'position',
             [
                 'attribute' => 'number',
@@ -182,6 +189,14 @@ if ($isShow) {
         ],
     ]); ?>
     <?php Pjax::end(); ?>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>库存总金额</th>
+                    <th><?=Stock::getAllMoney();?></th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 

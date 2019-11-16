@@ -132,4 +132,14 @@ class Stock extends ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'good_id']);
     }
+
+    public static function getAllMoney()
+    {
+        $list = self::find()->select('tax_price, number')->where(['is_deleted' => self::IS_DELETED_NO])->asArray()->all();
+        $allMoney = 0;
+        foreach ($list as $item) {
+            $allMoney += $item['tax_price'] * $item['number'];
+        }
+        return $allMoney;
+    }
 }
