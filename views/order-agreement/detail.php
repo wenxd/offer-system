@@ -217,7 +217,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td class="price" style="background-color:#00FF33"><?=$item->price?></td>
                 <td class="all_price"><?=$item->all_price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
-                <td class="all_tax_price"><?=$item->all_tax_price?></td>
+                <td class="all_tax_price"><?=number_format($item->price * (1+$system_tax/100) * $item->purchase_number, 2, '.', '')?></td>
                 <td class="delivery_time" style="background-color:#0099FF"><?=$item->delivery_time?></td>
                 <td><?=$order_purchase_sn?></td>
                 <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
@@ -319,8 +319,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     mostLongTime = delivery_time;
                 }
 
-                $(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
+                //$(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
+                //$(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
 
                 var all_price     = parseFloat(price * purchase_number);
                 var all_tax_price = parseFloat(tax_price* purchase_number);
@@ -390,13 +390,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
         //输入数量
         $(".number").bind('input propertychange', function (e) {
-
             var number = $(this).val();
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
             var price     = $(this).parent().parent().find('.price').text();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            var tax_price = price * (1 + '<?=$system_tax?>' / 100);
             //最低
             var low_price = parseFloat($(this).parent().parent().find('.low_price').text());
             var low_tax_price = low_price * (1 + '<?=$system_tax?>' / 100);
