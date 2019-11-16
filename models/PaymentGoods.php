@@ -155,4 +155,9 @@ class PaymentGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Admin::className(), ['id' => 'inquiry_admin_id']);
     }
+
+    public function getPurchaseGoods()
+    {
+        return $this->hasOne(PurchaseGoods::className(), ['id' => 'purchase_goods_id']);
+    }
 }

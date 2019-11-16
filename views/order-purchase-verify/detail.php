@@ -55,6 +55,8 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <th style="background-color: darkgrey">支出合同含税单价</th>
                     <th style="background-color: darkgrey">支出合同含税总价</th>
                     <th style="background-color: darkgrey">支出合同数量</th>
+                    <th>收入合同数量</th>
+                    <th>使用库存数量</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,6 +85,8 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
+                    <td><?=$item->purchaseGoods ? $item->purchaseGoods->number : 0?></td>
+                    <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number) ? ($item->purchaseGoods->number - $item->fixed_number) : 0) : 0?></td>
                 </tr>
             <?php endforeach;?>
 
@@ -93,7 +97,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                 <td>修改前含税总价</td>
                 <td colspan="4" rowspan="2"></td>
                 <td>支出合同含税总价</td>
-                <td rowspan="2"></td>
+                <td colspan="3" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
                 <td class="sta_all_publish_tax_price"></td>
