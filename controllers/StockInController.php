@@ -188,14 +188,14 @@ class StockInController extends BaseController
                     if (!$stock) {
                         $stock   = new Stock();
                         $stock->good_id     = $paymentGood['goods_id'];
-                        $stock->price       = $paymentGoods->fixed_price;
-                        $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
+                        $stock->price       = $paymentGood['fixed_price'];
+                        $stock->tax_price   = (1+$system_tax/100) * $paymentGood['fixed_price'];
                         $stock->tax_rate    = $system_tax;
                         $stock->number      = 0;
                         $stock->save();
                     } else {
-                        $stock->price       = $paymentGoods->fixed_price;
-                        $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
+                        $stock->price       = $paymentGood['fixed_price'];
+                        $stock->tax_price   = (1+$system_tax/100) * $paymentGood['fixed_price'];
                         $stock->tax_rate    = $system_tax;
                         $stock->save();
                     }
