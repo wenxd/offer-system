@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\AuthAssignment;
+use app\models\SystemNotice;
 use Yii;
 use app\actions;
 use app\models\Supplier;
@@ -76,6 +78,13 @@ class SupplierController extends BaseController
         $supplier = Supplier::findOne($id);
         $supplier->is_confirm = Supplier::IS_CONFIRM_YES;
         $supplier->save();
+
+        //给采购员、询价员通知
+        $notice = new SystemNotice();
+        $notice->admin_id  = $supplier->admin_id;
+        $notice->content   = '管理员已确认了你创建的供应商' . $supplier->name;
+        $notice->notice_at = date('Y-m-d H:i:s');
+        $notice->save();
 
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
         return $this->redirect(['index']);
