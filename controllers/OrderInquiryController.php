@@ -239,7 +239,7 @@ class OrderInquiryController extends BaseController
                 $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $orderInquiry->admin_id])->one();
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id  = $stockAdmin->user_id;
-                $systemNotice->content   = '询不出的厂家号' . $info->goods->goods_number_b . '管理员已近确认询价';
+                $systemNotice->content   = '询不出的厂家号' . $info->goods->goods_number_b . '管理员已经确认询价';
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
