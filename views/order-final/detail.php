@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //同一个订单询价商品的IDs
 $inquiryGoods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '订单管理员', '报价员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
