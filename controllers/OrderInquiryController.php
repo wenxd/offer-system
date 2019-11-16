@@ -432,15 +432,15 @@ class OrderInquiryController extends BaseController
                             $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                         }
                         if ($key > 1) {
-                            if (empty($value['B']) || empty($value['C'])) {
+                            if (empty($value['B']) || empty($value['D'])) {
                                 continue;
                             }
                             $goods = Goods::find()->where([
-                                'goods_number_b' => trim($value['C']),
+                                'goods_number_b' => trim($value['D']),
                                 'is_deleted'     => Goods::IS_DELETED_NO
                             ])->one();
                             if ($goods) {
-                                if (isset($supplierList[trim($value['L'])])) {
+                                if (isset($supplierList[trim($value['K'])])) {
                                     $inquiry                    = new Inquiry();
                                     $inquiry->inquiry_goods_id  = trim($value['A']);
                                     $inquiry->order_inquiry_id  = $orderInquiry->id;
