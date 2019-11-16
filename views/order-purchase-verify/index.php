@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
                     $html = '';
                     if (!in_array($userId, $adminIds)) {
-                        $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                        $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]);

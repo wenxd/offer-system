@@ -260,6 +260,22 @@ class OrderPurchaseVerifyController extends BaseController
         }
     }
 
+    /**采购审核查看
+     * @param $id
+     */
+    public function actionView($id)
+    {
+        $orderPayment = OrderPayment::findOne($id);
+
+        $paymentGoods = PaymentGoods::find()->where(['order_payment_id' => $id])->orderBy('serial')->all();
+
+        return $this->render('view', [
+            'model'        => $orderPayment,
+            'orderPayment' => $orderPayment,
+            'paymentGoods' => $paymentGoods,
+        ]);
+    }
+
     /**采购审核详情
      * @param $id
      */
