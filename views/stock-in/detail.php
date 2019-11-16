@@ -230,7 +230,7 @@ $isShow = in_array($userId, $adminIds);
         //批量入库
         $('.more-stock').click(function () {
             //防止双击
-            $(".more-stock").attr("disabled", true).addClass("disabled");
+            //$(".more-stock").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
@@ -238,26 +238,28 @@ $isShow = in_array($userId, $adminIds);
                 return false;
             }
 
-            var position_open = false;
-            var paymentGoods_ids = [];
-            $('.select_id').each(function (index, element) {
-                if ($(element).prop("checked")) {
-                    var id = $(element).val();
-                    paymentGoods_ids.push(id);
-                    if ($(element).parent().parent().find('.position input').val() == '') {
+            var position_open     = false;
+            var paymentGoods_info = [];
+            $('.order_payment_list').each(function (i, e) {
+                var item = {};
+                if ($(e).find('.select_id').prop("checked")) {
+                    item.payment_goods_id = $(e).find('.select_id').val();
+                    item.position         = $(e).find('.position input').val();
+                    if ($(e).find('.position input').val() == '') {
                         position_open = true;
                     }
+                    paymentGoods_info.push(item);
                 }
             });
             if (position_open) {
-                layer.msg('请先单独给没有库存位置的零件入库', {time:3000});
+                layer.msg('请输入库存位置', {time:3000});
                 $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/more-in',
-                data:{ids:paymentGoods_ids},
+                data:{paymentGoods_info:paymentGoods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
