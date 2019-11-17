@@ -81,7 +81,10 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            'order_agreement_sn',
+            [
+                'attribute' => 'order_agreement_sn',
+                'visible'   => !in_array($userId, $adminIds),
+            ],
             'order_purchase_sn',
             'order_payment_sn',
             [
