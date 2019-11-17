@@ -310,7 +310,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             var most_short_deliver      = 0;
             $('.order_agreement_list').each(function (i, e) {
                 var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
+                var tax_price       = price * (1 + '<?=$system_tax?>' / 100);
                 var number          = parseFloat($(e).find('.oldNumber').text());
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 var purchase_number = parseFloat($(e).find('.number').val());
