@@ -190,10 +190,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => in_array($userId, $purchaseAdminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '采购员', '询价员']),
+                'filter'    => in_array($userId, $purchaseAdminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员'])[$model->admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员'])[$model->admin_id];
                     } else {
                         return '';
                     }
@@ -202,10 +202,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'stock_admin_id',
                 'label'     => '库管员',
-                'filter'    => Helper::getAdminList(['系统管理员', '库管员', '库管员B']),
+                'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '库管员', '库管员B'])[$model->stock_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '库管员', '库管员B'])[$model->stock_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id];
                     } else {
                         return '';
                     }
@@ -213,11 +213,11 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'attribute' => 'financial_admin_id',
-                'label'     => '收款财务',
-                'filter'    => Helper::getAdminList(['系统管理员', '收款财务']),
+                'label'     => '财务',
+                'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '收款财务']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '收款财务'])[$model->financial_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '收款财务'])[$model->financial_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '收款财务'])[$model->financial_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '收款财务'])[$model->financial_admin_id];
                     } else {
                         return '';
                     }

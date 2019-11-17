@@ -11,7 +11,7 @@ class AgreementController extends BaseController
     {
         $userId   = Yii::$app->user->identity->id;
         //询价员
-        $use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务', '报价员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
         if (in_array($userId, $adminIds)) {
