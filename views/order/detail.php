@@ -232,7 +232,7 @@ $userId   = Yii::$app->user->identity->id;
             <tr>
                 <td ></td>
                 <td><?=Html::a('汇总明细',Url::to(['agreement-stock/index', "AgreementStockSearch[order_sn]" => $model->order_sn]))?></td>
-                <td><?=$orderStock->admin ? $orderStock->admin->username : ''?></td>
+                <td><?=isset($orderStock) ? ($orderStock->admin ? $orderStock->admin->username : '') : ''?></td>
                 <td><?=$stockPrice?></td>
             </tr>
             </thead>
