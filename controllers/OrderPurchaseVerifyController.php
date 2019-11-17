@@ -249,7 +249,7 @@ class OrderPurchaseVerifyController extends BaseController
             if ($noticeStockOpen) {
                 $systemNotice = new SystemNotice();
                 $systemNotice->admin_id  = $stockAdmin->user_id;
-                $systemNotice->content   = '支出合同单号' . $orderPayment->payment_sn . '需要点货';
+                $systemNotice->content   = '支出合同单号' . $orderPayment->payment_sn . '需要确认库存';
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }

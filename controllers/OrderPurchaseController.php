@@ -290,7 +290,7 @@ class OrderPurchaseController extends BaseController
             $stockAdmin = AuthAssignment::find()->where(['item_name' => '库管员'])->one();
             $systemNotice = new SystemNotice();
             $systemNotice->admin_id  = $stockAdmin->user_id;
-            $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要点货';
+            $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
             $systemNotice->notice_at = date('Y-m-d H:i:s');
             $systemNotice->save();
         }
