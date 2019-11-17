@@ -420,7 +420,7 @@ class OrderPurchaseController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['序号', '厂家号', '中文描述', '原厂家', '供应商', '单位', '采购数量', '含税单价', '含税总价', '货期(周)'];
+        $tableHeader = ['序号', '原厂家', '厂家号', '中文描述', '采购数量', '单位', '含税单价', '含税总价', '货期(周)', '供应商'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -434,9 +434,9 @@ class OrderPurchaseController extends BaseController
                 $excel->setCellValue($letter[$i] . ($key + 2), $value->serial);
                 if ($value->goods) {
                     //厂家号
-                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->goods_number_b);
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->description);
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), $value->goods->original_company);
+                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->original_company);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), $value->goods->description);
                     $excel->setCellValue($letter[$i+5] . ($key + 2), $value->goods->unit);
                 } else {
                     $excel->setCellValue($letter[$i+1] . ($key + 2), '');
@@ -444,15 +444,16 @@ class OrderPurchaseController extends BaseController
                     $excel->setCellValue($letter[$i+3] . ($key + 2), '');
                     $excel->setCellValue($letter[$i+5] . ($key + 2), '');
                 }
-                $excel->setCellValue($letter[$i+4] . ($key + 2), $value->inquiry->supplier->name);
                 //采购数量
-                $excel->setCellValue($letter[$i+6] . ($key + 2), $value->fixed_number);
+                $excel->setCellValue($letter[$i+4] . ($key + 2), $value->fixed_number);
                 //含税单价
-                $excel->setCellValue($letter[$i+7] . ($key + 2), $value->fixed_tax_price);
+                $excel->setCellValue($letter[$i+6] . ($key + 2), $value->fixed_tax_price);
                 //含税总价
-                $excel->setCellValue($letter[$i+8] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
+                $excel->setCellValue($letter[$i+7] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
                 //货期(周)
-                $excel->setCellValue($letter[$i+9] . ($key + 2), $value->delivery_time);
+                $excel->setCellValue($letter[$i+8] . ($key + 2), $value->delivery_time);
+                //供应商
+                $excel->setCellValue($letter[$i+9] . ($key + 2), $value->inquiry->supplier->name);
                 break;
             }
         }
