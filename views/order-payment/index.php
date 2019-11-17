@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
 $this->title = '支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务', '付款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
