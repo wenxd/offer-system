@@ -18,7 +18,7 @@ use kartik\daterange\DateRangePicker;
 $this->title = '待付款订单';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '付款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
@@ -80,6 +80,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_sn',
                 'label'     => '订单号',
                 'format'    => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     if ($model->order) {
@@ -129,7 +130,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                    return Html::a('<i class="fa fa-eye"></i> 付款', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
                     ]);
