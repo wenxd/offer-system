@@ -19,7 +19,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
     'title'  => SystemConfig::TITLE_TAX,
     'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '付款财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '付款财务', '收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId = Yii::$app->user->identity->id;

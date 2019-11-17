@@ -111,7 +111,7 @@ $userId   = Yii::$app->user->identity->id;
                     'attribute'      => '操作',
                     'format'         => 'raw',
                     'value'          => function ($model, $key, $index, $column){
-                        return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
+                        return Html::a('<i class="fa fa-eye"></i> 收款', Url::to(['detail', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]);

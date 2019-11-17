@@ -58,7 +58,7 @@ class OrderAgreementSearch extends OrderAgreement
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'agreement_date']
+                'attributes' => ['id', 'agreement_date', 'sign_date', 'stock_at', 'expect_at']
             ],
         ]);
 
