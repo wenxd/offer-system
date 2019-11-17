@@ -82,6 +82,8 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             'order_agreement_sn',
+            'order_purchase_sn',
+            'order_payment_sn',
             [
                 'attribute' => 'is_confirm',
                 'format'    => 'raw',
