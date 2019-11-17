@@ -230,7 +230,7 @@ $isShow = in_array($userId, $adminIds);
         //批量入库
         $('.more-stock').click(function () {
             //防止双击
-            //$(".more-stock").attr("disabled", true).addClass("disabled");
+            $(".more-stock").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});

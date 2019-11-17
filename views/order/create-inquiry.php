@@ -163,13 +163,8 @@ if ($model->isNewRecord) {
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
                             ['target' => 'blank'])?></td>
                     <td><?= $item->goods->goods_number_b?></td>
-                    <td>
-                        <select class="form-control" name="recommend_supplier">
-                            <option value="0"></option>
-                            <?php foreach ($supplierList as $supplier):?>
-                                <option value="<?=$supplier->id?>"><?=$supplier->name?></option>
-                            <?php endforeach;?>
-                        </select>
+                    <td class="supplier">
+                        <input type="text" style="width: 150px;">
                     </td>
                     <td><?= $item->goods->description?></td>
                     <td><?= $item->goods->description_en?></td>
@@ -267,8 +262,8 @@ if ($model->isNewRecord) {
                     item.goods_id    = $(element).val();
                     item.number      = $(element).parent().parent().find('.number').text();
                     item.serial      = $(element).parent().parent().find('.serial').text();
-                    var supplier_id  = $(element).parent().parent().find('select option:selected').val();
-                    item.supplier_id = supplier_id;
+                    var supplier_name  = $(element).parent().parent().find('.supplier input').val();
+                    item.supplier_name = supplier_name;
                     goods_info.push(item);
                 }
             });
@@ -289,6 +284,7 @@ if ($model->isNewRecord) {
                         window.location.reload();
                     } else {
                         layer.msg(res.msg, {time:2000});
+                        $(".inquiry_save").removeAttr("disabled").removeClass("disabled");
                         return false;
                     }
                 }

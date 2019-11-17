@@ -130,6 +130,14 @@ class OrderInquiryController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        foreach ($params['goods_info'] as $key => $goods) {
+            $supplier = Supplier::find()->where(['name' => trim($goods['supplier_name'])])->one();
+            if (!$supplier) {
+                return json_encode(['code' => 500, 'msg' => '序号' . $goods['serial'] . '供应商不正确']);
+            }
+            $params['goods_info'][$key]['supplier_id'] = $supplier->id;
+        }
+
         $orderInquiry = new OrderInquiry();
         $orderInquiry->inquiry_sn = $params['inquiry_sn'];
         $orderInquiry->order_id   = $params['order_id'];
