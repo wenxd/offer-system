@@ -542,6 +542,11 @@ class OrderController extends BaseController
         }
     }
 
+    /**保存成本单
+     * @param $id
+     * @param int $key
+     * @return false|string
+     */
     public function actionCreateFinal($id, $key = 0)
     {
         $data      = [];

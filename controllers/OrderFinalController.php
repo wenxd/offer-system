@@ -195,6 +195,7 @@ class OrderFinalController extends BaseController
             $orderFinal->customer_id = $order->customer_id;
         }
         $orderFinal->goods_info     = json_encode($params['goods_ids']);
+        $orderFinal->admin_id       = Yii::$app->user->identity->id;
         if ($orderFinal->save()) {
             foreach ($params['goods_info'] as $key => $value) {
                 $finalGoods = FinalGoods::find()->where([

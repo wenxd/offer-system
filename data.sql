@@ -762,6 +762,7 @@ ALTER TABLE `order_final` ADD COLUMN `customer_id`  int(11)     NOT NULL DEFAULT
 ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4)  NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
 ALTER TABLE `order_final` ADD COLUMN `is_purchase`  tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
 ALTER TABLE `order_final` ADD COLUMN `is_merge`     tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否合并 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `admin_id`     int(11)     NOT NULL DEFAULT '0' COMMENT '操作人ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';

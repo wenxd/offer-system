@@ -18,6 +18,7 @@ use Yii;
  * @property string $customer_id
  * @property string $is_purchase
  * @property string $is_merge
+ * @property string $admin_id
  */
 class OrderFinal extends \yii\db\ActiveRecord
 {
@@ -58,7 +59,7 @@ class OrderFinal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase', 'is_merge'], 'integer'],
+            [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase', 'is_merge', 'admin_id'], 'integer'],
             [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
@@ -86,11 +87,17 @@ class OrderFinal extends \yii\db\ActiveRecord
             'updated_at'     => '更新时间',
             'created_at'     => '创建时间',
             'is_purchase'    => '是否生成采购单',
+            'admin_id'       => '操作人',
         ];
     }
 
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
 }
