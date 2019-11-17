@@ -431,24 +431,31 @@ class OrderInquiryController extends BaseController
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (!$value['A']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行ID不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['B']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价单号不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['D']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行厂家号不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['F']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价数量不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['H']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行含税单价不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['I']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['J']) {
+                                unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行税率不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                         }
