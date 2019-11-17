@@ -239,6 +239,7 @@ $isShow = in_array($userId, $adminIds);
             }
 
             var position_open     = false;
+            var quality_open      = false;
             var paymentGoods_info = [];
             $('.order_payment_list').each(function (i, e) {
                 var item = {};
@@ -249,8 +250,17 @@ $isShow = in_array($userId, $adminIds);
                         position_open = true;
                     }
                     paymentGoods_info.push(item);
+                    var quality = $(e).find('.quality_text').text();
+                    if (quality == '否') {
+                        quality_open = true;
+                    }
                 }
             });
+            if (quality_open) {
+                layer.msg('请先质检', {time:3000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
             if (position_open) {
                 layer.msg('请输入库存位置', {time:3000});
                 $(".more-stock").removeAttr("disabled").removeClass("disabled");
