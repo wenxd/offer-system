@@ -28,6 +28,8 @@ $userId   = Yii::$app->user->identity->id;
             <tr>
                 <th>序号</th>
                 <th>零件号</th>
+                <th>厂家号</th>
+                <th>原厂家</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>数量</th>
@@ -49,6 +51,8 @@ $userId   = Yii::$app->user->identity->id;
                 <tr class="order_quote_list">
                     <td><?=$item->serial?></td>
                     <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number_b?></td>
+                    <td><?=$item->goods->original_company?></td>
                     <td class="goods_id" data-goods_id="<?=$item->goods_id?>" data-goods_type="<?=$item->type?>"
                         data-relevance_id="<?=$item->relevance_id?>" data-quote_goods_id="<?=$item->id?>">
                         <?=$item->goods->description?>
@@ -72,7 +76,7 @@ $userId   = Yii::$app->user->identity->id;
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?=in_array($userId, $adminIds) ? 6 : 8?>" rowspan="2">汇总统计</td>
+                <td colspan="<?=in_array($userId, $adminIds) ? 8 : 10?>" rowspan="2">汇总统计</td>
                 <?php if (!in_array($userId, $adminIds)):?>
                 <td>发行含税总价合计</td>
                 <?php endif;?>
