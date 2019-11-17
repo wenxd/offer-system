@@ -120,6 +120,51 @@ if ($isShow) {
                 }
             ],
             [
+                'attribute' => 'material_code',
+                'format'    => 'raw',
+                'label'     => '设备类别',
+                'filter'    => Html::activeTextInput($searchModel, 'material_code', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        return $model->goods->material_code;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'part',
+                'format'    => 'raw',
+                'label'     => '所属部件',
+                'filter'    => Html::activeTextInput($searchModel, 'part', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        return $model->goods->part;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'device_info',
+                'format'    => 'raw',
+                'label'     => '设备信息',
+                'filter'    => Html::activeTextInput($searchModel, 'device_info', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        $text = '';
+                        if ($model->goods->device_info) {
+                            foreach (json_decode($model->goods->device_info, true) as $key => $device) {
+                                $text .= $key . ':' . $device . '<br/>';
+                            }
+                        }
+                        return $text;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'tax_rate',
                 'visible'   => !$isShow,
             ],

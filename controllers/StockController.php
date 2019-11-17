@@ -108,9 +108,9 @@ class StockController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
         $tableHeader = ['ID', '零件号', '中文描述', '英文描述', '税率', '未税单价', '含税单价', '库存位置', '库存数量',
-            '建议库存', '高储', '低储', '是否有库存', '库存不足', '库存超量'];
+            '建议库存', '高储', '低储', '是否有库存', '库存不足', '库存超量', '设备类别', '所属部件', '设备信息'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -132,6 +132,12 @@ class StockController extends BaseController
                     $excel->setCellValue($letter[$i+2] . ($key + 2), $stock->goods->description);
                     //英文描述
                     $excel->setCellValue($letter[$i+3] . ($key + 2), $stock->goods->description_en);
+                    //设备类别
+                    $excel->setCellValue($letter[$i+15] . ($key + 2), $stock->goods->material_code);
+                    //所属部件
+                    $excel->setCellValue($letter[$i+16] . ($key + 2), $stock->goods->part);
+                    //设备信息
+                    $excel->setCellValue($letter[$i+17] . ($key + 2), $stock->goods->device_info);
                 } else {
                     //零件号
                     $excel->setCellValue($letter[$i+1] . ($key + 2), '');

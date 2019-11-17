@@ -14,6 +14,9 @@ use yii\helpers\ArrayHelper;
 class StockSearch extends Stock
 {
     public $goods_number;
+    public $device_info;
+    public $material_code;
+    public $part;
     public $description;
     public $description_en;
     public $supplier_name;
@@ -30,7 +33,7 @@ class StockSearch extends Stock
             [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero',
                 'stock_low', 'stock_high'], 'integer'],
             [['good_id', 'supplier_name', 'position', 'updated_at', 'created_at', 'goods_number', 'description',
-                'description_en'], 'safe'],
+                'description_en', 'material_code', 'part', 'device_info'], 'safe'],
             [['price', 'tax_price'], 'number'],
             [['number', 'suggest_number', 'high_number', 'low_number'], 'integer', 'min' => 0],
         ];
@@ -75,12 +78,15 @@ class StockSearch extends Stock
             // $query->where('0=1');
             return $dataProvider;
         }
-        if ($this->goods_number || $this->description || $this->description_en || $this->is_emerg !== '') {
+        if ($this->goods_number || $this->device_info || $this->material_code || $this->part || $this->description || $this->description_en || $this->is_emerg !== '') {
             //$query->rightJoin('goods as a', 'a.id = stock.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
             $query->andFilterWhere(['like', 'a.description', $this->description]);
             $query->andFilterWhere(['like', 'a.description_en', $this->description_en]);
-            $query->andFilterWhere(['like', 'a.is_emerg', $this->is_emerg]);
+            $query->andFilterWhere(['like', 'a.device_info', $this->device_info]);
+            $query->andFilterWhere(['like', 'a.material_code', $this->material_code]);
+            $query->andFilterWhere(['like', 'a.part', $this->part]);
+            $query->andFilterWhere(['a.is_emerg' => $this->is_emerg]);
         }
         if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = stock.supplier_id');

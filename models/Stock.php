@@ -104,6 +104,7 @@ class Stock extends ActiveRecord
             'goods_number'     => '零件号',
             'description'      => '中文描述',
             'description_en'   => '英文描述',
+            'material_code'    => '设备类别',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税单价',
