@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (in_array($userId, $adminIds) && $model->is_complete) {
                         return $model->payment_sn;
                     } else {
-                        return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                        return Html::a($model->payment_sn, Url::to(['view', 'id' => $model->id]));
                     }
                 }
             ],
