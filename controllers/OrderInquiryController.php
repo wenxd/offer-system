@@ -131,11 +131,13 @@ class OrderInquiryController extends BaseController
         $params = Yii::$app->request->post();
 
         foreach ($params['goods_info'] as $key => $goods) {
-            $supplier = Supplier::find()->where(['name' => trim($goods['supplier_name'])])->one();
-            if (!$supplier) {
-                return json_encode(['code' => 500, 'msg' => '序号' . $goods['serial'] . '供应商不正确']);
+            if (trim($goods['supplier_name'])) {
+                $supplier = Supplier::find()->where(['name' => trim($goods['supplier_name'])])->one();
+                if (!$supplier) {
+                    return json_encode(['code' => 500, 'msg' => '序号' . $goods['serial'] . '供应商不正确']);
+                }
+                $params['goods_info'][$key]['supplier_id'] = $supplier->id;
             }
-            $params['goods_info'][$key]['supplier_id'] = $supplier->id;
         }
 
         $orderInquiry = new OrderInquiry();
@@ -158,7 +160,7 @@ class OrderInquiryController extends BaseController
                 $row[] = $goods['goods_id'];
                 $row[] = $goods['number'];
                 $row[] = $goods['serial'];
-                $row[] = $goods['supplier_id'];
+                $row[] = isset($goods['supplier_id']) ?? 0;
                 $data[] = $row;
             }
             self::insertInquiryGoods($data);
