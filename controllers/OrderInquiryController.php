@@ -160,7 +160,7 @@ class OrderInquiryController extends BaseController
                 $row[] = $goods['goods_id'];
                 $row[] = $goods['number'];
                 $row[] = $goods['serial'];
-                $row[] = isset($goods['supplier_id']) ?? 0;
+                $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
                 $data[] = $row;
             }
             self::insertInquiryGoods($data);
