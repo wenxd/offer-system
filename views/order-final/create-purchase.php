@@ -172,25 +172,25 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     <td><?=$item->goods->original_company_remark?></td>
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
-                    <td><?=$item->tax?></td>
+                    <td><?=$system_tax?></td>
                     <?php
                         $lowPriceInquiry = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('price asc')->one();
                         $deliverInquiry  = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('delivery_time asc')->one();
                     ?>
                     <td class="low_price" style="background-color:#00FF33"><?=$lowPriceInquiry ? $lowPriceInquiry->price : 0?></td>
-                    <td class="low_tax_price"><?=$lowPriceInquiry ? ($lowPriceInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
+                    <td class="low_tax_price"><?=$lowPriceInquiry ? number_format($lowPriceInquiry->price * (1 + $system_tax/100) * $item->number, 2, '.', '') : 0?></td>
                     <td class="low_delivery"><?=$lowPriceInquiry ? $lowPriceInquiry->delivery_time : 0?></td>
                     <td class="short_price"><?=$deliverInquiry ? $deliverInquiry->price : 0?></td>
-                    <td class="short_tax_price"><?=$deliverInquiry ? ($deliverInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
+                    <td class="short_tax_price"><?=$deliverInquiry ? number_format($deliverInquiry->price * (1 + $system_tax/100) * $item->number, 2, '.', '') : 0?></td>
                     <td class="short_delivery" style="background-color:#0099FF"><?=$deliverInquiry ? $deliverInquiry->delivery_time : 0?></td>
 
                     <td class="price"><?=$item->price?></td>
                     <?php
-                        $tax_price = number_format($item->price * (1 + $item->tax/100), 2, '.', '');
+                        $tax_price = number_format($item->price * (1 + $system_tax/100), 2, '.', '');
                     ?>
                     <td class="tax_price"><?=$tax_price?></td>
                     <td class="all_price"><?=$item->price * $item->number?></td>
-                    <td class="all_tax_price"><?=$tax_price * $item->number?></td>
+                    <td class="all_tax_price"><?=number_format($item->price * (1 + $system_tax/100) * $item->number, 2, '.', '')?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                     <td class="oldNumber"><?=$item->number?></td>
@@ -296,7 +296,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                 }
 
                 var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
+                var tax_price       = price * (1 + '<?=$system_tax?>' / 100);
                 var number          = $(e).find('.oldNumber').text();
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 var purchase_number = $(e).find('.number').val();
@@ -307,8 +307,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     mostLongTime = delivery_time;
                 }
 
-                $(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
+                //$(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
+                //$(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
 
                 var all_price     = parseFloat(price * purchase_number);
                 var all_tax_price = parseFloat(tax_price* purchase_number);
@@ -357,8 +357,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
-            var price = $(this).parent().parent().find('.price').text();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            var price     = parseFloat($(this).parent().parent().find('.price').text());
+            var tax_price = price * (1 + '<?=$system_tax?>' / 100);
 
             //最低
             var low_price = parseFloat($(this).parent().parent().find('.low_price').text());
