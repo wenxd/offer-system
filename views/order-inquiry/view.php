@@ -17,6 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
+
+$super_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '订单管理员']])->all();
+$super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
 ?>
 <style>
     .alarm {
@@ -35,6 +38,12 @@ $userId    = Yii::$app->user->identity->id;
                 'class' => 'btn btn-success upload',
                 'name'  => 'submit-button']
         )?>
+        <?php if (in_array($userId, $super_adminIds)):?>
+            <?= Html::button('批量确认询价', [
+                    'class' => 'btn btn-info all_confirm',
+                    'name'  => 'submit-button']
+            )?>
+        <?php endif;?>
     </div>
 
     <div class="box-body">
@@ -67,7 +76,7 @@ $userId    = Yii::$app->user->identity->id;
             <tbody>
                 <?php foreach ($inquiryGoods as $item):?>
                     <?php if (!in_array($userId, $adminIds)): ?>
-                        <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
+                        <tr class="order_inquiry_list" data-id="<?=$item->id?>" <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                             <td><?=$item->serial?></td>
                             <td><?=$orderInquiry->inquiry_sn?></td>
                             <?php if(!in_array($userId, $adminIds)):?>
@@ -144,6 +153,39 @@ $userId    = Yii::$app->user->identity->id;
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //批量确认询价
+        $('.all_confirm').click(function (e) {
+            var all_conform = false;
+            var ids = [];
+            $('.order_inquiry_list').each(function (i, e) {
+                var inquiry_number_all = parseInt($(e).find('.inquiry_number_all').text());
+                if (!inquiry_number_all) {
+                    all_conform = true;
+                }
+                var id = $(e).data('id');
+                ids.push(id);
+            });
+            if (all_conform) {
+                layer.msg('请先添加询价记录', {time:2000});
+                return;
+            }
+            $.ajax({
+                type:"POST",
+                url:'?r=order-inquiry/confirm-all',
+                data:{ids:ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
         //询价员
         $('.confirm').click(function (e) {
             var inquiry_number = $(this).parent().parent().find('.inquiry_number').text();

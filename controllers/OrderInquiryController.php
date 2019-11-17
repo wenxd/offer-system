@@ -274,6 +274,55 @@ class OrderInquiryController extends BaseController
         }
     }
 
+    /**
+     * 全部确认询价
+     */
+    public function actionConfirmAll()
+    {
+        $ids = Yii::$app->request->post('ids');
+
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员', '订单管理员']])->all();
+        $super_user_id = ArrayHelper::getColumn($use_admin, 'user_id');
+        $user_id = Yii::$app->user->identity->id;
+
+        InquiryGoods::updateAll([
+            'is_inquiry' => InquiryGoods::IS_INQUIRY_YES,
+            'admin_id'   => Yii::$app->user->identity->id,
+            'inquiry_at' => date('Y-m-d H:i:s'),
+        ], ['id' =>$ids]);
+
+        $inquiryNoResult = InquiryGoods::find()->where([
+            'id'          => $ids,
+            'is_deleted'  => InquiryGoods::IS_DELETED_NO,
+            'is_result'   => InquiryGoods::IS_RESULT_YES
+        ])->one();
+
+        //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
+        if (in_array($user_id, $super_user_id) && $inquiryNoResult) {
+            $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $inquiryNoResult->admin_id])->one();
+            $systemNotice = new SystemNotice();
+            $systemNotice->admin_id  = $stockAdmin->user_id;
+            $systemNotice->content   = '询不出的厂家号' . $inquiryNoResult->goods->goods_number_b . '管理员已经确认询价';
+            $systemNotice->notice_at = date('Y-m-d H:i:s');
+            $systemNotice->save();
+        }
+
+        //如果都询价了，本订单和询价单就是已询价
+        $info = InquiryGoods::findOne($ids[0]);
+        $orderInquiry   = OrderInquiry::findOne($info->order_inquiry_id);
+        $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
+        $orderInquiry->final_at   = $info->inquiry_at;
+        $orderInquiry->save();
+
+        //判断订单是否都确认询价
+        //订单改状态
+        $order = Order::findOne($info->order_id);
+        $order->status = Order::STATUS_YES;
+        $order->save();
+
+        return json_encode(['code' => 200, 'msg' => '确认成功']);
+    }
+
     //询价记录询不出添加原因
     public function actionAddReason()
     {
