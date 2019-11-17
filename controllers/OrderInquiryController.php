@@ -329,7 +329,7 @@ class OrderInquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-        $tableHeader = ['ID', '询价单号', '原厂家', '厂家号', '中文描述', '询价数量', '单位', '含税单价*（不带符号）',
+        $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '中文描述', '询价数量*', '单位', '含税单价*（不带符号）',
             '货期(周)*', '税率*', '供应商准确名称*', '英文描述', '备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -427,14 +427,38 @@ class OrderInquiryController extends BaseController
                     $num = 0;
                     $supplierList = Supplier::find()->select('id, name')
                         ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->all();
+
+                    foreach ($sheetData as $key => $value) {
+                        if ($key > 1) {
+                            if (!$value['A']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行ID不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['B']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价单号不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['D']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行厂家号不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['F']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价数量不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['H']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行含税单价不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['I']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                            if (!$value['J']) {
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行税率不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }
+
                     foreach ($sheetData as $key => $value) {
                         if ($key == 2) {
                             $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                         }
                         if ($key > 1) {
-                            if (empty($value['B']) || empty($value['D'])) {
-                                continue;
-                            }
                             $goods = Goods::find()->where([
                                 'goods_number_b' => trim($value['D']),
                                 'is_deleted'     => Goods::IS_DELETED_NO

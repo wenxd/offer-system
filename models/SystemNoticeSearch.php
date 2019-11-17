@@ -47,7 +47,7 @@ class SystemNoticeSearch extends SystemNotice
 //        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $userId   = Yii::$app->user->identity->id;
         $query = self::find()->where(['admin_id' => $userId]);
-        
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

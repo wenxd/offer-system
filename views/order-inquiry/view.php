@@ -274,7 +274,7 @@ $userId    = Yii::$app->user->identity->id;
                 });
             }else{
                 //失败提示
-                layer.msg(data.msg,{icon:1});
+                layer.msg(data.msg,{icon:2});
             }
         }
     });
