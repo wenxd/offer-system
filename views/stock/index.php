@@ -18,13 +18,18 @@ use kartik\daterange\DateRangePicker;
 $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$stock_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员B'])->all();
+$stock_b_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
-$isShow    = in_array($userId, $adminIds);
+$isShow    = in_array($userId, array_merge($stock_adminIds, $stock_b_adminIds));
 
 if ($isShow) {
-    $func = '{gen} {index}';
+    $func = '{index}';
+    if (in_array($userId, $stock_adminIds)) {
+        $func = '{gen} {index}';
+    }
     $operate = '{view}';
 } else {
     $func = '{gen} {delete} {stock_in} {stock_out} {download} {index}';
