@@ -223,6 +223,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'theory_time',
+                'label'     => '理论货期',
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        $agreement_at  = substr($model->orderPayment->agreement_at, 0, 10);
+                        $delivery_date = substr($model->orderPayment->delivery_date, 0, 10);
+                        $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
+                        if ($theory_time) {
+                            return $theory_time/3600/24;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'reality_time',
                 'label'     => '实际货期',
                 'value'     => function($model){
@@ -232,9 +250,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             $stock_at     = substr($model->orderPayment->stock_at, 0, 10);
                             $reality_time = strtotime($stock_at) - strtotime($agreement_at);
                             if ($reality_time) {
-                                return number_format($reality_time/3600/24/7, 1, '.', '');
+                                return $reality_time/3600/24;
                             } else {
-                                return 0;
+                                return '';
                             }
                         } else {
                             return '';
