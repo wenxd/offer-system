@@ -42,11 +42,14 @@ class StockOutController extends BaseController
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $agreementGoods    = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        $agreementGoods    = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+        ])->all();
 
         $stockLog = StockLog::find()->where([
             'order_id' => $orderAgreement->order_id,
-            'type' => StockLog::TYPE_OUT
+            'type'     => StockLog::TYPE_OUT,
         ])->all();
 
         $data['model']          = $orderAgreement;

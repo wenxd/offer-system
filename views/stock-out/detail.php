@@ -79,7 +79,7 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->goods->original_company?></td>
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
-                    <td class="number"><?=$item->number?></td>
+                    <td class="number"><?=$item->order_number?></td>
                     <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->position : ''?></td>
                     <td class="is_enough"></td>
