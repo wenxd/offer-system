@@ -39,6 +39,7 @@ use Yii;
  * @property string $supplier_id
  * @property string $stock_admin_id
  * @property string $financial_admin_id
+ * @property string $is_notice
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -131,7 +132,7 @@ class OrderPayment extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
                 'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement', 'supplier_id', 'stock_admin_id',
-                'financial_admin_id'], 'integer'],
+                'financial_admin_id', 'is_notice'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'payment_ratio', 'payment_price', 'remain_price', 'delivery_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
@@ -175,6 +176,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'agreement_at'      => '支出合同签订时间',
             'delivery_date'     => '支出合同交货时间',
             'supplier_id'       => '供应商',
+            'is_notice'         => '是否发通知',
         ];
     }
 

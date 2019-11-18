@@ -715,6 +715,7 @@ ALTER TABLE `order_payment` ADD COLUMN `delivery_date`        datetime  COMMENT 
 ALTER TABLE `order_payment` ADD COLUMN `supplier_id`          int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
 ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
 ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
+ALTER TABLE `order_payment` ADD COLUMN `is_notice`            tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否通知财务付款 0否 1是';
 
 
 ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';

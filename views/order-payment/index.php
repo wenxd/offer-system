@@ -236,6 +236,12 @@ $userId   = Yii::$app->user->identity->id;
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
                     ]);
+                    if (!$model->is_notice) {
+                        $html .= Html::a('付全款通知', Url::to(['notice', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-primary btn-xs btn-flat',
+                        ]);
+                    }
                     return $html;
                 }
             ],
