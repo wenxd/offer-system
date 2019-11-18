@@ -33,7 +33,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover" style="width: 3000px;">
+        <table id="example2" class="table table-bordered table-hover" style="<?=$is_show ? 'width: 1500px;' : 'width: 3000px;'?>">
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
