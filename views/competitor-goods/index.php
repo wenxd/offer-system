@@ -168,7 +168,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 });
             }else{
                 //失败提示
-                layer.msg(data.msg,{icon:1, time:0, closeBtn: 1});
+                layer.msg(data.msg,{icon:2});
             }
         }
     });

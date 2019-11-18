@@ -151,6 +151,14 @@ class CompetitorGoodsController extends BaseController
                     $date = date('Y-m-d H:i:s');
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
+                            if (!$value['F']) {
+                                unlink('./' . $saveName);
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行数量不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }
+                    foreach ($sheetData as $key => $value) {
+                        if ($key > 1) {
                             //零件号
                             $a = trim($value['A']);
                             if (empty($a)) {
