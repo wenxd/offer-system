@@ -245,15 +245,16 @@ class OrderPurchaseVerifyController extends BaseController
             }
 
             //给库管员发通知
-            $stockAdmin = AuthAssignment::find()->where(['item_name' => '库管员'])->one();
             if ($noticeStockOpen) {
-                $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $stockAdmin->user_id;
-                $systemNotice->content   = '支出合同单号' . $orderPayment->payment_sn . '需要确认库存';
-                $systemNotice->notice_at = date('Y-m-d H:i:s');
-                $systemNotice->save();
+                $stockAdmin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
+                foreach ($stockAdmin as $key => $value) {
+                    $systemNotice = new SystemNotice();
+                    $systemNotice->admin_id  = $value->user_id;
+                    $systemNotice->content   = '支出合同单号' . $orderPayment->payment_sn . '需要确认库存';
+                    $systemNotice->notice_at = date('Y-m-d H:i:s');
+                    $systemNotice->save();
+                }
             }
-
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);

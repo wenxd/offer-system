@@ -287,12 +287,14 @@ class OrderPurchaseController extends BaseController
 
         if (count($agreement_goods_ids)) {
             //采购数量是0，给库管员通知
-            $stockAdmin = AuthAssignment::find()->where(['item_name' => '库管员'])->one();
-            $systemNotice = new SystemNotice();
-            $systemNotice->admin_id  = $stockAdmin->user_id;
-            $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
-            $systemNotice->notice_at = date('Y-m-d H:i:s');
-            $systemNotice->save();
+            $stockAdmin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
+            foreach ($stockAdmin as $key => $value) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $value->user_id;
+                $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
         }
         return json_encode(['code' => 200, 'msg' => '保存成功']);
     }
