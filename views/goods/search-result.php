@@ -237,7 +237,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if ($reality_time) {
                                 echo $reality_time/3600/24 . '天';
                             } else {
-                                echo '';
+                                echo 0;
                             }
                         } else {
                             echo '';
@@ -288,7 +288,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 echo 0;
                             }
                         } else {
-                            echo 0;
+                            echo '';
                         }
                     ?>
                 </td>
@@ -310,34 +310,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?= $paymentDay ? ($paymentDay->orderPayment ?  substr($paymentDay->orderPayment->stock_at, 0, 10) : '') : '' ?></td>
                 <td>
                     <?php
-                    if ($paymentDay && $paymentDay->orderPayment) {
-                        $agreement_at  = substr($paymentDay->orderPayment->agreement_at, 0, 10);
-                        $delivery_date = substr($paymentDay->orderPayment->delivery_date, 0, 10);
-                        $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
-                        if ($theory_time) {
-                            echo $theory_time/3600/24 . '天';
+                        if ($paymentDay && $paymentDay->orderPayment) {
+                            $agreement_at  = substr($paymentDay->orderPayment->agreement_at, 0, 10);
+                            $delivery_date = substr($paymentDay->orderPayment->delivery_date, 0, 10);
+                            $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
+                            if ($theory_time) {
+                                echo $theory_time/3600/24 . '天';
+                            } else {
+                                echo 0;
+                            }
                         } else {
                             echo 0;
                         }
-                    } else {
-                        echo 0;
-                    }
                     ?>
                 </td>
                 <td>
                     <?php
-                    if ($paymentDay && $paymentDay->orderPayment && $paymentDay->orderPayment->stock_at) {
-                        $agreement_at = substr($paymentDay->orderPayment->agreement_at, 0, 10);
-                        $stock_at     = substr($paymentDay->orderPayment->stock_at, 0, 10);
-                        $reality_time = strtotime($stock_at) - strtotime($agreement_at);
-                        if ($reality_time) {
-                            echo $reality_time/3600/24 . '天';
+                        if ($paymentDay && $paymentDay->orderPayment && $paymentDay->orderPayment->stock_at) {
+                            $agreement_at = substr($paymentDay->orderPayment->agreement_at, 0, 10);
+                            $stock_at     = substr($paymentDay->orderPayment->stock_at, 0, 10);
+                            $reality_time = strtotime($stock_at) - strtotime($agreement_at);
+                            if ($reality_time) {
+                                echo $reality_time/3600/24 . '天';
+                            } else {
+                                echo 0;
+                            }
                         } else {
-                            echo 0;
+                            echo '';
                         }
-                    } else {
-                        echo 0;
-                    }
                     ?>
                 </td>
                 <td><?= $paymentDay ? Html::a($paymentDay->order->order_sn, Url::to(['order/detail', 'id' => $paymentDay->order_id])) : ''?></td>
