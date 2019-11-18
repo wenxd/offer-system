@@ -62,7 +62,7 @@ class FinancialCollectController extends BaseController
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
     }
 
@@ -82,7 +82,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->advancecharge_at   = date('Y-m-d H:i:s');
         $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
-            $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
         if ($orderAgreement->save()) {
@@ -110,7 +110,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->payment_ratio      = 100;
         $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
-            $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
         $orderAgreement->remain_price = 0;
@@ -133,7 +133,7 @@ class FinancialCollectController extends BaseController
         $orderAgreement->bill_at            = date('Y-m-d H:i:s');
         $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
-            $orderAgreement->is_complete    = $orderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
             $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
 
