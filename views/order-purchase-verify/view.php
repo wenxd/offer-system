@@ -11,7 +11,7 @@ use app\models\Helper;
 use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
-$this->title = '支出合同审核';
+$this->title = '支出合同详情';
 $this->params['breadcrumbs'][] = $this->title;
 
 $tax = SystemConfig::find()->select('value')->where([
@@ -27,6 +27,10 @@ $userId = Yii::$app->user->identity->id;
 
 //收入合同交货日期
 $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : '';
+
+//采购员权限
+$isShow = in_array($userId, $adminIds);
+
 ?>
 
 <div class="box table-responsive">
@@ -36,10 +40,13 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <thead class="data" data-order_payment_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
+                <?php if (!$isShow):?>
                 <th style="width: 100px;">零件号</th>
+                <?php endif;?>
                 <th style="width: 100px;">厂家号</th>
                 <th style="width: 100px;">中文描述</th>
                 <th style="max-width: 150px;">英文描述</th>
+                <?php if (!$isShow):?>
                 <th>原厂家</th>
                 <th>税率</th>
                 <th>发行含税单价</th>
@@ -50,6 +57,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                 <th>含税单价</th>
                 <th>含税总价</th>
                 <th>数量</th>
+                <?php endif;?>
                 <th style="background-color: darkgrey">支出合同供应商</th>
                 <th style="background-color: darkgrey">支出合同货期(周)</th>
                 <th style="background-color: darkgrey">支出合同含税单价</th>
@@ -63,23 +71,27 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <?php foreach ($paymentGoods as $item):?>
                 <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
-                    <td><?=$item->goods->goods_number?></td>
+                    <?php if (!$isShow):?>
+                        <td><?=$item->goods->goods_number?></td>
+                    <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
-                    <td><?=$item->goods->original_company?></td>
-                    <td class="tax"><?=$tax?></td>
-                    <?php
-                    $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '');
-                    ?>
-                    <td><?=$publish_tax_price?></td>
-                    <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
-                    <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
-                    <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
-                    <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
-                    <td class="before_tax_price"><?=$item->tax_price?></td>
-                    <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
-                    <td class="before_number"><?=$item->number?></td>
+                    <?php if (!$isShow):?>
+                        <td><?=$item->goods->original_company?></td>
+                        <td class="tax"><?=$tax?></td>
+                        <?php
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '');
+                        ?>
+                        <td><?=$publish_tax_price?></td>
+                        <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
+                        <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
+                        <td class="before_supplier"><?=isset($item->beforeSupplier) ? $item->beforeSupplier->name : ''?></td>
+                        <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
+                        <td class="before_tax_price"><?=$item->tax_price?></td>
+                        <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
+                        <td class="before_number"><?=$item->number?></td>
+                    <?php endif;?>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -91,17 +103,21 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <?php endforeach;?>
 
             <tr style="background-color: #acccb9">
-                <td colspan="8" rowspan="2">汇总统计</td>
+                <td colspan="<?= $isShow ? 3 : 8?>" rowspan="2">汇总统计</td>
+                <?php if (!$isShow):?>
                 <td>发行含税总价合计</td>
                 <td colspan="4" rowspan="2"></td>
                 <td>修改前含税总价</td>
+                <?php endif;?>
                 <td colspan="4" rowspan="2"></td>
                 <td>支出合同含税总价</td>
                 <td colspan="3" rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <?php if (!$isShow):?>
                 <td class="sta_all_publish_tax_price"></td>
                 <td class="sta_all_tax_price"></td>
+                <?php endif;?>
                 <td class="sta_quote_all_tax_price"></td>
             </tr>
 
