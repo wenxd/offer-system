@@ -89,7 +89,7 @@ class StockOutController extends BaseController
 
         //判断库存是否够
         $stock = Stock::findOne(['good_id' => $agreementGoods['goods_id']]);
-        if (!$stock || ($stock && $stock->number < $agreementGoods['number'])) {
+        if (!$stock || ($stock && $stock->number < $agreementGoods['order_number'])) {
             return json_encode(['code' => 500, 'msg' => '库存不够了'], JSON_UNESCAPED_UNICODE);
         }
 
@@ -106,7 +106,7 @@ class StockOutController extends BaseController
         $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
 
         $stockLog->goods_id             = $agreementGoods['goods_id'];
-        $stockLog->number               = $agreementGoods['number'];
+        $stockLog->number               = $agreementGoods['order_number'];
         $stockLog->type                 = StockLog::TYPE_OUT;
         $stockLog->operate_time         = date('Y-m-d H:i:s');
         $stockLog->admin_id             = Yii::$app->user->identity->id;
@@ -119,10 +119,10 @@ class StockOutController extends BaseController
                 $stock->price       = $agreementGoods->quote_price;
                 $stock->tax_price   = $agreementGoods->quote_tax_price;
                 $stock->tax_rate    = $agreementGoods->tax_rate;
-                $stock->number      = $agreementGoods->number;
+                $stock->number      = $agreementGoods->order_number;
                 $stock->save();
             }
-            $res = Stock::updateAllCounters(['number' => -$agreementGoods->number], ['good_id' => $agreementGoods->goods_id]);
+            $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
             if ($res) {
                 $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
                 $agreementGoods->save();
@@ -130,7 +130,8 @@ class StockOutController extends BaseController
                 //判断所有收入合同的零件都已近出库
                 $isHasAgreementGoods = AgreementGoods::find()->where([
                     'order_agreement_id' => $params['order_agreement_id'],
-                    'is_out'             => AgreementGoods::IS_OUT_NO
+                    'is_out'             => AgreementGoods::IS_OUT_NO,
+                    'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
                 ])->one();
                 if (!$isHasAgreementGoods) {
                     $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
@@ -174,7 +175,7 @@ class StockOutController extends BaseController
             ])->one();
 
             $stock = Stock::findOne(['good_id' => $agreementGood['goods_id']]);
-            if (!$stock || ($stock && $stock->number < $agreementGood['number'])) {
+            if (!$stock || ($stock && $stock->number < $agreementGood['order_number'])) {
                 return json_encode(['code' => 500, 'msg' => $agreementGood->goods->goods_number . '库存不够了'], JSON_UNESCAPED_UNICODE);
             }
 
@@ -191,7 +192,7 @@ class StockOutController extends BaseController
             $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
 
             $stockLog->goods_id          = $agreementGood['goods_id'];
-            $stockLog->number            = $agreementGood['number'];
+            $stockLog->number            = $agreementGood['order_number'];
             $stockLog->type              = StockLog::TYPE_OUT;
             $stockLog->operate_time      = date('Y-m-d H:i:s');
             $stockLog->admin_id          = Yii::$app->user->identity->id;
@@ -199,15 +200,15 @@ class StockOutController extends BaseController
                 if (!$stock) {
                     $inquiry = Inquiry::findOne($agreementGood->relevance_id);
                     $stock = new Stock();
-                    $stock->good_id = $agreementGood->goods_id;
+                    $stock->good_id     = $agreementGood->goods_id;
                     $stock->supplier_id = $inquiry->supplier_id;
-                    $stock->price = $agreementGood->quote_price;
-                    $stock->tax_price = $agreementGood->quote_tax_price;
-                    $stock->tax_rate = $agreementGood->tax_rate;
-                    $stock->number = $agreementGood->number;
+                    $stock->price       = $agreementGood->quote_price;
+                    $stock->tax_price   = $agreementGood->quote_tax_price;
+                    $stock->tax_rate    = $agreementGood->tax_rate;
+                    $stock->number      = $agreementGood->order_number;
                     $stock->save();
                 }
-                $res = Stock::updateAllCounters(['number' => -$agreementGood->number], ['good_id' => $agreementGood->goods_id]);
+                $res = Stock::updateAllCounters(['number' => -$agreementGood->order_number], ['good_id' => $agreementGood->goods_id]);
                 if ($res) {
                     $agreementGood->is_out = AgreementGoods::IS_OUT_YES;
                     $agreementGood->save();
@@ -218,7 +219,8 @@ class StockOutController extends BaseController
         //判断所有收入合同的零件都已近出库
         $isHasAgreementGoods = AgreementGoods::find()->where([
             'order_agreement_id' => $params['order_agreement_id'],
-            'is_out'             => AgreementGoods::IS_OUT_NO
+            'is_out'             => AgreementGoods::IS_OUT_NO,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
         ])->one();
         if (!$isHasAgreementGoods) {
             $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
