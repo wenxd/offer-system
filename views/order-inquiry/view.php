@@ -43,6 +43,11 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                     'class' => 'btn btn-info all_confirm',
                     'name'  => 'submit-button']
             )?>
+        <?php else:?>
+            <?= Html::button('批量确认询价', [
+                    'class' => 'btn btn-info all_confirm_inquiry',
+                    'name'  => 'submit-button']
+            )?>
         <?php endif;?>
     </div>
 
@@ -109,7 +114,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                         </tr>
                     <?php else: ?>
                         <?php if (!$item->is_inquiry):?>
-                            <tr <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
+                            <tr class="order_inquiry_list" data-id="<?=$item->id?>" <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                                 <td><?=$item->serial?></td>
                                 <td><?=$orderInquiry->inquiry_sn?></td>
                                 <?php if(!in_array($userId, $adminIds)):?>
@@ -153,7 +158,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        //批量确认询价
+        //批量确认询价(超管)
         $('.all_confirm').click(function (e) {
             var all_conform = false;
             var ids = [];
@@ -186,6 +191,41 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 }
             });
         });
+
+        //批量询价(询价员)
+        $('.all_confirm_inquiry').click(function (e) {
+            var all_conform = false;
+            var ids = [];
+            $('.order_inquiry_list').each(function (i, e) {
+                var inquiry_number = parseInt($(e).find('.inquiry_number').text());
+                if (!inquiry_number) {
+                    all_conform = true;
+                }
+                var id = $(e).data('id');
+                ids.push(id);
+            });
+            if (all_conform) {
+                layer.msg('请先添加询价记录', {time:2000});
+                return;
+            }
+            $.ajax({
+                type:"POST",
+                url:'?r=order-inquiry/confirm-all',
+                data:{ids:ids},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+
         //询价员
         $('.confirm').click(function (e) {
             var inquiry_number = $(this).parent().parent().find('.inquiry_number').text();
