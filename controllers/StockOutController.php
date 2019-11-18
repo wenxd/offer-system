@@ -228,6 +228,9 @@ class StockOutController extends BaseController
         if (!$isHasAgreementGoods) {
             $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
             $orderAgreement->stock_at = date('Y-m-d H:i:s');
+            if ($orderAgreement->is_bill && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
+                $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+            }
             $orderAgreement->save();
         }
 
