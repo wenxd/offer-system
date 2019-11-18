@@ -129,6 +129,18 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'is_any_stock',
+                'format'    => 'raw',
+                'label'     => '是否走库存',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->agreementStock) {
+                        return '是';
+                    } else {
+                        return '否';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'is_all_stock',
                 'format'    => 'raw',
                 'filter'    => OrderAgreementSearch::$allStock,

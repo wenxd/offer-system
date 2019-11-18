@@ -187,6 +187,12 @@ class OrderAgreement extends \yii\db\ActiveRecord
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 
+    public function getAgreementStock()
+    {
+        return $this->hasOne(AgreementStock::className(), ['order_agreement_id' => 'id']);
+    }
+
+    //是否到齐（判断库存都够不够）
     public static function isEnoughStock($id)
     {
         $agreementGoodsList = AgreementGoods::find()->where([
