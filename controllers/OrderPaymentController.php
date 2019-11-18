@@ -151,12 +151,14 @@ class OrderPaymentController extends Controller
         $orderPayment->save();
 
         //发通知
-        $financialAdmin = AuthAssignment::find()->where(['item_name' => '付款财务'])->one();
-        $systemNotice = new SystemNotice();
-        $systemNotice->admin_id  = $financialAdmin->user_id;
-        $systemNotice->content   = $orderPayment->payment_sn . '支出合同已到货，需要付全款';
-        $systemNotice->notice_at = date('Y-m-d H:i:s');
-        $systemNotice->save();
+        $financialAdmin = AuthAssignment::find()->where(['item_name' => '付款财务'])->all();
+        foreach ($financialAdmin as $key => $value) {
+            $systemNotice = new SystemNotice();
+            $systemNotice->admin_id  = $value->user_id;
+            $systemNotice->content   = $orderPayment->payment_sn . '支出合同已到货，需要付全款';
+            $systemNotice->notice_at = date('Y-m-d H:i:s');
+            $systemNotice->save();
+        }
 
         return $this->redirect(['index']);
     }

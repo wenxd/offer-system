@@ -71,7 +71,6 @@ class SystemNoticeSearch extends SystemNotice
         // grid filtering conditions
         $query->andFilterWhere([
             'id'         => $this->id,
-            'admin_id'   => $this->admin_id,
             'is_read'    => $this->is_read,
             'is_deleted' => self::IS_DELETED_NO,
             'updated_at' => $this->updated_at,
