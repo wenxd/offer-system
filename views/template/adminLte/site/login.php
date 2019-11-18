@@ -31,7 +31,7 @@ $fieldOptions2 = [
         <?= $form
             ->field($model, 'username', $fieldOptions1)
             ->label(false)
-            ->textInput(['placeholder' => $model->getAttributeLabel('用户名'), 'autocomplete' => 'off']) ?>
+            ->textInput(['placeholder' => $model->getAttributeLabel('用户名')]) ?>
 
         <?= $form
             ->field($model, 'password', $fieldOptions2)
