@@ -117,11 +117,19 @@ $userId   = Yii::$app->user->identity->id;
                 'all_tax_price',
                 'tax_rate',
                 [
+                    'attribute' => 'is_purchase',
+                    'contentOptions' =>['style'=>'min-width: 80px;'],
+                    'filter'    => Inquiry::$purchase,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Inquiry::$purchase[$model->is_purchase];
+                    }
+                ],
+                [
                     'attribute' => 'is_better',
                     'contentOptions' =>['style'=>'min-width: 80px;'],
                     'filter'    => Inquiry::$better,
                     'value'     => function ($model, $key, $index, $column) {
-                        return Inquiry::$newest[$model->is_better];
+                        return Inquiry::$better[$model->is_better];
                     }
                 ],
                 [

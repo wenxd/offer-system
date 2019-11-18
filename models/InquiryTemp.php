@@ -74,6 +74,7 @@ class InquiryTemp extends \yii\db\ActiveRecord
             'number'            => '询价数量',
             'inquiry_datetime'  => '咨询时间',
             'sort'              => '排序',
+            'is_purchase'       => '是否采购记录',
             'is_better'         => '是否优选',
             'is_newest'         => '是否最新',
             'is_priority'       => '是否优先',
