@@ -1,5 +1,7 @@
 <?php
 
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -17,11 +19,22 @@ use app\models\SystemNoticeSearch;
 
 $this->title = '系统通知';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId    = Yii::$app->user->identity->id;
+$isShow    = in_array($userId, $adminIds);
+if ($isShow) {
+    $operate = '{delete} {read-all}';
+} else {
+    $operate = '{read-all}';
+}
+
 ?>
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{delete} {read-all}',
+            'template' => $operate,
             'buttons' => [
                 'read-all' => function () {
                     return Html::button('<i class="fa fa-book"></i> 全部已读', [
