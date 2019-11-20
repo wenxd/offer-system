@@ -531,6 +531,16 @@ class OrderInquiryController extends BaseController
                             ])->one();
                             if ($goods) {
                                 if (isset($supplierList[trim($value['K'])])) {
+                                    $is_inquiry = Inquiry::find()->where([
+                                        'admin_id'         => Yii::$app->user->identity->id,
+                                        'order_inquiry_id' => $orderInquiry->id,
+                                        'good_id'          => $goods->id,
+                                        'tax_rate'         => trim($value['J']),
+                                        'supplier_id'      => $supplierList[trim($value['K'])]->id,
+                                    ])->one();
+                                    if ($is_inquiry) {
+                                        continue;
+                                    }
                                     $inquiry                    = new Inquiry();
                                     $inquiry->inquiry_goods_id  = trim($value['A']);
                                     $inquiry->order_inquiry_id  = $orderInquiry->id;
