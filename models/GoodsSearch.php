@@ -66,7 +66,7 @@ class GoodsSearch extends Goods
                 ],
                 'attributes' => ['id', 'updated_at', 'created_at']
             ],
-            'pagination' => ['pageSize' => 100]
+            'pagination' => ['pageSize' => 30]
         ]);
 
         $this->load($params);
