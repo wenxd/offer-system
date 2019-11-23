@@ -241,7 +241,7 @@ class OrderQuoteController extends Controller
     public function actionDetail($id)
     {
         $orderQuote = OrderQuote::findOne($id);
-        $quoteGoods = QuoteGoods::findAll(['order_quote_id' => $id]);
+        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $id])->orderBy('serial asc')->all();
 
         $date = date('ymd_');
         $orderI = OrderAgreement::find()->where(['like', 'agreement_sn', $date])->orderBy('created_at Desc')->one();
