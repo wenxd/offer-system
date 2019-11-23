@@ -389,7 +389,7 @@ class OrderInquiryController extends BaseController
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
         $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '中文描述', '询价数量*', '单位', '含税单价*（不带符号）',
-            '货期(周)*', '税率*', '供应商准确名称*', '英文描述', '备注', '是否优选', '优选理由'];
+            '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -411,8 +411,6 @@ class OrderInquiryController extends BaseController
                     $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->goods_number_b);
                     //中文描述
                     $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description);
-                    //英文描述
-                    $excel->setCellValue($letter[$i+11] . ($key + 2), $inquiry->goods->description_en);
                 }
                 //税率
                 $excel->setCellValue($letter[$i+9] . ($key + 2), $tax);
@@ -553,16 +551,16 @@ class OrderInquiryController extends BaseController
                                     $inquiry->all_price         = $inquiry->price * $inquiry->number;
                                     $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
                                     $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                    $inquiry->remark            = trim($value['M']);
+                                    $inquiry->remark            = trim($value['L']);
                                     $inquiry->delivery_time     = trim($value['I']);
                                     $inquiry->admin_id          = Yii::$app->user->identity->id;
                                     $inquiry->order_id          = $orderInquiry->order_id;
                                     $inquiry->is_upload         = Inquiry::IS_UPLOAD_YES;
-                                    if (trim($value['N']) && trim($value['N']) == '是') {
+                                    if (trim($value['M']) && trim($value['M']) == '是') {
                                         $inquiry->is_better     = Inquiry::IS_BETTER_YES;
                                     }
-                                    if (trim($value['O'])) {
-                                        $inquiry->better_reason = trim($value['O']);
+                                    if (trim($value['N'])) {
+                                        $inquiry->better_reason = trim($value['N']);
                                     }
 
                                     if ($inquiry->save()) {
