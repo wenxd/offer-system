@@ -945,4 +945,4 @@ CREATE TABLE `order_goods_bak` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8 COMMENT='订单与零件对应表(备份，用于询价单合并)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单与零件对应表(备份，用于询价单合并)';
