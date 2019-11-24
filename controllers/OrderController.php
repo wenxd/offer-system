@@ -10,6 +10,7 @@ use app\models\InquiryGoods;
 use app\models\OrderAgreement;
 use app\models\OrderFinal;
 use app\models\OrderGoods;
+use app\models\OrderGoodsBak;
 use app\models\OrderInquiry;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
@@ -242,6 +243,30 @@ class OrderController extends BaseController
         return $this->render('detail', $data);
     }
 
+    public function actionCreateInquiryNew($id)
+    {
+        //处理订单零件合并
+        OrderGoodsBak::deleteAll();
+        $orderGoodsOldList = OrderGoods::find()->where(['order_id' => $id])->asArray()->all();
+        $orderGoodsOldList = ArrayHelper::index($orderGoodsOldList, null, 'goods_id');
+
+        $newOrderGoods = [];
+        foreach ($orderGoodsOldList as $key => $orderGoodsList) {
+            $number = 0;
+            foreach ($orderGoodsList as $k => $orderGoods) {
+                if ($k == 0) {
+                    $saveOrderGoods = $orderGoods;
+                }
+                $number += $orderGoods['number'];
+            }
+            $saveOrderGoods['number'] = $number;
+            $newOrderGoods[] = $saveOrderGoods;
+        }
+        $keys = [];
+        $res = Yii::$app->db->createCommand()->batchInsert(OrderGoodsBak::tableName(), $keys, $newOrderGoods)->execute();
+        return $this->redirect(['order/create-inquiry', 'id' => $id]);
+    }
+
     /**生成询价单
      * @param $id
      * @return false|string
@@ -253,15 +278,15 @@ class OrderController extends BaseController
         if (!$order) {
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
+
         $goods_ids            = json_decode($order->goods_ids, true);
-        $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
         $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
 
         //询价记录
-        $inquiryListOld = Inquiry::find()->all();
+        $inquiryListOld = Inquiry::find()->where(['good_id' => $goods_ids])->all();
         $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
 
-        $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
+        $orderGoodsQuery      = OrderGoodsBak::find()->from('order_goods_bak og')
             ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
             ->where(['order_id' => $order->id]);
         if (isset($request['goods_number']) && $request['goods_number']) {
@@ -310,7 +335,6 @@ class OrderController extends BaseController
 
         $data                 = [];
         $data['orderInquiry'] = $orderInquiry;
-        $data['goods']        = $goods;
         $data['model']        = new OrderInquiry();
         $data['order']        = $order;
         $data['orderGoods']   = $orderGoods;

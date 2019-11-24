@@ -12,6 +12,7 @@ use app\models\AuthAssignment;
 use app\models\Goods;
 use app\models\InquiryGoods;
 use app\models\OrderGoods;
+use app\models\OrderGoodsBak;
 use app\models\QuoteRecord;
 use app\models\StockLog;
 use app\models\Supplier;
@@ -166,7 +167,7 @@ class OrderInquiryController extends BaseController
             self::insertInquiryGoods($data);
             //是否全部派送询价员
             $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
-            $orderGoodsCount = OrderGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+            $orderGoodsCount = OrderGoodsBak::find()->select('id')->where(['order_id' => $params['order_id']])->count();
             if ($count >= $orderGoodsCount) {
                 $order = Order::findOne($params['order_id']);
                 $order->is_dispatch = Order::IS_DISPATCH_YES;

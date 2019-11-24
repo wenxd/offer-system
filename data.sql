@@ -932,3 +932,17 @@ CREATE TABLE `agreement_stock` (
 
 ALTER TABLE `agreement_stock` ADD COLUMN `admin_id` int(11)  NOT NULL DEFAULT '0' COMMENT '操作人ID';
 ALTER TABLE `agreement_stock` ADD COLUMN `confirm_at` datetime DEFAULT NULL COMMENT '确认时间';
+
+CREATE TABLE `order_goods_bak` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `number` int(11) NOT NULL DEFAULT '0' COMMENT '数量',
+  `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
+  `is_out` int(11) NOT NULL DEFAULT '0' COMMENT '是否出库 0否 1是',
+  `out_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '出库时间',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8 COMMENT='订单与零件对应表(备份，用于询价单合并)';
