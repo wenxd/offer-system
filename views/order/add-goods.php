@@ -344,6 +344,10 @@ $tax_rate = SystemConfig::find()->select('value')->where([
             success:function(res){
                 if (res && res.code == 200){
                     location.replace("?r=order/index");
+                } else {
+                    $(".order_save").removeAttr("disabled").removeClass("disabled");
+                    //失败提示
+                    layer.msg(res.msg, {icon:1});
                 }
             }
         });
