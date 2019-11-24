@@ -325,12 +325,14 @@ $tax_rate = SystemConfig::find()->select('value')->where([
         var goods  = $('.goods_id');
         var goodsIds = [];
         var goodsInfo = [];
+        var serials = [];
         goods.each(function (i, e) {
             var item = {};
             goodsIds.push($(e).data('id'));
             item.goods_id = $(e).data('id');
             item.number   = $(e).find('.goodsNumber').text();
             item.serial   = $(e).find('.serialNumber input').val();
+            serials.push(item.serial);
             goodsInfo.push(item);
         });
 
