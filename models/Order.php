@@ -108,8 +108,8 @@ class Order extends ActiveRecord
         return [
             [['customer_id', 'type', 'status', 'is_deleted', 'order_type', 'is_final', 'is_dispatch'], 'integer'],
             [['order_price'], 'number'],
-            [['provide_date', 'updated_at', 'created_at'], 'safe'],
-            [['goods_ids', 'order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
+            [['goods_ids', 'provide_date', 'updated_at', 'created_at'], 'safe'],
+            [['order_sn', 'description', 'remark', 'manage_name'], 'string', 'max' => 255],
         ];
     }
 
