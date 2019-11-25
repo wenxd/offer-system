@@ -57,8 +57,8 @@ class TempPaymentGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_payment_id', 'order_purchase_id', 'purchase_goods_id', 'goods_id', 'type', 'relevance_id', 'number', 'fixed_number', 'inquiry_admin_id', 'is_quality', 'supplier_id', 'before_supplier_id', 'is_payment'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price', 'fixed_all_price', 'fixed_all_tax_price', 'delivery_time', 'before_delivery_time'], 'number'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['order_payment_sn', 'order_purchase_sn', 'serial'], 'string', 'max' => 255],
+            [['updated_at', 'created_at', 'serial'], 'safe'],
+            [['order_payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
         ];
     }
 

@@ -79,8 +79,8 @@ class PurchaseGoods extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
             , 'order_purchase_id', 'is_stock'], 'integer'],
-            [['updated_at', 'created_at', 'fixed_number', 'delivery_time', 'fixed_delivery_time'], 'safe'],
-            [['order_purchase_sn', 'goods_number', 'order_sn', 'serial'], 'string', 'max' => 255],
+            [['updated_at', 'created_at', 'fixed_number', 'delivery_time', 'fixed_delivery_time', 'serial'], 'safe'],
+            [['order_purchase_sn', 'goods_number', 'order_sn'], 'string', 'max' => 255],
         ];
     }
 

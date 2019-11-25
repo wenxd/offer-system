@@ -946,3 +946,17 @@ CREATE TABLE `order_goods_bak` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单与零件对应表(备份，用于询价单合并)';
+
+ALTER TABLE `payment_goods`         MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `order_goods_bak`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `temp_order_goods`      MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `inquiry_goods`         MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `quote_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `agreement_goods`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `purchase_goods`        MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `final_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `temp_payment_goods`    MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `agreement_stock`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `order_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+
+
