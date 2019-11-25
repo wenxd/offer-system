@@ -206,7 +206,7 @@ class OrderInquiryController extends BaseController
             'i.order_id'   => $orderInquiry->order_id,
             'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
             'g.is_deleted' => Goods::IS_DELETED_NO,
-            ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('serial')->all();
+            ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('i.serial asc')->all();
         $data['inquiryGoods'] = $inquiryGoods;
         $data['orderGoods']   = $orderGoods;
 
