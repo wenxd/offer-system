@@ -708,7 +708,7 @@ class OrderController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C'];
-        $tableHeader = ['序号', '零件号', '数量'];
+        $tableHeader = ['零件号', '数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -774,15 +774,15 @@ class OrderController extends BaseController
                     TempNotGoodsB::deleteAll();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['B'])) {
+                            if (empty($value['A'])) {
                                 continue;
                             }
-                            $goods = Goods::findOne(['goods_number' => trim($value['B'])]);
+                            $goods = Goods::findOne(['goods_number' => trim($value['A'])]);
                             if ($goods) {
                                 $item = [];
-                                $item[] = trim($value['A']);
+                                $item[] = $key-1;
                                 $item[] = $goods->id;
-                                $item[] = trim($value['C']);
+                                $item[] = trim($value['B']);
                                 $item[] = $time;
                                 $data[] = $item;
                                 if (!$goods->goods_number_b) {
@@ -794,7 +794,7 @@ class OrderController extends BaseController
                                 }
                             } else {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = trim($value['B']);
+                                $temp->goods_number = trim($value['A']);
                                 $temp->save();
                             }
                         }
