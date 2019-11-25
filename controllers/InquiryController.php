@@ -257,7 +257,12 @@ class InquiryController extends BaseController
                             if (empty($value['A']) && empty($value['B'])) {
                                 continue;
                             }
-                            $goods    = Goods::find()->where(['goods_number' => trim($value['A'])])->orWhere(['goods_number_b' => trim($value['B'])])->one();
+                            if (trim($value['A'])) {
+                                $goods = Goods::find()->where(['goods_number' => trim($value['A'])])->one();
+                            } else {
+                                $goods = Goods::find()->where(['goods_number_b' => trim($value['B'])])->one();
+                            }
+
                             $supplier = Supplier::find()->where(['name' => trim($value['C'])])->one();
                             if (!$goods) {
                                 $temp = new TempNotGoods();
