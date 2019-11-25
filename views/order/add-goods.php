@@ -363,7 +363,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
         $.ajax({
             type:"post",
             url:'?r=order/save-order' + url,
-            data:{goodsIds:goodsIds, goodsInfo:goodsInfo},
+            data:{goodsInfo:goodsInfo},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){

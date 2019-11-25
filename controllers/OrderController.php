@@ -544,7 +544,8 @@ class OrderController extends BaseController
         $order->customer_id  = $params['customer_id'];
         $order->order_sn     = $params['order_sn'];
         $order->manage_name  = $params['manage_name'];
-        $order->goods_ids    = json_encode($goods['goodsIds']);
+        $goodsIds = ArrayHelper::getColumn($goods['goodsInfo'], 'goods_id');
+        $order->goods_ids    = json_encode($goodsIds);
         $order->order_type   = $params['order_type'];
         $order->created_at   = $params['created_at'];
 
