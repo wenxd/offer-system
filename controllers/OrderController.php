@@ -304,6 +304,9 @@ class OrderController extends BaseController
         if (isset($request['is_special']) && $request['is_special'] !== '') {
             $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
         }
+        if (isset($request['is_standard']) && $request['is_standard'] !== '') {
+            $orderGoodsQuery->andWhere(['is_standard' => $request['is_standard']]);
+        }
         if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
             $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
         }

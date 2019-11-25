@@ -72,6 +72,7 @@ if ($model->isNewRecord) {
                     <th>数量</th>
                     <th style="width: 80px;">加工</th>
                     <th style="width: 80px;">特制</th>
+                    <th style="width: 80px;">标准</th>
                     <th style="width: 80px;">铭牌</th>
                     <th style="width: 80px;">总成</th>
                     <th style="width: 80px;">是否有询价记录</th>
@@ -118,6 +119,13 @@ if ($model->isNewRecord) {
                         </select>
                     </td>
                     <td>
+                        <select class="form-control" name="is_standard">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_standard']) ? ($_GET['is_standard'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_standard']) ? ($_GET['is_standard'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
                         <select class="form-control" name="is_nameplate">
                             <option value=""></option>
                             <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
@@ -138,7 +146,11 @@ if ($model->isNewRecord) {
                             <option value="1" <?=isset($_GET['is_inquiry']) ? ($_GET['is_inquiry'] === '1' ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
-
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -174,6 +186,7 @@ if ($model->isNewRecord) {
                     <td class="number"><?= $item->number?></td>
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
+                    <td class="addColor"><?= Goods::$nameplate[$item->goods->is_standard]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
                     <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
@@ -334,6 +347,9 @@ if ($model->isNewRecord) {
                         break;
                     case 'is_special':
                         parameter += '&is_special=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_standard':
+                        parameter += '&is_standard=' + $(e).find("option:selected").val();
                         break;
                     case 'is_nameplate':
                         parameter += '&is_nameplate=' + $(e).find("option:selected").val();
