@@ -248,7 +248,7 @@ class InquiryController extends BaseController
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
                     //总数
                     $total = count($sheetData);
-                    
+
                     $num = 0;
                     $delivery = SystemConfig::find()->select('value')->where([
                         'title'  => SystemConfig::TITLE_DELIVERY_TIME,
