@@ -103,7 +103,7 @@ class Supplier extends ActiveRecord
             'grade'                => '评级',
             'grade_reason'         => '入库原因',
             'advantage_product'    => '优势产品',
-            'is_confirm'           => '确认',
+            'is_confirm'           => '审批',
             'is_deleted'           => '是否删除：0未删除 1已删除',
             'updated_at'           => '更新时间',
             'created_at'           => '创建时间',

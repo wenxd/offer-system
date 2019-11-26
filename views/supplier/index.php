@@ -130,7 +130,7 @@ if (in_array($userId, $adminIds)) {
                 'template'      => '{confirm} {view} {update}',
                 'buttons' => [
                     'confirm' => function ($url, $model, $key) {
-                        return Html::a('<i class="fa fa-reload"></i> 确认', Url::to(['confirm', 'id' => $model->id]), [
+                        return Html::a('<i class="fa fa-reload"></i> 审批', Url::to(['confirm', 'id' => $model->id]), [
                             'data-pjax' => '0',
                             'class'     => 'btn btn-success btn-flat btn-xs',
                         ]);

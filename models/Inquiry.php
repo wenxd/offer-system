@@ -179,9 +179,13 @@ class Inquiry extends ActiveRecord
         list($controller, $function) = explode('/', $action);
 
         if ($function == 'create' || $function == 'update' || $function == 'add') {
-            $supplier = Supplier::find()->where(['name' => trim($this->supplier_name)])->one();
+            $supplier = Supplier::find()->where([
+                'name'       => trim($this->supplier_name),
+                'is_confirm' => Supplier::IS_CONFIRM_YES,
+                'is_deleted' => Supplier::IS_DELETED_NO
+            ])->one();
             if (!$supplier) {
-                $this->addError('id', '此供应商不存在');
+                $this->addError('id', '此供应商不存在或没有审批');
                 return false;
             }
             $this->supplier_id = $supplier->id;
