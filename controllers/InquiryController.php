@@ -188,7 +188,7 @@ class InquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '税率', '未税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
+        $tableHeader = ['零件号', '厂家号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -275,8 +275,8 @@ class InquiryController extends BaseController
                                     $inquiry->good_id           = $goods->id;
                                     $inquiry->supplier_id       = $supplier->id;
                                     $inquiry->tax_rate          = trim($value['D']);
-                                    $inquiry->price             = $value['E'] ? trim($value['E']) : 0;
-                                    $inquiry->tax_price         = $inquiry->price * (1 + trim($value['D']) / 100);
+                                    $inquiry->price             = $value['E'] / (1 + trim($value['D']) / 100);
+                                    $inquiry->tax_price         = $value['E'] ? trim($value['E']) : 0;
                                     $inquiry->number            = $value['F'] ? trim($value['F']) : 0;
                                     $inquiry->delivery_time     = $value['G'] ? trim($value['G']) : $delivery;
                                     $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
