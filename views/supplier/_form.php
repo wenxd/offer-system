@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\widgets\ActiveForm;
 use yii\helpers\Url;
-use app\models\{Supplier, AuthAssignment};
+use app\models\{Supplier, AuthAssignment, Helper};
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
@@ -44,6 +44,7 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
         <?php if (!in_array($userId, $adminIds)):?>
+            <?= $form->field($model, 'admin_id')->dropDownList(Helper::getAdminListAll()) ?>
             <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php endif;?>
     </div>
