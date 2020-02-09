@@ -604,7 +604,12 @@ class OrderController extends BaseController
                     'is_confirm_better' => 1
                 ])->one();
                 if (!$inquiry) {
-                    continue;
+                    $inquiry = Inquiry::find()->where([
+                        'good_id'           => $value->goods_id,
+                    ])->orderBy('price asc')->one();
+                    if (!$inquiry) {
+                        continue;
+                    }
                 }
                 $isHaveFinalGoods = new FinalGoods();
                 $isHaveFinalGoods->order_id     = $id;
