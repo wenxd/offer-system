@@ -290,7 +290,6 @@ class OrderInquiryController extends BaseController
 
         InquiryGoods::updateAll([
             'is_inquiry' => InquiryGoods::IS_INQUIRY_YES,
-            'admin_id'   => Yii::$app->user->identity->id,
             'inquiry_at' => date('Y-m-d H:i:s'),
         ], ['id' =>$ids]);
 
@@ -302,9 +301,9 @@ class OrderInquiryController extends BaseController
 
         //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
         if (in_array($user_id, $super_user_id) && $inquiryNoResult) {
-            $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $inquiryNoResult->admin_id])->one();
+            $inquiryAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $inquiryNoResult->admin_id])->one();
             $systemNotice = new SystemNotice();
-            $systemNotice->admin_id  = $stockAdmin->user_id;
+            $systemNotice->admin_id  = $inquiryAdmin->user_id;
             $systemNotice->content   = '询不出的厂家号' . $inquiryNoResult->goods->goods_number_b . '管理员已经确认询价';
             $systemNotice->notice_at = date('Y-m-d H:i:s');
             $systemNotice->save();
@@ -319,9 +318,15 @@ class OrderInquiryController extends BaseController
 
         //判断订单是否都确认询价
         //订单改状态
-        $order = Order::findOne($info->order_id);
-        $order->status = Order::STATUS_YES;
-        $order->save();
+        $orderInquiryNoInquiry = OrderInquiry::find()->where([
+            'order_id'   => $info->order_id,
+            'is_inquiry' => OrderInquiry::IS_INQUIRY_NO
+        ])->one();
+        if (!$orderInquiryNoInquiry) {
+            $order = Order::findOne($info->order_id);
+            $order->status = Order::STATUS_YES;
+            $order->save();
+        }
 
         return json_encode(['code' => 200, 'msg' => '确认成功']);
     }
