@@ -49,6 +49,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <th>创建时间</th>
                         <th>关联询价记录</th>
                         <th>询价ID</th>
+                        <th>类型</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -84,6 +85,16 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td><?= substr($item->goods->created_at, 0 , 10)?></td>
                         <td class="relevance"><?= in_array($item->goods_id, $inquiry_goods_ids) ? '是' : '否'?></td>
                         <td><?= isset($finalGoods[$item->goods_id]) ? Html::a($finalGoods[$item->goods_id]['relevance_id'], Url::to(['inquiry/view', 'id' => $finalGoods[$item->goods_id]['relevance_id']])) : ''?></td>
+                        <td><?php
+                                if (isset($finalGoods[$item->goods_id]) && $finalGoods[$item->goods_id]['relevance_id']) {
+                                    if ($finalGoods[$item->goods_id]->inquiry->is_confirm_better && $finalGoods[$item->goods_id]->inquiry->is_better) {
+                                        echo '最优';
+                                    } else {
+                                        echo '最低';
+                                    }
+                                }
+                            ?>
+                        </td>
                         <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
                                 Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'serial' => $item->serial, 'key' => ($_GET['key'] ?? '')]),
                                 ['class' => 'btn btn-primary btn-xs btn-flat']
@@ -100,7 +111,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td class="sta_all_tax_price"></td>
                         <td></td>
                         <td class="mostLongTime"></td>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                     </tr>
                 </tbody>
             </table>
