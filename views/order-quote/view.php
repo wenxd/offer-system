@@ -121,11 +121,11 @@ if (floatval($model->quote_all_tax_price) > 0) {
                     <td class="all_tax_price"><?=$item->all_tax_price?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <?php endif;?>
-                    <td class="quote_price"><?=$item->quote_price?></td>
+                    <td class="quote_price"><input type="text" value="<?=$item->quote_price?>" style="width: 120px;"></td>
                     <td class="quote_tax_price"><?=$item->quote_tax_price?></td>
                     <td class="quote_all_price"><?=$item->quote_all_price?></td>
                     <td class="quote_all_tax_price"><?=$item->quote_all_tax_price?></td>
-                    <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
+                    <td class="quote_delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>" style="width: 60px;"></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
@@ -236,7 +236,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 if (quote_all_tax_price) {
                     sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
                 }
-                var quote_delivery_time   = parseFloat($(e).find('.quote_delivery_time').text());
+                var quote_delivery_time   = parseFloat($(e).find('.quote_delivery_time input').val());
                 if (quote_delivery_time > most_quote_delivery_time) {
                     most_quote_delivery_time = quote_delivery_time;
                 }
@@ -265,5 +265,37 @@ if (floatval($model->quote_all_tax_price) > 0) {
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
         }
+
+        //计算各种率
+        function compute() {
+            //报价单利润率
+            var sta_all_tax_price = $('.sta_all_tax_price').text();
+            var sta_quote_all_tax_price = $('.sta_quote_all_tax_price').text();
+            var estimate_profit_ratio = (sta_quote_all_tax_price - sta_all_tax_price) / sta_quote_all_tax_price;
+            $('#orderquote-estimate_profit_ratio').val(estimate_profit_ratio.toFixed(2));
+            //
+        }
+
+        //报价未税单价修改
+        $('.quote_price input').bind('input propertychange', function (e) {
+            var quote_price = $(this).val();
+            var ratio = $(this).parent().parent().find('.ratio').text();
+            var number = $(this).parent().parent().find('.afterNumber').text();
+            var quote_tax_price = ((ratio/100 + 1) * quote_price).toFixed(2);
+            $(this).parent().parent().find('.quote_tax_price').text(quote_tax_price);
+            var quote_all_price = quote_price * number;
+            $(this).parent().parent().find('.quote_all_price').text(quote_all_price);
+            $(this).parent().parent().find('.quote_all_tax_price').text(quote_tax_price * number);
+            init();
+            compute();
+        });
+
+        //报价货期修改
+        $('.quote_delivery_time input').bind('input propertychange', function (e) {
+            var quote_delivery_time = $(this).val();
+
+        });
+
+
     });
 </script>
