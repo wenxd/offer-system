@@ -959,4 +959,12 @@ ALTER TABLE `temp_payment_goods`    MODIFY COLUMN `serial` int(11) NOT NULL DEFA
 ALTER TABLE `agreement_stock`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
 ALTER TABLE `order_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
 
-
+--2020年6月9日
+CREATE TABLE `brand` (
+  `id`          int(11)       NOT NULL AUTO_INCREMENT,
+  `name`        varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌商名称',
+  `is_deleted`  int(11)       NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='品牌';
