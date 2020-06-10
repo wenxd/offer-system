@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -8,20 +9,20 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="brand-form">
+<div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_deleted')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+    <div class="box-footer">
+        <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
+                'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
+                'name'  => 'submit-button']
+        )?>
+        <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
+            'class' => 'btn btn-default btn-flat',
+        ])?>
     </div>
 
     <?php ActiveForm::end(); ?>
