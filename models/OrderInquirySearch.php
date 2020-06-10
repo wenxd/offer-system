@@ -50,7 +50,7 @@ class OrderInquirySearch extends OrderInquiry
         $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         if (in_array($userId, $adminIds)) {
-            $query = OrderInquiry::find()->where(['is_inquiry' => OrderInquiry::IS_INQUIRY_NO, 'admin_id' => $userId]);
+            $query = OrderInquiry::find()->where(['admin_id' => $userId]);
         } else {
             $query = OrderInquiry::find();
         }
@@ -94,6 +94,13 @@ class OrderInquirySearch extends OrderInquiry
         if ($this->end_date && strpos($this->end_date, ' - ')) {
             list($end_date_start, $end_date_end) = explode(' - ', $this->end_date);
             $query->andFilterWhere(['between', 'order_inquiry.end_date', $end_date_start, $end_date_end]);
+        }
+
+        if ($this->final_at && strpos($this->final_at, ' - ')) {
+            list($final_at_start, $final_at_end) = explode(' - ', $this->final_at);
+            $final_at_start .= ' 00:00:00';
+            $final_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'order_inquiry.final_at', $final_at_start, $final_at_end]);
         }
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {

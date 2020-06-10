@@ -38,9 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'post_address',
             [
                 'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
+                'contentOptions'=>['style'=>'min-width: 140px;'],
                 'header' => '操作',
-                'template' => '{view} {update} {delete}',
+                'template' => '{view} {update}',
             ],
         ],
     ]); ?>

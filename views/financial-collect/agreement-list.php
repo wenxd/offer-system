@@ -13,13 +13,13 @@ use app\models\OrderAgreementSearch;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OrderAgreementSearch */
+/* @var $searchModel app\models\OrderFinancialCollectSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '待收款页面';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -30,6 +30,16 @@ $userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Html::button('刷新', [
+            'class'   => 'btn btn-info upload',
+            'name'    => 'submit-button',
+            'onclick' => 'javascript:location.reload();',
+        ])?>
+        <?= Html::a('复位', Url::to(['list']), [
+            'class'   => 'btn btn-success',
+        ])?>
+    </div>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
@@ -49,14 +59,14 @@ $userId   = Yii::$app->user->identity->id;
                 'payment_ratio',
                 'remain_price',
                 [
-                    'attribute'      => 'payment_at',
+                    'attribute'      => 'expect_at',
                     'contentOptions' => ['style'=>'min-width: 150px;'],
                     'filter'    => DateRangePicker::widget([
-                        'name'  => 'OrderAgreementSearch[payment_at]',
-                        'value' => Yii::$app->request->get('OrderAgreementSearch')['payment_at'],
+                        'name'  => 'OrderFinancialCollectSearch[expect_at]',
+                        'value' => Yii::$app->request->get('OrderFinancialCollectSearch')['expect_at'],
                     ]),
                     'value'     => function($model){
-                        return substr($model->payment_at, 0, 10);
+                        return substr($model->expect_at, 0, 10);
                     }
                 ],
             ],

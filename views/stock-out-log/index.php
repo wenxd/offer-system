@@ -20,12 +20,12 @@ use kartik\daterange\DateRangePicker;
 $this->title = '出库记录';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
+    <?php if (!in_array($userId, $adminIds)):?>
     <div class="box-header">
         <?= Bar::widget([
             'template' => '{download}',
@@ -39,6 +39,7 @@ $userId   = Yii::$app->user->identity->id;
             ]
         ])?>
     </div>
+    <?php endif;?>
     <div class="box-body">
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
@@ -92,6 +93,7 @@ $userId   = Yii::$app->user->identity->id;
                 [
                     'attribute' => 'price',
                     'label'     => '价格',
+                    'visible'   => !in_array($userId, $adminIds),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->stock) {
                             return $model->stock->price;

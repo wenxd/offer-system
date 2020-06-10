@@ -1,9 +1,12 @@
 <?php
 
+use kartik\daterange\DateRangePicker;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
+use app\models\Helper;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PaymentGoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,6 +21,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns' => [
+            [
+                'attribute' => 'inquiry_admin_id',
+                'label'     => '采购员',
+                'filter'    => Helper::getAdminList(['系统管理员', '采购员']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
             'id',
             [
                 'attribute' => 'goods_number',
@@ -49,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description',
                 'format'    => 'raw',
                 'label'     => '中文描述',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -62,6 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description_en',
                 'format'    => 'raw',
                 'label'     => '英文描述',
+                'contentOptions' =>['style'=>'min-width: 200px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description_en',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -157,6 +172,94 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'     => '采购含税总价',
                 'value'     => function ($model, $key, $index, $column) {
                     return $model->fixed_tax_price * $model->fixed_number;
+                }
+            ],
+            [
+                'attribute' => 'agreement_at',
+                'label'     => '合同签订时间',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'PaymentGoodsSearch[agreement_at]',
+                    'value' => Yii::$app->request->get('PaymentGoodsSearch')['agreement_at'],
+                ]),
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        return substr($model->orderPayment->agreement_at, 0, 10);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'delivery_date',
+                'label'     => '合同交货时间',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'PaymentGoodsSearch[delivery_date]',
+                    'value' => Yii::$app->request->get('PaymentGoodsSearch')['delivery_date'],
+                ]),
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        return substr($model->orderPayment->delivery_date, 0, 10);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'stock_at',
+                'label'     => '入库时间',
+                'contentOptions' =>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name'  => 'PaymentGoodsSearch[stock_at]',
+                    'value' => Yii::$app->request->get('PaymentGoodsSearch')['stock_at'],
+                ]),
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        return substr($model->orderPayment->stock_at, 0, 10);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'theory_time',
+                'label'     => '理论货期',
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        $agreement_at  = substr($model->orderPayment->agreement_at, 0, 10);
+                        $delivery_date = substr($model->orderPayment->delivery_date, 0, 10);
+                        $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
+                        if ($theory_time) {
+                            return $theory_time/3600/24;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'reality_time',
+                'label'     => '实际货期',
+                'value'     => function($model){
+                    if ($model->orderPayment) {
+                        if ($model->orderPayment->stock_at) {
+                            $agreement_at = substr($model->orderPayment->agreement_at, 0, 10);
+                            $stock_at     = substr($model->orderPayment->stock_at, 0, 10);
+                            $reality_time = strtotime($stock_at) - strtotime($agreement_at);
+                            if ($reality_time) {
+                                return $reality_time/3600/24;
+                            } else {
+                                return '';
+                            }
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '';
+                    }
                 }
             ],
             [

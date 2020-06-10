@@ -603,26 +603,33 @@ CREATE TABLE `temp_not_goods_b` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单添加零件系统不存在的厂家号';
 
 
-ALTER TABLE `inquiry_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
-ALTER TABLE `inquiry_goods` ADD COLUMN  `not_result_at` datetime DEFAULT NULL COMMENT '寻不出时间';
-ALTER TABLE `inquiry_goods` ADD COLUMN  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
-ALTER TABLE `inquiry_goods` ADD COLUMN  `inquiry_at` datetime  DEFAULT NULL COMMENT '确认询价时间';
-ALTER TABLE `inquiry_goods` ADD COLUMN  `is_result_tag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否寻不出  0否  1是, 用于标记列表';
-ALTER TABLE `inquiry_goods` ADD COLUMN  `order_inquiry_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价单ID';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `serial`            VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `number`;
+ALTER TABLE `inquiry_goods` ADD COLUMN  `not_result_at`     datetime DEFAULT NULL COMMENT '寻不出时间';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `admin_id`          int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `inquiry_at`        datetime  DEFAULT NULL COMMENT '确认询价时间';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `is_result_tag`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否寻不出  0否  1是, 用于标记列表';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `order_inquiry_id`  int(11) NOT NULL DEFAULT '0' COMMENT '询价单ID';
+ALTER TABLE `inquiry_goods` ADD COLUMN  `supplier_id`       int(11) NOT NULL DEFAULT '0' COMMENT '推荐供应商ID';
 
-ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id` int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
-ALTER TABLE `inquiry` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
-ALTER TABLE `inquiry` ADD COLUMN  `is_upload` int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
+ALTER TABLE `inquiry` ADD COLUMN  `inquiry_goods_id`    int(11) NOT NULL DEFAULT '0'  COMMENT '询价零件表ID' after `order_inquiry_id`;
+ALTER TABLE `inquiry` ADD COLUMN  `number`              int(11) NOT NULL DEFAULT '0'  COMMENT '询价数量' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价' after `tax_rate`;
+ALTER TABLE `inquiry` ADD COLUMN  `is_upload`           int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是'
+ALTER TABLE `inquiry` ADD COLUMN  `is_confirm_better`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否确认优选 0否 1是'
+ALTER TABLE `inquiry` ADD COLUMN  `is_purchase`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否采购记录 0否 1是'
 
 
-ALTER TABLE `order_quote` ADD COLUMN `quote_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
-ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
-ALTER TABLE `order_quote` ADD COLUMN `quote_at` NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报价时间';
-ALTER TABLE `order_quote` ADD COLUMN `quote_only_one` TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
-ALTER TABLE `order_quote` ADD COLUMN `is_send` TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
-ALTER TABLE `order_quote` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_quote` ADD COLUMN `quote_ratio`          decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '报价系数' after `is_quote`;
+ALTER TABLE `order_quote` ADD COLUMN `delivery_ratio`       decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '货期系数' after `is_quote`;
+ALTER TABLE `order_quote` ADD COLUMN `quote_at`             NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报价时间';
+ALTER TABLE `order_quote` ADD COLUMN `quote_only_one`       TINYINT NOT NULL DEFAULT '0' COMMENT '某一订单下多个报价单 是否只有此报价单生成收入合同  0否  1是';
+ALTER TABLE `order_quote` ADD COLUMN `is_send`              TINYINT NOT NULL DEFAULT '0' COMMENT '是否发送报价单  0否  1是';
+ALTER TABLE `order_quote` ADD COLUMN `customer_id`          int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_quote` ADD COLUMN `competitor_ratio`     decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '竞争者报价系数';
+ALTER TABLE `order_quote` ADD COLUMN `publish_ratio`        decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '发行价系数';
+ALTER TABLE `order_quote` ADD COLUMN `quote_all_tax_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `order_quote` ADD COLUMN `all_tax_price`        decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '成本含税总价';
 
 ALTER TABLE `quote_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
 ALTER TABLE `quote_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
@@ -635,20 +642,31 @@ ALTER TABLE `quote_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DE
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
 ALTER TABLE `quote_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '货期（周）';
-ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time`              decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `quote_delivery_time`              decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_id`              int(11) NOT NULL DEFAULT '0'  COMMENT '竞争对手记录关联ID';
+ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_tax_price`           decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_tax_price_all`       decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
+ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_quote_tax_price`     decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
+ALTER TABLE `quote_goods` ADD COLUMN `competitor_goods_quote_tax_price_all` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '竞争对手最低含税单总价';
+ALTER TABLE `quote_goods` ADD COLUMN `publish_tax_price`                    decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行含税单价';
+ALTER TABLE `quote_goods` ADD COLUMN `publish_tax_price_all`                decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行含税总价';
 
-ALTER TABLE `agreement_goods` ADD COLUMN `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
-ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate` decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
-ALTER TABLE `agreement_goods` ADD COLUMN `all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
-ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
-ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
-ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否出库';
-ALTER TABLE `agreement_goods` ADD COLUMN `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '成本货期（周）';
+ALTER TABLE `agreement_goods` ADD COLUMN `serial`                   varchar(255) NOT NULL DEFAULT '' COMMENT '序号';
+ALTER TABLE `agreement_goods` ADD COLUMN `tax_rate`                 decimal(4,2) NOT NULL DEFAULT '0.00' COMMENT '税率';
+ALTER TABLE `agreement_goods` ADD COLUMN `all_price`                decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `all_tax_price`            decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '含税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_price`              decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税单价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_tax_price`          decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税单价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_price`          decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价未税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_all_tax_price`      decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '报价含税总价';
+ALTER TABLE `agreement_goods` ADD COLUMN `quote_delivery_time`      decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '报价货期（周）';
+ALTER TABLE `agreement_goods` ADD COLUMN `inquiry_admin_id`         int(11) NOT NULL DEFAULT '0' COMMENT '询价员ID';
+ALTER TABLE `agreement_goods` ADD COLUMN `is_out` tinyint(2)        NOT NULL DEFAULT '0' COMMENT '是否出库';
+ALTER TABLE `agreement_goods` ADD COLUMN `is_quality` tinyint(2)    NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
+ALTER TABLE `agreement_goods` ADD COLUMN `delivery_time`            decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '成本货期（周）';
+ALTER TABLE `agreement_goods` ADD COLUMN `purchase_number`          int(11) NOT NULL DEFAULT '0' COMMENT  '采购数量';
+ALTER TABLE `agreement_goods` ADD COLUMN `purchase_is_show`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '生成采购单的时候合并数据后不显示  0默认显示 1为不显示';
 
 
 
@@ -667,53 +685,62 @@ ALTER TABLE `purchase_goods` ADD COLUMN `reason` varchar(255) NOT NULL DEFAULT '
 ALTER TABLE `purchase_goods` ADD COLUMN `apply_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '审核状态 0无 1审核中 2审核通过 3被驳回';
 ALTER TABLE `purchase_goods` ADD COLUMN `delivery_time`decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）';
 ALTER TABLE `purchase_goods` ADD COLUMN `is_stock` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `purchase_goods` ADD COLUMN `fixed_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '修改后采购货期（周）';
 
 
-ALTER TABLE `order_purchase` ADD COLUMN `payment_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
-ALTER TABLE `order_purchase` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
-ALTER TABLE `order_purchase` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是';
+ALTER TABLE `order_purchase` ADD COLUMN `payment_sn`    varchar(255) NOT NULL DEFAULT '' COMMENT '支出合同单号';
+ALTER TABLE `order_purchase` ADD COLUMN `is_complete`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的确认';
+ALTER TABLE `order_purchase` ADD COLUMN `is_agreement`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是';
+ALTER TABLE `order_purchase` ADD COLUMN `supplier_id`   int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
+ALTER TABLE `order_purchase` ADD COLUMN `apply_reason`  varchar(255) NOT NULL DEFAULT '' COMMENT '申请备注';
 
 
-ALTER TABLE `order_payment` ADD COLUMN `is_verify`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预付款 0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否接收发票 0否  1是';
-ALTER TABLE `order_payment` ADD COLUMN `stock_at`          datetime  COMMENT '入库时间';
-ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预付款时间';
-ALTER TABLE `order_payment` ADD COLUMN `bill_at`           datetime  COMMENT '收到发票时间';
-ALTER TABLE `order_payment` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
-ALTER TABLE `order_payment` ADD COLUMN `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
-ALTER TABLE `order_payment` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单总金额';
-ALTER TABLE `order_payment` ADD COLUMN `remain_price`   decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单剩余金额 总金额减去预付款金额';
-ALTER TABLE `order_payment` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预付款比例';
-ALTER TABLE `order_payment` ADD COLUMN `take_time`      datetime  COMMENT '收货时间 = 支出合同签订日加最长货期';
-ALTER TABLE `order_payment` ADD COLUMN `is_agreement`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
-ALTER TABLE `order_payment` ADD COLUMN `apply_reason`   varchar(255) NOT NULL DEFAULT '' COMMENT '采购申请支出备注';
-ALTER TABLE `order_payment` ADD COLUMN `agreement_at`   datetime  COMMENT '生成支出合同的时间 支出合同签订时间';
-ALTER TABLE `order_payment` ADD COLUMN `delivery_date`  datetime  COMMENT '支出合同交货时间';
-ALTER TABLE `order_payment` ADD COLUMN `supplier_id`    int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
-ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`    int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
-ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`    int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
+ALTER TABLE `order_payment` ADD COLUMN `is_verify`            tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否审核 0未 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_stock`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_advancecharge`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预付款 0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `is_bill`              tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否接收发票 0否  1是';
+ALTER TABLE `order_payment` ADD COLUMN `stock_at`             datetime  COMMENT '入库时间';
+ALTER TABLE `order_payment` ADD COLUMN `advancecharge_at`     datetime  COMMENT '预付款时间';
+ALTER TABLE `order_payment` ADD COLUMN `bill_at`              datetime  COMMENT '收到发票时间';
+ALTER TABLE `order_payment` ADD COLUMN `financial_remark`     varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_payment` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
+ALTER TABLE `order_payment` ADD COLUMN `payment_price`        decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单总金额';
+ALTER TABLE `order_payment` ADD COLUMN `remain_price`         decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支出订单剩余金额 总金额减去预付款金额';
+ALTER TABLE `order_payment` ADD COLUMN `payment_ratio`        int(11) NOT NULL DEFAULT '0' COMMENT '预付款比例';
+ALTER TABLE `order_payment` ADD COLUMN `take_time`            datetime  COMMENT '收货时间 = 支出合同签订日加最长货期';
+ALTER TABLE `order_payment` ADD COLUMN `is_agreement`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成合同 0否 1是';
+ALTER TABLE `order_payment` ADD COLUMN `apply_reason`         varchar(255) NOT NULL DEFAULT '' COMMENT '采购申请支出备注';
+ALTER TABLE `order_payment` ADD COLUMN `agreement_at`         datetime  COMMENT '生成支出合同的时间 支出合同签订时间';
+ALTER TABLE `order_payment` ADD COLUMN `delivery_date`        datetime  COMMENT '支出合同交货时间';
+ALTER TABLE `order_payment` ADD COLUMN `supplier_id`          int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
+ALTER TABLE `order_payment` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
+ALTER TABLE `order_payment` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
+ALTER TABLE `order_payment` ADD COLUMN `is_notice`            tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否通知财务付款 0否 1是';
 
 
-ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`  tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_payment`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_bill`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开发票 0否  1是';
-ALTER TABLE `order_agreement` ADD COLUMN `is_stock`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否出库  0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `advancecharge_at`  datetime  COMMENT '预收款时间';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_at`        datetime  COMMENT '收全款时间';
-ALTER TABLE `order_agreement` ADD COLUMN `bill_at`           datetime  COMMENT '开发票时间';
-ALTER TABLE `order_agreement` ADD COLUMN `stock_at`          datetime  COMMENT '出库时间';
-ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',
-ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`  varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
-ALTER TABLE `order_agreement` ADD COLUMN `is_complete`       tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
-ALTER TABLE `order_agreement` ADD COLUMN `sign_date`         datetime  COMMENT '合同签订时间';
-ALTER TABLE `order_agreement` ADD COLUMN `is_instock`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
-ALTER TABLE `order_agreement` ADD COLUMN `customer_id`       int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_price`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单总金额';
-ALTER TABLE `order_agreement` ADD COLUMN `remain_price`   decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单剩余金额 总金额减去预收款金额';
-ALTER TABLE `order_agreement` ADD COLUMN `payment_ratio`  int(11) NOT NULL DEFAULT '0' COMMENT '预收款比例';
-ALTER TABLE `order_agreement` ADD COLUMN `is_purchase`    tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否派送采购员  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_advancecharge`     tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否预收款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_payment`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否收全款 0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_bill`              tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开发票 0否  1是';
+ALTER TABLE `order_agreement` ADD COLUMN `is_stock`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否出库  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `advancecharge_at`     datetime  COMMENT '预收款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_at`           datetime  COMMENT '收全款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `bill_at`              datetime  COMMENT '开发票时间';
+ALTER TABLE `order_agreement` ADD COLUMN `stock_at`             datetime  COMMENT '出库时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了',
+ALTER TABLE `order_agreement` ADD COLUMN `financial_remark`     varchar(255) NOT NULL DEFAULT '' COMMENT '财务备注';
+ALTER TABLE `order_agreement` ADD COLUMN `is_complete`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成所有的操作 用于财务管理是否展示，0默认财务展示 1都完成就不展示了';
+ALTER TABLE `order_agreement` ADD COLUMN `sign_date`            datetime  COMMENT '合同签订时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_instock`           tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否入库  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `customer_id`          int(11) NOT NULL DEFAULT '0'  COMMENT '客户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_price`        decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单总金额';
+ALTER TABLE `order_agreement` ADD COLUMN `remain_price`         decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入订单剩余金额 总金额减去预收款金额';
+ALTER TABLE `order_agreement` ADD COLUMN `payment_ratio`        int(11) NOT NULL DEFAULT '0' COMMENT '预收款比例';
+ALTER TABLE `order_agreement` ADD COLUMN `is_purchase`          tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否派送采购员  0否 1是';
+ALTER TABLE `order_agreement` ADD COLUMN `financial_admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '财务用户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `stock_admin_id`       int(11) NOT NULL DEFAULT '0' COMMENT '库管用户ID';
+ALTER TABLE `order_agreement` ADD COLUMN `expect_at`            datetime  COMMENT '预计收全款时间';
+ALTER TABLE `order_agreement` ADD COLUMN `is_merge`             tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否合并';
+ALTER TABLE `order_agreement` ADD COLUMN `is_all_stock`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否全部走库存 0否 1是';
 
 
 ALTER TABLE `stock_log` ADD COLUMN  `order_agreement_id` int(11) NOT NULL DEFAULT '0' COMMENT '收入合同单ID';
@@ -731,10 +758,12 @@ ALTER TABLE `stock_log` ADD COLUMN  `source` varchar(255) NOT NULL DEFAULT '' CO
 ALTER TABLE `stock_log` ADD COLUMN  `position` varchar(255) NOT NULL DEFAULT '' COMMENT '库存位置';
 
 
-ALTER TABLE `order_final` ADD COLUMN `is_quote` tinyint(2) NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
-ALTER TABLE `order_final` ADD COLUMN `customer_id` int(11) NOT NULL DEFAULT '0' COMMENT '客户ID';
-ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
-ALTER TABLE `order_final` ADD COLUMN  `is_purchase` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_quote`     tinyint(2)  NOT NULL DEFAULT '0'  COMMENT '是否生成报价单 0否 1是' after `agreement_date`;
+ALTER TABLE `order_final` ADD COLUMN `customer_id`  int(11)     NOT NULL DEFAULT '0' COMMENT '客户ID';
+ALTER TABLE `order_final` ADD COLUMN `is_agreement` tinyint(4)  NOT NULL DEFAULT '0' COMMENT '是否生成收入合同 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_purchase`  tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否生成采购单 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `is_merge`     tinyint(2)  NOT NULL DEFAULT '0' COMMENT '是否合并 0否 1是';
+ALTER TABLE `order_final` ADD COLUMN `admin_id`     int(11)     NOT NULL DEFAULT '0' COMMENT '操作人ID';
 
 ALTER TABLE `payment_goods` ADD COLUMN  `is_quality` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否质检 0否 1是';
 ALTER TABLE `payment_goods` ADD COLUMN `supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID';
@@ -752,8 +781,15 @@ ALTER TABLE `competitor_goods` ADD COLUMN  `all_tax_price`   decimal(10,2) NOT N
 ALTER TABLE `competitor_goods` ADD COLUMN  `is_issue`        tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否发行价 0否 1是'
 
 
-ALTER TABLE `final_goods` ADD COLUMN  `serial` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
-ALTER TABLE `final_goods` ADD COLUMN  `number` int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
+ALTER TABLE `final_goods` ADD COLUMN  `serial`              VARCHAR(255) NOT NULL DEFAULT '' COMMENT '序号' after `goods_id`;
+ALTER TABLE `final_goods` ADD COLUMN  `number`              int(11) NOT NULL DEFAULT '0'  COMMENT '订单数量';
+ALTER TABLE `final_goods` ADD COLUMN  `tax`                 decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '税率';
+ALTER TABLE `final_goods` ADD COLUMN  `price`               decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `tax_price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税单价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_price`           decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '未税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `all_tax_price`       decimal(10,2) NOT NULL DEFAULT '0.00'  COMMENT '含税总价';
+ALTER TABLE `final_goods` ADD COLUMN  `delivery_time`       decimal(10,1) NOT NULL DEFAULT '0.00'  COMMENT '货期';
+ALTER TABLE `final_goods` ADD COLUMN  `purchase_is_show`    tinyint(4) NOT NULL DEFAULT '1' COMMENT '生成采购单的时候合并数据后不显示  1默认显示 0为不显示';
 
 
 ALTER TABLE `customer` ADD COLUMN  `taxpayer` varchar(255) NOT NULL DEFAULT '' COMMENT '纳税人识别号';
@@ -765,6 +801,8 @@ ALTER TABLE `customer` ADD COLUMN  `full_name` varchar(255) NOT NULL DEFAULT '' 
 ALTER TABLE `supplier` ADD COLUMN  `full_name`  varchar(255) NOT NULL DEFAULT '' COMMENT '供应商全称';
 ALTER TABLE `supplier` ADD COLUMN  `contacts`   varchar(255) NOT NULL DEFAULT '' COMMENT '联系人';
 ALTER TABLE `supplier` ADD COLUMN  `short_name` varchar(255) NOT NULL DEFAULT '' COMMENT '供应商简称';
+ALTER TABLE `supplier` ADD COLUMN  `admin_id`   int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID';
+ALTER TABLE `supplier` ADD COLUMN  `agree_at`   datetime DEFAULT NULL COMMENT '同意时间';
 
 
 ALTER TABLE `goods` ADD COLUMN  `material` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '材质';
@@ -777,8 +815,13 @@ ALTER TABLE `goods` ADD COLUMN  `remark` varchar(255) NOT NULL DEFAULT '' COMMEN
 ALTER TABLE `goods` ADD COLUMN  `estimate_publish_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '预估发行价';
 ALTER TABLE `goods` ADD COLUMN  `material_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '设备类别';
 ALTER TABLE `goods` ADD COLUMN  `import_mark` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '导入类别';
+ALTER TABLE `goods` ADD COLUMN  `publish_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发行未税单价';
+ALTER TABLE `goods` ADD COLUMN  `publish_tax` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT '发行税率';
 
 ALTER TABLE `order` ADD COLUMN `is_final` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否生成成本单 0否 1是';
+
+
+ALTER TABLE `order_inquiry` ADD COLUMN `final_at` datetime DEFAULT NULL COMMENT '询价完成时间';
 
 CREATE TABLE `inquiry_temp` (
   `id`                  int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
@@ -807,8 +850,11 @@ CREATE TABLE `inquiry_temp` (
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `is_upload`           int(11) NOT NULL DEFAULT '0' COMMENT '是否导入 0否 1是',
+  `is_confirm_better`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否确认优选 0否 1是'
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='临时询价表';
+
+ALTER TABLE `inquiry_temp` ADD COLUMN  `is_purchase`         tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否采购记录 0否 1是'
 
 CREATE TABLE `temp_payment_goods` (
   `id`               int(11) NOT NULL AUTO_INCREMENT,
@@ -841,7 +887,84 @@ CREATE TABLE `temp_payment_goods` (
   `delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '采购货期（周）',
   `before_supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '修改前供应商ID',
   `before_delivery_time` decimal(10,1) NOT NULL DEFAULT '0.0' COMMENT '修改前货期',
-  `is_payment` int(11) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是  采购记录列表展示是否显示',
+  `is_payment`          int(11) NOT NULL DEFAULT '0' COMMENT '是否生成支出合同 0否 1是  采购记录列表展示是否显示',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='临时支出合同单与零件ID对应表(采购记录表)';
 
+CREATE TABLE `agreement_goods_bak` (
+  `id`                  int(11)         NOT NULL                AUTO_INCREMENT,
+  `order_agreement_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '合同订单ID',
+  `order_agreement_sn`  varchar(255)    NOT NULL DEFAULT ''     COMMENT '合同订单号',
+  `agreement_goods_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '合同零件表ID主键',
+  `tax_rate`            decimal(4,2)    NOT NULL DEFAULT '0.00' COMMENT '税率',
+  `price`               decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `tax_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税单价',
+  `all_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `purchase_number`     int(11)         NOT NULL DEFAULT '0'    COMMENT '采购数量',
+  `delivery_time`       decimal(10,1)   NOT NULL DEFAULT '0.0'  COMMENT '成本货期（周）',
+  `updated_at`          datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at`          datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收入合同单号与零件ID对应表(备份表，用户一键还原)';
+
+CREATE TABLE `agreement_stock` (
+  `id`                  int(11)         NOT NULL                AUTO_INCREMENT,
+  `order_id`            int(11)         NOT NULL DEFAULT '0'    COMMENT '订单ID',
+  `order_agreement_id`  int(11)         NOT NULL DEFAULT '0'    COMMENT '收入合同订单ID',
+  `order_agreement_sn`  varchar(255)    NOT NULL DEFAULT ''     COMMENT '收入合同订单号',
+  `order_purchase_id`   int(11)         NOT NULL DEFAULT '0'    COMMENT '采购单ID',
+  `order_purchase_sn`   varchar(255)    NOT NULL DEFAULT ''     COMMENT '采购单号',
+  `order_payment_id`    int(11)         NOT NULL DEFAULT '0'    COMMENT '支出合同订单ID',
+  `order_payment_sn`    varchar(255)    NOT NULL DEFAULT ''     COMMENT '支出合同订单号',
+  `goods_id`            int(11)         NOT NULL DEFAULT '0'    COMMENT '零件ID',
+  `serial`              varchar(255)    NOT NULL DEFAULT ''     COMMENT '序号',
+  `price`               decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `tax_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税单价',
+  `use_number`          int(11)         NOT NULL DEFAULT '0'    COMMENT '使用库存数量',
+  `all_price`           decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '未税总价',
+  `all_tax_price`       decimal(10,2)   NOT NULL DEFAULT '0.00' COMMENT '含税总价',
+  `is_confirm`          tinyint(4)      NOT NULL DEFAULT '0'    COMMENT '是否确认 0否 1是'
+  `updated_at`          datetime DEFAULT NULL COMMENT '更新时间',
+  `created_at`          datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单使用库存表';
+
+ALTER TABLE `agreement_stock` ADD COLUMN `admin_id` int(11)  NOT NULL DEFAULT '0' COMMENT '操作人ID';
+ALTER TABLE `agreement_stock` ADD COLUMN `confirm_at` datetime DEFAULT NULL COMMENT '确认时间';
+
+CREATE TABLE `order_goods_bak` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+  `number` int(11) NOT NULL DEFAULT '0' COMMENT '数量',
+  `serial` varchar(255) NOT NULL DEFAULT '' COMMENT '序号',
+  `is_out` int(11) NOT NULL DEFAULT '0' COMMENT '是否出库 0否 1是',
+  `out_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '出库时间',
+  `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单与零件对应表(备份，用于询价单合并)';
+
+ALTER TABLE `payment_goods`         MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `order_goods_bak`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `temp_order_goods`      MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `inquiry_goods`         MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `quote_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `agreement_goods`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `purchase_goods`        MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `final_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `temp_payment_goods`    MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `agreement_stock`       MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+ALTER TABLE `order_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFAULT '0' COMMENT '序号';
+
+--2020年6月9日
+CREATE TABLE `brand` (
+  `id`          int(11)       NOT NULL AUTO_INCREMENT,
+  `name`        varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌商名称',
+  `is_deleted`  int(11)       NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+  `updated_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='品牌';

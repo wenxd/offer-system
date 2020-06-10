@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {inquiry}',
+            'template' => '{create} {delete} {download} {upload} {inquiry} {index}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -39,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class'     => 'btn btn-primary btn-flat add_inquiry',
                     ]);
                 },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
             ]
         ])?>
     </div>
@@ -75,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'original_company',
             'description',
             'description_en',
-            'publish_tax_price',
+            'publish_price',
             'publish_delivery_time',
             [
                 'attribute' => 'material',
@@ -83,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'unit',
             'original_company_remark',
-            'estimate_publish_price',
             'material_code',
             'import_mark',
             [
@@ -154,14 +159,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'min-width: 100px;'],
             ],
             [
-                'attribute' => 'technique_remark',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
-                'attribute' => 'remark',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
-            ],
-            [
                 'attribute'      => 'device_info',
                 'format'         => 'raw',
                 'contentOptions' =>['style'=>'min-width: 200px;'],
@@ -190,7 +187,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'inquiry_number',
-                'label'     => '询价数量',
+                'label'     => '询价条目',
                 'format'    => 'raw',
                 'value'     => function($model){
                     return $model->inquiryNumber;

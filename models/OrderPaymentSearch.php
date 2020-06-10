@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderPayment;
+use yii\helpers\ArrayHelper;
 
 /**
  * OrderPaymentSearch represents the model behind the search form of `app\models\OrderPayment`.
@@ -48,11 +49,21 @@ class OrderPaymentSearch extends OrderPayment
      */
     public function search($params)
     {
-        $query = OrderPayment::find()->where([
-            'purchase_status' => self::PURCHASE_STATUS_PASS,
-            'is_agreement'    => self::IS_ADVANCECHARGE_YES,
-        ]);
-
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $userId   = Yii::$app->user->identity->id;
+        if (in_array($userId, $adminIds)) {
+            $query = OrderPayment::find()->where([
+                'purchase_status' => self::PURCHASE_STATUS_PASS,
+                'is_agreement'    => self::IS_ADVANCECHARGE_YES,
+                'admin_id'        => $userId
+            ]);
+        } else {
+            $query = OrderPayment::find()->where([
+                'purchase_status' => self::PURCHASE_STATUS_PASS,
+                'is_agreement'    => self::IS_ADVANCECHARGE_YES,
+            ]);
+        }
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -61,7 +72,7 @@ class OrderPaymentSearch extends OrderPayment
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id']
+                'attributes' => ['id', 'agreement_at', 'delivery_date', 'stock_at']
             ],
         ]);
 

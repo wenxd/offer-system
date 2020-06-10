@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 $this->title = '待收款订单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
@@ -26,7 +26,7 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
     'title' => SystemConfig::TITLE_PAYMENT_RATIO
 ])->scalar();
 
-if (!$model->payment_ratio) {
+if ($model->payment_ratio == '0.00') {
     $model->payment_ratio = $payment_ratio;
     $model->price         = $payment_ratio/100 * $orderAgreement->payment_price;
 }
@@ -77,7 +77,7 @@ if (!$model->payment_ratio) {
                     <td><?=$item->tax_rate?></td>
                     <td class="price"><?=$item->quote_price?></td>
                     <td class="tax_price"><?=$item->quote_tax_price?></td>
-                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td class="delivery_time"><?=$item->quote_delivery_time?></td>
                     <td class="all_price"><?=$item->quote_all_price?></td>
                     <td class="all_tax_price"><?=$item->quote_all_tax_price?></td>
                     <td class="number"><?=$item->number?></td>
@@ -206,6 +206,8 @@ if (!$model->payment_ratio) {
 
         var id = $('.data').data('order_agreement_id');
         $('.save_remark').click(function (e) {
+            //防止双击
+            $(".save_remark").attr("disabled", true).addClass("disabled");
             var remark = $('#orderagreement-financial_remark').val();
             $.ajax({
                 type:"post",
@@ -225,11 +227,13 @@ if (!$model->payment_ratio) {
         });
 
         $('.save_advance').click(function (e) {
-            var payment_ratio = $('#orderagreement-payment_ratio').val();
+            //防止双击
+            $(".save_advance").attr("disabled", true).addClass("disabled");
+            var price = $('#orderagreement-price').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-advance',
-                data:{id:id, payment_ratio:payment_ratio},
+                data:{id:id, price:price},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
@@ -244,6 +248,8 @@ if (!$model->payment_ratio) {
         });
 
         $('.save_payment').click(function (e) {
+            //防止双击
+            $(".save_payment").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-payment',
@@ -262,6 +268,8 @@ if (!$model->payment_ratio) {
         });
 
         $('.save_bill').click(function (e) {
+            //防止双击
+            $(".save_bill").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial-collect/change-bill',

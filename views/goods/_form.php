@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\file\FileInput;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
@@ -45,6 +45,8 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'publish_tax')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'publish_tax_price')->textInput(['maxlength' => true]) ?>
 

@@ -1,5 +1,9 @@
 <?php
 
+use app\models\Admin;
+use app\models\AuthAssignment;
+use app\models\Helper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -10,6 +14,10 @@ use yii\widgets\Pjax;
 
 $this->title = '采购记录列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box">
     <div class="box-body">
@@ -18,11 +26,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns' => [
+            [
+                'attribute' => 'inquiry_admin_id',
+                'label'     => '采购员',
+                'filter'    => Helper::getAdminList(['系统管理员', '采购员']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    }
+                }
+            ],
             'id',
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
                 'label'     => '零件号',
+                'visible'   => !in_array($userId, $adminIds),
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -163,6 +182,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'order_sn',
                 'format'    => 'raw',
                 'label'     => '订单号',
+                'visible'   => !in_array($userId, $adminIds),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
@@ -175,6 +195,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
+                'visible'   => !in_array($userId, $adminIds),
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
                 }

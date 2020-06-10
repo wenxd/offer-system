@@ -8,8 +8,9 @@
 
 namespace app\controllers;
 
-use app\models\AuthAssignment;
 use Yii;
+use app\models\AuthAssignment;
+use app\models\ChangePassword;
 
 class AdminUserController extends BaseController
 {
@@ -26,4 +27,15 @@ class AdminUserController extends BaseController
         return json_encode(['code' => 200, 'msg' => '此员工配置了']);
     }
 
+    public function actionChangePassword($id)
+    {
+        $model = new ChangePassword();
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->change()) {
+            return $this->goHome();
+        }
+
+        return $this->render('change-password', [
+            'model' => $model,
+        ]);
+    }
 }

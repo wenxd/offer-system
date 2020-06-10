@@ -4,7 +4,17 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{Goods, Stock, Inquiry, PurchaseGoods, InquirySearch, Supplier, SystemConfig, TempNotGoods};
+use app\models\{Goods,
+    InquiryGoods,
+    OrderInquiry,
+    PaymentGoods,
+    Stock,
+    Inquiry,
+    PurchaseGoods,
+    InquirySearch,
+    Supplier,
+    SystemConfig,
+    TempNotGoods};
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -50,6 +60,34 @@ class InquiryController extends BaseController
         ];
     }
 
+    public function actionAdd()
+    {
+        $model = new Inquiry();
+        $inquiryGoods = InquiryGoods::findOne($_GET['inquiry_goods_id']);
+
+        if (yii::$app->getRequest()->getIsPost()) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                if ($inquiryGoods) {
+                    return $this->redirect(['order-inquiry/view', 'id' => $inquiryGoods->order_inquiry_id]);
+                } else {
+                    return $this->redirect(['order-inquiry/index']);
+                }
+            } else {
+                $errors = $model->getErrors();
+                $err = '';
+                foreach ($errors as $v) {
+                    $err .= $v[0] . '<br>';
+                }
+                Yii::$app->getSession()->setFlash('error', $err);
+            }
+        }
+
+        return $this->render('add-inquiry', [
+            'model'        => $model,
+            'inquiryGoods' => $inquiryGoods,
+        ]);
+    }
+
     public function actionCreate()
     {
         $model = new Inquiry();
@@ -88,56 +126,39 @@ class InquiryController extends BaseController
     public function actionSearch($goods_id)
     {
         $goods = Goods::findOne($goods_id);
-        //价格最优
-        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc')->one();
-        //同期最短
-        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
-        //最新报价
-        $inquiryNewQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_newest' => Inquiry::IS_NEWEST_YES])->orderBy('updated_at Desc')->one();
-        //优选记录
-        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES])->orderBy('updated_at Desc')->one();
 
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
-        //采购记录
-        $purchaseInquiry = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_INQUIRY])->all();
-        $price = 100000000;
-        $offerDay = 10000000;
-        $purchasePrice = '';
-        $purchaseDay = '';
-        foreach ($purchaseInquiry as $item) {
-            if ($item->inquiry->price < $price) {
-                $price = $item->inquiry->price;
-                $purchasePrice = $item;
-            }
-            if ($item->inquiry->delivery_time < $offerDay) {
-                $offerDay = $item->inquiry->delivery_time;
-                $purchaseDay = $item;
-            }
-        }
-        $purchaseStock = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id, 'type' => PurchaseGoods::TYPE_STOCK])->all();
-        foreach ($purchaseStock as $item) {
-            if ($item->stock->price < $price) {
-                $price = $item->stock->price;
-                $purchasePrice = $item;
-            }
-        }
+        //询价记录 价格最优
+        $inquiryPriceQuery  = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc, Created_at Desc')->one();
+        //同期最短(货期)
+        $inquiryTimeQuery   = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
+        //最新报价
+        $inquiryNewQuery    = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
+        //优选记录
+        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES, 'is_confirm_better' => 1])->orderBy('updated_at Desc')->one();
 
-        //最新采购
-        $purchaseNew = PurchaseGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        //采购记录  最新采购
+        $paymentNew   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        //价格最低采购
+        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
+        //货期采购
+        $paymentDay   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
 
         $data = [];
         $data['goods']         = $goods ? $goods : [];
+
         $data['inquiryPrice']  = $inquiryPriceQuery;
         $data['inquiryTime']   = $inquiryTimeQuery;
         $data['inquiryNew']    = $inquiryNewQuery;
         $data['inquiryBetter'] = $inquiryBetterQuery;
+
         $data['stock']         = $stockQuery;
 
-        $data['purchasePrice']    = $purchasePrice;
-        $data['purchaseDay']      = $purchaseDay;
-        $data['purchaseNew']      = $purchaseNew;
+        $data['paymentNew']    = $paymentNew;
+        $data['paymentPrice']  = $paymentPrice;
+        $data['paymentDay']    = $paymentDay;
 
         return $this->render('search-result', $data);
     }
@@ -166,8 +187,8 @@ class InquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '未税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $tableHeader = ['零件号', '厂家号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -227,10 +248,8 @@ class InquiryController extends BaseController
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
                     //总数
                     $total = count($sheetData);
+
                     $num = 0;
-                    $tax = SystemConfig::find()->select('value')->where([
-                        'title'  => SystemConfig::TITLE_TAX,
-                        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
                     $delivery = SystemConfig::find()->select('value')->where([
                         'title'  => SystemConfig::TITLE_DELIVERY_TIME,
                         'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
@@ -239,7 +258,12 @@ class InquiryController extends BaseController
                             if (empty($value['A']) && empty($value['B'])) {
                                 continue;
                             }
-                            $goods    = Goods::find()->where(['goods_number' => trim($value['A'])])->orWhere(['goods_number_b' => trim($value['B'])])->one();
+                            if (trim($value['A'])) {
+                                $goods = Goods::find()->where(['goods_number' => trim($value['A'])])->one();
+                            } else {
+                                $goods = Goods::find()->where(['goods_number_b' => trim($value['B'])])->one();
+                            }
+
                             $supplier = Supplier::find()->where(['name' => trim($value['C'])])->one();
                             if (!$goods) {
                                 $temp = new TempNotGoods();
@@ -248,20 +272,20 @@ class InquiryController extends BaseController
                             } else {
                                 if ($supplier) {
                                     $inquiry = new Inquiry();
-                                    $inquiry->good_id = $goods->id;
-                                    $inquiry->supplier_id = $supplier->id;
-                                    $inquiry->price = $value['D'] ? trim($value['D']) : 0;
-                                    $inquiry->tax_price = $inquiry->price * (1 + $tax / 100);
-                                    $inquiry->tax_rate = $tax;
-                                    $inquiry->number = $value['E'] ? trim($value['E']) : 0;
-                                    $inquiry->delivery_time = $value['F'] ? trim($value['F']) : $delivery;
-                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
-                                    $inquiry->all_price = $inquiry->number * $inquiry->price;
-                                    $inquiry->all_tax_price = $inquiry->number * $inquiry->tax_price;
-                                    $inquiry->is_better = (trim($value['H']) == '是') ? 1 : 0;
-                                    $inquiry->better_reason = $value['I'] ? trim($value['I']) : '';
-                                    $inquiry->remark = $value['G'] ? trim($value['G']) : '';
-                                    $inquiry->admin_id = Yii::$app->user->identity->id;
+                                    $inquiry->good_id           = $goods->id;
+                                    $inquiry->supplier_id       = $supplier->id;
+                                    $inquiry->tax_rate          = trim($value['D']);
+                                    $inquiry->price             = $value['E'] / (1 + trim($value['D']) / 100);
+                                    $inquiry->tax_price         = $value['E'] ? trim($value['E']) : 0;
+                                    $inquiry->number            = $value['F'] ? trim($value['F']) : 0;
+                                    $inquiry->delivery_time     = $value['G'] ? trim($value['G']) : $delivery;
+                                    $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
+                                    $inquiry->all_price         = $inquiry->number * $inquiry->price;
+                                    $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
+                                    $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
+                                    $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
+                                    $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
+                                    $inquiry->admin_id          = Yii::$app->user->identity->id;
                                     if ($inquiry->save()) {
                                         $num++;
                                     }
@@ -274,5 +298,22 @@ class InquiryController extends BaseController
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
         }
+    }
+
+    public function actionConfirm($id)
+    {
+        $inquiry = Inquiry::findOne($id);
+        $inquiry->is_confirm_better = 1;
+        if ($inquiry->save()){
+            yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
+        } else {
+            $errors = $inquiry->getErrors();
+            $err = '';
+            foreach ($errors as $v) {
+                $err .= $v[0] . '<br>';
+            }
+            Yii::$app->getSession()->setFlash('error', $err);
+        }
+        return $this->redirect(['index']);
     }
 }

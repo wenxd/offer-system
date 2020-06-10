@@ -3,10 +3,14 @@
 namespace app\controllers;
 
 use app\models\AgreementGoods;
+use app\models\AgreementStock;
+use app\models\AuthAssignment;
 use app\models\OrderAgreement;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
+use app\models\Stock;
 use app\models\Supplier;
+use app\models\SystemNotice;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -149,9 +153,8 @@ class OrderPurchaseController extends BaseController
                 $open = true;
             }
         }
+        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         if ($open) {
-            $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
-
             $orderPurchase                     = new OrderPurchase();
             $orderPurchase->purchase_sn        = $params['purchase_sn'];
             $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
@@ -163,8 +166,27 @@ class OrderPurchaseController extends BaseController
             if ($orderPurchase->save()) {
                 $agreement_goods_ids = [];
                 foreach ($params['goods_info'] as $item) {
+                    $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                    //处理保存使用库存记录
+//                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
+//                    if ($use_stock_number) {
+//                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+//                        $agreementStock = new AgreementStock();
+//                        $agreementStock->order_id           = $orderAgreement->order_id;
+//                        $agreementStock->order_agreement_id = $orderAgreement->id;
+//                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+//                        $agreementStock->order_purchase_id  = $orderPurchase->id;
+//                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
+//                        $agreementStock->goods_id           = $agreementGoods->goods_id;
+//                        $agreementStock->price              = $stock ? $stock->price : 0;
+//                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+//                        $agreementStock->use_number         = $use_stock_number;
+//                        $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
+//                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
+//                        $agreementStock->save();
+//                    }
+
                     if ($item['number'] > 0) {
-                        $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
                         if ($agreementGoods) {
                             $purchaseGoods = new PurchaseGoods();
 
@@ -176,7 +198,7 @@ class OrderPurchaseController extends BaseController
                             $purchaseGoods->goods_id            = $agreementGoods->goods_id;
                             $purchaseGoods->type                = $agreementGoods->type;
                             $purchaseGoods->relevance_id        = $agreementGoods->relevance_id;
-                            $purchaseGoods->number              = $agreementGoods->number;
+                            $purchaseGoods->number              = $agreementGoods->order_number;
                             $purchaseGoods->tax_rate            = $agreementGoods->tax_rate;
                             $purchaseGoods->price               = $agreementGoods->price;
                             $purchaseGoods->tax_price           = $agreementGoods->tax_price;
@@ -193,28 +215,88 @@ class OrderPurchaseController extends BaseController
                         }
                     } else {
                         $agreement_goods_ids[] = $item['agreement_goods_id'];
-                        AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
+                        //处理保存使用库存记录
+                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                        $agreementStock = new AgreementStock();
+                        $agreementStock->order_id           = $orderAgreement->order_id;
+                        $agreementStock->order_agreement_id = $orderAgreement->id;
+                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                        $agreementStock->order_purchase_id  = $orderPurchase->id;
+                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
+                        $agreementStock->goods_id           = $agreementGoods->goods_id;
+                        $agreementStock->price              = $stock ? $stock->price : 0;
+                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+                        $agreementStock->use_number         = $agreementGoods->order_number;
+                        $agreementStock->all_price          = $agreementStock->price * $agreementGoods->order_number;
+                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $agreementGoods->order_number;
+                        $agreementStock->save();
                     }
                 }
+                AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                 //判断是否全部生成采购单
                 $agreementGoodsCount = AgreementGoods::find()->where([
                     'order_agreement_id' => $orderAgreement->id,
-                    'is_deleted'         => 0])->count();
+                    'is_deleted'         => 0,
+                    'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+                ])->count();
                 $purchaseGoodsCount  = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
                 if ($agreementGoodsCount == $purchaseGoodsCount) {
                     $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
                     $orderAgreement->save();
                 }
-
-                return json_encode(['code' => 200, 'msg' => '保存成功']);
             } else {
                 return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
             }
         } else {
+            foreach ($params['goods_info'] as $item) {
+                $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                //处理保存使用库存记录
+                $use_stock_number = $agreementGoods->order_number;
+                $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+
+                $agreementStock = new AgreementStock();
+                $agreementStock->order_id           = $orderAgreement->order_id;
+                $agreementStock->order_agreement_id = $orderAgreement->id;
+                $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                $agreementStock->goods_id           = $agreementGoods->goods_id;
+                $agreementStock->price              = $stock ? $stock->price : 0;
+                $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
+                $agreementStock->use_number         = $use_stock_number;
+                $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
+                $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
+                $agreementStock->save();
+            }
             $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
             AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
+
+        //处理是否全部走库存
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $orderAgreement->id,
+            'is_deleted'         => 0,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+        ])->all();
+        $purchaseNumber = 0;
+        foreach ($agreementGoodsList as $value) {
+            $purchaseNumber += $value['purchase_number'];
+        }
+        if ($purchaseNumber == 0) {
+            $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_YES;
+            $orderAgreement->save();
+        }
+
+        if (count($agreement_goods_ids)) {
+            //采购数量是0，给库管员通知
+            $stockAdmin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
+            foreach ($stockAdmin as $key => $value) {
+                $systemNotice = new SystemNotice();
+                $systemNotice->admin_id  = $value->user_id;
+                $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
+                $systemNotice->notice_at = date('Y-m-d H:i:s');
+                $systemNotice->save();
+            }
+        }
+        return json_encode(['code' => 200, 'msg' => '保存成功']);
     }
 
     public function actionDetail($id)
@@ -227,11 +309,14 @@ class OrderPurchaseController extends BaseController
             ->leftJoin('goods g', 'pg.goods_id=g.id')
             ->leftJoin('inquiry i', 'pg.relevance_id=i.id')
             ->where(['pg.order_purchase_id' => $id]);
+        if (isset($request['original_company']) && $request['original_company']) {
+            $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
         if (isset($request['supplier_id']) && $request['supplier_id']) {
             $purchaseQuery->andWhere(['i.supplier_id' => $request['supplier_id']]);
         }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        if (isset($request['is_stock']) && $request['is_stock'] !== '') {
+            $purchaseQuery->andWhere(['pg.is_stock' => $request['is_stock']]);
         }
         $purchaseGoods         = $purchaseQuery->orderBy('serial')->all();
 
@@ -336,8 +421,8 @@ class OrderPurchaseController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-        $tableHeader = ['厂家号', '中文描述', '原厂家', '供应商', '单位', '采购数量', '含税单价', '含税总价', '货期(周)'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $tableHeader = ['序号', '原厂家', '厂家号', '中文描述', '采购数量', '单位', '含税单价', '含税总价', '货期(周)', '供应商'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -348,27 +433,29 @@ class OrderPurchaseController extends BaseController
         $purchaseGoods = PurchaseGoods::find()->where(['order_purchase_id' => $id])->orderBy('serial')->all();
         foreach ($purchaseGoods as $key => $value) {
             for($i = 0; $i < count($letter); $i++) {
+                $excel->setCellValue($letter[$i] . ($key + 2), $value->serial);
                 if ($value->goods) {
                     //厂家号
-                    $excel->setCellValue($letter[$i] . ($key + 2), $value->goods->goods_number_b);
-                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->description);
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->original_company);
-                    $excel->setCellValue($letter[$i+4] . ($key + 2), $value->goods->unit);
+                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->original_company);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), $value->goods->description);
+                    $excel->setCellValue($letter[$i+5] . ($key + 2), $value->goods->unit);
                 } else {
-                    $excel->setCellValue($letter[$i] . ($key + 2), '');
                     $excel->setCellValue($letter[$i+1] . ($key + 2), '');
                     $excel->setCellValue($letter[$i+2] . ($key + 2), '');
-                    $excel->setCellValue($letter[$i+4] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i+3] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i+5] . ($key + 2), '');
                 }
-                $excel->setCellValue($letter[$i+3] . ($key + 2), $value->inquiry->supplier->name);
                 //采购数量
-                $excel->setCellValue($letter[$i+5] . ($key + 2), $value->fixed_number);
+                $excel->setCellValue($letter[$i+4] . ($key + 2), $value->fixed_number);
                 //含税单价
                 $excel->setCellValue($letter[$i+6] . ($key + 2), $value->fixed_tax_price);
                 //含税总价
                 $excel->setCellValue($letter[$i+7] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
                 //货期(周)
                 $excel->setCellValue($letter[$i+8] . ($key + 2), $value->delivery_time);
+                //供应商
+                $excel->setCellValue($letter[$i+9] . ($key + 2), $value->inquiry->supplier->name);
                 break;
             }
         }

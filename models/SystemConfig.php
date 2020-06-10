@@ -29,6 +29,7 @@ class SystemConfig extends \yii\db\ActiveRecord
     const TITLE_PAYMENT_RATIO           = 'payment_ratio';
     const TITLE_QUOTE_PRICE_RATIO       = 'quote_price_ratio';
     const TITLE_QUOTE_DELIVERY_RATIO    = 'quote_delivery_ratio';
+    const TITLE_COMPETITOR_RATIO        = 'competitor_ratio';
 
     public static $config = [
         self::TITLE_TAX                     => '税率',
@@ -41,6 +42,7 @@ class SystemConfig extends \yii\db\ActiveRecord
         self::TITLE_PAYMENT_RATIO           => '预付款比例',
         self::TITLE_QUOTE_PRICE_RATIO       => '报价系数',
         self::TITLE_QUOTE_DELIVERY_RATIO    => '货期系数',
+        self::TITLE_COMPETITOR_RATIO        => '竞争对手系数',
     ];
 
     /**

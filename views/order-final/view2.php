@@ -14,14 +14,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box table-responsive">
         <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
-            <table id="example2" class="table table-bordered table-hover">
+            <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
                 <thead>
                 <tr class="goods">
                     <th>序号</th>
                     <th>零件号</th>
                     <th>厂家号</th>
-                    <th>中文描述</th>
-                    <th>英文描述</th>
+                    <th style="width: 200px;">中文描述</th>
+                    <th style="width: 200px;">英文描述</th>
                     <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>单位</th>
@@ -36,12 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>未税总价</th>
                     <th>含税总价</th>
                     <th>货期</th>
-                    <th>加工</th>
-                    <th>特制</th>
-                    <th>铭牌</th>
                     <th>更新时间</th>
                     <th>创建时间</th>
-                    <th>技术备注</th>
                     <th>关联询价记录</th>
                     <th>询价ID</th>
                 </tr>
@@ -60,36 +56,32 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td class="number"><?=$item->number?></td>
                         <td><?= $item->inquiry->supplier->name?></td>
                         <td><?= $item->inquiry->admin->username?></td>
-                        <td><?= $item->inquiry->tax_rate?></td>
+                        <td><?= $item->tax?></td>
                         <?php
-                            $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                            $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
                         ?>
                         <td><?= $publish_tax_price ?></td>
                         <td class="publish_tax_price"><?= $publish_tax_price * $item->number?></td>
-                        <td class="price"><?=$item->inquiry->price?></td>
-                        <td class="tax_price"><?=$item->inquiry->tax_price?></td>
+                        <td class="price"><?=$item->price?></td>
+                        <td class="tax_price"><?=$item->tax_price?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
-                        <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
-                        <td><?= Goods::$process[$item->goods->is_process]?></td>
-                        <td><?= Goods::$special[$item->goods->is_special]?></td>
-                        <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                        <td class="delivery_time"><?=$item->delivery_time?></td>
                         <td><?= substr($item->goods->updated_at, 0 , 10)?></td>
                         <td><?= substr($item->goods->created_at, 0 , 10)?></td>
-                        <td><?= $item->goods->technique_remark?></td>
                         <td class="relevance"><?= $item->inquiry ? '是' : '否'?></td>
                         <td><?= Html::a($item->relevance_id, Url::to(['inquiry/view', 'id' => $item->relevance_id]))?></td>
                     </tr>
                 <?php endforeach;?>
                 <tr style="background-color: #acccb9">
-                    <td colspan="11">汇总统计</td>
+                    <td colspan="13">汇总统计</td>
                     <td class="sta_all_publish_tax_price"></td>
                     <td></td>
                     <td></td>
                     <td class="sta_all_price"></td>
                     <td class="sta_all_tax_price"></td>
                     <td class="mostLongTime"></td>
-                    <td colspan="9"></td>
+                    <td colspan="4"></td>
                 </tr>
                 </tbody>
             </table>

@@ -2,17 +2,21 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use yii\helpers\Url;
-use app\models\{Supplier, AuthAssignment};
+use app\models\{Supplier, AuthAssignment, Helper};
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
 /* @var $form yii\widgets\ActiveForm */
-$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-
 $userId = Yii::$app->user->identity->id;
+
+if ($model->isNewRecord) {
+    $model->is_confirm = Supplier::IS_CONFIRM_NO;
+}
+
 ?>
 
 <div class="box">
@@ -40,6 +44,7 @@ $userId = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
         <?php if (!in_array($userId, $adminIds)):?>
+            <?= $form->field($model, 'admin_id')->dropDownList(Helper::getAdminListAll()) ?>
             <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php endif;?>
     </div>

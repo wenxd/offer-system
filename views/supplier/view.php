@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Supplier;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Supplier */
@@ -37,6 +38,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'    => 'raw',
                 'value'     => function ($model) {
                     return Supplier::$confirm[$model->is_confirm];
+                }
+            ],
+            [
+                'attribute' => 'admin_id',
+                'label'     => '询价员',
+                'value'     => function ($model) {
+                    if ($model->admin) {
+                        return $model->admin->username;
+                    } else {
+                        return '';
+                    }
                 }
             ],
             'updated_at',

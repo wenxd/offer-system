@@ -71,12 +71,14 @@ class CompetitorGoods extends ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'number', 'is_issue'], 'integer'],
+            [['goods_id', 'competitor_id', 'is_deleted', 'customer', 'is_issue'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'delivery_time', 'all_price', 'all_tax_price', 'stock_number'], 'number'],
             [['offer_date', 'updated_at', 'created_at'], 'safe'],
             [['price', 'tax_price'], 'double', 'min' => 0],
             [['competitor_id', 'price', 'offer_date'], 'required', 'on' => 'competitor_goods'],
             [['remark', 'unit', 'goods_number'], 'string'],
+            [['number'], 'integer', 'min' => 1],
+            [['number'], 'default', 'value' => 1],
         ];
     }
 

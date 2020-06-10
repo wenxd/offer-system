@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\SystemNotice;
+use yii\helpers\ArrayHelper;
 
 /**
  * SystemNoticeSearch represents the model behind the search form of `app\models\SystemNotice`.
@@ -42,7 +43,10 @@ class SystemNoticeSearch extends SystemNotice
      */
     public function search($params)
     {
-        $query = SystemNotice::find();
+//        $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员', '库管员']])->all();
+//        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $userId   = Yii::$app->user->identity->id;
+        $query = self::find()->where(['admin_id' => $userId]);
 
         // add conditions that should always apply here
 
@@ -67,7 +71,6 @@ class SystemNoticeSearch extends SystemNotice
         // grid filtering conditions
         $query->andFilterWhere([
             'id'         => $this->id,
-            'admin_id'   => $this->admin_id,
             'is_read'    => $this->is_read,
             'is_deleted' => self::IS_DELETED_NO,
             'updated_at' => $this->updated_at,

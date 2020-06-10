@@ -10,6 +10,7 @@ use yii\widgets\Pjax;
 use app\extend\widgets\Bar;
 use app\models\Inquiry;
 use app\models\Goods;
+use app\models\Helper;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
 use kartik\daterange\DateRangePicker;
@@ -34,7 +35,7 @@ $userId   = Yii::$app->user->identity->id;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete}',
+            'template' => '{create} {delete} {index}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -46,6 +47,12 @@ $userId   = Yii::$app->user->identity->id;
                     return Html::a('<i class="fa fa-upload"></i> 上传导入', 'Javascript: void(0)', [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-info btn-flat upload',
+                    ]);
+                },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
                     ]);
                 }
             ]
@@ -62,9 +69,17 @@ $userId   = Yii::$app->user->identity->id;
             ],
             [
                 'class' => ActionColumn::className(),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
+                'contentOptions'=>['style'=>'min-width: 180px;'],
                 'header' => '操作',
-                'template' => '{view} {update} {delete}',
+                'template' => '{view} {update} {confirm}',
+                'buttons' => [
+                    'confirm' => function ($url, $model, $key) {
+                        return Html::a('<i class="fa fa-reload"></i> 确认', Url::to(['confirm', 'id' => $model->id]), [
+                            'data-pjax' => '0',
+                            'class'     => 'btn btn-success btn-flat btn-xs',
+                        ]);
+                    }
+                ],
             ],
             'id',
             [
@@ -73,9 +88,23 @@ $userId   = Yii::$app->user->identity->id;
                 'visible'   => !in_array($userId, $adminIds),
                 'label'     => '询价员',
                 'contentOptions' =>['style'=>'min-width: 100px;'],
-                'filter'    => $admins,
+                'filter'    => Helper::getAdminList(['系统管理员', '询价员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     return $model->admin ? $model->admin->username : '';
+                }
+            ],
+            [
+                'attribute'      => 'inquiry_sn',
+                'format'         => 'raw',
+                'label'          => '询价单号',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+                'filter'         => Html::activeTextInput($searchModel, 'inquiry_sn',['class'=>'form-control']),
+                'value'          => function ($model, $key, $index, $column) {
+                    if ($model->orderInquiry) {
+                        return Html::a($model->orderInquiry->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->orderInquiry->id]));
+                    } else {
+                        return '';
+                    }
                 }
             ],
             [
@@ -96,9 +125,13 @@ $userId   = Yii::$app->user->identity->id;
                 'format'         => 'raw',
                 'contentOptions' =>['style'=>'min-width: 100px;'],
                 'filter'         => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
-                'value'          => function ($model, $key, $index, $column) {
+                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        if (in_array($userId, $adminIds)) {
+                            return $model->goods->goods_number_b;
+                        } else {
+                            return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        }
                     } else {
                         return '';
                     }
@@ -144,18 +177,6 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'technique_remark',
-                'label'     => '技术备注',
-                'filter'    => Html::activeTextInput($searchModel, 'technique_remark',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->goods) {
-                        return $model->goods->technique_remark;
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
                 'attribute'      => 'is_process',
                 'label'          => '加工',
                 'contentOptions' =>['style'=>'min-width: 80px;'],
@@ -173,7 +194,23 @@ $userId   = Yii::$app->user->identity->id;
                 'contentOptions' =>['style'=>'min-width: 80px;'],
                 'filter'    => Inquiry::$better,
                 'value'     => function ($model, $key, $index, $column) {
-                    return Inquiry::$newest[$model->is_better];
+                    return Inquiry::$better[$model->is_better];
+                }
+            ],
+            [
+                'attribute' => 'is_purchase',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$purchase,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Inquiry::$purchase[$model->is_purchase];
+                }
+            ],
+            [
+                'attribute' => 'is_confirm_better',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'    => Inquiry::$better,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Inquiry::$better[$model->is_confirm_better];
                 }
             ],
             [
@@ -204,7 +241,10 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            'tax_rate',
+            [
+                'attribute'      => 'tax_rate',
+                'contentOptions' => ['style'=>'min-width: 80px;']
+            ],
             'price',
             'tax_price',
             'number',

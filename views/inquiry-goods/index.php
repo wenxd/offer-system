@@ -1,5 +1,9 @@
 <?php
 
+use app\extend\widgets\Bar;
+use app\models\Admin;
+use app\models\AuthAssignment;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -13,8 +17,26 @@ use kartik\daterange\DateRangePicker;
 
 $this->title = '询不出记录列表';
 $this->params['breadcrumbs'][] = $this->title;
+
+$use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -25,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'      => 'goods_number',
                 'format'         => 'raw',
                 'label'          => '零件号',
+                'visible'        => !in_array($userId, $adminIds),
                 'contentOptions' =>['style'=>'min-width: 100px;'],
                 'filter'         => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'          => function ($model, $key, $index, $column) {
@@ -41,9 +64,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'          => '厂家号',
                 'contentOptions' =>['style'=>'min-width: 100px;'],
                 'filter'         => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
-                'value'          => function ($model, $key, $index, $column) {
+                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        if (in_array($userId, $adminIds)) {
+                            return $model->goods->goods_number_b;
+                        } else {
+                            return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        }
                     } else {
                         return '';
                     }
@@ -112,6 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'      => 'order_sn',
                 'format'         => 'raw',
                 'label'          => '订单号',
+                'visible'        => !in_array($userId, $adminIds),
                 'contentOptions' =>['style'=>'min-width: 100px;'],
                 'filter'         => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'          => function ($model, $key, $index, $column) {

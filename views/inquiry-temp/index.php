@@ -46,7 +46,7 @@ $userId   = Yii::$app->user->identity->id;
                     'format'    => 'raw',
                     'label'     => '询价员',
                     'contentOptions' =>['style'=>'min-width: 100px;'],
-                    'filter'    => $admins,
+                    'filter'    => in_array($userId, $adminIds) ? [$userId => Yii::$app->user->identity->username] : $admins,
                     'value'     => function ($model, $key, $index, $column) {
                         return $model->admin ? $model->admin->username : '';
                     }
@@ -56,10 +56,14 @@ $userId   = Yii::$app->user->identity->id;
                     'format'         => 'raw',
                     'label'          => '厂家号',
                     'contentOptions' =>['style'=>'min-width: 100px;'],
-                    'filter'         => Html::activeTextInput($searchModel, 'goods_number_b',['class'=>'form-control']),
-                    'value'          => function ($model, $key, $index, $column) {
+                    'filter'         => Html::activeTextInput($searchModel, 'goods_number_b', ['class'=>'form-control']),
+                    'value'          => function ($model, $key, $index, $column) use($userId, $adminIds) {
                         if ($model->goods) {
-                            return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            if (in_array($userId, $adminIds)) {
+                                return $model->goods->goods_number_b;
+                            } else {
+                                return Html::a($model->goods->goods_number_b, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            }
                         } else {
                             return '';
                         }
@@ -113,11 +117,19 @@ $userId   = Yii::$app->user->identity->id;
                 'all_tax_price',
                 'tax_rate',
                 [
+                    'attribute' => 'is_purchase',
+                    'contentOptions' =>['style'=>'min-width: 80px;'],
+                    'filter'    => Inquiry::$purchase,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Inquiry::$purchase[$model->is_purchase];
+                    }
+                ],
+                [
                     'attribute' => 'is_better',
                     'contentOptions' =>['style'=>'min-width: 80px;'],
                     'filter'    => Inquiry::$better,
                     'value'     => function ($model, $key, $index, $column) {
-                        return Inquiry::$newest[$model->is_better];
+                        return Inquiry::$better[$model->is_better];
                     }
                 ],
                 [

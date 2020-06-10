@@ -16,12 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{download}',
+            'template' => '{download} {delete}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载库中没有的零件', Url::to(['download']), [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'delete' => function () {
+                    return Html::a('<i class="fa fa-delete"></i> 清空', Url::to(['delete-all']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-danger btn-flat',
                     ]);
                 }
             ]

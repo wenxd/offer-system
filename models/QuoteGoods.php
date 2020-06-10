@@ -24,6 +24,11 @@ use Yii;
  * @property string $serial 序号
  * @property string $tax_rate 税率
  * @property string $quote_delivery_time
+ * @property string $competitor_goods_id
+ * @property string $competitor_goods_tax_price
+ * @property string $competitor_goods_tax_price_all
+ * @property string $competitor_goods_quote_tax_price
+ * @property string $competitor_goods_quote_tax_price_all
  */
 class QuoteGoods extends \yii\db\ActiveRecord
 {
@@ -50,7 +55,8 @@ class QuoteGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted'], 'integer'],
-            [['updated_at', 'created_at', 'quote_delivery_time'], 'safe'],
+            [['updated_at', 'created_at', 'quote_delivery_time', 'competitor_goods_id', 'competitor_goods_tax_price',
+                'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price', 'competitor_goods_quote_tax_price_all'], 'safe'],
             [['order_final_sn', 'order_quote_id', 'order_quote_sn'], 'string', 'max' => 255],
         ];
     }

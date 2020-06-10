@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Supplier;
+use yii\helpers\ArrayHelper;
 
 /**
  * SupplierSearch represents the model behind the search form of `backend\models\Supplier`.
@@ -18,9 +19,9 @@ class SupplierSearch extends Supplier
     public function rules()
     {
         return [
-            [['id', 'sort', 'is_deleted', 'is_confirm'], 'integer'],
+            [['id', 'sort', 'is_deleted', 'is_confirm', 'admin_id'], 'integer'],
             [['name', 'short_name', 'mobile', 'telephone', 'email', 'updated_at', 'created_at', 'grade',
-                'grade_reason', 'advantage_product', 'full_name', 'contacts'], 'safe'],
+                'grade_reason', 'advantage_product', 'full_name', 'contacts', 'agree_at'], 'safe'],
             [['id', 'name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
                 'full_name', 'contacts'], 'trim']
         ];
@@ -44,7 +45,17 @@ class SupplierSearch extends Supplier
      */
     public function search($params)
     {
-        $query = Supplier::find();
+        $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $userId   = Yii::$app->user->identity->id;
+
+        $super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
+        if (in_array($userId, $adminIds)) {
+            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES])
+            ->andWhere(['!=', 'admin_id', $super->user_id]);
+        } else {
+            $query = Supplier::find();
+        }
 
         // add conditions that should always apply here
 
@@ -73,6 +84,7 @@ class SupplierSearch extends Supplier
             'is_deleted' => self::IS_DELETED_NO,
             'is_confirm' => $this->is_confirm,
             'grade'      => $this->grade,
+            'admin_id'   => $this->admin_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
@@ -80,9 +92,9 @@ class SupplierSearch extends Supplier
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'telephone', $this->telephone])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'grade_reason', $this->email])
-            ->andFilterWhere(['like', 'advantage_product', $this->email])
-            ->andFilterWhere(['like', 'contacts', $this->email])
+            ->andFilterWhere(['like', 'grade_reason', $this->grade_reason])
+            ->andFilterWhere(['like', 'advantage_product', $this->advantage_product])
+            ->andFilterWhere(['like', 'contacts', $this->contacts])
             ->andFilterWhere(['like', 'full_name', $this->full_name]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
@@ -99,6 +111,12 @@ class SupplierSearch extends Supplier
             $query->andFilterWhere(['between', 'created_at', $created_at_start, $created_at_end]);
         }
 
+        if ($this->agree_at && strpos($this->agree_at, ' - ')) {
+            list($agree_at_start, $agree_at_end) = explode(' - ', $this->agree_at);
+            $agree_at_start .= ' 00:00:00';
+            $agree_at_end   .= ' 23::59:59';
+            $query->andFilterWhere(['between', 'agree_at', $agree_at_start, $agree_at_end]);
+        }
         return $dataProvider;
     }
 }

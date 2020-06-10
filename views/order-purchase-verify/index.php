@@ -15,11 +15,6 @@ use app\models\OrderPayment;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
 $userId   = Yii::$app->user->identity->id;
 
 $this->title = '采购审核列表';
@@ -36,21 +31,29 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                    if (in_array($userId, $adminIds) && $model->is_complete) {
+                        return $model->payment_sn;
+                    } else {
+                        return Html::a($model->payment_sn, Url::to(['view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                    if (in_array($userId, $adminIds)) {
+                        return $model->order_purchase_sn;
+                    } else {
+                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                    }
                 }
             ],
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;
@@ -69,24 +72,47 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'value'          => function ($model, $key, $index, $column){
-                    $html = Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-info btn-xs btn-flat',
-                    ]);
-                    if (!$model->is_verify) {
-                        $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
+                    $html = '';
+                    if (!in_array($userId, $adminIds)) {
+                        $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]);
-                    } else {
-                        if (!$model->is_agreement) {
+                    }
+                    if (in_array($userId, $adminIds)) {
+                        if ($model->purchase_status == 1 && !$model->is_agreement) {
                             $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
                         }
+                    } else {
+                        if (!$model->is_verify) {
+                            if (!$model->order->order_type) {
+                                $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-info btn-xs btn-flat',
+                                ]);
+                            } else {
+                                $res = OrderPayment::isConfirm($model->id);
+                                if (!$res) {
+                                    $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-info btn-xs btn-flat',
+                                    ]);
+                                }
+                            }
+                        } else {
+                            if (!$model->is_agreement) {
+                                $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                            }
+                        }
                     }
+
                     return $html;
                 }
             ],

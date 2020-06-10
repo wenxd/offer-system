@@ -32,8 +32,8 @@ class TempOrderGoods extends \yii\db\ActiveRecord
     {
         return [
             [['goods_id', 'number'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['serial', 'token'], 'string', 'max' => 255],
+            [['serial', 'updated_at', 'created_at'], 'safe'],
+            [['token'], 'string', 'max' => 255],
         ];
     }
 

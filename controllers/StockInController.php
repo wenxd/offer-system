@@ -10,12 +10,13 @@ use app\models\OrderPaymentSearch;
 use app\models\PaymentGoods;
 use app\models\Stock;
 use app\models\StockLog;
+use app\models\SystemConfig;
 use Yii;
 use app\models\OrderFinal;
 use app\models\PurchaseGoods;
 use app\models\OrderPurchase;
 use app\models\OrderPurchaseSearch;
-
+use yii\helpers\ArrayHelper;
 
 
 /**
@@ -61,6 +62,14 @@ class StockInController extends BaseController
     {
         $params = Yii::$app->request->post();
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+        $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
+        $orderPayment->save();
+
+        //系统税率
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'title'      => SystemConfig::TITLE_TAX,
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+        ])->scalar();
 
         $stockLog = StockLog::find()->where([
             'order_id'          => $orderPayment['order_id'],
@@ -79,6 +88,7 @@ class StockInController extends BaseController
         $stockLog->type              = StockLog::TYPE_IN;
         $stockLog->operate_time      = date('Y-m-d H:i:s');
         $stockLog->admin_id          = Yii::$app->user->identity->id;
+        $stockLog->position          = $params['position'];
         if ($stockLog->save()) {
             $stock = Stock::findOne(['good_id' => $params['goods_id']]);
             $paymentGoods = PaymentGoods::findOne([
@@ -92,14 +102,16 @@ class StockInController extends BaseController
                 $stock->good_id     = $params['goods_id'];
                 $stock->supplier_id = $inquiry->supplier_id;
                 $stock->price       = $paymentGoods->fixed_price;
-                $stock->tax_price   = $paymentGoods->fixed_tax_price;
-                $stock->tax_rate    = $paymentGoods->tax_rate;
+                $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
+                $stock->tax_rate    = $system_tax;
                 $stock->number      = 0;
+                $stock->position    = trim($params['position']);
                 $stock->save();
             } else {
                 $stock->price       = $paymentGoods->fixed_price;
-                $stock->tax_price   = $paymentGoods->fixed_tax_price;
-                $stock->tax_rate    = $paymentGoods->tax_rate;
+                $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
+                $stock->tax_rate    = $system_tax;
+                $stock->position    = trim($params['position']);
                 $stock->save();
             }
             //判断是否全部入库
@@ -141,40 +153,72 @@ class StockInController extends BaseController
      */
     public function actionMoreIn()
     {
-        $ids = Yii::$app->request->post('ids');
+        $paymentGoods_info = Yii::$app->request->post('paymentGoods_info');
+
+        //系统税率
+        $system_tax = SystemConfig::find()->select('value')->where([
+            'title'      => SystemConfig::TITLE_TAX,
+            'is_deleted' => SystemConfig::IS_DELETED_NO,
+        ])->scalar();
+
         try {
-            $paymentGoods = PaymentGoods::findAll(['id' => $ids]);
-            $orderPaymentId = $paymentGoods[0]->order_payment_id;
-            $orderPayment = OrderPayment::findOne($orderPaymentId);
-            foreach ($paymentGoods as $key => $paymentGood) {
-
-                $stockLog = StockLog::find()->where([
-                    'order_id' => $orderPayment['order_id'],
-                    'order_payment_id' => $orderPayment->id,
-                    'goods_id' => $paymentGood['goods_id'],
-                    'type' => StockLog::TYPE_IN,
-                ])->one();
-                if (!$stockLog) {
-                    $stockLog = new StockLog();
+            $ids = ArrayHelper::getColumn($paymentGoods_info, 'payment_goods_id');
+            $paymentGoodsList = PaymentGoods::find()->where(['id' => $ids])->indexBy('id')->asArray()->all();
+            foreach ($paymentGoods_info as $key => $value) {
+                if (isset($paymentGoodsList[$value['payment_goods_id']])) {
+                    $paymentGoods   = $paymentGoodsList[$value['payment_goods_id']];
+                    if ($key == 0) {
+                        $orderPaymentId = $paymentGoods['order_payment_id'];
+                        $orderPayment   = OrderPayment::findOne($orderPaymentId);
+                        $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
+                        $orderPayment->save();
+                    }
+                    $stockLog = StockLog::find()->where([
+                        'order_id'         => $orderPayment['order_id'],
+                        'order_payment_id' => $orderPayment->id,
+                        'goods_id'         => $paymentGoods['goods_id'],
+                        'type'             => StockLog::TYPE_IN,
+                    ])->one();
+                    if (!$stockLog) {
+                        $stockLog = new StockLog();
+                    }
+                    $stockLog->order_id         = $orderPayment['order_id'];
+                    $stockLog->order_payment_id = $orderPayment->id;
+                    $stockLog->payment_sn       = $orderPayment->payment_sn;
+                    $stockLog->goods_id         = $paymentGoods['goods_id'];
+                    $stockLog->number           = $paymentGoods['fixed_number'];
+                    $stockLog->type             = StockLog::TYPE_IN;
+                    $stockLog->operate_time     = date('Y-m-d H:i:s');
+                    $stockLog->admin_id         = Yii::$app->user->identity->id;
+                    $stockLog->position         = $value['position'];
+                    if ($stockLog->save()) {
+                        $stock = Stock::findOne(['good_id' => $paymentGoods['goods_id']]);
+                        if (!$stock) {
+                            $stock   = new Stock();
+                            $stock->good_id     = $paymentGoods['goods_id'];
+                            $stock->price       = $paymentGoods['fixed_price'];
+                            $stock->tax_price   = (1+$system_tax/100) * $paymentGoods['fixed_price'];
+                            $stock->tax_rate    = $system_tax;
+                            $stock->number      = 0;
+                            $stock->position    = $value['position'];
+                            $stock->save();
+                        } else {
+                            $stock->price       = $paymentGoods['fixed_price'];
+                            $stock->tax_price   = (1+$system_tax/100) * $paymentGoods['fixed_price'];
+                            $stock->tax_rate    = $system_tax;
+                            $stock->position    = $value['position'];
+                            $stock->save();
+                        }
+                    }
+                    $res = Stock::updateAllCounters(['number' => $paymentGoods['fixed_number']], ['good_id' => $paymentGoods['goods_id']]);
+                    //对采购商品进行入库改变
+                    $purchaseGoods = PurchaseGoods::findOne($paymentGoods['purchase_goods_id']);
+                    $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
+                    $purchaseGoods->save();
                 }
-                $stockLog->order_id         = $orderPayment['order_id'];
-                $stockLog->order_payment_id = $orderPayment->id;
-                $stockLog->payment_sn       = $orderPayment->payment_sn;
-                $stockLog->goods_id         = $paymentGood['goods_id'];
-                $stockLog->number           = $paymentGood['fixed_number'];
-                $stockLog->type             = StockLog::TYPE_IN;
-                $stockLog->operate_time     = date('Y-m-d H:i:s');
-                $stockLog->admin_id         = Yii::$app->user->identity->id;
-                $stockLog->save();
-                $res = Stock::updateAllCounters(['number' => $paymentGood['fixed_number']], ['good_id' => $paymentGood['goods_id']]);
-                //对采购商品进行入库改变
-                $purchaseGoods = PurchaseGoods::findOne($paymentGood->purchase_goods_id);
-                $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
-                $purchaseGoods->save();
             }
-
             //判断是否全部入库
-            $paymentCount = count($paymentGoods);
+            $paymentCount = count($paymentGoodsList);
             $stockCount = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
             if ($paymentCount == $stockCount) {
                 $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;

@@ -57,7 +57,7 @@ class PaymentSearch extends OrderPayment
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
-                'attributes' => ['id']
+                'attributes' => ['id', 'take_time']
             ],
             'pagination' => ['pageSize' => 10000]
         ]);
@@ -89,6 +89,8 @@ class PaymentSearch extends OrderPayment
             'order_payment.remain_price'     => $this->remain_price,
             'order_payment.payment_ratio'    => $this->payment_ratio,
         ]);
+
+        $query->andFilterWhere(['like', 'order_payment.payment_sn', $this->payment_sn]);
 
         if ($this->take_time && strpos($this->take_time, ' - ')) {
             list($take_time_start, $take_time_end) = explode(' - ', $this->take_time);

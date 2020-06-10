@@ -23,7 +23,7 @@ class InquiryTempSearch extends InquiryTemp
     {
         return [
             [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id', 'is_upload'], 'integer'],
-            [['price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price'], 'number'],
+            [['price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price', 'is_purchase'], 'number'],
             [['inquiry_datetime', 'offer_date', 'remark', 'better_reason', 'updated_at', 'created_at', 'goods_number_b',
                 'original_company', 'unit', 'supplier_name'], 'safe'],
             [['inquiry_datetime', 'goods_number_b', 'original_company', 'unit', 'supplier_name'], 'trim'],
@@ -106,6 +106,7 @@ class InquiryTempSearch extends InquiryTemp
             'inquiry_temp.updated_at'        => $this->updated_at,
             'inquiry_temp.created_at'        => $this->created_at,
             'inquiry_temp.is_upload'         => $this->is_upload,
+            'inquiry_temp.is_purchase'       => $this->is_purchase,
         ]);
 
         $query->andFilterWhere(['like', 'inquiry_temp.remark', $this->remark])

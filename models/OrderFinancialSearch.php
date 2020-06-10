@@ -104,6 +104,7 @@ class OrderFinancialSearch extends OrderPayment
         }
 
         $query->andFilterWhere(['like', 'order_purchase_sn', $this->order_purchase_sn])
+            ->andFilterWhere(['like', 'payment_sn', $this->payment_sn])
             ->andFilterWhere(['like', 'goods_info', $this->goods_info]);
 
         return $dataProvider;

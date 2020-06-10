@@ -71,8 +71,8 @@ class PaymentGoods extends \yii\db\ActiveRecord
                 'before_supplier_id', 'is_payment'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price',
                 'fixed_all_price', 'fixed_all_tax_price', 'delivery_time', 'before_delivery_time'], 'number'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['order_payment_sn', 'order_purchase_sn', 'serial'], 'string', 'max' => 255],
+            [['updated_at', 'created_at', 'serial'], 'safe'],
+            [['order_payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
         ];
     }
 
@@ -149,5 +149,15 @@ class PaymentGoods extends \yii\db\ActiveRecord
     public function getStock()
     {
         return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
+    }
+
+    public function getAdmin()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'inquiry_admin_id']);
+    }
+
+    public function getPurchaseGoods()
+    {
+        return $this->hasOne(PurchaseGoods::className(), ['id' => 'purchase_goods_id']);
     }
 }

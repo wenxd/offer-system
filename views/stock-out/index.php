@@ -10,13 +10,13 @@ use app\models\OrderAgreement;
 use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OrderAgreementSearch */
+/* @var $searchModel app\models\OrderAgreementStockOutSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '项目出库管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
@@ -32,8 +32,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'agreement_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $adminIds){
+                    if (in_array($userId, $adminIds)) {
+                        return $model->agreement_sn;
+                    } else {
+                        return Html::a($model->agreement_sn, Url::to(['order-agreement/view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -63,8 +67,8 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'agreement_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderAgreementSearch[agreement_date]',
-                    'value' => Yii::$app->request->get('OrderAgreementSearch')['agreement_date'],
+                    'name' => 'OrderAgreementStockOutSearch[agreement_date]',
+                    'value' => Yii::$app->request->get('OrderAgreementStockOutSearch')['agreement_date'],
                 ]),
                 'value'     => function($model){
                     return substr($model->agreement_date, 0, 10);
@@ -75,8 +79,8 @@ $userId   = Yii::$app->user->identity->id;
                 'contentOptions'=>['style'=>'min-width: 150px;'],
                 'label'         => '收入合同实际交货日期',
                 'filter'    => DateRangePicker::widget([
-                    'name' => 'OrderAgreementSearch[stock_at]',
-                    'value' => Yii::$app->request->get('OrderAgreementSearch')['stock_at'],
+                    'name' => 'OrderAgreementStockOutSearch[stock_at]',
+                    'value' => Yii::$app->request->get('OrderAgreementStockOutSearch')['stock_at'],
                 ]),
                 'value'     => function($model){
                     return substr($model->stock_at, 0, 10);
@@ -89,6 +93,16 @@ $userId   = Yii::$app->user->identity->id;
                 'filter'         => OrderAgreement::$stock,
                 'value'          => function ($model, $key, $index, $column) {
                     return OrderAgreement::$stock[$model->is_stock];
+                }
+            ],
+            [
+                'attribute'      => 'is_enough',
+                'label'          => '是否到齐',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'         => ['1' => '是', '2' => '否'],
+                'value'          => function ($model, $key, $index, $column) {
+                    $res = OrderAgreement::isEnoughStock($model->id);
+                    return $res ? '是' : '否';
                 }
             ],
             [

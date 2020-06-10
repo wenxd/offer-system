@@ -8,7 +8,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
-use app\models\{Goods, Inquiry, InquiryGoods, Order, OrderAgreement, OrderQuote, OrderFinal, QuoteGoods};
+use app\models\{AgreementGoodsBak,
+    Goods,
+    Inquiry,
+    InquiryGoods,
+    Order,
+    OrderAgreement,
+    OrderQuote,
+    OrderFinal,
+    QuoteGoods};
 use app\models\OrderQuoteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -63,6 +71,7 @@ class OrderQuoteController extends Controller
 
         return $this->render('view', [
             'model'        => $orderQuote,
+            'orderQuote'   => $orderQuote,
             'quoteGoods'   => $quoteGoods,
             'inquiryGoods' => $inquiryGoods
         ]);
@@ -143,15 +152,33 @@ class OrderQuoteController extends Controller
 
         $orderFinal = OrderFinal::findOne($params['order_final_id']);
 
-        $orderQuote                 = new OrderQuote();
-        $orderQuote->quote_sn       = $params['quote_sn'];
-        $orderQuote->order_id       = $orderFinal->order_id;
-        $orderQuote->order_final_id = $params['order_final_id'];
-        $orderQuote->goods_info     = json_encode($params['goods_info']);
-        $orderQuote->admin_id       = $params['admin_id'];
-        $orderQuote->quote_ratio    = $params['quote_ratio'];
-        $orderQuote->delivery_ratio = $params['delivery_ratio'];
-        $orderQuote->customer_id    = $orderFinal->customer_id;
+        $orderQuote                    = new OrderQuote();
+        $orderQuote->quote_sn          = $params['quote_sn'];
+        $orderQuote->order_id          = $orderFinal->order_id;
+        $orderQuote->order_final_id    = $params['order_final_id'];
+        $orderQuote->goods_info        = json_encode([]);
+        $orderQuote->admin_id          = $params['admin_id'];
+
+        if ($params['sta_all_tax_price']) {
+            $orderQuote->quote_ratio   = number_format($params['sta_quote_all_tax_price']/$params['sta_all_tax_price'], 2, '.', '');
+        }
+        if ($params['mostLongTime']) {
+            $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time']/$params['mostLongTime'], 2, '.', '');
+        }
+        if ($params['publish_ratio'] == 0) {
+            return json_encode(['code' => 500, 'msg' => '不能为0']);
+        }
+        $competitor_ratio = 0;
+        if ($params['publish_ratio'] && $params['sta_all_publish_tax_price']) {
+            $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
+        }
+
+        $orderQuote->customer_id            = $orderFinal->customer_id;
+        $orderQuote->competitor_ratio       = $competitor_ratio;
+        $orderQuote->publish_ratio          = $params['publish_ratio'];
+        $orderQuote->quote_all_tax_price    = $params['sta_quote_all_tax_price'];
+        $orderQuote->all_tax_price          = $params['sta_all_tax_price'];
+
         if ($orderQuote->save()) {
 
             $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
@@ -182,6 +209,13 @@ class OrderQuoteController extends Controller
                 $row[] = $item['quote_all_tax_price'];
                 $row[] = $item['delivery_time'];
                 $row[] = $item['quote_delivery_time'];
+                $row[] = $item['competitor_goods_id'];
+                $row[] = $item['competitor_goods_tax_price'];
+                $row[] = $item['competitor_goods_tax_price_all'];
+                $row[] = $item['competitor_goods_quote_tax_price'];
+                $row[] = $item['competitor_goods_quote_tax_price_all'];
+                $row[] = $item['publish_tax_price'];
+                $row[] = $item['all_publish_tax_price'];
 
                 $data[] = $row;
             }
@@ -197,7 +231,9 @@ class OrderQuoteController extends Controller
     {
         $feild = ['order_id', 'order_final_id', 'order_final_sn', 'order_quote_id', 'order_quote_sn', 'goods_id',
             'type', 'relevance_id', 'number', 'serial', 'tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price',
-             'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time'];
+             'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time',
+            'competitor_goods_id', 'competitor_goods_tax_price', 'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price',
+            'competitor_goods_quote_tax_price_all', 'publish_tax_price', 'publish_tax_price_all'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
 
@@ -205,7 +241,7 @@ class OrderQuoteController extends Controller
     public function actionDetail($id)
     {
         $orderQuote = OrderQuote::findOne($id);
-        $quoteGoods = QuoteGoods::findAll(['order_quote_id' => $id]);
+        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $id])->orderBy('serial asc')->all();
 
         $date = date('ymd_');
         $orderI = OrderAgreement::find()->where(['like', 'agreement_sn', $date])->orderBy('created_at Desc')->one();
@@ -266,6 +302,7 @@ class OrderQuoteController extends Controller
         $orderAgreement->sign_date       = $params['sign_date'];
         $orderAgreement->admin_id        = Yii::$app->user->identity->id;
         $orderAgreement->customer_id     = $orderQuote->customer_id;
+        $orderAgreement->expect_at       = $params['expect_at'];
         if ($orderAgreement->save()) {
             //更新其他的报价单为不可生成合同单
             $orderQuoteList = OrderQuote::find()->where(['order_id' => $orderQuote->order_id])
@@ -292,7 +329,8 @@ class OrderQuoteController extends Controller
                 $agreementGoods->tax_price           = $quoteGoods->tax_price;
                 $agreementGoods->all_price           = $quoteGoods->all_price;
                 $agreementGoods->all_tax_price       = $quoteGoods->all_tax_price;
-                $agreementGoods->delivery_time       = $quoteGoods->quote_delivery_time;
+                $agreementGoods->delivery_time       = $quoteGoods->delivery_time;
+
                 //用item的值
                 $agreementGoods->quote_price         = $item['price'];
                 $agreementGoods->quote_tax_price     = $item['tax_price'];
@@ -300,8 +338,24 @@ class OrderQuoteController extends Controller
                 $agreementGoods->quote_all_tax_price = $item['tax_price'] * $item['number'];
                 $agreementGoods->quote_delivery_time = $item['delivery_time'];
                 $agreementGoods->number              = $item['number'];
+                $agreementGoods->order_number        = $item['number'];
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
+                $agreementGoods->purchase_number     = $item['purchase_number'];
                 $agreementGoods->save();
+
+                //用于一键恢复
+                $agreementGoodsBak = new AgreementGoodsBak();
+                $agreementGoodsBak->order_agreement_id = $orderAgreement->primaryKey;
+                $agreementGoodsBak->order_agreement_sn = $orderAgreement->agreement_sn;
+                $agreementGoodsBak->agreement_goods_id = $agreementGoods->primaryKey;
+                $agreementGoodsBak->tax_rate           = $quoteGoods->tax_rate;
+                $agreementGoodsBak->price              = $quoteGoods->price;
+                $agreementGoodsBak->tax_price          = $quoteGoods->tax_price;
+                $agreementGoodsBak->all_price          = $quoteGoods->all_price;
+                $agreementGoodsBak->all_tax_price      = $quoteGoods->all_tax_price;
+                $agreementGoodsBak->purchase_number    = $item['purchase_number'];
+                $agreementGoodsBak->delivery_time      = $quoteGoods->delivery_time;
+                $agreementGoodsBak->save();
 
                 $money += $agreementGoods->quote_all_tax_price;
             }

@@ -1,5 +1,6 @@
 <?php
 
+use kartik\select2\Select2;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -33,7 +34,7 @@ $i = 0;
 $model->delivery_date = date('Y-m-d');
 
 //收入合同交货日期
-$order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->orderAgreement->agreement_date, 0, 10) : '2999-01-01';
+$model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->orderAgreement->agreement_date, 0, 10) : $orderPurchase->end_date;
 
 ?>
 
@@ -44,9 +45,17 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
             'data-pjax' => '0',
             'class'     => 'btn btn-primary btn-flat',
         ])?>
+        <?= Html::input('text', 'select_serial', null, [
+            'class'         => 'select_serial',
+            'placeholder'   => '请输入序号多个用|分割，如 1|13|25|37',
+            'style'         => 'margin-left:100px; width:300px;'
+        ])?>
+        <?= Html::button('选择', [
+            'class'     => 'btn btn-success btn-flat select_ack',
+        ])?>
     </div>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead class="data" data-order_purchase_id="<?=$_GET['id']?>">
                 <tr>
                     <th><input type="checkbox" name="select_all" class="select_all"></th>
@@ -69,13 +78,20 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     <th>税率</th>
                     <th>合同需求数量</th>
                     <th>使用库存数</th>
+                    <th>库存数量</th>
                     <th>审核状态</th>
                     <th>驳回原因</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
-                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button>
+                    </td>
+                    <td>
+                        <?=Html::a('复位', '?r=order-purchase/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                    </td>
+                    <?php if(!in_array($userId, $adminIds)):?>
                     <td></td>
-                    <td></td>
+                    <?php endif;?>
                     <td></td>
                     <td></td>
                     <td>
@@ -99,10 +115,12 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     <td>
                         <select class="form-control" name="is_stock">
                             <option value=""></option>
-                            <option value="0" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>否</option>
-                            <option value="1" <?=isset($_GET['supplier_id']) ? ($_GET['supplier_id'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
+                            <option value="0" <?=isset($_GET['is_stock']) ? ($_GET['is_stock'] === "$value->id" ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_stock']) ? ($_GET['is_stock'] === "$value->id" ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -125,7 +143,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     <td>
                         <?=$open ? $str : ''?>
                     </td>
-                    <td class="purchase_detail" data-purchase_goods_id="<?=$item->id?>" >
+                    <td class="purchase_detail" data-purchase_goods_id="<?=$item->id?>" data-serial="<?=$item->serial?>">
                         <?=$item->serial?>
                     </td>
                     <?php if(!in_array($userId, $adminIds)):?>
@@ -140,14 +158,15 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                         <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->fixed_number?>">
                     </td>
                     <td class="price"><input type="text" value="<?=$item->fixed_price?>" style="width: 100px;"></td>
-                    <td class="tax_price"><?=$item->fixed_tax_price?></td>
+                    <td class="tax_price"><input type="text" value="<?=$item->fixed_tax_price?>" style="width: 100px;"></td>
                     <td class="all_price"></td>
                     <td class="all_tax_price"></td>
                     <td class="delivery_time"><input type="text" value="<?=$item->delivery_time?>" style="width: 100px;"></td>
                     <td><?=$item::$stock[$item->is_stock]?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <td><?=$item->number?></td>
-                    <td><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
+                    <td class="agreement_number"><?=$item->number?></td>
+                    <td class="use_number"><?=($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0?></td>
+                    <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?php
                             if ($item->apply_status == 0) {
                                 $status = '无';
@@ -164,6 +183,14 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     <td><?=$item->reason?></td>
                 </tr>
             <?php endforeach;?>
+            <tr style="background-color: #acccb9">
+                <td colspan="<?=in_array($userId, $adminIds) ? 11 : 12?>" rowspan="2">汇总统计</td>
+                <td>含税总价合计</td>
+                <td colspan="8" rowspan="2"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="stat_all_tax_price"></td>
+            </tr>
             </tbody>
         </table>
 
@@ -171,7 +198,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
 
         <?= $form->field($model, 'end_date')->textInput(['readonly' => 'true']); ?>
 
-        <?= $form->field($model, 'supplier_id')->widget(\kartik\select2\Select2::classname(), [
+        <?= $form->field($model, 'supplier_id')->widget(Select2::classname(), [
             'data' => Supplier::getCreateDropDown(),
             'options' => ['placeholder' => '选择供应商'],
             'pluginOptions' => [
@@ -226,6 +253,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked",$(this).prop("checked"));
+            stat();
         });
 
         //子选择
@@ -235,6 +263,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
             } else {
                 $('.select_all').prop("checked",false);
             }
+            stat();
         });
 
         init();
@@ -242,7 +271,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
         function init(){
             $('.order_purchase_list').each(function (i, e) {
                 var price     = $(e).find('.price input').val();
-                var tax_price = $(e).find('.tax_price').text();
+                var tax_price = $(e).find('.tax_price input').val();
                 var number    = $(e).find('.afterNumber input').val();
                 $(e).find('.all_price').text(parseFloat(price * number).toFixed(2));
                 $(e).find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
@@ -274,6 +303,9 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     case 'supplier_id':
                         parameter += '&supplier_id=' + $(e).find("option:selected").val();
                         break;
+                    case 'is_stock':
+                        parameter += '&is_stock=' + $(e).find("option:selected").val();
+                        break;
                     default:
                         break;
                 }
@@ -283,13 +315,26 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
 
         //输入未税单价
         $(".price input").bind('input propertychange', function (e) {
-            var tax       = $(this).parent().parent().find('.tax').text();
-            var price     = $(this).val();
-            var tax_price = parseFloat(price * (1 + tax/100)).toFixed(2);
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var price     = parseFloat($(this).val());
+            var tax_price = (price * (1 + tax/100)).toFixed(2);
             var number    = $(this).parent().parent().find('.number').val();
-            $(this).parent().parent().find('.tax_price').text(tax_price);
+            $(this).parent().parent().find('.tax_price input').val(tax_price);
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            stat();
+        });
+
+        //输入含税单价
+        $(".tax_price input").bind('input propertychange', function (e) {
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var tax_price = parseFloat($(this).val());
+            var price     = (tax_price / (1 + tax / 100)).toFixed(2);
+            var number    = $(this).parent().parent().find('.number').val();
+            $(this).parent().parent().find('.price input').val(price);
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            stat();
         });
 
         //输入数量
@@ -302,11 +347,18 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
-            var price     = $(this).parent().parent().find('.price input').val();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            var agreement_number = $(this).parent().parent().find('.agreement_number').text();
+            var price            = parseFloat($(this).parent().parent().find('.price input').val());
+            var tax_price        = parseFloat($(this).parent().parent().find('.tax_price input').val());
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            var use_number = agreement_number - number;
+            if (use_number < 0) {
+                use_number = 0;
+            }
+            $(this).parent().parent().find('.use_number').text(parseInt(use_number));
+            stat();
         });
 
         $('#orderpurchase-supplier_id').change(function(e){
@@ -334,15 +386,19 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
 
         //保存支出合同
         $(".payment_save").click(function () {
+            //防止双击
+            $(".payment_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var goods_info          = [];
-            var supplier_flag       = false;
             var supplier_name       = '';
             var long_delivery_time  = 0;
+            var supplier_flag       = false;
+            var stock_flag          = false;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var s_name = $(element).parent().parent().find('.supplier_name').text();
@@ -356,7 +412,8 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     var item = {};
                     item.purchase_goods_id = $(element).parent().parent().find('.purchase_detail').data('purchase_goods_id');
                     item.goods_id          = $(element).val();
-                    item.fix_price         = $(element).parent().parent().find('.price input').val();
+                    item.fix_price         = parseFloat($(element).parent().parent().find('.price input').val());
+                    item.fix_tax_price     = parseFloat($(element).parent().parent().find('.tax_price input').val());
                     item.fix_number        = $(element).parent().parent().find('.afterNumber input').val();
                     var delivery_time = parseFloat($(element).parent().parent().find('.delivery_time input').val());
                     if (delivery_time > long_delivery_time) {
@@ -364,6 +421,12 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                     }
                     item.delivery_time     = delivery_time;
                     goods_info.push(item);
+
+                    var use_num = parseFloat($(element).parent().parent().find('.use_number').text());
+                    var stock_num = parseFloat($(element).parent().parent().find('.stock_number').text());
+                    if (use_num > stock_num) {
+                        stock_flag = true;
+                    }
                 }
             });
 
@@ -372,6 +435,12 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
             //     return false;
             // }
 
+            if (stock_flag) {
+                layer.msg('使用库存数不能大于库存数', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+
             var order_purchase_id = $('.data').data('order_purchase_id');
             var admin_id          = $('#orderpurchase-admin_id').val();
             var end_date          = $('#orderpurchase-end_date').val();
@@ -379,6 +448,7 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
             var supplier_id       = $('#orderpurchase-supplier_id option:selected').val();
             if (!supplier_id) {
                 layer.msg('请选择供应商', {time:2000});
+                $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var apply_reason      = $('#orderpurchase-apply_reason').val();
@@ -415,7 +485,75 @@ $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->or
                         }
                     });
                 });
+            } else {
+                //创建支出合同
+                $.ajax({
+                    type:"post",
+                    url:'?r=order-purchase-verify/save-order',
+                    data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
+                        goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
+                        apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date,
+                        order_agreement_date:order_agreement_date},
+                    dataType:'JSON',
+                    success:function(res){
+                        if (res && res.code == 200){
+                            layer.msg(res.msg, {time:2000});
+                            window.location.reload();
+                        } else {
+                            layer.msg(res.msg, {time:2000});
+                            return false;
+                        }
+                    }
+                });
             }
         });
+
+        //进行输入序号筛选
+        $('.select_ack').click(function (e) {
+            var input_val = $('.select_serial').val();
+            if (input_val == '') {
+                return ;
+            }
+            var stat_all_tax_price = 0;
+            var input_arr = input_val.split('|');
+            $('.order_purchase_list').each(function (i, e) {
+                var serial = String($(e).find('.purchase_detail').data('serial'));
+                var index = input_arr.indexOf(serial);
+                if (index != -1) {
+                    $(e).find('.select_id').prop("checked",true);
+                }
+
+                if ($(e).find('.select_id').prop("checked")) {
+                    var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
+                    if (all_tax_price) {
+                        stat_all_tax_price += all_tax_price;
+                    }
+                }
+            });
+
+            //统一处理总选择
+            if ($('.select_id').length == $('.select_id:checked').length) {
+                $('.select_all').prop("checked",true);
+            } else {
+                $('.select_all').prop("checked",false);
+            }
+
+            //计算统计
+            $('.stat_all_tax_price').text(stat_all_tax_price.toFixed(2));
+        });
+
+        function stat() {
+            var stat_all_tax_price = 0;
+            $('.order_purchase_list').each(function (i, e) {
+                if ($(e).find('.select_id').prop("checked")) {
+                    var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
+                    if (all_tax_price) {
+                        stat_all_tax_price += all_tax_price;
+                    }
+                }
+            });
+            //计算统计
+            $('.stat_all_tax_price').text(stat_all_tax_price.toFixed(2));
+        }
     });
 </script>

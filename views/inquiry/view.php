@@ -128,6 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Inquiry::$better[$model->is_better];
                 }
             ],
+            'better_reason',
             [
                 'attribute' => 'is_newest',
                 'value'     => function ($model) {

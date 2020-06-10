@@ -19,10 +19,13 @@ $tax_rate = SystemConfig::find()->select('value')->where([
     'title'  => SystemConfig::TITLE_TAX,
     'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '付款财务', '收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId = Yii::$app->user->identity->id;
+
+//收入合同交货日期
+$model->income_deliver_time = $model->purchase ? $model->purchase->end_date : '';
 ?>
 
 <div class="box table-responsive">
@@ -66,7 +69,7 @@ $userId = Yii::$app->user->identity->id;
                     <td class="tax"><?=$tax_rate?></td>
                     <?php if (!in_array($userId, $adminIds)):?>
                     <?php
-                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->estimate_publish_price;
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $tax_rate/100), 2, '.', '');
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->fixed_number?></td>
@@ -101,9 +104,11 @@ $userId = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'purchase_id')->textInput(['readonly' => true, 'value' => Helper::getAdminList(['系统管理员', '采购员'])[$model->admin_id]])->label('采购员'); ?>
 
+        <?= $form->field($model, 'income_deliver_time')->textInput(['readonly' => true])->label('收入合同交货日期') ?>
+
         <?= $form->field($model, 'agreement_at')->textInput(['readonly' => true, 'value' => substr($model->agreement_at, 0, 10)])->label('支出合同签订时间'); ?>
 
-        <?= $form->field($model, 'take_time')->textInput(['readonly' => true, 'value' => substr($model->take_time, 0, 10)])->label('支出合同交货日期'); ?>
+        <?= $form->field($model, 'delivery_date')->textInput(['readonly' => true, 'value' => substr($model->delivery_date, 0, 10)])->label('支出合同交货日期'); ?>
 
         <?= $form->field($model, 'payment_sn')->textInput(['readonly' => true])->label('支出合同单号'); ?>
 
@@ -111,7 +116,7 @@ $userId = Yii::$app->user->identity->id;
             <?= $form->field($model, 'reason')->textInput(); ?>
         <?php endif;?>
     </div>
-    <?php if (!$model->is_verify):?>
+    <?php if (!$model->is_verify && !in_array($userId, $adminIds)):?>
         <div class="box-footer">
             <?= Html::button('审核通过', [
                     'class' => 'btn btn-success verify_save',

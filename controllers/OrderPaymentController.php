@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\AuthAssignment;
+use app\models\SystemNotice;
 use Yii;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
@@ -137,5 +139,27 @@ class OrderPaymentController extends Controller
             'orderPayment' => $orderPayment,
             'paymentGoods' => $paymentGoods,
         ]);
+    }
+
+    /**
+     * 给付款财务发通知
+     */
+    public function actionNotice($id)
+    {
+        $orderPayment = OrderPayment::findOne($id);
+        $orderPayment->is_notice = 1;
+        $orderPayment->save();
+
+        //发通知
+        $financialAdmin = AuthAssignment::find()->where(['item_name' => '付款财务'])->all();
+        foreach ($financialAdmin as $key => $value) {
+            $systemNotice = new SystemNotice();
+            $systemNotice->admin_id  = $value->user_id;
+            $systemNotice->content   = $orderPayment->payment_sn . '支出合同已到货，需要付全款';
+            $systemNotice->notice_at = date('Y-m-d H:i:s');
+            $systemNotice->save();
+        }
+
+        return $this->redirect(['index']);
     }
 }

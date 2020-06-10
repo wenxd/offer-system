@@ -2,16 +2,21 @@
 
 namespace app\controllers;
 
+use app\models\AgreementStock;
 use app\models\FinalGoods;
 use app\models\Goods;
 use app\models\Inquiry;
+use app\models\InquiryGoods;
 use app\models\OrderAgreement;
 use app\models\OrderFinal;
 use app\models\OrderGoods;
+use app\models\OrderGoodsBak;
 use app\models\OrderInquiry;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
+use app\models\OrderQuote;
 use app\models\Stock;
+use app\models\Supplier;
 use app\models\TempNotGoods;
 use app\models\TempNotGoodsB;
 use app\models\TempOrderGoods;
@@ -219,19 +224,129 @@ class OrderController extends BaseController
         $orderGoods     = OrderGoods::find()->where(['order_id' => $id])->all();
         $orderInquiry   = OrderInquiry::findAll(['order_id' => $id]);
         $orderFinal     = OrderFinal::findAll(['order_id' => $id]);
+        $orderQuote     = OrderQuote::findAll(['order_id' => $id]);
         $orderPurchase  = OrderPurchase::findAll(['order_id' => $id]);
         $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
         $orderPayment   = OrderPayment::findAll(['order_id' => $id]);
+        $orderUseStock  = AgreementStock::find()->where(['order_id' => $id])->all();
 
         $data['model']          = $order;
         $data['orderGoods']     = $orderGoods;
         $data['orderInquiry']   = $orderInquiry;
         $data['orderFinal']     = $orderFinal;
+        $data['orderQuote']     = $orderQuote;
         $data['orderPurchase']  = $orderPurchase;
         $data['orderAgreement'] = $orderAgreement;
         $data['orderPayment']   = $orderPayment;
+        $data['orderUseStock']     = $orderUseStock;
 
         return $this->render('detail', $data);
+    }
+
+    public function actionCreateInquiryNew($id)
+    {
+        //处理订单零件合并
+        OrderGoodsBak::deleteAll();
+        $orderGoodsOldList = OrderGoods::find()->where(['order_id' => $id])->asArray()->all();
+        $orderGoodsOldList = ArrayHelper::index($orderGoodsOldList, null, 'goods_id');
+
+        $newOrderGoods = [];
+        foreach ($orderGoodsOldList as $key => $orderGoodsList) {
+            $number = 0;
+            foreach ($orderGoodsList as $k => $orderGoods) {
+                if ($k == 0) {
+                    $saveOrderGoods = $orderGoods;
+                }
+                $number += $orderGoods['number'];
+            }
+            $saveOrderGoods['number'] = $number;
+            $newOrderGoods[] = $saveOrderGoods;
+        }
+        $keys = [];
+        $res = Yii::$app->db->createCommand()->batchInsert(OrderGoodsBak::tableName(), $keys, $newOrderGoods)->execute();
+        return $this->redirect(['order/create-inquiry', 'id' => $id]);
+    }
+
+    /**生成询价单
+     * @param $id
+     * @return false|string
+     */
+    public function actionCreateInquiry($id)
+    {
+        $request = Yii::$app->request->get();
+        $order     = Order::findOne($id);
+        if (!$order) {
+            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
+        }
+
+        $goods_ids            = json_decode($order->goods_ids, true);
+        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+
+        //询价记录
+        $inquiryListOld = Inquiry::find()->where(['good_id' => $goods_ids])->all();
+        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
+
+        $orderGoodsQuery      = OrderGoodsBak::find()->from('order_goods_bak og')
+            ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
+            ->where(['order_id' => $order->id]);
+        if (isset($request['goods_number']) && $request['goods_number']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
+        }
+        if (isset($request['goods_number_b']) && $request['goods_number_b']) {
+            $orderGoodsQuery->andWhere(['like', 'goods_number_b', $request['goods_number_b']]);
+        }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        if (isset($request['is_process']) && $request['is_process'] !== '') {
+            $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
+        }
+        if (isset($request['is_special']) && $request['is_special'] !== '') {
+            $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
+        }
+        if (isset($request['is_standard']) && $request['is_standard'] !== '') {
+            $orderGoodsQuery->andWhere(['is_standard' => $request['is_standard']]);
+        }
+        if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
+            $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
+        }
+        if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
+            $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
+        }
+        if (isset($request['is_inquiry']) && $request['is_inquiry'] !== '') {
+            $inquiryGoodsIds = ArrayHelper::getColumn($inquiryListOld, 'good_id');
+            if ($request['is_inquiry']) {
+                $orderGoodsQuery->andWhere(['goods_id' => $inquiryGoodsIds]);
+            } else {
+                $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
+            }
+        }
+        $orderGoods           = $orderGoodsQuery->all();
+
+        //库存数量
+        $stockList = Stock::find()->indexBy('good_id')->all();
+
+        $date = date('ymd_');
+        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $inquirySn = explode('_', $orderI->inquiry_sn);
+            $number = sprintf("%03d", $inquirySn[1]+1);
+        } else {
+            $number = '001';
+        }
+        $supplierList = Supplier::find()->where(['is_deleted' => 0, 'is_confirm' => 1])->all();
+
+        $data                 = [];
+        $data['orderInquiry'] = $orderInquiry;
+        $data['model']        = new OrderInquiry();
+        $data['order']        = $order;
+        $data['orderGoods']   = $orderGoods;
+        $data['number']       = $number;
+        $data['inquiryList']  = $inquiryList;
+        $data['stockList']    = $stockList;
+        $data['supplierList'] = $supplierList;
+
+        return $this->render('create-inquiry', $data);
     }
 
     //生成最终报价单
@@ -432,7 +547,8 @@ class OrderController extends BaseController
         $order->customer_id  = $params['customer_id'];
         $order->order_sn     = $params['order_sn'];
         $order->manage_name  = $params['manage_name'];
-        $order->goods_ids    = json_encode($goods['goodsIds']);
+        $goodsIds = ArrayHelper::getColumn($goods['goodsInfo'], 'goods_id');
+        $order->goods_ids    = json_encode($goodsIds);
         $order->order_type   = $params['order_type'];
         $order->created_at   = $params['created_at'];
 
@@ -454,80 +570,11 @@ class OrderController extends BaseController
         }
     }
 
-    public function actionCreateInquiry($id)
-    {
-        $request = Yii::$app->request->get();
-        $data      = [];
-        $order     = Order::findOne($id);
-        if (!$order) {
-            return json_encode(['code' => 500, 'msg' => '此订单不存在']);
-        }
-        $goods_ids            = json_decode($order->goods_ids, true);
-        $goods                = Goods::find()->where(['id' => $goods_ids])->orderBy('original_company Desc')->all();
-        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
-
-        //询价记录
-        $inquiryListOld = Inquiry::find()->all();
-        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
-
-        $orderGoodsQuery      = OrderGoods::find()->from('order_goods og')
-            ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
-            ->where(['order_id' => $order->id]);
-        if (isset($request['goods_number']) && $request['goods_number']) {
-            $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
-        }
-        if (isset($request['goods_number_b']) && $request['goods_number_b']) {
-            $orderGoodsQuery->andWhere(['like', 'goods_number_b', $request['goods_number_b']]);
-        }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
-        }
-        if (isset($request['is_process']) && $request['is_process'] !== '') {
-            $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
-        }
-        if (isset($request['is_special']) && $request['is_special'] !== '') {
-            $orderGoodsQuery->andWhere(['is_special' => $request['is_special']]);
-        }
-        if (isset($request['is_nameplate']) && $request['is_nameplate'] !== '') {
-            $orderGoodsQuery->andWhere(['is_nameplate' => $request['is_nameplate']]);
-        }
-        if (isset($request['is_assembly']) && $request['is_assembly'] !== '') {
-            $orderGoodsQuery->andWhere(['is_assembly' => $request['is_assembly']]);
-        }
-        if (isset($request['is_inquiry']) && $request['is_inquiry'] !== '') {
-            $inquiryGoodsIds = ArrayHelper::getColumn($inquiryListOld, 'good_id');
-            if ($request['is_inquiry']) {
-                $orderGoodsQuery->andWhere(['goods_id' => $inquiryGoodsIds]);
-            } else {
-                $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
-            }
-        }
-        $orderGoods           = $orderGoodsQuery->all();
-
-        //库存数量
-        $stockList = Stock::find()->indexBy('good_id')->all();
-
-        $date = date('ymd_');
-        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
-        if ($orderI) {
-            $inquirySn = explode('_', $orderI->inquiry_sn);
-            $number = sprintf("%03d", $inquirySn[1]+1);
-        } else {
-            $number = '001';
-        }
-
-        $data['orderInquiry'] = $orderInquiry;
-        $data['goods']        = $goods;
-        $data['model']        = new OrderInquiry();
-        $data['order']        = $order;
-        $data['orderGoods']   = $orderGoods;
-        $data['number']       = $number;
-        $data['inquiryList']  = $inquiryList;
-        $data['stockList']    = $stockList;
-
-        return $this->render('create-inquiry', $data);
-    }
-
+    /**保存成本单
+     * @param $id
+     * @param int $key
+     * @return false|string
+     */
     public function actionCreateFinal($id, $key = 0)
     {
         $data      = [];
@@ -552,11 +599,17 @@ class OrderController extends BaseController
             ])->one();
             if (!$isHaveFinalGoods) {
                 $inquiry = Inquiry::find()->where([
-                    'good_id'   => $value->goods_id,
-                    'is_better' => Inquiry::IS_BETTER_YES
+                    'good_id'           => $value->goods_id,
+                    'is_better'         => Inquiry::IS_BETTER_YES,
+                    'is_confirm_better' => 1
                 ])->one();
                 if (!$inquiry) {
-                    continue;
+                    $inquiry = Inquiry::find()->where([
+                        'good_id'           => $value->goods_id,
+                    ])->orderBy('price asc')->one();
+                    if (!$inquiry) {
+                        continue;
+                    }
                 }
                 $isHaveFinalGoods = new FinalGoods();
                 $isHaveFinalGoods->order_id     = $id;
@@ -664,7 +717,7 @@ class OrderController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C'];
-        $tableHeader = ['序号', '零件号', '数量'];
+        $tableHeader = ['零件号', '数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -730,15 +783,15 @@ class OrderController extends BaseController
                     TempNotGoodsB::deleteAll();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['B'])) {
+                            if (empty($value['A'])) {
                                 continue;
                             }
-                            $goods = Goods::findOne(['goods_number' => trim($value['B'])]);
+                            $goods = Goods::findOne(['goods_number' => trim($value['A'])]);
                             if ($goods) {
                                 $item = [];
-                                $item[] = trim($value['A']);
+                                $item[] = $key-1;
                                 $item[] = $goods->id;
-                                $item[] = trim($value['C']);
+                                $item[] = trim($value['B']);
                                 $item[] = $time;
                                 $data[] = $item;
                                 if (!$goods->goods_number_b) {
@@ -750,7 +803,7 @@ class OrderController extends BaseController
                                 }
                             } else {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = trim($value['B']);
+                                $temp->goods_number = trim($value['A']);
                                 $temp->save();
                             }
                         }

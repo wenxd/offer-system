@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 $this->title = '待付款订单详情';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '付款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
@@ -201,6 +201,8 @@ if ($model->payment_ratio == '0.00') {
 
         var id = $('.data').data('order_payment_id');
         $('.save_remark').click(function (e) {
+            //防止双击
+            $(".save_remark").attr("disabled", true).addClass("disabled");
             var remark = $('#orderpayment-financial_remark').val();
             $.ajax({
                 type:"post",
@@ -220,7 +222,9 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_advance').click(function (e) {
-            var payment_ratio = $('#orderpayment-payment_ratio').val();
+            //防止双击
+            $(".save_advance").attr("disabled", true).addClass("disabled");
+            var payment_ratio = $('#orderpayment-price').val();
             $.ajax({
                 type:"post",
                 url:'?r=financial/change-advance',
@@ -239,6 +243,8 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_payment').click(function (e) {
+            //防止双击
+            $(".save_payment").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial/change-payment',
@@ -257,6 +263,8 @@ if ($model->payment_ratio == '0.00') {
         });
 
         $('.save_bill').click(function (e) {
+            //防止双击
+            $(".save_bill").attr("disabled", true).addClass("disabled");
             $.ajax({
                 type:"post",
                 url:'?r=financial/change-bill',

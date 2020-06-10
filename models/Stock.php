@@ -104,6 +104,7 @@ class Stock extends ActiveRecord
             'goods_number'     => '零件号',
             'description'      => '中文描述',
             'description_en'   => '英文描述',
+            'material_code'    => '设备类别',
             'supplier_id'      => '供应商ID',
             'supplier_name'    => '供应商名称',
             'price'            => '未税单价',
@@ -116,7 +117,7 @@ class Stock extends ActiveRecord
             'low_number'       => '低储',
             'sort'             => '排序',
             'is_emerg'         => '紧急',
-            'is_zero'          => '为0',
+            'is_zero'          => '是否有库存',
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',
@@ -131,5 +132,15 @@ class Stock extends ActiveRecord
     public function getGoods()
     {
         return $this->hasOne(Goods::className(), ['id' => 'good_id']);
+    }
+
+    public static function getAllMoney()
+    {
+        $list = self::find()->select('tax_price, number')->where(['is_deleted' => self::IS_DELETED_NO])->asArray()->all();
+        $allMoney = 0;
+        foreach ($list as $item) {
+            $allMoney += $item['tax_price'] * $item['number'];
+        }
+        return $allMoney;
     }
 }

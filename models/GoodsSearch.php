@@ -29,10 +29,10 @@ class GoodsSearch extends Goods
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
                 'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price',
-                'material_code', 'import_mark'], 'safe'],
+                'material_code', 'import_mark', 'publish_price'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
-                'technique_remark', 'device_info', 'material', 'part', 'remark', 'estimate_publish_price', 'material_code',
-                'import_mark'], 'trim'],
+                'technique_remark', 'device_info', 'material', 'part', 'remark', 'publish_price', 'publish_tax_price',
+                'estimate_publish_price', 'material_code', 'import_mark'], 'trim'],
         ];
     }
 
@@ -66,7 +66,7 @@ class GoodsSearch extends Goods
                 ],
                 'attributes' => ['id', 'updated_at', 'created_at']
             ],
-            'pagination' => ['pageSize' => 100]
+            'pagination' => ['pageSize' => 30]
         ]);
 
         $this->load($params);
@@ -150,6 +150,7 @@ class GoodsSearch extends Goods
             'goods.is_standard'             => $this->is_standard,
             'goods.is_import'               => $this->is_import,
             'goods.is_repair'               => $this->is_repair,
+            'goods.publish_price'           => $this->publish_price,
             'goods.publish_tax_price'       => $this->publish_tax_price,
             'goods.publish_delivery_time'   => $this->publish_delivery_time,
             'goods.estimate_publish_price'  => $this->estimate_publish_price,
@@ -165,10 +166,11 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.technique_remark', $this->technique_remark])
               ->andFilterWhere(['like', 'goods.img_id', $this->img_id])
               ->andFilterWhere(['like', 'goods.material', $this->material])
-              ->andFilterWhere(['like', 'goods.material', $this->material])
-              ->andFilterWhere(['like', 'goods.part', $this->material])
+              ->andFilterWhere(['like', 'goods.part', $this->part])
               ->andFilterWhere(['like', 'goods.material_code', $this->material_code])
-              ->andFilterWhere(['like', 'goods.remark', $this->device_info]);
+              ->andFilterWhere(['like', 'goods.device_info', $this->device_info])
+              ->andFilterWhere(['like', 'goods.import_mark', $this->import_mark])
+              ->andFilterWhere(['like', 'goods.remark', $this->remark]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

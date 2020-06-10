@@ -1,5 +1,7 @@
 <?php
 
+use app\extend\widgets\Bar;
+use app\models\OrderPayment;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -7,6 +9,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\OrderPurchase;
 use kartik\daterange\DateRangePicker;
+use app\models\Helper;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -26,8 +29,22 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 $userId   = Yii::$app->user->identity->id;
+$userName = Yii::$app->user->identity->username;
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
@@ -48,8 +65,12 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'purchase_sn',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'purchase_sn',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use($userId, $adminIds) {
+                    if (in_array($userId, $adminIds) && $model->is_agreement){
+                        return $model->purchase_sn;
+                    } else {
+                        return Html::a($model->purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -94,9 +115,21 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'payment_max_date',
+                'label'     => '支出合同最晚时间',
+                'value'     => function ($model, $key, $index, $column) {
+                    $orderPayment = OrderPayment::find()->where(['order_purchase_id' => $model->id])->orderBy('delivery_date Desc')->one();
+                    if (!empty($orderPayment)) {
+                        return substr($orderPayment->delivery_date, 0, 10);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => $admins,
+                'filter'    => in_array($userId, $adminIds) ? [$userId => $userName] : Helper::getAdminList(['系统管理员', '采购员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

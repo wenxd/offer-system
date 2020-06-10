@@ -19,15 +19,20 @@ $this->title = '库存管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$stock_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$use_admin = AuthAssignment::find()->where(['item_name' => '库管员B'])->all();
+$stock_b_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId    = Yii::$app->user->identity->id;
-$isShow    = in_array($userId, $adminIds);
+$isShow    = in_array($userId, array_merge($stock_adminIds, $stock_b_adminIds));
 
 if ($isShow) {
-    $func = '{gen}';
+    $func = '{index}';
+    if (in_array($userId, $stock_adminIds)) {
+        $func = '{gen} {index}';
+    }
     $operate = '{view}';
 } else {
-    $func = '{gen} {delete} {stock_in} {stock_out} {download}';
+    $func = '{gen} {delete} {stock_in} {stock_out} {download} {index}';
     $operate = '{view} {update}';
 }
 
@@ -53,6 +58,12 @@ if ($isShow) {
                         'data-pjax' => '0',
                         'class'     => 'btn btn-primary btn-flat',
                     ]);
+                },
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
                 }
             ]
         ])?>
@@ -77,9 +88,13 @@ if ($isShow) {
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        if ($isShow) {
+                            return $model->goods->goods_number;
+                        } else {
+                            return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        }
                     } else {
                         return '';
                     }
@@ -110,6 +125,51 @@ if ($isShow) {
                 }
             ],
             [
+                'attribute' => 'material_code',
+                'format'    => 'raw',
+                'label'     => '设备类别',
+                'filter'    => Html::activeTextInput($searchModel, 'material_code', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        return $model->goods->material_code;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'part',
+                'format'    => 'raw',
+                'label'     => '所属部件',
+                'filter'    => Html::activeTextInput($searchModel, 'part', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        return $model->goods->part;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'device_info',
+                'format'    => 'raw',
+                'label'     => '设备信息',
+                'filter'    => Html::activeTextInput($searchModel, 'device_info', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) use($isShow) {
+                    if ($model->goods) {
+                        $text = '';
+                        if ($model->goods->device_info) {
+                            foreach (json_decode($model->goods->device_info, true) as $key => $device) {
+                                $text .= $key . ':' . $device . '<br/>';
+                            }
+                        }
+                        return $text;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'tax_rate',
                 'visible'   => !$isShow,
             ],
@@ -120,6 +180,13 @@ if ($isShow) {
             [
                 'attribute' => 'tax_price',
                 'visible'   => !$isShow,
+            ],
+            [
+                'attribute' => '含税总价',
+                'visible'   => !$isShow,
+                'value'     => function ($model, $key, $index, $column) {
+                    return $model->number * $model->tax_price;
+                }
             ],
             'position',
             [
@@ -141,7 +208,7 @@ if ($isShow) {
                 'contentOptions'=>['style'=>'min-width: 60px;'],
                 'filter'    => Stock::$zero,
                 'value'     => function($model){
-                    return $model->number ? '否' : '是';
+                    return $model->number ? '是' : '否';
                 }
             ],
             [
@@ -164,6 +231,7 @@ if ($isShow) {
             ],
             [
                 'class' => ActionColumn::className(),
+                'visible'   => !$isShow,
                 'contentOptions'=>['style'=>'min-width: 130px;'],
                 'header' => '操作',
                 'template' => $operate,
@@ -171,6 +239,16 @@ if ($isShow) {
         ],
     ]); ?>
     <?php Pjax::end(); ?>
+        <?php if (!$isShow) :?>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>库存总金额</th>
+                    <th><?=Stock::getAllMoney();?></th>
+                </tr>
+            </thead>
+        </table>
+        <?php endif;?>
     </div>
 </div>
 

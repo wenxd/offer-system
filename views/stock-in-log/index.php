@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -18,12 +19,25 @@ use app\models\StockLog;
 $this->title = '入库记录';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
@@ -81,7 +95,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '操作员',
-                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => \app\models\Helper::getAdminList(['系统管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

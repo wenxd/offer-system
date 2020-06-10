@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use app\models\SystemConfig;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
@@ -25,26 +26,33 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 $userId   = Yii::$app->user->identity->id;
+$is_show = in_array($userId, $adminIds);
+
+$tax = SystemConfig::find()->select('value')->where([
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+    'title'      => SystemConfig::TITLE_TAX
+])->scalar();
 
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
+                <th>序号</th>
                 <th>零件号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>厂家号</th>
                 <?php endif;?>
-                <th>中文描述</th>
-                <th>英文描述</th>
+                <th style="width: 200px;">中文描述</th>
+                <th style="width: 200px;">英文描述</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
                 <?php endif;?>
                 <th>单位</th>
-                <th>收入合同货期</th>
+                <th>数量</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>供应商</th>
                 <?php endif;?>
@@ -55,12 +63,13 @@ $userId   = Yii::$app->user->identity->id;
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
-                <th>数量</th>
+                <th>收入合同货期</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_quote_list">
+                    <td><?=$item->serial?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                         <td><?=$item->goods->goods_number_b?></td>
@@ -75,40 +84,46 @@ $userId   = Yii::$app->user->identity->id;
                     <td><?=$item->goods->original_company_remark?></td>
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
-                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>"></td>
+                    <td class="afterNumber">
+                        <input type="number" class="number" min="1" value="<?=$item->number?>"  style="width: 80px;">
+                    </td>
                     <?php if(!in_array($userId, $adminIds)):?>
                     <td><?=$item->inquiry->supplier->name?></td>
                     <?php endif;?>
-                    <td class="tax"><?=$item->tax_rate?></td>
+                    <td class="tax"><?=$tax?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
-                    <td><?=$item->goods->publish_tax_price?></td>
+                    <td><?=number_format($item->goods->publish_price * (1 + $tax/100), 2, '.', '')?></td>
                     <?php endif;?>
-                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>"></td>
-                    <td class="tax_price"><?=$item->quote_tax_price?></td>
+                    <td class="price"><input type="text" class="change_price" value="<?=$item->quote_price?>" style="width: 80px;"></td>
+                    <td class="tax_price"><input type="text" class="change_tax_price" value="<?=$item->quote_tax_price?>" style="width: 80px;"></td>
                     <td class="all_tax_price"></td>
-                    <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" value="<?=$item->number?>"
-                               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}"
-                               onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}"/>
-                    </td>
+                    <td class="delivery_time"><input type="text" value="<?=$item->quote_delivery_time?>" style="width: 80px;"></td>
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="7" rowspan="2">汇总统计</td>
-                <td>最长合同货期</td>
-                <td colspan="5" rowspan="2"></td>
+                <td colspan="<?= $is_show ? 9 : 14?>" rowspan="2">汇总统计</td>
                 <td>合同总价</td>
-                <td></td>
+                <td>最长合同货期</td>
             </tr>
             <tr style="background-color: #acccb9">
-                <td class="mostLongTime"></td>
                 <td class="sta_all_tax_price"></td>
-                <td></td>
+                <td class="mostLongTime"></td>
             </tr>
             </tbody>
         </table>
 
         <?= $form->field($model, 'quote_delivery_time')->textInput()->label('统一报价货期') ?>
+
+        <?= $form->field($model, 'expect_at')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
 
         <?= $form->field($model, 'agreement_sn')->textInput() ?>
 
@@ -156,7 +171,7 @@ $userId   = Yii::$app->user->identity->id;
             var mostLongTime      = 0;
             $('.order_quote_list').each(function (i, e) {
                 var price           = parseFloat($(e).find('.change_price').val());
-                var tax_price       = parseFloat($(e).find('.tax_price').text());
+                var tax_price       = parseFloat($(e).find('.tax_price input').val());
                 var number          = parseFloat($(e).find('.afterNumber').find('input').val());
                 var all_tax_price   = parseFloat(tax_price * number);
                 $(e).find('.all_tax_price').text(all_tax_price.toFixed(2));
@@ -177,32 +192,50 @@ $userId   = Yii::$app->user->identity->id;
         //改变数量
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
-            if (number == 0) {
-                layer.msg('数量最少为1', {time:2000});
-                return false;
-            }
-            var a = number.replace(/[\D]/g,'');
-            $(this).val(a);
+            $(this).val(number);
+            var tax_price     = parseFloat($(this).parent().parent().find('.tax_price input').val());
+            var all_tax_price = parseFloat(tax_price * number);
+            $(this).parent().parent().find('.all_tax_price').text(all_tax_price.toFixed(2));
 
-            var price = $(this).parent().parent().find('.change_price').val();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
-
-            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
-            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            //计算总价
+            statPrice();
         });
 
-        //修改单价
+        //修改未税单价
         $('.change_price').bind('input propertychange', function (e) {
-            var price = $(this).val();
-            var tax   = $(this).parent().parent().find('.tax').text();
+            var price     = parseFloat($(this).val());
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
             var tax_price = (price * (1 + tax / 100));
             var number    = $(this).parent().parent().find('.number').val();
-            $(this).parent().parent().find('.tax_price').text(parseFloat(tax_price).toFixed(2));
-
-            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.price input').val(price);
+            $(this).parent().parent().find('.tax_price input').val(tax_price.toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
-            console.log(price);
+            statPrice();
         });
+
+        //修改含税单价
+        $('.change_tax_price').bind('input propertychange', function (e) {
+            var tax_price = parseFloat($(this).val());
+            var tax       = parseFloat($(this).parent().parent().find('.tax').text());
+            var price     = parseFloat(tax_price / (1 + tax / 100));
+            var number    = parseFloat($(this).parent().parent().find('.number').val());
+            $(this).parent().parent().find('.price input').val(price.toFixed(2));
+            $(this).parent().parent().find('.tax_price input').val(tax_price);
+            $(this).parent().parent().find('.all_tax_price').text(tax_price * number);
+            statPrice();
+        });
+
+        //计算总价
+        function statPrice() {
+            var sta_all_tax_price = 0;
+            $('.order_quote_list').each(function (i, e) {
+                var all_tax_price = parseFloat($(e).find('.all_tax_price').text());
+                if (all_tax_price) {
+                    sta_all_tax_price += all_tax_price;
+                }
+            });
+            $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+        }
 
         //统一修改货期
         $('#orderagreement-quote_delivery_time').bind('input propertychange', function (e) {
@@ -213,38 +246,65 @@ $userId   = Yii::$app->user->identity->id;
             $('.mostLongTime').text(quote_delivery_time);
         });
 
+        //修改收入合同货期
+        $('.delivery_time input').bind('input propertychange', function (e) {
+            var quote_delivery_time = $(this).val();
+            $(this).val(quote_delivery_time);
+            var most_delivery_time = 0;
+            $('.order_quote_list').each(function (i, ele) {
+                var delivery_time = parseFloat($(ele).find('.delivery_time input').val());
+                if (delivery_time > most_delivery_time) {
+                    most_delivery_time = delivery_time;
+                }
+            });
+            $('.mostLongTime').text(most_delivery_time);
+        });
+
         $('.quote_complete').click(function (e) {
+            //防止双击
+            $(".quote_complete").attr("disabled", true).addClass("disabled");
             var goods_info = [];
 
             $('.order_quote_list').each(function (i, ele) {
                 var item = {};
-                item.quote_goods_id  = $(ele).find('.goods_id').data('quote_goods_id');
-                item.goods_id        = $(ele).find('.goods_id').data('goods_id');
-                item.type            = $(ele).find('.goods_id').data('goods_type');
-                item.relevance_id    = $(ele).find('.goods_id').data('relevance_id');
-                item.number          = $(ele).find('.number').val();
-                item.price           = $(ele).find('.change_price').val();
-                item.tax_price       = $(ele).find('.tax_price').text();
-                item.delivery_time   = $(ele).find('.delivery_time input').val();
+                item.quote_goods_id   = $(ele).find('.goods_id').data('quote_goods_id');
+                item.goods_id         = $(ele).find('.goods_id').data('goods_id');
+                item.type             = $(ele).find('.goods_id').data('goods_type');
+                item.relevance_id     = $(ele).find('.goods_id').data('relevance_id');
+                item.number           = $(ele).find('.number').val();
+                item.price            = parseFloat($(ele).find('.change_price').val());
+                item.tax_price        = parseFloat($(ele).find('.change_tax_price').val());
+                item.delivery_time    = $(ele).find('.delivery_time input').val();
+                item.purchase_number  = $(ele).find('.number').val();
                 goods_info.push(item);
 
             });
 
+            var expect_at = $('#orderagreement-expect_at').val();
+            if (!expect_at) {
+                layer.msg('请输入预计收全款时间', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+
             var agreement_sn = $('#orderagreement-agreement_sn').val();
             if (!agreement_sn) {
                 layer.msg('请输入合同号', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var sign_date = $('#orderagreement-sign_date').val();
             if (!sign_date) {
                 layer.msg('请输入合同签订日期', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
             var agreement_date = $('#orderagreement-agreement_date').val();
             if (!agreement_date) {
                 layer.msg('请输入合同交货日期', {time:2000});
+                $(".quote_complete").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
 
@@ -258,12 +318,13 @@ $userId   = Yii::$app->user->identity->id;
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/create-agreement',
-                data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date, goods_info:goods_info},
+                data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date,
+                    goods_info:goods_info, expect_at:expect_at},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
-                        location.replace("?r=order-agreement/index");
+                        location.replace("?r=order-quote/index");
                     } else {
                         layer.msg(res.msg, {time:2000});
                         return false;

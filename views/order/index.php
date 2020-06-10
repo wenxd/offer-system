@@ -84,6 +84,14 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 ],
                 [
+                    'attribute' => 'is_dispatch',
+                    'format'    => 'raw',
+                    'filter'    => Order::$dispatch,
+                    'value'     => function ($model, $key, $index, $column) {
+                        return Order::$dispatch[$model->is_dispatch];
+                    }
+                ],
+                [
                     'attribute' => 'is_final',
                     'format'    => 'raw',
                     'filter'    => Order::$final,
@@ -104,7 +112,7 @@ $userId   = Yii::$app->user->identity->id;
                     'format'         => 'raw',
                     'contentOptions' =>['style'=>'min-width: 200px;'],
                     'value'          => function ($model, $key, $index, $column){
-                        $html = Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry', 'id' => $model['id']]), [
+                        $html = Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry-new', 'id' => $model['id']]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-primary btn-xs btn-flat',
                         ]);

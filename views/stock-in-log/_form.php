@@ -1,13 +1,17 @@
 <?php
 
-use app\models\SystemConfig;
-use yii\helpers\Html;
+use app\models\AuthAssignment;use app\models\SystemConfig;
+use yii\helpers\ArrayHelper;use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\StockLog */
 /* @var $form yii\widgets\ActiveForm */
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
+$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$userId   = Yii::$app->user->identity->id;
 ?>
 <style>
     /*零件号*/
@@ -36,18 +40,18 @@ use yii\widgets\ActiveForm;
 <div class="box">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <div class="box-header">
-        <?= Html::a('下载模板', Url::to(['download']), [
-            'data-pjax' => '0',
-            'class'     => 'btn btn-primary btn-flat',
-        ])?>
-        <?= Html::button('批量入库', [
-            'class' => 'btn btn-success upload',
-            'name'  => 'submit-button',
-        ])?>
-    </div>
-
+    <?php if (!in_array($userId, $adminIds)):?>
+        <div class="box-header">
+            <?= Html::a('下载模板', Url::to(['download']), [
+                'data-pjax' => '0',
+                'class'     => 'btn btn-primary btn-flat',
+            ])?>
+            <?= Html::button('批量入库', [
+                'class' => 'btn btn-success upload',
+                'name'  => 'submit-button',
+            ])?>
+        </div>
+    <?php endif;?>
     <div class="box-body">
 
         <?= $form->field($model, 'goods_id')->textInput()->hiddenInput()->label(false) ?>
@@ -104,7 +108,7 @@ use yii\widgets\ActiveForm;
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-position="' + res.data[i]['stock_position'] + '">' + res.data[i]['goods_number'] + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -120,12 +124,16 @@ use yii\widgets\ActiveForm;
         $("#stocklog-goods_id").val(goods_id);
         $("#stocklog-goods_number").val($.trim(obj.html()));
         $('.box-search-goods_number').addClass('cancel-goods_number');
+        $('#stocklog-position').val(obj.data('position'));
     }
 
     $('.stock-created').click(function (e) {
+        //防止双击
+        $(".stock-created").attr("disabled", true).addClass("disabled");
         var goods_id = $('#stocklog-goods_id').val();
         if (!goods_id) {
             layer.msg('请输入零件号', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 
@@ -133,18 +141,21 @@ use yii\widgets\ActiveForm;
         var reg = /^\+?[1-9][0-9]*$/;
         if (!reg.test(number)) {
             layer.msg('请输入正整数', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 
         var position = $('#stocklog-position').val();
         if (!position) {
             layer.msg('请输入库存位置', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 
         var source = $('#stocklog-source').find("option:selected").text();
         if (!source) {
             layer.msg('请输入来源', {time:2000});
+            $(".stock-created").removeAttr("disabled").removeClass("disabled");
             return false;
         }
 

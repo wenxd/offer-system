@@ -151,6 +151,14 @@ class CompetitorGoodsController extends BaseController
                     $date = date('Y-m-d H:i:s');
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
+                            if (!$value['F']) {
+                                unlink('./' . $saveName);
+                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行数量不能为空'], JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }
+                    foreach ($sheetData as $key => $value) {
+                        if ($key > 1) {
                             //零件号
                             $a = trim($value['A']);
                             if (empty($a)) {
@@ -204,8 +212,8 @@ class CompetitorGoodsController extends BaseController
                             if ($value['I']) {
                                 $competitorGoods->remark = trim($value['I']);
                             }
-                            if ($value['J'] && $value['J'] != '否') {
-                                $competitorGoods->is_issue = trim($value['J']);
+                            if ($value['J'] && $value['J'] == '是') {
+                                $competitorGoods->is_issue = CompetitorGoods::IS_ISSUE_YES;
                             }
                             if ($competitorGoods->save()) {
                                 $num++;

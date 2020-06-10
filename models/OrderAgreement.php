@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "order_agreement".
@@ -35,6 +36,11 @@ use Yii;
  * @property string $payment_ratio
  * @property string $remain_price
  * @property string $is_purchase
+ * @property string $stock_admin_id
+ * @property string $financial_admin_id
+ * @property string $expect_at
+ * @property string $is_merge
+ * @property string $is_all_stock
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -64,6 +70,12 @@ class OrderAgreement extends \yii\db\ActiveRecord
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
 
+    const IS_MERGE_NO    = '0';
+    const IS_MERGE_YES   = '1';
+
+    const IS_ALL_STOCK_NO  = '0';
+    const IS_ALL_STOCK_YES = '1';
+
     public static $stock = [
         self::IS_STOCK_NO   => '否',
         self::IS_STOCK_YES  => '是',
@@ -89,6 +101,16 @@ class OrderAgreement extends \yii\db\ActiveRecord
         self::IS_PURCHASE_YES  => '是',
     ];
 
+    public static $complete = [
+        self::IS_COMPLETE_NO   => '否',
+        self::IS_COMPLETE_YES  => '是',
+    ];
+
+    public static $allStock = [
+        self::IS_ALL_STOCK_NO   => '否',
+        self::IS_ALL_STOCK_YES  => '是',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -103,13 +125,13 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge',
-                'is_payment', 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'payment_ratio',
-                'is_purchase'], 'integer'],
-            [['agreement_date', 'updated_at', 'created_at', 'sign_date'], 'safe'],
+            [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge', 'is_payment',
+                'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'is_all_stock', 'is_purchase',
+                'stock_admin_id', 'financial_admin_id', 'is_merge'], 'integer'],
+            [['agreement_date', 'updated_at', 'created_at', 'sign_date', 'expect_at'], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
-            [['payment_price', 'remain_price'], 'number'],
+            [['payment_price', 'remain_price', 'payment_ratio'], 'number'],
         ];
     }
 
@@ -143,7 +165,10 @@ class OrderAgreement extends \yii\db\ActiveRecord
             'payment_ratio'     => '预收款比例',
             'payment_price'     => '收入合同金额',
             'remain_price'      => '收入订单剩余金额',
-            'is_purchase'       => '是否派送采购员',
+            'is_purchase'       => '是否生成采购单',
+            'expect_at'         => '预计收全款时间',
+            'is_merge'          => '是否合并过',
+            'is_all_stock'      => '全部走库存',
         ];
     }
 
@@ -160,5 +185,35 @@ class OrderAgreement extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    public function getAgreementStock()
+    {
+        return $this->hasOne(AgreementStock::className(), ['order_agreement_id' => 'id']);
+    }
+
+    //是否到齐（判断库存都够不够）
+    public static function isEnoughStock($id)
+    {
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+        ])->all();
+        $goods_id = ArrayHelper::getColumn($agreementGoodsList, 'goods_id');
+        $stockGoods = Stock::find()->where(['good_id' => $goods_id])->indexBy('good_id')->asArray()->all();
+        $isEnough = 1;
+        foreach ($agreementGoodsList as $key => $value) {
+            //订单需求数
+            if ($value->order_number) {
+                if (isset($stockGoods[$value->goods_id])) {
+                    if ($stockGoods[$value->goods_id]['number'] < $value->order_number) {
+                        $isEnough = 0;
+                    }
+                } else {
+                    $isEnough = 0;
+                    break;
+                }
+            }
+        }
+        return $isEnough;
     }
 }

@@ -37,12 +37,16 @@ use Yii;
  * @property string $agreement_at
  * @property string $delivery_date
  * @property string $supplier_id
+ * @property string $stock_admin_id
+ * @property string $financial_admin_id
+ * @property string $is_notice
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
     public $reason;
     public $purchase_id;
     public $price;
+    public $income_deliver_time; //收入合同交货日期
 
     const PURCHASE_STATUS_CREATE = '0'; // 新的
     const PURCHASE_STATUS_PASS   = '1'; // 通过
@@ -127,7 +131,8 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement', 'supplier_id'], 'integer'],
+                'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement', 'supplier_id', 'stock_admin_id',
+                'financial_admin_id', 'is_notice'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'payment_ratio', 'payment_price', 'remain_price', 'delivery_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
@@ -171,6 +176,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             'agreement_at'      => '支出合同签订时间',
             'delivery_date'     => '支出合同交货时间',
             'supplier_id'       => '供应商',
+            'is_notice'         => '是否发通知',
         ];
     }
 
@@ -192,5 +198,21 @@ class OrderPayment extends \yii\db\ActiveRecord
     public function getSupplier()
     {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
+    }
+
+    public function getPurchase()
+    {
+        return $this->hasOne(OrderPurchase::className(), ['id' => 'order_purchase_id']);
+    }
+
+    public function getAgreementStock()
+    {
+        return $this->hasOne(AgreementStock::className(), ['order_payment_id' => 'id']);
+    }
+
+    public static function isConfirm($id)
+    {
+        $res = AgreementStock::find()->where(['order_payment_id' => $id, 'is_confirm' => 0])->one();
+        return $res;
     }
 }

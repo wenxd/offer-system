@@ -110,36 +110,36 @@ class GoodsController extends BaseController
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
 
         //询价记录 价格最优
-        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('tax_price asc')->one();
+        $inquiryPriceQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc, Created_at Desc')->one();
         //同期最短(货期)
-        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc')->one();
+        $inquiryTimeQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
         //最新报价
-        $inquiryNewQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_newest' => Inquiry::IS_NEWEST_YES])->orderBy('updated_at Desc')->one();
+        $inquiryNewQuery = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
         //优选记录
-        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES])->orderBy('updated_at Desc')->one();
+        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES, 'is_confirm_better' => 1])->one();
 
         //采购记录  最新采购
-        $paymentNew = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        $paymentNew = PaymentGoods::find()->andWhere(['goods_id' => $goods_id, 'is_payment' => PaymentGoods::IS_PAYMENT_YES])->orderBy('created_at Desc')->one();
         //价格最低采购
-        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_tax_price asc')->one();
+        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id, 'is_payment' => PaymentGoods::IS_PAYMENT_YES])->orderBy('fixed_price asc')->one();
         //货期采购
-        $paymentDay = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
+        $paymentDay = PaymentGoods::find()->andWhere(['goods_id' => $goods_id, 'is_payment' => PaymentGoods::IS_PAYMENT_YES])->orderBy('delivery_time asc')->one();
 
         //收入记录 最新
         $agreementGoodsNew  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //最高价
-        $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price Desc')->one();
+        $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price Desc')->one();
         //最低价
-        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_tax_price asc')->one();
+        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price asc')->one();
 
         //竞争对手 发行价
         $competitorGoodsIssue  = CompetitorGoods::find()->where(['goods_id' => $goods_id, 'is_issue' => CompetitorGoods::IS_ISSUE_YES])->one();
         //最新
         $competitorGoodsNew  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
         //最高价
-        $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price Desc')->one();
+        $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price Desc')->one();
         //最低价
-        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('tax_price asc')->one();
+        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price asc')->one();
 
         $data = [];
         $data['goods']            = $goods ? $goods : [];
@@ -212,10 +212,10 @@ class GoodsController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB'];
+            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC'];
         $tableHeader = ['零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
             '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
-            '发行货期', '预估发行价', '设备类别', '导入类别'];
+            '发行货期', '预估发行价', '设备类别', '导入类别', '发行税率'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -299,23 +299,23 @@ class GoodsController extends BaseController
                             }
                             //中文描述
                             if ($value['B']) {
-                                $goods->description = trim($value['B']);
+                                $goods->description = (string)trim($value['B']);
                             }
                             //英文描述
                             if ($value['C']) {
-                                $goods->description_en = trim($value['C']);
+                                $goods->description_en = (string)trim($value['C']);
                             }
                             //原厂家
                             if ($value['D']) {
-                                $goods->original_company = trim($value['D']);
+                                $goods->original_company = (string)trim($value['D']);
                             }
                             //厂家号
                             if ($value['E']) {
-                                $goods->goods_number_b = trim($value['E']);
+                                $goods->goods_number_b = (string)trim($value['E']);
                             }
                             //材质
                             if ($value['F']) {
-                                $goods->material = trim($value['F']);
+                                $goods->material = (string)trim($value['F']);
                             }
                             //是否TZ
                             if ($value['G'] && $value['G'] == '是') {
@@ -373,24 +373,24 @@ class GoodsController extends BaseController
                             }
                             //所属部位
                             if ($value['Q']) {
-                                $goods->part = trim($value['Q']);
+                                $goods->part = (string)trim($value['Q']);
                             }
                             //单位
                             $goods->unit = $value['T'] ? trim($value['T']) : '件';
                             //技术备注、技术
                             if ($value['U']) {
-                                $goods->technique_remark = trim($value['U']);
+                                $goods->technique_remark = (string)trim($value['U']);
                             }
                             //原厂家备注
                             if ($value['V']) {
-                                $goods->original_company_remark = trim($value['V']);
+                                $goods->original_company_remark = (string)trim($value['V']);
                             }
                             //零件备注
                             if ($value['W']) {
-                                $goods->remark = trim($value['W']);
+                                $goods->remark = (string)trim($value['W']);
                             }
                             if ($value['P'] && $value['S']) {
-                                $deviceName   = trim($value['P']);
+                                $deviceName   = strtoupper(trim($value['P']));
                                 $deviceNumber = trim($value['S']);
                                 $device = [];
                                 $device[$deviceName] = $deviceNumber;
@@ -423,11 +423,15 @@ class GoodsController extends BaseController
                             }
                             //物资编码
                             if ($value['AA']) {
-                                $goods->material_code = trim($value['AA']);
+                                $goods->material_code = (string)trim($value['AA']);
                             }
                             //物资编码
                             if ($value['AB']) {
-                                $goods->import_mark = trim($value['AB']);
+                                $goods->import_mark = (string)trim($value['AB']);
+                            }
+                            //发行税率
+                            if ($value['AC']) {
+                                $goods->publish_tax = trim($value['AC']);
                             }
                             if ($goods->save()) {
                                 $num++;

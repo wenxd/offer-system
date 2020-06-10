@@ -11,14 +11,14 @@ use app\models\{Inquiry, Goods, Admin, AuthAssignment, SystemConfig, InquiryGood
 /* @var $model app\models\Inquiry */
 /* @var $form yii\widgets\ActiveForm */
 //获取税率
-$model->tax_rate = SystemConfig::find()->select('value')->where([
-        'title'  => SystemConfig::TITLE_TAX,
-    'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
 if ($model->isNewRecord) {
+    $model->tax_rate = SystemConfig::find()->select('value')->where([
+        'title'  => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
     if (isset($_GET['goods_id']) && $_GET['goods_id']) {
         $model->good_id = $_GET['goods_id'];
         $goods = Goods::findOne($_GET['goods_id']);
-        $model->goods_number = $goods->goods_number;
+        $model->goods_number   = $goods->goods_number;
         $model->goods_number_b = $goods->goods_number_b;
     }
     $model->inquiry_datetime = date('Y-m-d');
@@ -29,6 +29,7 @@ if ($model->isNewRecord) {
         $model->order_id         = 0;
         $model->order_inquiry_id = 0;   
     }
+    $model->is_confirm_better = 0;
 } else {
     $model->supplier_name    = $model->supplier->name;
     $model->goods_number     = $model->goods->goods_number;
@@ -157,21 +158,21 @@ if (isset($_GET['inquiry_goods_id'])) {
         <?= $form->field($model, 'good_id')->textInput()->hiddenInput()->label(false) ?>
 
         <?php if ($is_super):?>
-            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号') ?>
+            <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('零件号') ?>
             <div class="box-search-goods_number cancel-goods_number">
                 <ul class="box-search-ul-goods_number">
 
                 </ul>
             </div>
         <?php endif;?>
-        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true])->label('厂家号') ?>
+        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('厂家号') ?>
         <div class="box-search-goods_number_b cancel-goods_number_b">
             <ul class="box-search-ul-goods_number_b">
 
             </ul>
         </div>
 
-        <div class="form-group field-inquiry-price">
+        <div class="form-group field-inquiry-supplier_name">
             <label class="control-label" for="inquiry-supplier_name">供应商</label>
             <input type="text" id="inquiry-supplier_name" class="form-control" name="Inquiry[supplier_name]"
                    value="<?=$model->supplier_name?>" autocomplete="off" aria-invalid="false">
@@ -184,12 +185,12 @@ if (isset($_GET['inquiry_goods_id'])) {
             </ul>
         </div>
 
-        <?= $form->field($model, 'tax_rate')->textInput(['readonly' => true]) ?>
+        <?= $form->field($model, 'tax_rate')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
         <?= $form->field($model, 'price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
-        <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'all_price')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'all_tax_price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tax_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'number')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'all_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+        <?= $form->field($model, 'all_tax_price')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'inquiry_datetime')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -202,19 +203,21 @@ if (isset($_GET['inquiry_goods_id'])) {
             ]
         ]);?>
 
-        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true])->label('货期(周)');?>
+        <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('货期(周)');?>
 
-        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'remark')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
 
-        <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'better_reason')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
 
-        <?= $form->field($model, 'order_id')->textInput(['readonly' => true])->hiddenInput()->label(false) ?>
+        <?= $form->field($model, 'order_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false) ?>
 
-        <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true])->hiddenInput()->label(false)  ?>
+        <?= $form->field($model, 'order_inquiry_id')->textInput(['readonly' => true, 'autocomplete' => 'off'])->hiddenInput()->label(false)  ?>
+
+        <?= $form->field($model, 'is_confirm_better')->radioList(Inquiry::$better) ?>
 
     </div>
 
@@ -243,9 +246,23 @@ if (isset($_GET['inquiry_goods_id'])) {
         }
     };
     //实现税率自动转换
-    var tax = $('#inquiry-tax_rate').val();
+    //实现税率自动转换
+    $("#inquiry-tax_rate").bind('input propertychange', function (e) {
+        var tax   = $(this).val();
+        $('#inquiry-tax_rate').val(tax);
+        var price = $('#inquiry-price').val();
+        var tax_price = price * (1 + tax/100);
+        var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
+        var all_price = price * number;
+        var all_tax_price = tax_price * number;
+        $("#inquiry-tax_price").attr("value", tax_price.toFixed(2));
+        $("#inquiry-tax_price").val(tax_price.toFixed(2));
+        $("#inquiry-all_price").val(all_price.toFixed(2));
+        $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
+    });
 
     $("#inquiry-price").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
@@ -257,6 +274,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
     $("#inquiry-tax_price").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var tax_price = $('#inquiry-tax_price').val();
         var price = tax_price / (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;
@@ -268,6 +286,7 @@ if (isset($_GET['inquiry_goods_id'])) {
         $("#inquiry-all_tax_price").val(all_tax_price.toFixed(2));
     });
     $("#inquiry-number").bind('input propertychange', function (e) {
+        var tax = $('#inquiry-tax_rate').val();
         var price = $('#inquiry-price').val();
         var tax_price = price * (1 + tax/100);
         var number = $('#inquiry-number').val() ? $('#inquiry-number').val() : 0;

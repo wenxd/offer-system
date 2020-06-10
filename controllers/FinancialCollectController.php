@@ -62,7 +62,7 @@ class FinancialCollectController extends BaseController
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
-            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+            return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
     }
 
@@ -73,13 +73,17 @@ class FinancialCollectController extends BaseController
     {
         $params = Yii::$app->request->post();
 
+        $payment_ratio_price = $params['price'] * 100;
+
         $orderAgreement = OrderAgreement::findOne($params['id']);
-        $orderAgreement->payment_ratio    = $params['payment_ratio'];
-        $orderAgreement->remain_price     = (100 - $params['payment_ratio'])/100 * $orderAgreement->payment_price ;
-        $orderAgreement->is_advancecharge = $orderAgreement::IS_ADVANCECHARGE_YES;
-        $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
+        $orderAgreement->payment_ratio      = number_format($payment_ratio_price / $orderAgreement->payment_price, 2, '.', '');
+        $orderAgreement->remain_price       = $orderAgreement->payment_price - $params['price'];
+        $orderAgreement->is_advancecharge   = $orderAgreement::IS_ADVANCECHARGE_YES;
+        $orderAgreement->advancecharge_at   = date('Y-m-d H:i:s');
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_bill) {
-            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
@@ -98,10 +102,18 @@ class FinancialCollectController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['id']);
         $orderAgreement->is_payment = OrderPayment::IS_PAYMENT_YES;
         $orderAgreement->payment_at = date('Y-m-d H:i:s');
-        if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
-            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
+        if (!$orderAgreement->is_advancecharge) {
+            $orderAgreement->advancecharge_at = date('Y-m-d H:i:s');
         }
-
+        $orderAgreement->is_advancecharge   = OrderPayment::IS_ADVANCECHARGE_YES;
+        $orderAgreement->remain_price       = 0;
+        $orderAgreement->payment_ratio      = 100;
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
+        if ($orderAgreement->is_stock && $orderAgreement->is_advancecharge && $orderAgreement->is_bill) {
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
+        }
+        $orderAgreement->remain_price = 0;
         if ($orderAgreement->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -117,10 +129,12 @@ class FinancialCollectController extends BaseController
         $params = Yii::$app->request->post();
 
         $orderAgreement = OrderAgreement::findOne($params['id']);
-        $orderAgreement->is_bill = OrderPayment::IS_BILL_YES;
-        $orderAgreement->bill_at = date('Y-m-d H:i:s');
+        $orderAgreement->is_bill            = OrderPayment::IS_BILL_YES;
+        $orderAgreement->bill_at            = date('Y-m-d H:i:s');
+        $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         if ($orderAgreement->is_stock && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
-            $orderAgreement->is_complete = $orderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+            $orderAgreement->financial_admin_id = Yii::$app->user->identity->id;
         }
 
         if ($orderAgreement->save()) {
@@ -135,7 +149,7 @@ class FinancialCollectController extends BaseController
      */
     public function actionList()
     {
-        $searchModel = new OrderAgreementSearch();
+        $searchModel = new OrderFinancialCollectSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('agreement-list', [

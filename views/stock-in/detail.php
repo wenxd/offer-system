@@ -90,7 +90,7 @@ $isShow = in_array($userId, $adminIds);
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <?php endif;?>
                     <td class="number"><?=$item->fixed_number?></td>
-                    <td><?=$item->stock ? $item->stock->position : ''?></td>
+                    <td class="position"><input type="text" value="<?=$item->stock ? $item->stock->position : ''?>" style="width: 80px;"></td>
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                     <td class="quality_text"><?=PaymentGoods::$quality[$item->is_quality]?></td>
                     <td>
@@ -130,8 +130,9 @@ $isShow = in_array($userId, $adminIds);
 
         //质检
         $('.quality').click(function (e) {
+            //防止双击
+            $(".quality").attr("disabled", true).addClass("disabled");
             var payment_goods_id = $(this).data('id');
-
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/quality',
@@ -151,9 +152,12 @@ $isShow = in_array($userId, $adminIds);
 
         //批量质检
         $('.more-quality').click(function () {
+            //防止双击
+            $(".more-quality").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-quality").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var paymentGoods_ids = [];
@@ -182,25 +186,34 @@ $isShow = in_array($userId, $adminIds);
 
         //入库
         $('.stock_in').click(function (e) {
+            //防止双击
+            $(".stock_in").attr("disabled", true).addClass("disabled");
             var quality = $(this).parent().parent().find('.quality_text').text();
             if (quality == '否') {
                 layer.msg('请先质检', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var order_payment_id = $('.data').data('order_payment_id');
             var goods_id          = $(this).data('goods_id');
             var number            = $(this).parent().parent().find('.number').text();
-
             var reg=/^\d{1,}$/;
             if (!reg.test(number)) {
                 layer.msg('入库数量不能为空', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
+                return;
+            }
+            var position = $(this).parent().parent().find('.position input').val();
+            if (position == '') {
+                layer.msg('请输入库存位置', {time:2000});
+                $(".stock_in").removeAttr("disabled").removeClass("disabled");
                 return;
             }
 
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/in',
-                data:{goods_id:goods_id, order_payment_id:order_payment_id, number:number},
+                data:{goods_id:goods_id, order_payment_id:order_payment_id, number:number, position:position},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
@@ -216,22 +229,47 @@ $isShow = in_array($userId, $adminIds);
 
         //批量入库
         $('.more-stock').click(function () {
+            //防止双击
+            $(".more-stock").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
-            var paymentGoods_ids = [];
-            $('.select_id').each(function (index, element) {
-                if ($(element).prop("checked")) {
-                    var id = $(element).val();
-                    paymentGoods_ids.push(id);
+
+            var position_open     = false;
+            var quality_open      = false;
+            var paymentGoods_info = [];
+            $('.order_payment_list').each(function (i, e) {
+                var item = {};
+                if ($(e).find('.select_id').prop("checked")) {
+                    item.payment_goods_id = $(e).find('.select_id').val();
+                    item.position         = $(e).find('.position input').val();
+                    if ($(e).find('.position input').val() == '') {
+                        position_open = true;
+                    }
+                    paymentGoods_info.push(item);
+                    var quality = $(e).find('.quality_text').text();
+                    if (quality == '否') {
+                        quality_open = true;
+                    }
                 }
             });
+            if (quality_open) {
+                layer.msg('请先质检', {time:3000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+            if (position_open) {
+                layer.msg('请输入库存位置', {time:3000});
+                $(".more-stock").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
             $.ajax({
                 type:"post",
                 url:'?r=stock-in/more-in',
-                data:{ids:paymentGoods_ids},
+                data:{paymentGoods_info:paymentGoods_info},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

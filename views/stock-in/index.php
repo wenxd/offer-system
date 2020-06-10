@@ -77,7 +77,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'value'          => function ($model, $key, $index, $column){
+                'value'          => function ($model, $key, $index, $column) use($userId, $adminIds) {
+                    if (in_array($userId, $adminIds) && $model->is_stock) {
+                        return '';
+                    }
                     return Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',

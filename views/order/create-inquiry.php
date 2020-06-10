@@ -33,8 +33,6 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 
-
-
 $model->inquiry_sn = 'X' . date('ymd_') . $number;
 
 $order_goods_ids = [];
@@ -52,16 +50,20 @@ if ($model->isNewRecord) {
         color : #5dcc6e;
     }
 </style>
+
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-striped table-bordered">
+        <table id="example2" class="table table-bordered table-hover" style="width: 1800px; table-layout: auto">
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="select_all" class="select_all"></th>
+                    <th>
+                        <input type="checkbox" name="select_all" class="select_all">
+                    </th>
                     <th>序号</th>
                     <th>零件号</th>
                     <th>厂家号</th>
+                    <th style="width: 200px;">推荐供应商</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
@@ -70,24 +72,30 @@ if ($model->isNewRecord) {
                     <th>数量</th>
                     <th style="width: 80px;">加工</th>
                     <th style="width: 80px;">特制</th>
+                    <th style="width: 80px;">标准</th>
                     <th style="width: 80px;">铭牌</th>
                     <th style="width: 80px;">总成</th>
-                    <th style="width: 80px;">是否询价</th>
-                    <th>询价数量</th>
+                    <th style="width: 80px;">是否有询价记录</th>
+                    <th>询价条目</th>
                     <th style="width: 80px;">是否优选</th>
                     <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
-                    <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
-                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button>
+                    </td>
+                    <td>
+                        <?=Html::a('复位', '?r=order/create-inquiry&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                    </td>
                     <td>
                         <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
                     </td>
                     <td>
                         <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td>
@@ -111,6 +119,13 @@ if ($model->isNewRecord) {
                         </select>
                     </td>
                     <td>
+                        <select class="form-control" name="is_standard">
+                            <option value=""></option>
+                            <option value="0" <?=isset($_GET['is_standard']) ? ($_GET['is_standard'] === '0' ? 'selected' : '') : ''?>>否</option>
+                            <option value="1" <?=isset($_GET['is_standard']) ? ($_GET['is_standard'] === '1' ? 'selected' : '') : ''?>>是</option>
+                        </select>
+                    </td>
+                    <td>
                         <select class="form-control" name="is_nameplate">
                             <option value=""></option>
                             <option value="0" <?=isset($_GET['is_nameplate']) ? ($_GET['is_nameplate'] === '0' ? 'selected' : '') : ''?>>否</option>
@@ -131,7 +146,11 @@ if ($model->isNewRecord) {
                             <option value="1" <?=isset($_GET['is_inquiry']) ? ($_GET['is_inquiry'] === '1' ? 'selected' : '') : ''?>>是</option>
                         </select>
                     </td>
-
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -149,13 +168,16 @@ if ($model->isNewRecord) {
                         }
                     ?>
                     <td>
-                        <?=$str?>
+                        <?=$open ?  '' : $str?>
                     </td>
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= Html::a($item->goods->goods_number,
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
                             ['target' => 'blank'])?></td>
                     <td><?= $item->goods->goods_number_b?></td>
+                    <td class="supplier">
+                        <input type="text" style="width: 150px;">
+                    </td>
                     <td><?= $item->goods->description?></td>
                     <td><?= $item->goods->description_en?></td>
                     <td><?= $item->goods->original_company?></td>
@@ -164,6 +186,7 @@ if ($model->isNewRecord) {
                     <td class="number"><?= $item->number?></td>
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
+                    <td class="addColor"><?= Goods::$nameplate[$item->goods->is_standard]?></td>
                     <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td class="addColor"><?= Goods::$assembly[$item->goods->is_assembly]?></td>
                     <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
@@ -206,12 +229,14 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'order_id')->hiddenInput(['value' => $order->id])->label(false) ?>
         <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
     </div>
-    <div class="box-footer">
-        <?= Html::button('保存询价单', [
-                'class' => 'btn btn-success inquiry_save',
-                'name'  => 'submit-button']
-        )?>
-    </div>
+    <?php if (!$order->is_dispatch):?>
+        <div class="box-footer">
+            <?= Html::button('保存询价单', [
+                    'class' => 'btn btn-success inquiry_save',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
+    <?php endif;?>
     <?php ActiveForm::end(); ?>
 </div>
 
@@ -235,25 +260,30 @@ if ($model->isNewRecord) {
         });
         //保存询价单
         $('.inquiry_save').click(function (e) {
+            //防止双击
+            $(".inquiry_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time:2000});
+                $(".inquiry_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
             var goods_info = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var item = {};
-                    item.goods_id = $(element).val();
-                    item.number   = $(element).parent().parent().find('.number').text();
-                    item.serial   = $(element).parent().parent().find('.serial').text();
+                    item.goods_id    = $(element).val();
+                    item.number      = $(element).parent().parent().find('.number').text();
+                    item.serial      = $(element).parent().parent().find('.serial').text();
+                    var supplier_name  = $(element).parent().parent().find('.supplier input').val();
+                    item.supplier_name = supplier_name;
                     goods_info.push(item);
                 }
             });
 
-            var admin_id = $('#orderinquiry-admin_id').val();
-            var end_date = $('#orderinquiry-end_date').val();
-            var order_id = $('#orderinquiry-order_id').val();
+            var admin_id   = $('#orderinquiry-admin_id').val();
+            var end_date   = $('#orderinquiry-end_date').val();
+            var order_id   = $('#orderinquiry-order_id').val();
             var inquiry_sn = $('#orderinquiry-inquiry_sn').val();
 
             $.ajax({
@@ -267,6 +297,7 @@ if ($model->isNewRecord) {
                         window.location.reload();
                     } else {
                         layer.msg(res.msg, {time:2000});
+                        $(".inquiry_save").removeAttr("disabled").removeClass("disabled");
                         return false;
                     }
                 }
@@ -316,6 +347,9 @@ if ($model->isNewRecord) {
                         break;
                     case 'is_special':
                         parameter += '&is_special=' + $(e).find("option:selected").val();
+                        break;
+                    case 'is_standard':
+                        parameter += '&is_standard=' + $(e).find("option:selected").val();
                         break;
                     case 'is_nameplate':
                         parameter += '&is_nameplate=' + $(e).find("option:selected").val();

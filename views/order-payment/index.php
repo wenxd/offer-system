@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use app\models\Helper;
 use app\models\Supplier;
 use app\models\OrderPayment;
@@ -17,12 +18,28 @@ use yii\widgets\Pjax;
 $this->title = '支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务', '付款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
+$purchaseAdminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -32,8 +49,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
-                'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $model->payment_sn;
+                    } else {
+                        return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -86,7 +107,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_sn',
                 'label'     => '订单编号',
                 'format'    => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => !in_array($userId, array_merge($adminIds, $purchaseAdminIds)),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
@@ -100,8 +121,24 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
                 'visible'   => !in_array($userId, $adminIds),
+                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $model->order_purchase_sn;
+                    } else {
+                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                    }
+                }
+            ],
+            [
+                'attribute' => 'order_agreement_date',
+                'format'    => 'raw',
+                'label'     => '收入合同交货日期',
                 'value'     => function ($model, $key, $index, $column) {
-                    return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
+                    if ($model->purchase && $model->purchase->agreement) {
+                        return substr($model->purchase->agreement->agreement_date, 0, 10);
+                    } else {
+                        return false;
+                    }
                 }
             ],
             [
@@ -153,10 +190,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '采购员',
-                'filter'    => Helper::getAdminList(['系统管理员', '采购员', '询价员']),
+                'filter'    => in_array($userId, $purchaseAdminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '采购员', '询价员'])[$model->admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员'])[$model->admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '采购员', '询价员'])[$model->admin_id];
                     } else {
                         return '';
                     }
@@ -165,10 +202,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'stock_admin_id',
                 'label'     => '库管员',
-                'filter'    => Helper::getAdminList(['系统管理员', '库管员']),
+                'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '库管员'])[$model->stock_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id];
                     } else {
                         return '';
                     }
@@ -177,10 +214,10 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'financial_admin_id',
                 'label'     => '财务',
-                'filter'    => Helper::getAdminList(['系统管理员', '财务']),
+                'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '收款财务']),
                 'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '财务'])[$model->financial_admin_id];
+                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '收款财务'])[$model->financial_admin_id])) {
+                        return Helper::getAdminList(['系统管理员', '订单管理员', '收款财务'])[$model->financial_admin_id];
                     } else {
                         return '';
                     }
@@ -190,12 +227,21 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute'      => '操作',
                 'format'         => 'raw',
                 'visible'        => !in_array($userId, $adminIds),
-                'value'          => function ($model, $key, $index, $column){
+                'value'          => function ($model, $key, $index, $column) use($userId, $purchaseAdminIds) {
                     $html = '';
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $html;
+                    }
                     $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-xs btn-flat',
                     ]);
+                    if (!$model->is_notice) {
+                        $html .= Html::a('付全款通知', Url::to(['notice', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-primary btn-xs btn-flat',
+                        ]);
+                    }
                     return $html;
                 }
             ],

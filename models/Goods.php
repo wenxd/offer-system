@@ -44,6 +44,8 @@ use app\extend\tencent\Cos;
  * @property string $estimate_publish_price
  * @property string $material_code
  * @property string $import_mark
+ * @property string $publish_price
+ * @property string $publish_tax
  */
 class Goods extends ActiveRecord
 {
@@ -161,15 +163,16 @@ class Goods extends ActiveRecord
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
                 'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
-                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price'], 'safe'],
+                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
-                'import_mark'], 'string', 'max' => 255],
+                'import_mark'], 'safe'],
             [
                 ['goods_number'],
                 'required',
                 'on' => 'goods',
             ],
+            [['publish_tax', 'publish_tax_price', 'estimate_publish_price', 'publish_delivery_time', 'publish_price'], 'default', 'value' => 0],
         ];
     }
 
@@ -214,6 +217,8 @@ class Goods extends ActiveRecord
             'estimate_publish_price'  => '预估发行价',
             'material_code'           => '设备类别',
             'import_mark'             => '导入类别',
+            'publish_price'           => '发行未税单价',
+            'publish_tax'             => '发行税率',
         ];
     }
 
@@ -229,18 +234,33 @@ class Goods extends ActiveRecord
 
     public function beforeSave($insert)
     {
+        $this->goods_number             = strtoupper($this->goods_number);
+        $this->goods_number_b           = strtoupper($this->goods_number_b);
+        $this->description              = strtoupper($this->description);
+        $this->description_en           = strtoupper($this->description_en);
+        $this->original_company         = strtoupper($this->original_company);
+        $this->original_company_remark  = strtoupper($this->original_company_remark);
+        $this->unit                     = strtoupper($this->unit);
+        $this->material                 = strtoupper($this->material);
+        $this->material_code            = strtoupper($this->material_code);
+        $this->import_mark              = strtoupper($this->import_mark);
+        $this->part                     = strtoupper($this->part);
+        $this->remark                   = strtoupper($this->remark);
+
         //设备信息处理
         if ($this->device_info != $this->getOldAttribute('device_info')) {
             $arr = [];
             if (isset($this->device_info['name'])) {
                 foreach ($this->device_info['name'] as $key => $item) {
                     if ($item) {
-                        $arr[$item] = $this->device_info['number'][$key];
+                        $arr[strtoupper($item)] = $this->device_info['number'][$key];
                     }
                 }
                 $this->device_info = json_encode($arr, JSON_UNESCAPED_UNICODE);
             }
         }
+
+        $this->description_en = strtoupper($this->description_en);
 
         $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();
         if ($insert && $is_goods_number) {
@@ -289,14 +309,20 @@ class Goods extends ActiveRecord
                 $stock->save();
             }
         }
-        if (!$this->publish_tax_price) {
-            $this->publish_tax_price = 0;
-        }
-        if (!$this->estimate_publish_price) {
-            $this->estimate_publish_price = 0;
-        }
-        if (!$this->publish_delivery_time) {
-            $this->publish_delivery_time = 0;
+
+        //计算税率问题
+        if ($this->publish_tax_price != '0.00') {
+            if ($this->publish_tax) {
+                $this->publish_price = number_format(($this->publish_tax_price / (1 + $this->publish_tax/100)), 2, '.', '' );
+            } else {
+                $this->publish_price = $this->publish_tax_price;
+            }
+        } elseif ($this->estimate_publish_price) {
+            if ($this->publish_tax) {
+                $this->publish_price = number_format(($this->estimate_publish_price / (1 + $this->publish_tax/100)), 2, '.', '' );
+            } else {
+                $this->publish_price = $this->estimate_publish_price;
+            }
         }
 
         unset($this->img_url);
@@ -314,9 +340,9 @@ class Goods extends ActiveRecord
             $stock->tax_rate = SystemConfig::find()->select('value')->where([
                 'title'  => SystemConfig::TITLE_TAX,
                 'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
-            $stock->suggest_number  = $this->suggest_number;
-            $stock->high_number     = (int) round($high_stock_ratio * trim($this->suggest_number));
-            $stock->low_number      = (int) round($low_stock_ratio * trim($this->suggest_number));
+            $stock->suggest_number  = $this->suggest_number ? $this->suggest_number : 0;
+            $stock->high_number     = (int) round($high_stock_ratio * trim($stock->suggest_number));
+            $stock->low_number      = (int) round($low_stock_ratio * trim($stock->suggest_number));
             $stock->save();
         }
     }

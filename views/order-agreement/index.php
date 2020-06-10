@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -7,6 +8,8 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\OrderPurchase;
+use app\models\OrderPayment;
 use app\models\OrderAgreementSearch;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -16,17 +19,34 @@ use kartik\daterange\DateRangePicker;
 $this->title = '收入合同订单管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['采购员', '报价员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
 foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
+$final_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
 $userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
@@ -34,6 +54,19 @@ $userId   = Yii::$app->user->identity->id;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            [
+                'attribute' => 'order_sn',
+                'visible'   => !in_array($userId, $adminIds),
+                'format'    => 'raw',
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'agreement_sn',
                 'format'    => 'raw',
@@ -77,6 +110,15 @@ $userId   = Yii::$app->user->identity->id;
                     return OrderAgreementSearch::$bill[$model->is_bill];
                 }
             ],
+            [
+                'attribute' => 'is_complete',
+                'label'     => '全流程',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$complete,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$complete[$model->is_complete];
+                }
+            ],
             'payment_price',
             [
                 'attribute' => 'is_purchase',
@@ -87,16 +129,23 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'order_sn',
-                'visible'   => !in_array($userId, $adminIds),
+                'attribute' => 'is_any_stock',
                 'format'    => 'raw',
-                'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
+                'label'     => '是否走库存',
                 'value'     => function ($model, $key, $index, $column) {
-                    if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
+                    if ($model->agreementStock) {
+                        return '是';
                     } else {
-                        return '';
+                        return '否';
                     }
+                }
+            ],
+            [
+                'attribute' => 'is_all_stock',
+                'format'    => 'raw',
+                'filter'    => OrderAgreementSearch::$allStock,
+                'value'     => function ($model, $key, $index, $column) {
+                    return OrderAgreementSearch::$allStock[$model->is_all_stock];
                 }
             ],
 //            [
@@ -141,6 +190,31 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'expect_at',
+                'contentOptions'=>['style'=>'min-width: 150px;'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderAgreementSearch[expect_at]',
+                    'value' => Yii::$app->request->get('OrderAgreementSearch')['expect_at'],
+                ]),
+                'value'     => function($model){
+                    return substr($model->expect_at, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'payment_max_date',
+                'label'     => '支出合同最晚时间',
+                'value'     => function ($model, $key, $index, $column) {
+                    $orderPurchaseList = OrderPurchase::find()->where(['order_agreement_id' => $model->id])->all();
+                    $orderPurchaseIds = ArrayHelper::getColumn($orderPurchaseList, 'id');
+                    $orderPayment = OrderPayment::find()->where(['order_purchase_id' => $orderPurchaseIds])->orderBy('delivery_date Desc')->one();
+                    if (!empty($orderPayment)) {
+                        return substr($orderPayment->delivery_date, 0, 10);
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute' => 'customer_name',
                 'label'     => '客户名称',
                 'filter'    => Html::activeTextInput($searchModel, 'customer_name',['class' => 'form-control']),
@@ -155,12 +229,27 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => !in_array($userId, array_merge($adminIds, $final_adminIds)),
                 'value'          => function ($model, $key, $index, $column){
-                    return Html::a('<i class="fa fa-plus"></i> 派送采购员', Url::to(['detail', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-primary btn-xs btn-flat',
-                    ]);
+                    if ($model->is_purchase) {
+                        return '';
+                    } else {
+                        if ($model->is_merge) {
+                            if (!$model->is_all_stock) {
+                                return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['detail', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
+                            } else {
+                                return '';
+                            }
+                        } else {
+                            return Html::a('<i class="fa fa-d"></i> 合并采购数据', Url::to(['merge', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
+                            ]);
+                        }
+                    }
                 }
             ],
         ],

@@ -3,11 +3,11 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\OrderPurchase;
+use kartik\grid\GridView;
 use kartik\daterange\DateRangePicker;
 use app\models\Admin;
+use app\models\OrderPurchase;
 use app\models\AuthAssignment;
 
 
@@ -18,7 +18,7 @@ use app\models\AuthAssignment;
 $this->title = '待付款页面';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '财务'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => '收款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $adminList = Admin::find()->where(['id' => $adminIds])->all();
 $admins = [];
@@ -29,6 +29,16 @@ $userId   = Yii::$app->user->identity->id;
 
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Html::button('刷新', [
+            'class'   => 'btn btn-info upload',
+            'name'    => 'submit-button',
+            'onclick' => 'javascript:location.reload();',
+        ])?>
+        <?= Html::a('复位', Url::to(['payment-list']), [
+            'class'   => 'btn btn-success',
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([

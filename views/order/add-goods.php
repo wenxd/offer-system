@@ -146,6 +146,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                                 <td><?=$item->goods->original_company?></td>
                                 <td><?=$item->goods->unit?></td>
                                 <td><?=$tax_rate?>></td>
+                                <td><?=Goods::$assembly[$item->goods->is_assembly]?></td>
                                 <td><?=Goods::$process[$item->goods->is_process]?></td>
                                 <td><?=Goods::$special[$item->goods->is_special]?></td>
                                 <td><img src="<?=printf('%s/%s', Yii::$app->params['img_url_prefix'], $item->goods->img_id)?>" width="50px"></td>
@@ -318,29 +319,59 @@ $tax_rate = SystemConfig::find()->select('value')->where([
         $("#good_number_b").val(obj.html());
         $('.box-search-b').addClass('cancel');
     }
+    function in_array(stringToSearch, arrayToSearch) {
+        for (s = 0; s < arrayToSearch.length; s++) {
+            var thisEntry = arrayToSearch[s].toString();
+            if (thisEntry == stringToSearch) {
+                return true;
+            }
+        }
+        return false;
+    }
     $('.order_save').click(function (e) {
-        var goods  = $('.goods_id');
-        var goodsIds = [];
-        var goodsInfo = [];
+        //防止双击
+        $(".order_save").attr("disabled", true).addClass("disabled");
+        var goods      = $('.goods_id');
+        var goodsIds   = [];
+        var goodsInfo  = [];
+        var serials    = [];
+        var serialOpen = false;
         goods.each(function (i, e) {
             var item = {};
             goodsIds.push($(e).data('id'));
             item.goods_id = $(e).data('id');
             item.number   = $(e).find('.goodsNumber').text();
             item.serial   = $(e).find('.serialNumber input').val();
+            if (in_array(item.serial, serials)) {
+                serialOpen = true;
+            }
+            serials.push(item.serial);
             goodsInfo.push(item);
         });
-
+        if (!goodsIds.length) {
+            layer.msg('请最少选择一个零件', {time:2000});
+            $(".order_save").removeAttr("disabled").removeClass("disabled");
+            return false;
+        }
+        if (serialOpen) {
+            layer.msg('有相同的序号，请检查', {time:2000});
+            $(".order_save").removeAttr("disabled").removeClass("disabled");
+            return false;
+        }
         var url = location.search;
         url = url.substr(17);
         $.ajax({
             type:"post",
             url:'?r=order/save-order' + url,
-            data:{goodsIds:goodsIds, goodsInfo:goodsInfo},
+            data:{goodsInfo:goodsInfo},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     location.replace("?r=order/index");
+                } else {
+                    //失败提示
+                    layer.msg(res.msg, {icon:1});
+                    $(".order_save").removeAttr("disabled").removeClass("disabled");
                 }
             }
         });

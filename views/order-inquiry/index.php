@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use app\models\OrderInquiry;
 use app\models\Admin;
+use app\models\Helper;
 use app\models\AuthAssignment;
 use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
@@ -17,11 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
-$adminList = Admin::find()->where(['id' => $adminIds])->all();
-$admins = [];
-foreach ($adminList as $key => $admin) {
-    $admins[$admin->id] = $admin->username;
-}
+
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
@@ -53,8 +50,12 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'inquiry_sn',
                 'format'    => 'raw',
-                'value'     => function($model) {
-                    return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                'value'     => function($model) use($userId, $adminIds) {
+                    if (in_array($userId, $adminIds) && $model->is_inquiry) {
+                        return $model->inquiry_sn;
+                    } else {
+                        return Html::a($model->inquiry_sn, Url::to(['order-inquiry/view', 'id' => $model->id]));
+                    }
                 }
             ],
             [
@@ -66,6 +67,17 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function($model) {
                     return substr($model->end_date, 0, 10);
+                }
+            ],
+            [
+                'attribute' => 'final_at',
+                'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'final_at'],
+                'filter'    => DateRangePicker::widget([
+                    'name' => 'OrderInquirySearch[final_at]',
+                    'value' => Yii::$app->request->get('OrderInquirySearch')['final_at'],
+                ]),
+                'value'     => function($model) {
+                    return substr($model->final_at, 0, 10);
                 }
             ],
             [
@@ -91,7 +103,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'admin_id',
                 'label'     => '询价员',
-                'filter'    => $admins,
+                'filter'    => in_array($userId, $adminIds) ? [$userId => Yii::$app->user->identity->username] : Helper::getAdminList(['系统管理员', '询价员']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->admin) {
                         return $model->admin->username;

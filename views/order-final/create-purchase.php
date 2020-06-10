@@ -1,5 +1,7 @@
 <?php
 
+use app\extend\widgets\Bar;
+use app\models\Inquiry;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -7,6 +9,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Admin;
+use app\models\SystemConfig;
 use app\models\AuthAssignment;
 
 $this->title = '生成采购单';
@@ -26,8 +29,13 @@ foreach ($adminList as $key => $admin) {
 }
 
 $customer_name = $order->customer ? $order->customer->short_name : '';
-$model->purchase_sn = 'B' . date('ymd_') . $customer_name . '_' . $number;
+$model->purchase_sn = 'B' . date('ymd_') . $number;
 $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
+
+$system_tax= SystemConfig::find()->select('value')->where([
+        'title'      => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO,
+])->scalar();
 ?>
 <style>
     #example2 {
@@ -39,29 +47,67 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 
 </style>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{low} {short} {stock} {better} {new} {recover}',
+            'buttons' => [
+                'low' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'short' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最短', Url::to(['short', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+                'better' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'new' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 一键最新', Url::to(['new', 'id' => $_GET['id']]), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat',
+                    ]);
+                },
+            ]
+        ])?>
+    </div>
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
-        <table id="example2" class="table table-bordered table-hover">
+        <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
-                <th>零件号</th>
-                <th>厂家号</th>
-                <th>中文描述</th>
-                <th>英文描述</th>
+                <th>操作</th>
+                <th style="width: 100px;">零件号</th>
+                <th style="width: 100px;">厂家号</th>
+                <th style="width: 100px;">中文描述</th>
+                <th style="max-width: 150px;">英文描述</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
-                <th>供应商</th>
+                <th style="width: 100px;">供应商</th>
                 <th>询价员</th>
                 <th>税率</th>
-                <th>未税单价</th>
-                <th>未税总价</th>
-                <th>含税单价</th>
-                <th>含税总价</th>
-                <th>货期</th>
+                <th>最低未税单价</th>
+                <th>最低含税总价</th>
+                <th>最低货期</th>
+                <th>货期最短未税单价</th>
+                <th>货期最短含税总价</th>
+                <th>货期最短货期</th>
+                <th>采购未税单价</th>
+                <th>采购含税单价</th>
+                <th>采购未税总价</th>
+                <th>采购含税总价</th>
+                <th>采购货期</th>
                 <th>采购单号</th>
-                <th>合同需求数量</th>
+                <th>订单需求数量</th>
                 <th>采购数量</th>
                 <th>单位</th>
                 <th>使用库存数量</th>
@@ -71,7 +117,10 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
                 <th>低储</th>
             </tr>
             <tr id="w3-filters" class="filters">
-                <td><button type="button" class="btn btn-success inquiry_search">搜索</button></td>
+                <td><button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button></td>
+                <td>
+                    <?=Html::a('复位', '?r=order-final/create-purchase&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -114,6 +163,7 @@ $model->end_date    = date('Y-m-d', time() + 3600 * 24 * 3);
 data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods_id={$item->id} value={$item->goods_id} class='select_id'>"?>
                     </td>
                     <td><?=$item->serial?></td>
+                    <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'final_goods_id' => $item->id, 'order_final_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
                     <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <td><?=$item->goods->description?></td>
@@ -122,12 +172,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     <td><?=$item->goods->original_company_remark?></td>
                     <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
                     <td><?=Admin::findOne($item->inquiry->admin_id)->username?></td>
-                    <td><?=$item->inquiry->tax_rate?></td>
-                    <td class="price"><?=$item->inquiry->price?></td>
-                    <td class="tax_price"><?=$item->inquiry->tax_price?></td>
-                    <td class="all_price"><?=$item->inquiry->price * $item->number?></td>
-                    <td class="all_tax_price"><?=$item->inquiry->tax_price * $item->number?></td>
-                    <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
+                    <td><?=$system_tax?></td>
+                    <?php
+                        $lowPriceInquiry = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('price asc')->one();
+                        $deliverInquiry  = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('delivery_time asc')->one();
+                    ?>
+                    <td class="low_price" style="background-color:#00FF33"><?=$lowPriceInquiry ? $lowPriceInquiry->price : 0?></td>
+                    <td class="low_tax_price"><?=$lowPriceInquiry ? number_format($lowPriceInquiry->price * (1 + $system_tax/100) * $item->number, 2, '.', '') : 0?></td>
+                    <td class="low_delivery"><?=$lowPriceInquiry ? $lowPriceInquiry->delivery_time : 0?></td>
+                    <td class="short_price"><?=$deliverInquiry ? $deliverInquiry->price : 0?></td>
+                    <td class="short_tax_price"><?=$deliverInquiry ? number_format($deliverInquiry->price * (1 + $system_tax/100) * $item->number, 2, '.', '') : 0?></td>
+                    <td class="short_delivery" style="background-color:#0099FF"><?=$deliverInquiry ? $deliverInquiry->delivery_time : 0?></td>
+
+                    <td class="price"><?=$item->price?></td>
+                    <?php
+                        $tax_price = number_format($item->price * (1 + $system_tax/100), 2, '.', '');
+                    ?>
+                    <td class="tax_price"><?=$tax_price?></td>
+                    <td class="all_price"><?=$item->price * $item->number?></td>
+                    <td class="all_tax_price"><?=number_format($item->price * (1 + $system_tax/100) * $item->number, 2, '.', '')?></td>
+                    <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td><?=isset($purchaseGoods[$item->goods_id]) ? $purchaseGoods[$item->goods_id]->order_purchase_sn : ''?></td>
                     <td class="oldNumber"><?=$item->number?></td>
                     <td class="afterNumber">
@@ -142,12 +206,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="14" rowspan="2">汇总统计</td>
+                <td colspan="13" rowspan="2">汇总统计</td>
+                <td>最低含税总价</td>
+                <td>最低最长货期</td>
+                <td rowspan="2"></td>
+                <td>货期最短含税总价</td>
+                <td>货期最短最长货期</td>
+                <td colspan="3" rowspan="2"></td>
                 <td>采购含税总价</td>
                 <td>最长货期</td>
                 <td colspan="9"></td>
             </tr>
             <tr style="background-color: #acccb9">
+                <td class="stat_low_tax_price_all"></td>
+                <td class="most_low_deliver"></td>
+                <td class="stat_short_tax_price_all"></td>
+                <td class="most_short_deliver"></td>
                 <td class="purchase_all_price"></td>
                 <td class="mostLongTime"></td>
                 <td colspan="9"></td>
@@ -197,9 +271,32 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
             var mostLongTime        = 0;
             var purchase_price      = 0;
             var purchase_all_price  = 0;
+            var stat_low_tax_price_all  = 0;
+            var most_low_deliver        = 0;
+            var stat_short_tax_price_all= 0;
+            var most_short_deliver      = 0;
             $('.order_agreement_list').each(function (i, e) {
+                //最低
+                var low_tax_price   = parseFloat($(e).find('.low_tax_price').text());
+                var low_delivery    = parseFloat($(e).find('.low_delivery').text());
+                if (low_tax_price){
+                    stat_low_tax_price_all += low_tax_price;
+                }
+                if (low_delivery > most_low_deliver) {
+                    most_low_deliver = low_delivery;
+                }
+                //最短
+                var short_tax_price = parseFloat($(e).find('.short_tax_price').text());
+                var short_delivery  = parseFloat($(e).find('.short_delivery').text());
+                if (short_tax_price){
+                    stat_short_tax_price_all += short_tax_price;
+                }
+                if (short_delivery > most_short_deliver) {
+                    most_short_deliver = short_delivery;
+                }
+
                 var price           = $(e).find('.price').text();
-                var tax_price       = $(e).find('.tax_price').text();
+                var tax_price       = price * (1 + '<?=$system_tax?>' / 100);
                 var number          = $(e).find('.oldNumber').text();
                 var delivery_time   = parseFloat($(e).find('.delivery_time').text());
                 var purchase_number = $(e).find('.number').val();
@@ -210,8 +307,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     mostLongTime = delivery_time;
                 }
 
-                $(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
-                $(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
+                //$(e).find('.all_price').text(parseFloat(price * purchase_number).toFixed(2));
+                //$(e).find('.all_tax_price').text(parseFloat(tax_price * purchase_number).toFixed(2));
 
                 var all_price     = parseFloat(price * purchase_number);
                 var all_tax_price = parseFloat(tax_price* purchase_number);
@@ -226,6 +323,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                 }
                 $(e).find('.use_stock').text(use_number);
             });
+            $('.stat_low_tax_price_all').text(stat_low_tax_price_all.toFixed(2));
+            $('.most_low_deliver').text(most_low_deliver);
+            $('.stat_short_tax_price_all').text(stat_short_tax_price_all.toFixed(2));
+            $('.most_short_deliver').text(most_short_deliver);
             $('.mostLongTime').text(mostLongTime);
             $('.purchase_price').text(purchase_price.toFixed(2));
             $('.purchase_all_price').text(purchase_all_price.toFixed(2));
@@ -256,11 +357,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
-            var price = $(this).parent().parent().find('.price').text();
-            var tax_price = $(this).parent().parent().find('.tax_price').text();
+            var price     = parseFloat($(this).parent().parent().find('.price').text());
+            var tax_price = price * (1 + '<?=$system_tax?>' / 100);
+
+            //最低
+            var low_price = parseFloat($(this).parent().parent().find('.low_price').text());
+            var low_tax_price = low_price * (1 + '<?=$system_tax?>' / 100);
+            //最短
+            var short_price = parseFloat($(this).parent().parent().find('.short_price').text());
+            var short_tax_price = short_price * (1 + '<?=$system_tax?>' / 100);
 
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+
+            $(this).parent().parent().find('.low_tax_price').text(parseFloat(low_tax_price * number).toFixed(2));
+            $(this).parent().parent().find('.short_tax_price').text(parseFloat(short_tax_price * number).toFixed(2));
 
             //默认使用库存数量
             var agreement_number = parseFloat($(this).parent().parent().find('.oldNumber').text());
@@ -272,14 +383,23 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
 
             var purchase_price     = 0;
             var purchase_all_price = 0;
+            var stat_low_tax_price_all  = 0;
+            var stat_short_tax_price_all= 0;
             $('.order_agreement_list').each(function (i, e) {
                 var all_price       = $(e).find('.all_price').text();
                 var all_tax_price   = $(e).find('.all_tax_price').text();
-                purchase_price      += parseFloat(all_price);
-                purchase_all_price  += parseFloat(all_tax_price);
+                var low_tax_price_all   = $(e).find('.low_tax_price').text();
+                var short_tax_price_all = $(e).find('.short_tax_price').text();
+                purchase_price          += parseFloat(all_price);
+                purchase_all_price      += parseFloat(all_tax_price);
+                stat_low_tax_price_all  += parseFloat(low_tax_price_all);
+                stat_short_tax_price_all+= parseFloat(short_tax_price_all);
             });
             $('.purchase_price').text(purchase_price.toFixed(2));
             $('.purchase_all_price').text(purchase_all_price.toFixed(2));
+            //对新加的最低和最短做动态变化
+            $('.stat_low_tax_price_all').text(stat_low_tax_price_all.toFixed(2));
+            $('.stat_short_tax_price_all').text(stat_short_tax_price_all.toFixed(2));
         });
 
         //保存

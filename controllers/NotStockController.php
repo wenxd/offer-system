@@ -190,4 +190,10 @@ class NotStockController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    public function actionDeleteAll()
+    {
+        TempNotStock::deleteAll();
+        return $this->redirect(['index']);
+    }
 }

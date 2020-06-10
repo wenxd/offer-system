@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\widgets\Bar;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -17,6 +18,19 @@ $this->title = '成本单列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?= Bar::widget([
+            'template' => '{index}',
+            'buttons' => [
+                'index' => function () {
+                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-success btn-flat',
+                    ]);
+                }
+            ]
+        ])?>
+    </div>
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
@@ -140,7 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'         => 'raw',
                 'value'          => function ($model, $key, $index, $column){
                     if ($model->order->order_type == Order::ORDER_TYPE_PROJECT_YES) {
-                        if (!$model->is_quote) {
+                        if (!$model->is_agreement) {
                             return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
@@ -150,10 +164,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         if (!$model->is_purchase) {
-                            return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-success btn-xs btn-flat',
-                            ]);
+                            if ($model->is_merge) {
+                                return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-success btn-xs btn-flat',
+                                ]);
+                            } else {
+                                return Html::a('<i class="fa fa-d"></i> 合并采购数据', Url::to(['merge', 'id' => $model['id']]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-info btn-xs btn-flat',
+                                ]);
+                            }
                         } else {
                             return '';
                         }

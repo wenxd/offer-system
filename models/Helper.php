@@ -17,4 +17,14 @@ class Helper
         }
         return ['' => '请选择'] + $admins;
     }
+
+    public static function getAdminListAll()
+    {
+        $adminList = Admin::find()->where(['status' => Admin::STATUS_ACTIVE])->all();
+        $admins = [];
+        foreach ($adminList as $key => $admin) {
+            $admins[$admin->id] = $admin->username;
+        }
+        return $admins;
+    }
 }

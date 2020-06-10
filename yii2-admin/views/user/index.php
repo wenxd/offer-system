@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'username',
-            'email:email',
+            //'email:email',
             [
                 'attribute' => 'created_at',
                 'value'     => function($model){
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => Helper::filterActionColumn(['view', 'activate', 'delete', 'update-password']),
+                'template' => Helper::filterActionColumn(['view', 'activate', 'delete', 'update-password', 'change-password']),
                 'buttons' => [
                     'activate' => function($url, $model) {
                         if ($model->status == 10) {
@@ -52,11 +52,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         $options = [
                             'title' => '修改密码',
                         ];
-                        return Html::a('<span class="glyphicon glyphicon-user"></span>', $url, $options);
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span>', $url, $options);
                     }
-                    ]
-                ],
+                ]
             ],
-        ]);
+        ],
+    ]);
         ?>
 </div>

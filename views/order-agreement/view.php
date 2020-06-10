@@ -15,8 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 $model->agreement_date = substr($model->agreement_date, 0, 10);
 $model->sign_date = substr($model->sign_date, 0, 10);
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$use_admin = AuthAssignment::find()->where(['item_name' => ['报价员']])->all();
+$quote_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
 ?>
@@ -27,15 +30,17 @@ $userId   = Yii::$app->user->identity->id;
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
-                <?php if(!in_array($userId, $adminIds)):?>
-                    <th>零件号</th>
+                <th>零件号</th>
+                <?php if (!in_array($userId, $quote_adminIds)):?>
+                    <th>厂家号</th>
+                    <th>原厂家</th>
                 <?php endif;?>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>数量</th>
                 <th>单位</th>
                 <th>税率</th>
-                <?php if (!in_array($userId, $adminIds)):?>
+                <?php if (!in_array($userId, array_merge($adminIds, $quote_adminIds))):?>
                 <th>发行含税单价</th>
                 <th>发行含税总价</th>
                 <th>发行货期</th>
@@ -50,8 +55,10 @@ $userId   = Yii::$app->user->identity->id;
             <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_quote_list">
                     <td><?=$item->serial?></td>
-                    <?php if(!in_array($userId, $adminIds)):?>
-                        <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number?></td>
+                    <?php if (!in_array($userId, $quote_adminIds)):?>
+                    <td><?=$item->goods->goods_number_b?></td>
+                    <td><?=$item->goods->original_company?></td>
                     <?php endif;?>
                     <td class="goods_id" data-goods_id="<?=$item->goods_id?>" data-goods_type="<?=$item->type?>"
                         data-relevance_id="<?=$item->relevance_id?>" data-quote_goods_id="<?=$item->id?>">
@@ -61,9 +68,9 @@ $userId   = Yii::$app->user->identity->id;
                     <td class="afterNumber"><?=$item->number?></td>
                     <td><?=$item->goods->unit?></td>
                     <td class="tax"><?=$item->tax_rate?></td>
-                    <?php if (!in_array($userId, $adminIds)):?>
+                    <?php if (!in_array($userId, array_merge($adminIds, $quote_adminIds))):?>
                     <?php
-                        $publish_tax_price = $item->goods->publish_tax_price ? $item->goods->publish_tax_price : $item->goods->publish_tax_price;
+                        $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate/100), 2, '.', '');
                     ?>
                     <td><?=$publish_tax_price?></td>
                     <td class="publish_tax_price"><?=$publish_tax_price * $item->number?></td>
@@ -76,8 +83,8 @@ $userId   = Yii::$app->user->identity->id;
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?=in_array($userId, $adminIds) ? 5 : 8?>" rowspan="2">汇总统计</td>
-                <?php if (!in_array($userId, $adminIds)):?>
+                <td colspan="<?=in_array($userId, $adminIds) ? 8 : (in_array($userId, $quote_adminIds) ? 6 : 10)?>" rowspan="2">汇总统计</td>
+                <?php if (!in_array($userId, array_merge($adminIds, $quote_adminIds))):?>
                 <td>发行含税总价合计</td>
                 <?php endif;?>
                 <td rowspan="2"></td>
@@ -87,7 +94,7 @@ $userId   = Yii::$app->user->identity->id;
                 <td rowspan="2"></td>
             </tr>
             <tr style="background-color: #acccb9">
-                <?php if (!in_array($userId, $adminIds)):?>
+                <?php if (!in_array($userId, array_merge($adminIds, $quote_adminIds))):?>
                 <td class="sta_all_publish_tax_price"></td>
                 <?php endif;?>
                 <td class="sta_all_price"></td>
