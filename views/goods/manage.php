@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label for="good_number">零件号</label>
                             <input type="text" class="form-control" id="good_number"
                                    placeholder="请输入零件号，如：1001" name="good_number" autocomplete="off">
+                            <input type="hidden" class="form-control" id="good_id">
                         </div>
                         <button type="submit" class="btn btn-primary" style="float: right">查询</button>
                     </form>
@@ -72,8 +73,10 @@ $this->params['breadcrumbs'][] = $this->title;
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
+
                     for (var i in res.data) {
-                        li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="select($(this))" data-goods_id="' + res.data[i].id + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul').append(li);
@@ -84,6 +87,13 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         })
     });
+
+    function select(obj){
+        $("#good_number").val(obj.html());
+        $("#good_id").val(obj.data('goods_id'));
+        $('.box-search').addClass('cancel');
+    }
+
     $('#form').submit(function(e){
         e.preventDefault();
         var form = $(this).serializeArray();
@@ -91,12 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $.each(form, function() {
             parameter += this.name + '=' + this.value + '&';
         });
-        parameter += 'type=1';
+        parameter += 'goods_id=' +  $("#good_id").val();
         window.location.href = location.href.split("?")[0] + "?r=goods/search-result&" + parameter;
     });
-
-    function select(obj){
-        $("#good_number").val(obj.html());
-        $('.box-search').addClass('cancel');
-    }
 </script>

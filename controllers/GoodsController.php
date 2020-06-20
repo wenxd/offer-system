@@ -99,13 +99,12 @@ class GoodsController extends BaseController
 
     public function actionSearchResult()
     {
-        $good_number = (string)Yii::$app->request->get('good_number');
-        $goods = Goods::find()->where(['goods_number' => $good_number, 'is_deleted' => Goods::IS_DELETED_NO])->one();
+        $goods_id = Yii::$app->request->get('goods_id');
+        $goods = Goods::findOne($goods_id);
         if (!$goods) {
             yii::$app->getSession()->setFlash('error', '没有此零件');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $goods_id = $goods->id;
 
         //库存记录
         $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();

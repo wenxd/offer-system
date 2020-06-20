@@ -38,11 +38,11 @@ class SearchController extends BaseController
     {
         $good_number = (string)trim(Yii::$app->request->get('good_number'));
 
-        $goodsList = Goods::find()->filterWhere(['like', 'goods_number', $good_number])
-            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->all();
-        $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number');
+        $goodsList = Goods::find()->select('id, goods_number, brand_id, material_code')
+            ->filterWhere(['like', 'goods_number', $good_number])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
 
-        return json_encode(['code' => 200, 'data' => $good_number_list]);
+        return json_encode(['code' => 200, 'data' => $goodsList]);
     }
 
     /**获取厂家号
