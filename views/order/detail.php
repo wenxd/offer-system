@@ -71,6 +71,7 @@ $userId   = Yii::$app->user->identity->id;
             <thead>
             <tr>
                 <th>序号</th>
+                <th>品牌</th>
                 <th>零件号</th>
                 <th>厂家号</th>
                 <th>中文描述</th>
@@ -89,6 +90,7 @@ $userId   = Yii::$app->user->identity->id;
             <?php foreach ($orderGoods as $key => $item):?>
                 <tr>
                     <td class="serial"><?= $item->serial?></td>
+                    <td><?= $item->goods->material_code?></td>
                     <td><?= $item->goods->goods_number?></td>
                     <td><?= $item->goods->goods_number_b?></td>
                     <td><?= $item->goods->description?></td>
