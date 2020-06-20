@@ -46,6 +46,7 @@ use app\extend\tencent\Cos;
  * @property string $import_mark
  * @property string $publish_price
  * @property string $publish_tax
+ * @property string $brand_id
  */
 class Goods extends ActiveRecord
 {
@@ -161,7 +162,7 @@ class Goods extends ActiveRecord
     {
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
-                'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number'], 'integer'],
+                'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number', 'brand_id'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
                 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
@@ -215,7 +216,7 @@ class Goods extends ActiveRecord
             'publish_delivery_time'   => '发行货期',
             'suggest_number'          => '建议库存',
             'estimate_publish_price'  => '预估发行价',
-            'material_code'           => '设备类别',
+            'material_code'           => '品牌',
             'import_mark'             => '导入类别',
             'publish_price'           => '发行未税单价',
             'publish_tax'             => '发行税率',

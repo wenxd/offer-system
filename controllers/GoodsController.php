@@ -6,6 +6,7 @@ use Yii;
 use app\actions;
 use app\models\{Admin,
     AgreementGoods,
+    Brand,
     PaymentGoods,
     Stock,
     Goods,
@@ -213,9 +214,9 @@ class GoodsController extends BaseController
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
             'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC'];
-        $tableHeader = ['零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
+        $tableHeader = ['品牌', '零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
             '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
-            '发行货期', '预估发行价', '设备类别', '导入类别', '发行税率'];
+            '发行货期', '预估发行价', '导入类别', '发行税率'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -282,116 +283,119 @@ class GoodsController extends BaseController
 
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A']) && empty($value['E'])) {
+                            if (empty($value['B']) && empty($value['F'])) {
                                 continue;
                             }
-                            if (trim($value['A'])) {
-                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number' => trim($value['A'])])->one();
+
+                            $brand = Brand::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'name' => trim($value['A'])])->one();
+
+                            if (trim($value['B'])) {
+                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number' => trim($value['B'])])->one();
                             } else {
-                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number_b' => trim($value['E'])])->one();
+                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number_b' => trim($value['F'])])->one();
                             }
                             if (!$goods) {
                                 $goods = new Goods();
                             }
                             //零件号
-                            if ($value['A']) {
-                                $goods->goods_number = trim($value['A']);
+                            if ($value['B']) {
+                                $goods->goods_number = trim($value['B']);
                             }
                             //中文描述
-                            if ($value['B']) {
-                                $goods->description = (string)trim($value['B']);
+                            if ($value['C']) {
+                                $goods->description = (string)trim($value['C']);
                             }
                             //英文描述
-                            if ($value['C']) {
-                                $goods->description_en = (string)trim($value['C']);
+                            if ($value['D']) {
+                                $goods->description_en = (string)trim($value['D']);
                             }
                             //原厂家
-                            if ($value['D']) {
-                                $goods->original_company = (string)trim($value['D']);
+                            if ($value['E']) {
+                                $goods->original_company = (string)trim($value['E']);
                             }
                             //厂家号
-                            if ($value['E']) {
-                                $goods->goods_number_b = (string)trim($value['E']);
+                            if ($value['F']) {
+                                $goods->goods_number_b = (string)trim($value['F']);
                             }
                             //材质
-                            if ($value['F']) {
-                                $goods->material = (string)trim($value['F']);
+                            if ($value['G']) {
+                                $goods->material = (string)trim($value['G']);
                             }
                             //是否TZ
-                            if ($value['G'] && $value['G'] == '是') {
+                            if ($value['H'] && $value['H'] == '是') {
                                 $goods->is_tz = Goods::IS_TZ_YES;
                             } else {
                                 $goods->is_tz = Goods::IS_TZ_NO;
                             }
                             //加工
-                            if ($value['H'] && $value['H'] == '是') {
+                            if ($value['I'] && $value['I'] == '是') {
                                 $goods->is_process = Goods::IS_PROCESS_YES;
                             } else {
                                 $goods->is_process = Goods::IS_PROCESS_NO;
                             }
                             //标准
-                            if ($value['I'] && $value['I'] == '是') {
+                            if ($value['J'] && $value['J'] == '是') {
                                 $goods->is_standard = Goods::IS_STANDARD_YES;
                             } else {
                                 $goods->is_standard = Goods::IS_STANDARD_NO;
                             }
                             //进口
-                            if ($value['J'] && $value['J'] == '是') {
+                            if ($value['K'] && $value['K'] == '是') {
                                 $goods->is_import = Goods::IS_IMPORT_YES;
                             } else {
                                 $goods->is_import = Goods::IS_IMPORT_NO;
                             }
                             //紧急
-                            if ($value['K'] && $value['K'] == '是') {
+                            if ($value['L'] && $value['L'] == '是') {
                                 $goods->is_emerg = Goods::IS_EMERG_YES;
                             } else {
                                 $goods->is_emerg = Goods::IS_EMERG_NO;
                             }
                             //大修
-                            if ($value['L'] && $value['L'] == '是') {
+                            if ($value['M'] && $value['M'] == '是') {
                                 $goods->is_repair = Goods::IS_REPAIR_YES;
                             } else {
                                 $goods->is_repair = Goods::IS_REPAIR_NO;
                             }
                             //总成
-                            if ($value['M'] && $value['M'] == '是') {
+                            if ($value['N'] && $value['N'] == '是') {
                                 $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
                             } else {
                                 $goods->is_assembly = Goods::IS_ASSEMBLY_NO;
                             }
                             //特制
-                            if ($value['N'] && $value['N'] == '是') {
+                            if ($value['O'] && $value['O'] == '是') {
                                 $goods->is_special = Goods::IS_SPECIAL_YES;
                             } else {
                                 $goods->is_special = Goods::IS_SPECIAL_NO;
                             }
                             //铭牌
-                            if ($value['O'] && $value['O'] == '是') {
+                            if ($value['P'] && $value['P'] == '是') {
                                 $goods->is_nameplate = Goods::IS_NAMEPLATE_YES;
                             } else {
                                 $goods->is_nameplate = Goods::IS_NAMEPLATE_NO;
                             }
                             //所属部位
-                            if ($value['Q']) {
-                                $goods->part = (string)trim($value['Q']);
+                            if ($value['R']) {
+                                $goods->part = (string)trim($value['R']);
                             }
                             //单位
-                            $goods->unit = $value['T'] ? trim($value['T']) : '件';
+                            $goods->unit = $value['U'] ? trim($value['U']) : '件';
                             //技术备注、技术
-                            if ($value['U']) {
-                                $goods->technique_remark = (string)trim($value['U']);
+                            if ($value['V']) {
+                                $goods->technique_remark = (string)trim($value['V']);
                             }
                             //原厂家备注
-                            if ($value['V']) {
-                                $goods->original_company_remark = (string)trim($value['V']);
+                            if ($value['W']) {
+                                $goods->original_company_remark = (string)trim($value['W']);
                             }
                             //零件备注
-                            if ($value['W']) {
-                                $goods->remark = (string)trim($value['W']);
+                            if ($value['X']) {
+                                $goods->remark = (string)trim($value['X']);
                             }
-                            if ($value['P'] && $value['S']) {
-                                $deviceName   = strtoupper(trim($value['P']));
-                                $deviceNumber = trim($value['S']);
+                            if ($value['Q'] && $value['T']) {
+                                $deviceName   = strtoupper(trim($value['Q']));
+                                $deviceNumber = trim($value['T']);
                                 $device = [];
                                 $device[$deviceName] = $deviceNumber;
                                 $oldDevice = json_decode($goods->device_info, true);
@@ -410,22 +414,23 @@ class GoodsController extends BaseController
                                 }
                             }
                             //发行含税单价
-                            if ($value['X']) {
-                                $goods->publish_tax_price = trim($value['X']);
+                            if ($value['Y']) {
+                                $goods->publish_tax_price = trim($value['Y']);
                             }
                             //发行货期
-                            if ($value['Y']) {
-                                $goods->publish_delivery_time = trim($value['Y']);
+                            if ($value['Z']) {
+                                $goods->publish_delivery_time = trim($value['Z']);
                             }
                             //预估发行价
-                            if ($value['Z']) {
-                                $goods->estimate_publish_price = trim($value['Z']);
-                            }
-                            //物资编码
                             if ($value['AA']) {
-                                $goods->material_code = (string)trim($value['AA']);
+                                $goods->estimate_publish_price = trim($value['AA']);
                             }
-                            //物资编码
+                            //品牌名称
+                            if ($brand) {
+                                $goods->material_code = $brand->name;
+                                $goods->brand_id = $brand->id;
+                            }
+                            //导入类别
                             if ($value['AB']) {
                                 $goods->import_mark = (string)trim($value['AB']);
                             }
@@ -437,15 +442,15 @@ class GoodsController extends BaseController
                                 $num++;
                             }
                             //建议库存
-                            if ($value['R']) {
+                            if ($value['S']) {
                                 $stock = Stock::find()->where(['good_id' => $goods->id])->one();
                                 if (!$stock) {
                                     $stock = new Stock();
                                     $stock->good_id         = $goods->id;
                                 }
-                                $stock->suggest_number  = trim($value['R']);
-                                $stock->high_number     = (int) round($high_stock_ratio * trim($value['R']));
-                                $stock->low_number      = (int) round($low_stock_ratio * trim($value['R']));
+                                $stock->suggest_number  = trim($value['S']);
+                                $stock->high_number     = (int) round($high_stock_ratio * trim($value['S']));
+                                $stock->low_number      = (int) round($low_stock_ratio * trim($value['S']));
                                 $stock->save();
                             }
                         }

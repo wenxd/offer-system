@@ -968,3 +968,12 @@ CREATE TABLE `brand` (
   `created_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='品牌';
+
+ALTER TABLE `brand` ADD UNIQUE (`name`);
+
+ALTER TABLE `goods` ADD INDEX idx_goods_number (`goods_number`);
+ALTER TABLE `goods` ADD INDEX idx_goods_number_b (`goods_number_b`);
+ALTER TABLE `goods` MODIFY column `material_code` varchar(255) NOT NULL DEFAULT '' COMMENT '品牌商名称';
+ALTER TABLE `goods` ADD `brand_id` INT NOT NULL  COMMENT '品牌商ID';
+
+ALTER TABLE `stock` ADD UNIQUE (`good_id`);

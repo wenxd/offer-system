@@ -35,6 +35,8 @@ class Brand extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
+            [['name'], 'unique'],
+            ['name', 'required'],
         ];
     }
 
