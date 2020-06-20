@@ -238,6 +238,15 @@ class Goods extends ActiveRecord
         if ($this->brand_id) {
             $brand = Brand::findOne($this->brand_id);
             $this->material_code = $brand->name;
+            $is_goods_number = self::find()->where([
+                'is_deleted'   => self::IS_DELETED_NO,
+                'goods_number' => $this->goods_number,
+                'brand_id'     => $brand->id
+            ])->one();
+            if ($insert && $is_goods_number) {
+                $this->addError('id', '此零件编码已存在');
+                return false;
+            }
         }
 
         $this->goods_number             = strtoupper($this->goods_number);
@@ -267,12 +276,6 @@ class Goods extends ActiveRecord
         }
 
         $this->description_en = strtoupper($this->description_en);
-
-        $is_goods_number = self::find()->where(['is_deleted' => self::IS_DELETED_NO, 'goods_number' => $this->goods_number])->one();
-        if ($insert && $is_goods_number) {
-            $this->addError('id', '此零件编码已存在');
-            return false;
-        }
         $img = UploadedFile::getInstance($this, 'img_id');
         //$cos = new Cos();
         if ($img) {

@@ -287,7 +287,7 @@ class GoodsController extends BaseController
                                 continue;
                             }
 
-                            $brand = Brand::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'name' => trim($value['A'])])->one();
+                            $brand = Brand::find()->where(['name' => trim($value['A'])])->one();
                             if (!$brand) {
                                 return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
                             }
@@ -450,6 +450,8 @@ class GoodsController extends BaseController
                             }
                             if ($goods->save()) {
                                 $num++;
+                            } else {
+                                return json_encode(['code' => 500, 'msg' => current($goods->getErrors())], JSON_UNESCAPED_UNICODE);
                             }
                             //建议库存
                             if ($value['S']) {
