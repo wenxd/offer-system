@@ -44,4 +44,9 @@ class TempNotGoods extends \yii\db\ActiveRecord
             'created_at'    => '创建时间',
         ];
     }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
+    }
 }

@@ -154,8 +154,8 @@ class NoGoodsBController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter      = ['A', 'B'];
-        $tableHeader = ['零件号', '厂家号'];
+        $letter      = ['A', 'B', 'C'];
+        $tableHeader = ['品牌', '零件号', '厂家号'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -165,8 +165,13 @@ class NoGoodsBController extends Controller
         //获取数据
         $tempList = TempNotGoodsB::find()->all();
         foreach ($tempList as $key => $value) {
-            $excel->setCellValue('A' . ($key + 2), $value->goods_number);
+            if ($value->goods) {
+                $excel->setCellValue('A' . ($key + 2), $value->goods->material_code);
+            } else {
+                $excel->setCellValue('A' . ($key + 2), '');
+            }
             $excel->setCellValue('B' . ($key + 2), $value->goods_number);
+            $excel->setCellValue('C' . ($key + 2), $value->goods_number_b);
         }
 
         $title = '库中没有的厂家号列表' . date('ymd-His');
