@@ -46,6 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'columns' => [
             'id',
+            'brand_name',
             'goods_number',
         ],
     ]); ?>

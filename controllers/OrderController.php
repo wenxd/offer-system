@@ -523,12 +523,7 @@ class OrderController extends BaseController
     public function actionAddGoods()
     {
         $goods_id   = (string)Yii::$app->request->post('goods_id');
-        $goods_id_b = (string)Yii::$app->request->post('goods_id_b');
-        if ($goods_id) {
-            $goods = Goods::find()->where(['goods_number' => $goods_id])->asArray()->one();
-        } else {
-            $goods = Goods::find()->where(['goods_number_b' => $goods_id_b])->asArray()->one();
-        }
+        $goods = Goods::find()->where(['id' => $goods_id])->asArray()->one();
 
         if ($goods) {
             return json_encode(['code' => 200, 'data' => $goods]);
@@ -717,7 +712,7 @@ class OrderController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C'];
-        $tableHeader = ['零件号', '数量'];
+        $tableHeader = ['品牌', '零件号', '数量'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -783,16 +778,21 @@ class OrderController extends BaseController
                     TempNotGoodsB::deleteAll();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A'])) {
+                            if (empty($value['B'])) {
                                 continue;
                             }
-                            $goods = Goods::findOne(['goods_number' => trim($value['A'])]);
+                            $goods = Goods::find()->where([
+                                'goods_number'  => trim($value['B']),
+                                'material_code' => trim($value['A']),
+                            ])->one();
                             if ($goods) {
                                 $item = [];
                                 $item[] = $key-1;
                                 $item[] = $goods->id;
-                                $item[] = trim($value['B']);
-                                $item[] = $time;
+                                $item[] = trim($value['C']);
+                                list($msec, $sec) = explode(' ', microtime());
+                                $mcritime = str_pad(floor($msec * 10000), 5, 0, STR_PAD_LEFT);
+                                $item[] = $time . $mcritime;
                                 $data[] = $item;
                                 if (!$goods->goods_number_b) {
                                     $temp_b                 = new TempNotGoodsB();
@@ -803,12 +803,14 @@ class OrderController extends BaseController
                                 }
                             } else {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = trim($value['A']);
+                                $temp->brand_name   = trim($value['A']);
+                                $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             }
                         }
                     }
-                    $num = Yii::$app->db->createCommand()->batchInsert(TempOrderGoods::tableName(), ['serial', 'goods_id', 'number', 'token'], $data)->execute();
+                    $num = Yii::$app->db->createCommand()->batchInsert(TempOrderGoods::tableName(),
+                        ['serial', 'goods_id', 'number', 'token'], $data)->execute();
                 }
                 unlink('./' . $saveName);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条', 'data' => $time], JSON_UNESCAPED_UNICODE);

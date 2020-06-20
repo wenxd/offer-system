@@ -165,11 +165,7 @@ class NoGoodsController extends Controller
         //获取数据
         $tempList = TempNotGoods::find()->all();
         foreach ($tempList as $key => $value) {
-            if ($value->goods) {
-                $excel->setCellValue('A' . ($key + 2), $value->goods->material_code);
-            } else {
-                $excel->setCellValue('A' . ($key + 2), '');
-            }
+            $excel->setCellValue('A' . ($key + 2), $value->brand_name);
             $excel->setCellValue('B' . ($key + 2), $value->goods_number);
         }
 

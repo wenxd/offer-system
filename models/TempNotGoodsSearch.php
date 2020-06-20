@@ -18,8 +18,8 @@ class TempNotGoodsSearch extends TempNotGoods
     {
         return [
             [['id'], 'integer'],
-            [['goods_number', 'updated_at', 'created_at'], 'safe'],
-            [['goods_number'], 'trim'],
+            [['brand_name', 'goods_number', 'updated_at', 'created_at'], 'safe'],
+            [['brand_name', 'goods_number'], 'trim'],
         ];
     }
 
@@ -64,6 +64,7 @@ class TempNotGoodsSearch extends TempNotGoods
             'created_at' => $this->created_at,
         ]);
 
+        $query->andFilterWhere(['like', 'brand_name', $this->brand_name]);
         $query->andFilterWhere(['like', 'goods_number', $this->goods_number]);
 
         return $dataProvider;

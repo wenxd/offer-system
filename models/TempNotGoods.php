@@ -11,6 +11,7 @@ use Yii;
  * @property int $goods_number 零件号
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $brand_name
  */
 class TempNotGoods extends \yii\db\ActiveRecord
 {
@@ -28,7 +29,7 @@ class TempNotGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['updated_at', 'created_at', 'goods_number'], 'safe'],
+            [['updated_at', 'created_at', 'goods_number', 'brand_name'], 'safe'],
         ];
     }
 
@@ -42,6 +43,7 @@ class TempNotGoods extends \yii\db\ActiveRecord
             'goods_number'  => '零件号',
             'updated_at'    => '更新时间',
             'created_at'    => '创建时间',
+            'brand_name'    => '品牌',
         ];
     }
 

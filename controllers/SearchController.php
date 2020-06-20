@@ -52,10 +52,11 @@ class SearchController extends BaseController
     {
         $good_number_b = (string)trim(Yii::$app->request->get('good_number_b'));
 
-        $goodsList = Goods::find()->filterWhere(['like', 'goods_number_b', $good_number_b])->all();
-        $good_number_list = ArrayHelper::getColumn($goodsList, 'goods_number_b');
+        $goodsList = Goods::find()->select('id, goods_number, brand_id, material_code')
+            ->filterWhere(['like', 'goods_number_b', $good_number_b])
+            ->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
 
-        return json_encode(['code' => 200, 'data' => $good_number_list]);
+        return json_encode(['code' => 200, 'data' => $goodsList]);
     }
 
     /**获取零件号新方法

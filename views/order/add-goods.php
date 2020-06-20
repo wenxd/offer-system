@@ -85,7 +85,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                         <input type="text" class="form-control" id="good_number"
                                placeholder="请输入零件号" name="good_number" autocomplete="off"
                                onkeydown="if(event.keyCode == 13){return false;}">
-
+                        <input type="hidden" class="form-control" id="good_id">
                     </div>
                     <div class="form-group good_number_b">
                         <label for="good_number_b">厂家号</label>
@@ -124,6 +124,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                     <thead>
                     <tr>
                         <th>序号</th>
+                        <th>品牌</th>
                         <th>零件号</th>
                         <th>厂家号</th>
                         <th>原厂家</th>
@@ -141,6 +142,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                         <?php foreach ($tempGoods as $item) :?>
                             <tr class="goods_id" data-id="<?=$item->goods->id?>">
                                 <td class="serialNumber"><input type="text" style="width: 50px;" value="<?=$item->serial?>"></td>
+                                <td><?=$item->goods->material_code?></td>
                                 <td><?=$item->goods->goods_number?></td>
                                 <td><?=$item->goods->goods_number_b?></td>
                                 <td><?=$item->goods->original_company?></td>
@@ -194,7 +196,8 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="select($(this))" data-goods_id="' + res.data[i].id + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul').append(li);
@@ -224,7 +227,8 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectB($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="select($(this))" data-goods_id="' + res.data[i].id + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-b-ul').append(li);
@@ -245,9 +249,8 @@ $tax_rate = SystemConfig::find()->select('value')->where([
     });
 
     $('.add_goods').click(function(e){
-        var goods_id   = $('#good_number').val();
-        var goods_id_b = $('#good_number_b').val();
-        if (goods_id === '' && goods_id_b === '') {
+        var goods_id   = $('#good_id').val();
+        if (goods_id === '') {
             layer.msg('输入厂家号或者厂家号', {time:2000});
             return false;
         }
@@ -267,7 +270,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
         $.ajax({
             type:"post",
             url:"?r=order/add-goods",
-            data:{goods_id:goods_id, goods_id_b:goods_id_b},
+            data:{goods_id:goods_id},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
@@ -286,6 +289,7 @@ $tax_rate = SystemConfig::find()->select('value')->where([
                     //添加此零件
                     var tr = '<tr class="goods_id" data-id="' + res.data.id +'">';
                     tr += '<td class="serialNumber"><input type="text" style="width: 50px;" value="'+ serialNumber +'"/></td>';
+                    tr += '<td>' + res.data.material_code + '</td>';
                     tr += '<td>' + res.data.goods_number + '</td>';
                     tr += '<td>' + res.data.goods_number_b + '</td>';
                     tr += '<td>' + res.data.original_company + '</td>';
@@ -313,10 +317,12 @@ $tax_rate = SystemConfig::find()->select('value')->where([
 
     function select(obj){
         $("#good_number").val(obj.html());
+        $("#good_id").val(obj.data('goods_id'));
         $('.box-search').addClass('cancel');
     }
     function selectB(obj){
         $("#good_number_b").val(obj.html());
+        $("#good_id").val(obj.data('goods_id'));
         $('.box-search-b').addClass('cancel');
     }
     function in_array(stringToSearch, arrayToSearch) {

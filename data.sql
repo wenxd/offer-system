@@ -981,4 +981,6 @@ ALTER TABLE `competitor_goods` ADD INDEX idx_goods_id (`goods_id`);
 ALTER TABLE `competitor_goods` ADD INDEX idx_competitor_id (`competitor_id`);
 ALTER TABLE `customer` ADD INDEX idx_name (`name`);
 ALTER TABLE `customer` ADD INDEX idx_mobile (`mobile`);
-ALTER TABLE `temp_not_goods` ADD `goods_id` INT NOT NULL DEFAULT '0' COMMENT '零件号ID';
+ALTER TABLE `temp_not_goods` ADD `brand_name` varchar(255)  NOT NULL DEFAULT ''  COMMENT '品牌名称';
+ALTER TABLE `temp_not_goods_b` ADD INDEX idx_goods_id (`goods_id`);
+
