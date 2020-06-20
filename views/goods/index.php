@@ -71,28 +71,64 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             [
-                'attribute' => 'goods_number',
-                'format'         => 'raw',
+                'attribute'      => 'material_code',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'goods_number',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+                'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->goods_number, Url::to(['view', 'id' => $model->id]));
                 }
             ],
-            'goods_number_b',
-            'original_company',
-            'description',
-            'description_en',
-            'publish_price',
-            'publish_delivery_time',
             [
-                'attribute' => 'material',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
+                'attribute'      => 'remark',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
             ],
-            'unit',
-            'original_company_remark',
-            'material_code',
-            'import_mark',
+            [
+                'attribute'      => 'original_company',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'goods_number_b',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'description',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'description_en',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'publish_price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'publish_delivery_time',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'material',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'unit',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'original_company_remark',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'import_mark',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
             [
                 'attribute' => 'is_process',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$process,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$process[$model->is_process];
@@ -100,6 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_tz',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$tz,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$tz[$model->is_tz];
@@ -107,6 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_standard',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$standard,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$standard[$model->is_standard];
@@ -114,6 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_import',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$import,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$import[$model->is_import];
@@ -121,6 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_repair',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$repair,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$repair[$model->is_repair];
@@ -135,6 +175,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_nameplate',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$nameplate,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$nameplate[$model->is_nameplate];
@@ -142,6 +183,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_emerg',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$emerg,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$emerg[$model->is_emerg];
@@ -149,19 +191,20 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_assembly',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => Goods::$assembly,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$assembly[$model->is_assembly];
                 }
             ],
             [
-                'attribute' => 'part',
-                'contentOptions'=>['style'=>'min-width: 100px;'],
+                'attribute'      => 'part',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
             ],
             [
                 'attribute'      => 'device_info',
                 'format'         => 'raw',
-                'contentOptions' =>['style'=>'min-width: 200px;'],
+                'contentOptions' => ['style'=>'min-width: 200px;'],
                 'value'          => function($model){
                     $text = '';
                     if ($model->device_info) {
@@ -175,6 +218,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'is_inquiry',
                 'label'     => '是否询价',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'format'    => 'raw',
                 'filter'    => ['0' => '否', '1' => '是'],
                 'value'     => function($model){
@@ -188,6 +232,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'inquiry_number',
                 'label'     => '询价条目',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'format'    => 'raw',
                 'value'     => function($model){
                     return $model->inquiryNumber;
@@ -196,6 +241,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'is_inquiry_better',
                 'label'     => '是否优选',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'format'    => 'raw',
                 'filter'    => ['0' => '否', '1' => '是'],
                 'value'     => function($model){
@@ -215,6 +261,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'is_stock',
                 'label'     => '是否有库存',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => ['0' => '否', '1' => '是'],
                 'value'     => function($model){
                     if ($model->stockNumber) {
@@ -228,6 +275,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'stock_number',
                 'label'     => '库存数量',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'value'     => function($model){
                     if ($model->stock) {
                         return $model->stock->number;
@@ -240,6 +288,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'suggest_number',
                 'label'     => '建议库存',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'value'     => function($model){
                     if ($model->stock) {
                         return $model->stock->suggest_number;
@@ -252,6 +301,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'high_number',
                 'label'     => '高储',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'value'     => function($model){
                     if ($model->stock) {
                         return $model->stock->high_number;
@@ -264,6 +314,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'low_number',
                 'label'     => '低储',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'value'     => function($model){
                     if ($model->stock) {
                         return $model->stock->low_number;
@@ -276,6 +327,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'stock_low',
                 'label'     => '库存不足',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => ['0' => '否', '1' => '是'],
                 'value'     => function($model){
                     if ($model->stock) {
@@ -289,6 +341,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'stock_high',
                 'label'     => '库存超量',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
                 'filter'    => ['0' => '否', '1' => '是'],
                 'value'     => function($model){
                     if ($model->stock) {
