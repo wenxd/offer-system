@@ -1,5 +1,6 @@
 <?php
 
+use app\extend\grid\ActionColumn;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -51,6 +52,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'     => function($model){
                     return substr($model->created_at, 0, 10);
                 }
+            ],
+            [
+                'class'         => ActionColumn::className(),
+                'contentOptions'=>['style'=>'min-width: 10px;'],
+                'header'        => '操作',
+                'template'      => '{update}',
             ],
         ],
     ]); ?>
