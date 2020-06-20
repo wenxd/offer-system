@@ -87,8 +87,8 @@ class CompetitorGoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['零件号', '竞争对手', '针对客户', '税率', '未税单价', '数量', '货期', '库存数量', '备注', '是否发行价'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        $tableHeader = ['品牌', '零件号', '竞争对手', '针对客户', '税率', '未税单价', '数量', '货期', '库存数量', '备注', '是否发行价'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getColumnDimension($letter[$i])->setWidth(18);
@@ -160,24 +160,24 @@ class CompetitorGoodsController extends BaseController
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             //零件号
-                            $a = trim($value['A']);
+                            $a = trim($value['B']);
                             if (empty($a)) {
                                 continue;
                             }
                             $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
-                                ->andWhere(['goods_number' => $a])->one();
+                                ->andWhere(['goods_number' => $a, 'material_code' => trim($value['A'])])->one();
                             if (!$goods) {
-                                return json_encode(['code' => 500, 'msg' => '在第' . $key . '行没有' . $a . '这个厂家号，请添加零件信息']);
+                                return json_encode(['code' => 500, 'msg' => '在第' . $key . '行没有' . $a . '这个品牌零件号，请添加零件信息']);
                             }
                             //竞争对手
-                            $b = trim($value['B']);
+                            $b = trim($value['C']);
                             $competitor = Competitor::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
                                 ->andWhere(['name' => $b])->one();
                             if (!$competitor) {
                                 return json_encode(['code' => 500, 'msg' => '在第' . $key . '行没有' . $b . '这个竞争对手，请添加竞争对手信息']);
                             }
                             //针对客户
-                            $c = trim($value['C']);
+                            $c = trim($value['D']);
                             $customer = Customer::find()->where(['is_deleted' => Goods::IS_DELETED_NO])
                                 ->andWhere(['name' => $c])->one();
                             if (!$customer) {
@@ -185,13 +185,13 @@ class CompetitorGoodsController extends BaseController
                             }
                             //税率
                             $d = 0;
-                            if ($value['D']) {
-                                $d = trim($value['D']);
+                            if ($value['E']) {
+                                $d = trim($value['E']);
                             }
                             //未税单价
                             $e = 0;
-                            if ($value['E']) {
-                                $e = trim($value['E']);
+                            if ($value['F']) {
+                                $e = trim($value['F']);
                             }
                             $tax_price = number_format(($e * (1 + floatval($d/100))), 2, '.', '');
 
@@ -203,16 +203,16 @@ class CompetitorGoodsController extends BaseController
                             $competitorGoods->tax_rate      = $d;
                             $competitorGoods->price         = $e;
                             $competitorGoods->tax_price     = $tax_price;
-                            $competitorGoods->number        = $value['F'] ? trim($value['F']) : 0;
+                            $competitorGoods->number        = $value['G'] ? trim($value['G']) : 0;
                             $competitorGoods->all_price     = $competitorGoods->price * $competitorGoods->number;
                             $competitorGoods->all_tax_price = $competitorGoods->tax_price * $competitorGoods->number;
-                            $competitorGoods->delivery_time = $value['G'] ? trim($value['G']) : 0;
-                            $competitorGoods->stock_number  = $value['H'] ? trim($value['H']) : 0;
+                            $competitorGoods->delivery_time = $value['H'] ? trim($value['H']) : 0;
+                            $competitorGoods->stock_number  = $value['I'] ? trim($value['I']) : 0;
                             $competitorGoods->offer_date    = $date;
-                            if ($value['I']) {
-                                $competitorGoods->remark = trim($value['I']);
+                            if ($value['J']) {
+                                $competitorGoods->remark = trim($value['J']);
                             }
-                            if ($value['J'] && $value['J'] == '是') {
+                            if ($value['K'] && $value['K'] == '是') {
                                 $competitorGoods->is_issue = CompetitorGoods::IS_ISSUE_YES;
                             }
                             if ($competitorGoods->save()) {

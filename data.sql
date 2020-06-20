@@ -977,3 +977,9 @@ ALTER TABLE `goods` MODIFY column `material_code` varchar(255) NOT NULL DEFAULT 
 ALTER TABLE `goods` ADD `brand_id` INT NOT NULL  COMMENT '品牌商ID';
 
 ALTER TABLE `stock` ADD UNIQUE (`good_id`);
+ALTER TABLE `competitor` ADD INDEX idx_name (`name`);
+ALTER TABLE `competitor` ADD INDEX idx_mobile (`mobile`);
+ALTER TABLE `competitor_goods` ADD INDEX idx_goods_id (`goods_id`);
+ALTER TABLE `competitor_goods` ADD INDEX idx_competitor_id (`competitor_id`);
+ALTER TABLE `customer` ADD INDEX idx_name (`name`);
+ALTER TABLE `customer` ADD INDEX idx_mobile (`mobile`);

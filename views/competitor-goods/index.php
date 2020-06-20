@@ -57,14 +57,28 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'contentOptions'=>['style'=>'min-width: 150px;'],
-                'header' => '操作',
+                'header'   => '操作',
                 'template' => '{view} {update}',
             ],
             'id',
-//            'goods_id',
+            [
+                'attribute' => 'material_code',
+                'label'     => '品牌',
+                'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+                'filter'    => Html::activeTextInput($searchModel, 'material_code', ['class'=>'form-control']),
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return $model->goods->material_code;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -74,7 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-//            'competitor_id',
             [
                 'attribute' => 'competitor_name',
                 'format'    => 'raw',
@@ -101,9 +114,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'tax_rate',
-            'price',
-            'tax_price',
+            [
+                'attribute'      => 'tax_rate',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'tax_price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
             [
                 'attribute' => 'is_issue',
                 'filter'    => CompetitorGoods::$issue,
@@ -111,11 +133,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     return CompetitorGoods::$issue[$model->is_issue];
                 }
             ],
-            'number',
-            'all_price',
-            'all_tax_price',
-            'delivery_time',
-            'stock_number',
+            [
+                'attribute'      => 'number',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'all_price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'all_tax_price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'delivery_time',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
+                'attribute'      => 'stock_number',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
             [
                 'attribute' => 'offer_date',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -127,7 +164,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     return substr($model->offer_date, 0, 10);
                 }
             ],
-            'remark',
+            [
+                'attribute'      => 'remark',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
