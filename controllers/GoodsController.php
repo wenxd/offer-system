@@ -288,11 +288,21 @@ class GoodsController extends BaseController
                             }
 
                             $brand = Brand::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'name' => trim($value['A'])])->one();
-
+                            if (!$brand) {
+                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
+                            }
                             if (trim($value['B'])) {
-                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number' => trim($value['B'])])->one();
+                                $goods = Goods::find()->where([
+                                    'is_deleted'   => Goods::IS_DELETED_NO,
+                                    'goods_number' => trim($value['B']),
+                                    'brand_id'     => $brand->id,
+                                ])->one();
                             } else {
-                                $goods = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number_b' => trim($value['F'])])->one();
+                                $goods = Goods::find()->where([
+                                    'is_deleted'     => Goods::IS_DELETED_NO,
+                                    'goods_number_b' => trim($value['F']),
+                                    'brand_id'       => $brand->id,
+                                ])->one();
                             }
                             if (!$goods) {
                                 $goods = new Goods();
