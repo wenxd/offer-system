@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "brand".
@@ -61,5 +62,13 @@ class Brand extends \yii\db\ActiveRecord
     public static function find()
     {
         return new BrandQuery(get_called_class());
+    }
+
+    //获取列表
+    public static function getList()
+    {
+        $list = static::find()->where(['is_deleted' => self::IS_DELETED_NO])->asArray()->all();
+
+        return ArrayHelper::map($list, 'id', 'name');
     }
 }

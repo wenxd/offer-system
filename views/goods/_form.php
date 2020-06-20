@@ -6,6 +6,8 @@ use kartik\widgets\ActiveForm;
 use kartik\file\FileInput;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
+use app\models\Brand;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Goods */
 /* @var $form yii\widgets\ActiveForm */
@@ -22,6 +24,7 @@ if ($model->isNewRecord) {
         $model->suggest_number = 0;
     }
 }
+$brandList = Brand::getList();
 ?>
 
 <div class="box">
@@ -60,7 +63,7 @@ if ($model->isNewRecord) {
 
         <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'material_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'brand_id')->dropDownList($brandList)->label('品牌') ?>
 
         <?= $form->field($model, 'import_mark')->textInput(['maxlength' => true]) ?>
 

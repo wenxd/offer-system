@@ -235,6 +235,11 @@ class Goods extends ActiveRecord
 
     public function beforeSave($insert)
     {
+        if ($this->brand_id) {
+            $brand = Brand::findOne($this->brand_id);
+            $this->material_code = $brand->name;
+        }
+
         $this->goods_number             = strtoupper($this->goods_number);
         $this->goods_number_b           = strtoupper($this->goods_number_b);
         $this->description              = strtoupper($this->description);
