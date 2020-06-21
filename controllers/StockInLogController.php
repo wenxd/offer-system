@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Brand;
 use app\models\Goods;
 use app\models\Stock;
 use app\models\SystemConfig;
@@ -216,8 +217,8 @@ class StockInLogController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E'];
-        $tableHeader = ['零件号', '入库数量', '库存位置', '入库来源', '备注'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F'];
+        $tableHeader = ['品牌', '零件号', '入库数量', '库存位置', '入库来源', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -285,25 +286,34 @@ class StockInLogController extends Controller
 
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A'])) {
+                            if (empty($value['B'])) {
                                 continue;
                             }
-                            $goods = Goods::find()->where(['goods_number' => trim($value['A'])])->one();
+                            $brand = Brand::find()->where(['name' => trim($value['A'])])->one();
+                            if (!$brand) {
+                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
+                            }
+                            $goods = Goods::find()->where([
+                                'is_deleted'   => Goods::IS_DELETED_NO,
+                                'goods_number' => trim($value['B']),
+                                'brand_id'     => $brand->id,
+                            ])->one();
                             if (!$goods) {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = trim($value['A']);
+                                $temp->brand_name   = trim($value['A']);
+                                $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             } else {
                                 $stockLog = new StockLog();
                                 $stockLog->goods_id     = $goods->id;
-                                $stockLog->number       = $value['B'] ? trim($value['B']) : 0;
+                                $stockLog->number       = $value['C'] ? trim($value['C']) : 0;
                                 $stockLog->type         = StockLog::TYPE_IN;
-                                $stockLog->remark       = $value['E'] ? trim($value['E']) : '';
+                                $stockLog->remark       = $value['F'] ? trim($value['F']) : '';
                                 $stockLog->operate_time = date('Y-m-d H:i:s');
                                 $stockLog->admin_id     = Yii::$app->user->identity->id;
                                 $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
-                                $stockLog->source       = trim($value['D']);
-                                $stockLog->position     = trim($value['C']);
+                                $stockLog->source       = trim($value['E']);
+                                $stockLog->position     = trim($value['D']);
                                 if ($stockLog->save()) {
                                     foreach ($systemList as $k => $item) {
                                         if ($item['title'] == SystemConfig::TITLE_TAX) {
@@ -323,17 +333,17 @@ class StockInLogController extends Controller
                                         $stock->price           = 0;
                                         $stock->tax_rate        = $tax;
                                         $stock->tax_price       = 0;
-                                        $stock->number          = trim($value['B']);
-                                        $stock->position        = $value['C'] ? trim($value['C']) : '';
+                                        $stock->number          = trim($value['C']);
+                                        $stock->position        = $value['D'] ? trim($value['D']) : '';
                                         $stock->suggest_number  = 0;
                                         $stock->high_number     = $stock->suggest_number * $highRatio;
                                         $stock->low_number      = $stock->suggest_number * $lowRatio;
                                         $stock->save();
                                     } else {
-                                        if (trim($value['C'])) {
-                                            $stock->position = $value['C'] ? trim($value['C']) : '';
+                                        if (trim($value['D'])) {
+                                            $stock->position = $value['D'] ? trim($value['D']) : '';
                                         }
-                                        $stock->number += trim($value['B']);
+                                        $stock->number += trim($value['C']);
                                         $stock->save();
                                     }
                                     $num++;
