@@ -963,6 +963,9 @@ ALTER TABLE `order_goods`           MODIFY COLUMN `serial` int(11) NOT NULL DEFA
 CREATE TABLE `brand` (
   `id`          int(11)       NOT NULL AUTO_INCREMENT,
   `name`        varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌商名称',
+  `name_all`    varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌全称',
+  `intro`       varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌简介',
+  `remark`      varchar(255)  NOT NULL DEFAULT '' COMMENT '品牌备注',
   `is_deleted`  int(11)       NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
   `updated_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `created_at`  datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

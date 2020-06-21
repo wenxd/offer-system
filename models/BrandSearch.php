@@ -18,8 +18,8 @@ class BrandSearch extends Brand
     {
         return [
             [['id', 'is_deleted'], 'integer'],
-            [['name', 'updated_at', 'created_at'], 'safe'],
-            [['id', 'name', 'updated_at', 'created_at'], 'trim'],
+            [['name', 'name_all', 'intro', 'remark', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'name', 'name_all', 'intro', 'remark', 'updated_at', 'created_at'], 'trim'],
         ];
     }
 

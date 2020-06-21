@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'id',
             'name',
+            'name_all',
+            'intro',
+            'remark',
             [
                 'attribute' => 'updated_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],

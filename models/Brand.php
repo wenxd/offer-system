@@ -13,6 +13,9 @@ use yii\helpers\ArrayHelper;
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $name_all
+ * @property string $intro
+ * @property string $remark
  */
 class Brand extends \yii\db\ActiveRecord
 {
@@ -35,7 +38,7 @@ class Brand extends \yii\db\ActiveRecord
         return [
             [['is_deleted'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name'], 'string', 'max' => 255],
+            [['name', 'name_all', 'intro', 'remark'], 'string', 'max' => 255],
             [['name'], 'unique'],
             ['name', 'required'],
         ];
@@ -48,7 +51,10 @@ class Brand extends \yii\db\ActiveRecord
     {
         return [
             'id'         => 'ID',
-            'name'       => '品牌名称',
+            'name'       => '品牌名称缩写',
+            'name_all'   => '品牌全称',
+            'intro'      => '品牌简介',
+            'remark'     => '品牌备注',
             'is_deleted' => '是否删除：0未删除 1已删除',
             'updated_at' => '更新时间',
             'created_at' => '创建时间',

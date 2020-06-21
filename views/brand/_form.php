@@ -14,6 +14,9 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name_all')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'intro')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
     <div class="box-footer">
         <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
