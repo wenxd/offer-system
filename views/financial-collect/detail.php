@@ -63,7 +63,7 @@ if ($model->payment_ratio == '0.00') {
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_final_list">
-                    <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php if (!$isShow):?>
                         <td><?=$item->goods->goods_number_b?></td>
                     <?php endif;?>
