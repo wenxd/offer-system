@@ -790,9 +790,7 @@ class OrderController extends BaseController
                                 $item[] = $key-1;
                                 $item[] = $goods->id;
                                 $item[] = trim($value['C']);
-                                list($msec, $sec) = explode(' ', microtime());
-                                $mcritime = str_pad(floor($msec * 10000), 5, 0, STR_PAD_LEFT);
-                                $item[] = $time . $mcritime;
+                                $item[] = $time;
                                 $data[] = $item;
                                 if (!$goods->goods_number_b) {
                                     $temp_b                 = new TempNotGoodsB();
