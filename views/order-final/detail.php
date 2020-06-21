@@ -60,7 +60,6 @@ $tax = SystemConfig::find()->select('value')->where([
             <tr>
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
-                <th>品牌</th>
                 <th>零件号</th>
                 <th>厂家号</th>
                 <th style="max-width: 200px;">中文描述</th>
@@ -99,8 +98,7 @@ $tax = SystemConfig::find()->select('value')->where([
                 <td><?=isset($purchaseGoods[$item->goods_id]) ? '' : "<input type='checkbox' name='select_id' 
 data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->goods_id} class='select_id'>"?></td>
                 <td class="serial"><?=$item->serial?></td>
-                <td><?=$item->goods->material_code?></td>
-                <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                <td><?=Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                 <td><?=$item->goods->description?></td>
                 <td><?=$item->goods->original_company?></td>
