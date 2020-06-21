@@ -41,6 +41,8 @@ $brandList = Brand::getList();
     </div>
     <div class="box-body">
 
+        <?= $form->field($model, 'brand_id')->dropDownList($brandList)->label('品牌') ?>
+
         <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true]) ?>
@@ -62,8 +64,6 @@ $brandList = Brand::getList();
         <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($model, 'brand_id')->dropDownList($brandList)->label('品牌') ?>
 
         <?= $form->field($model, 'import_mark')->textInput(['maxlength' => true]) ?>
 

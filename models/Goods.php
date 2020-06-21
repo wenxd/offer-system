@@ -169,7 +169,7 @@ class Goods extends ActiveRecord
                 'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
                 'import_mark'], 'safe'],
             [
-                ['goods_number'],
+                ['brand_id', 'goods_number'],
                 'required',
                 'on' => 'goods',
             ],
