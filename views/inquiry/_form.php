@@ -165,12 +165,6 @@ if (isset($_GET['inquiry_goods_id'])) {
                 </ul>
             </div>
         <?php endif;?>
-        <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('厂家号') ?>
-        <div class="box-search-goods_number_b cancel-goods_number_b">
-            <ul class="box-search-ul-goods_number_b">
-
-            </ul>
-        </div>
 
         <div class="form-group field-inquiry-supplier_name">
             <label class="control-label" for="inquiry-supplier_name">供应商</label>
@@ -402,14 +396,16 @@ if (isset($_GET['inquiry_goods_id'])) {
         $('.box-search-goods_number').removeClass('cancel-goods_number');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-new-good-number",
+            url:"?r=search/get-good-number",
             data:{good_number:good_number},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this))" data-goods_id="' + res.data[i].id +
+                            '" data-goods_number="' + res.data[i].goods_number + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -421,10 +417,9 @@ if (isset($_GET['inquiry_goods_id'])) {
         })
     });
     //选择零件A
-    function selectGoodsA(obj, goods_id){
-        $("#inquiry-good_id").val(goods_id);
+    function selectGoodsA(obj){
+        $("#inquiry-good_id").val(obj.data('goods_id'));
         $("#inquiry-goods_number").val($.trim(obj.html()));
-        $("#inquiry-goods_number_b").val($.trim(obj.data('goods_number_b')));
         $('.box-search-goods_number').addClass('cancel-goods_number');
     }
 

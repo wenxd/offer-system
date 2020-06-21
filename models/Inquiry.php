@@ -190,28 +190,8 @@ class Inquiry extends ActiveRecord
             }
             $this->supplier_id = $supplier->id;
 
-            if ($this->goods_number) {
-                $goods = Goods::find()->where(['goods_number' => $this->goods_number])->one();
-                if ($goods) {
-                    $this->goods_number_b = $goods->goods_number_b;
-                } else {
-                    $this->addError('goods_number', '此零件A不存在');
-                    return false;
-                }
-            }
-
-            if ($this->goods_number_b) {
-                $goods = Goods::find()->where(['goods_number_b' => $this->goods_number_b])->one();
-                if ($goods) {
-                    $this->goods_number = $goods->goods_number;
-                } else {
-                    $this->addError('goods_number_b', '此零件B不存在');
-                    return false;
-                }
-            }
-
-            if (!$this->goods_number && !$this->goods_number_b) {
-                $this->addError('id', '厂家号不能为空');
+            if (!$this->good_id) {
+                $this->addError('id', '零件号不能为空');
                 return false;
             }
         }
