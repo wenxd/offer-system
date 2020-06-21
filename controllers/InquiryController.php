@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\actions;
-use app\models\{Goods,
+use app\models\{Brand,
+    Goods,
     InquiryGoods,
     OrderInquiry,
     PaymentGoods,
@@ -188,7 +189,7 @@ class InquiryController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['零件号', '厂家号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
+        $tableHeader = ['品牌', '零件号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -255,19 +256,24 @@ class InquiryController extends BaseController
                         'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A']) && empty($value['B'])) {
+                            if (empty($value['B'])) {
                                 continue;
                             }
-                            if (trim($value['A'])) {
-                                $goods = Goods::find()->where(['goods_number' => trim($value['A'])])->one();
-                            } else {
-                                $goods = Goods::find()->where(['goods_number_b' => trim($value['B'])])->one();
+                            $brand = Brand::find()->where(['name' => trim($value['A'])])->one();
+                            if (!$brand) {
+                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
                             }
+                            $goods = Goods::find()->where([
+                                'is_deleted'   => Goods::IS_DELETED_NO,
+                                'goods_number' => trim($value['B']),
+                                'brand_id'     => $brand->id,
+                            ])->one();
 
                             $supplier = Supplier::find()->where(['name' => trim($value['C'])])->one();
                             if (!$goods) {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = $value['A'] ? trim($value['A']) : trim($value['B']);
+                                $temp->brand_name   = $value['A'];
+                                $temp->goods_number = $value['B'];
                                 $temp->save();
                             } else {
                                 if ($supplier) {

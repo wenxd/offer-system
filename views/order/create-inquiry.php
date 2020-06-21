@@ -61,6 +61,7 @@ if ($model->isNewRecord) {
                         <input type="checkbox" name="select_all" class="select_all">
                     </th>
                     <th>序号</th>
+                    <th>品牌</th>
                     <th>零件号</th>
                     <th>厂家号</th>
                     <th style="width: 200px;">推荐供应商</th>
@@ -89,6 +90,7 @@ if ($model->isNewRecord) {
                     <td>
                         <?=Html::a('复位', '?r=order/create-inquiry&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
                     </td>
+                    <td></td>
                     <td>
                         <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
                     </td>
@@ -171,6 +173,7 @@ if ($model->isNewRecord) {
                         <?=$open ?  '' : $str?>
                     </td>
                     <td class="serial"><?= $item->serial?></td>
+                    <td><?= $item->goods->material_code?></td>
                     <td><?= Html::a($item->goods->goods_number,
                             Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
                             ['target' => 'blank'])?></td>

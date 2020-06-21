@@ -27,6 +27,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                 <thead>
                     <tr class="goods" data-goods_ids="<?=json_encode($goods_id)?>" data-order_id="<?=$_GET['id']?>" data-key="<?=$_GET['key']?>">
                         <th>序号</th>
+                        <td>品牌</td>
                         <th style="width: 150px;">零件号</th>
                         <th style="width: 150px;">厂家号</th>
                         <th style="width: 200px;">中文描述</th>
@@ -57,6 +58,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                     <?php foreach ($orderGoods as $key => $item):?>
                     <tr class="goods_list">
                         <td class="serial" data-goods_id="<?=$item->goods_id?>"><?= $item->serial?></td>
+                        <td><?= $item->goods->material_code?></td>
                         <td><?= Html::a($item->goods->goods_number, Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
                         <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->description?></td>

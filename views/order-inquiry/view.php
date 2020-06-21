@@ -59,6 +59,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>询价单号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                 <th>订单号</th>
+                <th>品牌</th>
                 <th>零件号</th>
                 <?php endif;?>
                 <th>厂家号</th>
@@ -88,6 +89,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$orderInquiry->inquiry_sn?></td>
                             <?php if(!in_array($userId, $adminIds)):?>
                             <td><?=$orderInquiry->order->order_sn?></td>
+                            <td><?=$item->goods->material_code?></td>
                             <td><?=$item->goods->goods_number?><?=Html::a(' 询价记录', Url::to(['inquiry/index', 'InquirySearch[goods_number]' => $item->goods->goods_number]))?></td>
                             <?php endif;?>
                             <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
