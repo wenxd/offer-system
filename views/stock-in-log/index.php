@@ -81,7 +81,7 @@ $userId   = Yii::$app->user->identity->id;
                         if (in_array($userId, $adminIds)) {
                             return $model->goods->goods_number;
                         } else {
-                            return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            return Html::a($model->goods->goods_number . ' ' . $model->goods->material_code, Url::to(['goods/view', 'id' => $model->goods->id]));
                         }
                     } else {
                         return '';

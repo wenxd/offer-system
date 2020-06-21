@@ -35,6 +35,7 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'label'     => '零件号',
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) use($userId, $adminIds){

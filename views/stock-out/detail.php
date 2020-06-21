@@ -69,7 +69,7 @@ $isShow = in_array($userId, $adminIds);
                         $str = "<input type='checkbox' class='select_id' value={$item->id}>";
                     ?>
                     <td class="id"><?=in_array($item->goods_id, $stock_goods_ids) ? '' : $str?></td>
-                    <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php if (!$isShow):?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <?php endif;?>
