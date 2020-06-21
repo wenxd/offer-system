@@ -94,7 +94,7 @@ if ($isShow) {
                         if ($isShow) {
                             return $model->goods->goods_number . ' ' . $model->goods->material_code;
                         } else {
-                            return Html::a($model->goods->goods_number . ' ' . $model->goods->material_code, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
                         }
                     } else {
                         return '';
@@ -128,7 +128,7 @@ if ($isShow) {
             [
                 'attribute' => 'material_code',
                 'format'    => 'raw',
-                'label'     => '设备类别',
+                'label'     => '品牌',
                 'filter'    => Html::activeTextInput($searchModel, 'material_code', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) use($isShow) {
                     if ($model->goods) {
