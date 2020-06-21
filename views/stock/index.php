@@ -87,6 +87,7 @@ if ($isShow) {
             [
                 'attribute' => 'goods_number',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) use($isShow) {
                     if ($model->goods) {

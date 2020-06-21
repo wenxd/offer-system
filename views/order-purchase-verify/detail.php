@@ -63,7 +63,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             <?php foreach ($paymentGoods as $item):?>
                 <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
-                    <td><?=$item->goods->goods_number?></td>
+                    <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>

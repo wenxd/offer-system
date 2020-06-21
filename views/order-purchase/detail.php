@@ -147,7 +147,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         <?=$item->serial?>
                     </td>
                     <?php if(!in_array($userId, $adminIds)):?>
-                        <td><?=$item->goods->goods_number?></td>
+                        <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?><?=Html::a(' 采购记录', Url::to(['temp-payment-goods/temp', 'id' => $item->id]))?></td>
                     <td><?=$item->goods->description?></td>

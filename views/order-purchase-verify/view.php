@@ -72,7 +72,7 @@ $isShow = in_array($userId, $adminIds);
                 <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
                     <?php if (!$isShow):?>
-                        <td><?=$item->goods->goods_number?></td>
+                        <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
