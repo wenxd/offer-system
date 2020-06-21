@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Admin;
 use app\models\AuthAssignment;
+use app\models\Brand;
 use app\models\Customer;
 use app\models\Goods;
 use app\models\Order;
@@ -263,7 +264,7 @@ class StockOutLogController extends Controller
                 }
                 $excel->setCellValue($letter[$i+1] . ($key + 2), $stockLog->agreement_sn);
                 if ($stockLog->goods) {
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $stockLog->goods->goods_number);
+                    $excel->setCellValue($letter[$i+2] . ($key + 2), $stockLog->goods->goods_number . ' ' . $stockLog->goods->material_code);
                 } else {
                     $excel->setCellValue($letter[$i+2] . ($key + 2), '');
                 }
@@ -335,8 +336,8 @@ class StockOutLogController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-        $tableHeader = ['零件号', '出库数量', '客户', '区块', '平台名称', '去向', '备注'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        $tableHeader = ['品牌', '零件号', '出库数量', '客户', '区块', '平台名称', '去向', '备注'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -399,33 +400,42 @@ class StockOutLogController extends Controller
                     $num = 0;
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
-                            if (empty($value['A'])) {
+                            if (empty($value['B'])) {
                                 continue;
                             }
-                            $goods = Goods::find()->where(['goods_number' => trim($value['A'])])->one();
-                            $customer = Customer::find()->where(['name' => trim($value['C'])])->one();
+                            $brand = Brand::find()->where(['name' => trim($value['A'])])->one();
+                            if (!$brand) {
+                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
+                            }
+                            $goods = Goods::find()->where([
+                                'is_deleted'   => Goods::IS_DELETED_NO,
+                                'goods_number' => trim($value['B']),
+                                'brand_id'     => $brand->id,
+                            ])->one();
+                            $customer = Customer::find()->where(['name' => trim($value['D'])])->one();
                             if (!$goods) {
                                 $temp = new TempNotGoods();
-                                $temp->goods_number = trim($value['A']);
+                                $temp->brand_name   = trim($value['A']);
+                                $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             } else {
                                 $stock = Stock::find()->where(['good_id' => $goods->id])->one();
-                                if (!$stock || $stock->number < trim($value['B'])) {
+                                if (!$stock || $stock->number < trim($value['C'])) {
                                     $notStock = new TempNotStock();
-                                    $notStock->goods_number = trim($value['A']);
+                                    $notStock->goods_id = $goods->id;
                                     $notStock->save();
                                 } else {
                                     $stockLog = new StockLog();
                                     $stockLog->goods_id     = $goods->id;
-                                    $stockLog->number       = $value['B'] ? trim($value['B']) : 0;
+                                    $stockLog->number       = $value['C'] ? trim($value['C']) : 0;
                                     $stockLog->type         = StockLog::TYPE_OUT;
                                     $stockLog->customer_id  = $customer ? $customer->id : 0;
-                                    $stockLog->region       = $value['D'] ? trim($value['D']) : '';
-                                    $stockLog->plat_name    = $value['E'] ? trim($value['E']) : '';
-                                    $stockLog->direction    = $value['F'] ? trim($value['F']) : '';
+                                    $stockLog->region       = $value['E'] ? trim($value['E']) : '';
+                                    $stockLog->plat_name    = $value['F'] ? trim($value['F']) : '';
+                                    $stockLog->direction    = $value['G'] ? trim($value['G']) : '';
                                     $stockLog->admin_id     = Yii::$app->user->identity->id;
                                     $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
-                                    $stockLog->remark       = $value['G'] ? trim($value['G']) : '';
+                                    $stockLog->remark       = $value['H'] ? trim($value['H']) : '';
                                     $stockLog->operate_time = date('Y-m-d H:i:s');
                                     $stockLog->save();
                                     $num++;
