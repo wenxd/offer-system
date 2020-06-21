@@ -36,6 +36,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                 <tr>
                     <th>序号</th>
                     <?php if (!in_array($userId, $adminIds)):?>
+                    <th>品牌</th>
                     <th>零件号</th>
                     <?php endif;?>
                     <th>厂家号</th>
@@ -60,6 +61,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                 <tr class="order_payment_list" data-payment_goods_id="<?=$item->id?>">
                     <td><?=$item->serial?></td>
                     <?php if (!in_array($userId, $adminIds)):?>
+                    <td><?=$item->goods->material_code?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <?php endif;?>
                     <td><?=$item->goods->goods_number_b?></td>
