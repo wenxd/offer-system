@@ -119,7 +119,7 @@ class StockController extends BaseController
         }
 
         //获取数据
-        $stockList = Stock::find()->select('*')->all();
+        $stockList = Stock::find()->select('*')->where(['!=', 'number', 0])->all();
 
         foreach ($stockList as $key => $stock) {
             for($i = 0; $i < count($letter); $i++) {

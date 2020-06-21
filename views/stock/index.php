@@ -104,6 +104,7 @@ if ($isShow) {
             [
                 'attribute' => 'description',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -116,6 +117,7 @@ if ($isShow) {
             [
                 'attribute' => 'description_en',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'filter'    => Html::activeTextInput($searchModel, 'description_en',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
@@ -128,6 +130,7 @@ if ($isShow) {
             [
                 'attribute' => 'material_code',
                 'format'    => 'raw',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
                 'label'     => '品牌',
                 'filter'    => Html::activeTextInput($searchModel, 'material_code', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) use($isShow) {
