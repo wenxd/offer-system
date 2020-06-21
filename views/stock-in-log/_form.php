@@ -108,7 +108,10 @@ $userId   = Yii::$app->user->identity->id;
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-position="' + res.data[i]['stock_position'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this))" data-goods_id="' + res.data[i].id +
+                            '" data-position="' + res.data[i].stock_position +
+                            '" data-goods_number="' + res.data[i].goods_number + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -120,8 +123,8 @@ $userId   = Yii::$app->user->identity->id;
         })
     });
     //选择零件A
-    function selectGoodsA(obj, goods_id){
-        $("#stocklog-goods_id").val(goods_id);
+    function selectGoodsA(obj){
+        $("#stocklog-goods_id").val(obj.data('goods_id'));
         $("#stocklog-goods_number").val($.trim(obj.html()));
         $('.box-search-goods_number').addClass('cancel-goods_number');
         $('#stocklog-position').val(obj.data('position'));
