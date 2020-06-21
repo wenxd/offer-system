@@ -41,6 +41,7 @@ $tax = SystemConfig::find()->select('value')->where([
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
+                <th>品牌</th>
                 <th>零件号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>厂家号</th>
@@ -70,6 +71,7 @@ $tax = SystemConfig::find()->select('value')->where([
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_quote_list">
                     <td><?=$item->serial?></td>
+                    <td><?=$item->goods->material_code?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
                         <td><?=$item->goods->goods_number_b?></td>

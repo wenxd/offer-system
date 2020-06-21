@@ -30,6 +30,7 @@ $userId   = Yii::$app->user->identity->id;
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
+                <th>品牌</th>
                 <th>零件号</th>
                 <?php if (!in_array($userId, $quote_adminIds)):?>
                     <th>厂家号</th>
@@ -55,6 +56,7 @@ $userId   = Yii::$app->user->identity->id;
             <?php foreach ($agreementGoods as $item):?>
                 <tr class="order_quote_list">
                     <td><?=$item->serial?></td>
+                    <td><?=$item->goods->material_code?></td>
                     <td><?=$item->goods->goods_number?></td>
                     <?php if (!in_array($userId, $quote_adminIds)):?>
                     <td><?=$item->goods->goods_number_b?></td>
@@ -83,7 +85,7 @@ $userId   = Yii::$app->user->identity->id;
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?=in_array($userId, $adminIds) ? 8 : (in_array($userId, $quote_adminIds) ? 6 : 10)?>" rowspan="2">汇总统计</td>
+                <td colspan="<?=in_array($userId, $adminIds) ? 8 : (in_array($userId, $quote_adminIds) ? 6 : 11)?>" rowspan="2">汇总统计</td>
                 <?php if (!in_array($userId, array_merge($adminIds, $quote_adminIds))):?>
                 <td>发行含税总价合计</td>
                 <?php endif;?>

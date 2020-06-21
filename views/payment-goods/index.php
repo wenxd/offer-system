@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
-                        return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                        return Html::a($model->goods->goods_number . ' ' . $model->goods->material_code, Url::to(['goods/view', 'id' => $model->goods->id]));
                     } else {
                         return '';
                     }

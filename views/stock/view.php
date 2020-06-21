@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'    => 'raw',
                 'value'     => function ($model) {
                     if ($model->goods) {
-                        return $model->goods->goods_number;
+                        return $model->goods->goods_number . ' ' . $model->goods->material_code;
                     } else {
                         return '';
                     }

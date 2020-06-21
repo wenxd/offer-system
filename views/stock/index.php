@@ -91,9 +91,9 @@ if ($isShow) {
                 'value'     => function ($model, $key, $index, $column) use($isShow) {
                     if ($model->goods) {
                         if ($isShow) {
-                            return $model->goods->goods_number;
+                            return $model->goods->goods_number . ' ' . $model->goods->material_code;
                         } else {
-                            return Html::a($model->goods->goods_number, Url::to(['goods/view', 'id' => $model->goods->id]));
+                            return Html::a($model->goods->goods_number . ' ' . $model->goods->material_code, Url::to(['goods/view', 'id' => $model->goods->id]));
                         }
                     } else {
                         return '';

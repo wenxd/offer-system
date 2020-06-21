@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Html::activeTextInput($searchModel, 'goods_number',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->goods) {
-                        return $model->goods->goods_number;
+                        return $model->goods->goods_number . ' ' . $model->goods->material_code;
                     } else {
                         return '';
                     }

@@ -37,6 +37,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
             <thead class="data" data-order_final_id="<?=$_GET['id']?>">
             <tr>
                 <th>序号</th>
+                <th>品牌</th>
                 <th>零件号</th>
                 <?php if (!$is_show) :?>
                 <th>厂家号</th>
@@ -81,6 +82,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_final_list">
                     <td class="serial"><?=$item->serial?></td>
+                    <td><?= $item->goods->material_code?></td>
                     <td><?=$is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <?php if (!$is_show) :?>
                     <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>

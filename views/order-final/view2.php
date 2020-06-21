@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                 <tr class="goods">
                     <th>序号</th>
+                    <th>品牌</th>
                     <th>零件号</th>
                     <th>厂家号</th>
                     <th style="width: 200px;">中文描述</th>
@@ -46,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php foreach ($finalGoods as $key => $item):?>
                     <tr class="goods_list">
                         <td><?= $item->serial?></td>
+                        <td><?= $item->goods->material_code?></td>
                         <td><?= Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number, 'type' => 1]));?></td>
                         <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->description?></td>
