@@ -131,7 +131,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
                 </tr>
             <?php endforeach;?>
             <tr style="background-color: #acccb9">
-                <td colspan="<?= $is_show ? 9 : 13?>" rowspan="2">汇总统计</td>
+                <td colspan="<?= $is_show ? 10 : 14?>" rowspan="2">汇总统计</td>
                 <?php if (!$is_show) :?>
                     <td rowspan="2">发行</td>
                     <td>发行含税总价合计</td>
