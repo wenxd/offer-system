@@ -17,6 +17,7 @@ $model->agreement_date = date('Y-m-d');
 $model->sign_date = date('Y-m-d');
 $customer_name = $order->customer ? $order->customer->short_name : '';
 $model->agreement_sn = 'S' . date('ymd_') . $customer_name . '_' . $number;
+$model->payment_ratio = 30;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
@@ -126,6 +127,8 @@ $tax = SystemConfig::find()->select('value')->where([
                 'minView'   => 2,  //最小选择范围（年）
             ]
         ]);?>
+
+        <?= $form->field($model, 'payment_ratio')->textInput()->label('预收款比例%') ?>
 
         <?= $form->field($model, 'agreement_sn')->textInput() ?>
 
@@ -315,13 +318,13 @@ $tax = SystemConfig::find()->select('value')->where([
             //     layer.msg('请选择询价员', {time:2000});
             //     return false;
             // }
-
+            var payment_ratio = $("#orderagreement-payment_ratio").val();
             var id = $('.data').data('order_quote_id');
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/create-agreement',
                 data:{id:id, agreement_sn:agreement_sn, sign_date:sign_date, agreement_date:agreement_date,
-                    goods_info:goods_info, expect_at:expect_at},
+                    goods_info:goods_info, expect_at:expect_at, payment_ratio:payment_ratio},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

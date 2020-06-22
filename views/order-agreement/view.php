@@ -104,6 +104,8 @@ $userId   = Yii::$app->user->identity->id;
 
         <?= $form->field($model, 'payment_price')->textInput(['readonly' => true])->label('收入合同单含税总价') ?>
 
+        <?= $form->field($model, 'payment_ratio')->textInput(['readonly' => true])->label('预收款比例%') ?>
+
         <?= $form->field($model, 'agreement_sn')->textInput(['readonly' => true]) ?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
