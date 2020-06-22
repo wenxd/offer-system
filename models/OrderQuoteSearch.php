@@ -2,10 +2,11 @@
 
 namespace app\models;
 
+use phpDocumentor\Reflection\Types\Self_;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\OrderQuote;
+use yii\helpers\ArrayHelper;
 
 /**
  * OrderQuoteSearch represents the model behind the search form of `app\models\OrderQuote`.
@@ -44,7 +45,15 @@ class OrderQuoteSearch extends OrderQuote
      */
     public function search($params)
     {
-        $query = OrderQuote::find();
+        $use_admin = AuthAssignment::find()->where(['item_name' => '报价员'])->all();
+        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+        $userId   = Yii::$app->user->identity->id;
+        if (in_array($userId, $adminIds)) {
+            $query = self::find()->where(['admin_id' => $userId]);
+        } else {
+            $query = self::find();
+        }
 
         // add conditions that should always apply here
 
