@@ -86,7 +86,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
                     <td><?=$item->purchaseGoods ? $item->purchaseGoods->number : 0?></td>
-                    <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number) ? ($item->purchaseGoods->number - $item->fixed_number) : 0) : 0?></td>
+                    <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number <= 0) ? 0 : ($item->purchaseGoods->number - $item->fixed_number)) : 0?></td>
                 </tr>
             <?php endforeach;?>
 
