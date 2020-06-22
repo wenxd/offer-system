@@ -308,11 +308,14 @@ class OrderAgreementController extends Controller
      */
     public function actionStock($id)
     {
-        $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
+        $agreementGoodsList = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+        ])->all();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
             if ($stock) {
-                $agreementGoods->purchase_number = $agreementGoods->number > $stock->number ? $agreementGoods->number - $stock->number : 0;
+                $agreementGoods->purchase_number = $agreementGoods->order_number > $stock->number ? $agreementGoods->order_number - $stock->number : 0;
                 $agreementGoods->save();
             }
         }
@@ -366,40 +369,40 @@ class OrderAgreementController extends Controller
         ])->all();
 
         $goods_ids     = [];
-        $more_goods_id = [];
+        $remainIds     = [];
+        $repetitionIds = [];
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             if (in_array($agreementGoods->goods_id, $goods_ids)) {
-                $more_goods_id[] = $agreementGoods->goods_id;
+                $repetitionIds[] = $agreementGoods->id;
             } else {
+                $remainIds[] = $agreementGoods->id;
                 $goods_ids[] = $agreementGoods->goods_id;
             }
         }
 
-        foreach ($more_goods_id as $goods_id) {
-            $agreementGoods = AgreementGoods::find()->where([
-                'order_agreement_id' => $id,
-                'is_deleted'         => 0,
-                'goods_id'           => $goods_id,
-                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
-            ])->one();
+        //剩下的数据
+        $remainList = AgreementGoods::find()->where(['id' => $remainIds])->indexBy('goods_id')->all();
 
-            $purchase_number = $agreementGoods->purchase_number;
-            $order_number    = $agreementGoods->order_number;
-            $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_NO;
-            $agreementGoods->save();
+        //需要合并的数据
+        $repetitionList = AgreementGoods::find()->where(['id' => $repetitionIds])->all();
+        foreach ($remainList as $remain) {
+            foreach ($repetitionList as $key => $record) {
+                if ($record->goods_id == $remain->goods_id) {
+                    //合并数据
+                    $remain->purchase_number += $record->purchase_number;
+                    $remain->order_number += $record->order_number;
+                    $remain->save();
 
-            $lastAgreementGoods = AgreementGoods::find()->where([
-                'order_agreement_id' => $id,
-                'is_deleted'         => 0,
-                'goods_id'           => $goods_id,
-                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
-            ])->one();
-            $lastAgreementGoods->purchase_number += $purchase_number;
-            $lastAgreementGoods->order_number    += $order_number;
-            $lastAgreementGoods->save();
+                    //重复数据不显示
+                    $record->purchase_is_show = AgreementGoods::IS_SHOW_NO;
+                    $record->save();
+                }
+            }
         }
+
         $orderAgreement->is_merge = OrderAgreement::IS_MERGE_YES;
         $orderAgreement->save();
+
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
         return $this->redirect(['index']);
     }
