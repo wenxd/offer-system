@@ -189,6 +189,10 @@ if ($model->payment_ratio == '0.00') {
             $('.sta_tax_price').text(sta_tax_price.toFixed(2));
             $('.sta_all_price').text(sta_all_price.toFixed(2));
             $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
+
+            //默认计算
+            var payment_ratio = parseFloat($('.payment_ratio').text()) / 100;
+            $('#orderpayment-price').val(sta_all_tax_price.toFixed(2) * payment_ratio);
         }
 
         //动态修改预付款
