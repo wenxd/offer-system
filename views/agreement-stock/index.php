@@ -63,7 +63,27 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
+            [
+                'attribute' => '库存位置',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->stock) {
+                        return $model->stock->position;
+                    } else {
+                        return '';
+                    }
+                }
+            ],
             'use_number',
+            [
+                'attribute' => '库存数量',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->stock) {
+                        return $model->stock->number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
             [
                 'attribute' => 'tax_price',
                 'visible'   => !in_array($userId, $adminIds),

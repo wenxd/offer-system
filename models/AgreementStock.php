@@ -119,4 +119,9 @@ class AgreementStock extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
+
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
+    }
 }
