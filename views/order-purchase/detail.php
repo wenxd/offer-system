@@ -19,7 +19,7 @@ if (!$model->agreement_date) {
 }
 
 $model->payment_sn = 'Z' . date('ymd_') . '_' . $number;
-
+$model->payment_ratio = 30;
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
@@ -205,6 +205,10 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 'allowClear' => true
             ],
         ])->label('供应商')?>
+
+        <?php if (!$model->is_complete):?>
+            <?= $form->field($model, 'payment_ratio')->textInput(['placeholder' => '例如0.3 就是百分之30 不用加%']); ?>
+        <?php endif;?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -457,6 +461,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             var delivery_date     = $('#orderpurchase-delivery_date').val();
             //收入合同交货日期
             var order_agreement_date = '<?=$order_agreement_at?>';
+            var payment_ratio     = $('#orderpurchase-payment_ratio').val();
 
             if ((new Date(delivery_date.replace('/-/g', '\/'))) > (new Date(order_agreement_date.replace('/-/g', '\/')))) {
                 layer.confirm('支出交货时间晚于收入', {
@@ -472,7 +477,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
                             goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
                             apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date,
-                            order_agreement_date:order_agreement_date},
+                            order_agreement_date:order_agreement_date, payment_ratio:payment_ratio},
                         dataType:'JSON',
                         success:function(res){
                             if (res && res.code == 200){
@@ -493,7 +498,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     data:{order_purchase_id:order_purchase_id, admin_id:admin_id, end_date:end_date, payment_sn:payment_sn,
                         goods_info:goods_info, long_delivery_time:long_delivery_time, supplier_id:supplier_id,
                         apply_reason:apply_reason, agreement_date:agreement_date, delivery_date:delivery_date,
-                        order_agreement_date:order_agreement_date},
+                        order_agreement_date:order_agreement_date, payment_ratio:payment_ratio},
                     dataType:'JSON',
                     success:function(res){
                         if (res && res.code == 200){

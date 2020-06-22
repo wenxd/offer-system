@@ -78,6 +78,7 @@ class OrderPurchaseVerifyController extends BaseController
         $orderPayment->agreement_at         = $params['agreement_date'];
         $orderPayment->delivery_date        = $params['delivery_date'];
         $orderPayment->supplier_id          = $params['supplier_id'];
+        $orderPayment->payment_ratio        = $params['payment_ratio'];
         if ($orderPayment->save()) {
             $noticeOpen         = false;
             $noticeDeliveryOpen = false;

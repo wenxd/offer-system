@@ -28,6 +28,7 @@ use Yii;
 class OrderPurchase extends \yii\db\ActiveRecord
 {
     public $delivery_date;
+    public $payment_ratio;
 
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';
@@ -101,7 +102,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             [['order_id', 'order_final_id', 'order_agreement_id', 'admin_id', 'is_purchase', 'is_stock',
                 'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted', 'is_agreement', 'supplier_id'], 'integer'],
             [['end_date'], 'required'],
-            [['end_date', 'updated_at', 'created_at', 'agreement_date', 'apply_reason'], 'safe'],
+            [['end_date', 'updated_at', 'created_at', 'agreement_date', 'apply_reason', 'payment_ratio'], 'safe'],
             [['purchase_sn', 'financial_remark'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -136,6 +137,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'created_at'               => '创建时间',
             'payment_sn'               => '支出合同号',
             'supplier_id'              => '供应商',
+            'payment_ratio'            => '预付款比例%',
         ];
     }
 
