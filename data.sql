@@ -1017,3 +1017,8 @@ ALTER TABLE `order_payment` ADD INDEX idx_order_id (`order_id`);
 ALTER TABLE `order_payment` ADD INDEX idx_order_purchase_id (`order_purchase_id`);
 ALTER TABLE `order_payment` ADD INDEX idx_admin_id (`admin_id`);
 ALTER TABLE `order_payment` ADD INDEX idx_payment_sn (`payment_sn`);
+ALTER TABLE `order_agreement` ADD INDEX idx_agreement_sn (`agreement_sn`);
+ALTER TABLE `order_agreement` ADD INDEX idx_order_id (`order_id`);
+ALTER TABLE `order_agreement` ADD INDEX idx_admin_id (`admin_id`);
+ALTER TABLE `order_final` ADD INDEX idx_admin_id (`admin_id`);
+ALTER TABLE `order_final` ADD INDEX idx_order_id (`order_id`);
