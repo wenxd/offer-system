@@ -228,7 +228,7 @@ class OrderFinalController extends BaseController
     {
         $orderFinal    = OrderFinal::findOne($id);
         $order         = Order::findOne($orderFinal->order_id);
-        $finalGoods    = FinalGoods::find()->where(['order_final_id' => $id])->orderBy('goods_id asc')->all();
+        $finalGoods    = FinalGoods::find()->where(['order_final_id' => $id])->orderBy('serial asc')->all();
         $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
         $quoteGoods    = QuoteGoods::find()->where(['order_id' => $order->id, 'order_final_id' => $id])->indexBy('goods_id')->all();
         $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
