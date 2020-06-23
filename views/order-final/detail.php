@@ -133,7 +133,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="all_tax_price"></td>
                 <td class="delivery_time"><?=$item->inquiry->delivery_time?></td>
                 <td class="quote_price"><input type="text" style="width: 100px;"></td>
-                <td class="quote_tax_price"></td>
+                <td class="quote_tax_price"><input type="text" style="width: 100px;"></td>
                 <td class="quote_all_price"></td>
                 <td class="quote_all_tax_price"></td>
                 <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
@@ -259,7 +259,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 var quote_delivery_time = Math.round(parseFloat((quote_delivery_ratio * delivery_time).toFixed(2)));
 
                 $(e).find('.quote_price input').val(quote_price);
-                $(e).find('.quote_tax_price').text(quote_tax_price);
+                $(e).find('.quote_tax_price input').val(quote_tax_price);
                 $(e).find('.quote_all_price').text(quote_all_price);
                 $(e).find('.quote_all_tax_price').text(quote_all_tax_price);
                 $(e).find('.quote_delivery_time input').val(quote_delivery_time);
@@ -339,6 +339,38 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
         });
 
+        //输入报价含税单价
+        $(".quote_tax_price input").bind('input propertychange', function (e) {
+            var quote_tax_price = $(this).val();
+            var number          = $(this).parent().parent().find('.number').val();
+            var ratio           = 1 + $(this).parent().parent().find('.ratio').text() / 100;
+
+            var quote_price         = (quote_tax_price / ratio).toFixed(2);
+            var quote_all_price     = (quote_price * number).toFixed(2);
+            var quote_all_tax_price = (quote_tax_price * number).toFixed(2);
+
+            $(this).parent().parent().find('.quote_price input').val(quote_price);
+            $(this).parent().parent().find('.quote_all_price').text(quote_all_price);
+            $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
+
+            //统计报价
+            var sta_quote_all_price     = 0;
+            var sta_quote_all_tax_price = 0;
+            $('.order_final_list').each(function (i, e) {
+                var quote_all_price     = $(e).find('.quote_all_price').text();
+                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
+                if (quote_all_price) {
+                    sta_quote_all_price += parseFloat(quote_all_price);
+                }
+                if (quote_all_tax_price) {
+                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
+                }
+            });
+            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
+            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+        });
+
+
         //输入数量
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
@@ -405,7 +437,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 var quote_all_tax_price = (all_tax_price * quote_ratio).toFixed(2);
 
                 $(e).find('.quote_price input').val(quote_price);
-                $(e).find('.quote_tax_price').text(quote_tax_price);
+                $(e).find('.quote_tax_price input').val(quote_tax_price);
                 $(e).find('.quote_all_price').text(quote_all_price);
                 $(e).find('.quote_all_tax_price').text(quote_all_tax_price);
 
