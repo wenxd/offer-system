@@ -106,14 +106,16 @@ $userId   = Yii::$app->user->identity->id;
         $('.box-search-goods_number').removeClass('cancel-goods_number');
         $.ajax({
             type:"GET",
-            url:"?r=search/get-new-good-number",
+            url:"?r=search/get-good-number",
             data:{good_number:good_number},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="selectGoodsA($(this), ' + res.data[i]['id'] + ')" data-goods_number_b="' + res.data[i]['goods_number_b'] + '">' + res.data[i]['goods_number'] + '</li>';
+                        li += '<li onclick="selectGoodsA($(this))" data-goods_id="' + res.data[i].id +
+                            '" data-goods_number="' + res.data[i].goods_number + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul-goods_number').append(li);
@@ -125,8 +127,8 @@ $userId   = Yii::$app->user->identity->id;
         })
     });
     //选择零件A
-    function selectGoodsA(obj, goods_id){
-        $("#stocklog-goods_id").val(goods_id);
+    function selectGoodsA(obj){
+        $("#stocklog-goods_id").val(obj.data('goods_id'));
         $("#stocklog-goods_number").val($.trim(obj.html()));
         $('.box-search-goods_number').addClass('cancel-goods_number');
     }
