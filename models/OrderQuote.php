@@ -28,6 +28,7 @@ use Yii;
  * @property string $publish_ratio
  * @property string $quote_all_tax_price
  * @property string $all_tax_price
+ * @property string $order_quote
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
@@ -64,7 +65,7 @@ class OrderQuote extends \yii\db\ActiveRecord
         return [
             [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio', 'customer_id',
-                'competitor_ratio', 'publish_ratio', 'quote_all_tax_price', 'all_tax_price'], 'safe'],
+                'competitor_ratio', 'publish_ratio', 'quote_all_tax_price', 'all_tax_price', 'order_quote'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string'],
         ];
@@ -97,6 +98,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             'publish_ratio'         => '发行价系数',
             'quote_all_tax_price'   => '报价含税总价',
             'all_tax_price'         => '成本含税总价',
+            'order_quote'           => '报价利润率',
         ];
     }
 

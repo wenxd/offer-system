@@ -178,6 +178,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
 
         <?= $form->field($model, 'quote_sn')->textInput() ?>
 
+        <?= $form->field($model, 'profit_rate')->textInput(['readonly' => true])->label('报价单利润率%') ?>
+
         <?= $form->field($model, 'quote_ratio')->textInput() ?>
 
         <?= $form->field($model, 'delivery_ratio')->textInput() ?>
@@ -293,6 +295,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
             $('.sta_competitor_low_tax_price_all').text(sta_competitor_low_tax_price_all.toFixed(2));
             $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
+
+            //报价单利润率（报价总价-成本总价）/报价总价
+            var rate = (sta_quote_all_tax_price.toFixed(2) - sta_all_tax_price.toFixed(2)) / sta_quote_all_tax_price.toFixed(2);
+            rate = (rate * 100).toFixed(2);
+            $('#orderquote-profit_rate').val(rate);
         }
 
         //全选
@@ -324,20 +331,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
 
             //统计报价
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            $('.order_final_list').each(function (i, e) {
-                var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
-            });
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+            statPrice();
         });
 
         //输入报价含税单价
@@ -355,20 +349,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
 
             //统计报价
-            var sta_quote_all_price     = 0;
-            var sta_quote_all_tax_price = 0;
-            $('.order_final_list').each(function (i, e) {
-                var quote_all_price     = $(e).find('.quote_all_price').text();
-                var quote_all_tax_price = $(e).find('.quote_all_tax_price').text();
-                if (quote_all_price) {
-                    sta_quote_all_price += parseFloat(quote_all_price);
-                }
-                if (quote_all_tax_price) {
-                    sta_quote_all_tax_price += parseFloat(quote_all_tax_price);
-                }
-            });
-            $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
-            $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+            statPrice();
         });
 
 
@@ -451,6 +432,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             });
             $('.sta_quote_all_price').text(sta_quote_all_price.toFixed(2));
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
+            statPrice();
         });
 
         //输入货期系数
@@ -669,6 +651,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             $('.sta_quote_all_tax_price').text(sta_quote_all_tax_price.toFixed(2));
             $('.sta_competitor_low_tax_price_all').text(sta_competitor_low_tax_price_all.toFixed(2));
             $('.sta_competitor_public_tax_price_all').text(sta_competitor_public_tax_price_all.toFixed(2));
+
+            //报价单利润率（报价总价-成本总价）/报价总价
+            var rate = (sta_quote_all_tax_price.toFixed(2) - sta_all_tax_price.toFixed(2)) / sta_quote_all_tax_price.toFixed(2);
+            rate = (rate * 100).toFixed(2);
+            $('#orderquote-profit_rate').val(rate);
         }
         
         //输入竞争者报价系数
