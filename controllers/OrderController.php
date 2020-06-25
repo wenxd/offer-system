@@ -793,14 +793,23 @@ class OrderController extends BaseController
                                 $item[] = $time;
                                 $data[] = $item;
                                 if (!$goods->goods_number_b) {
-                                    $temp_b                 = new TempNotGoodsB();
+                                    $temp_b = TempNotGoodsB::findOne(['goods_id' => $goods->id]);
+                                    if (!$temp_b) {
+                                        $temp_b            = new TempNotGoodsB();
+                                    }
                                     $temp_b->goods_id       = $goods->id;
                                     $temp_b->goods_number   = $goods->goods_number;
                                     $temp_b->goods_number_b = $goods->goods_number_b;
                                     $temp_b->save();
                                 }
                             } else {
-                                $temp = new TempNotGoods();
+                                $temp = TempNotGoods::findOne([
+                                    'brand_name'   => trim($value['A']),
+                                    'goods_number' => trim($value['B'])
+                                ]);
+                                if (!$temp) {
+                                    $temp = new TempNotGoods();
+                                }
                                 $temp->brand_name   = trim($value['A']);
                                 $temp->goods_number = trim($value['B']);
                                 $temp->save();

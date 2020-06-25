@@ -414,7 +414,13 @@ class StockOutLogController extends Controller
                             ])->one();
                             $customer = Customer::find()->where(['name' => trim($value['D'])])->one();
                             if (!$goods) {
-                                $temp = new TempNotGoods();
+                                $temp = TempNotGoods::findOne([
+                                    'brand_name'   => trim($value['A']),
+                                    'goods_number' => trim($value['B'])
+                                ]);
+                                if (!$temp) {
+                                    $temp = new TempNotGoods();
+                                }
                                 $temp->brand_name   = trim($value['A']);
                                 $temp->goods_number = trim($value['B']);
                                 $temp->save();

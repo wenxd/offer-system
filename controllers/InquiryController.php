@@ -271,9 +271,15 @@ class InquiryController extends BaseController
 
                             $supplier = Supplier::find()->where(['name' => trim($value['C'])])->one();
                             if (!$goods) {
-                                $temp = new TempNotGoods();
-                                $temp->brand_name   = $value['A'];
-                                $temp->goods_number = $value['B'];
+                                $temp = TempNotGoods::findOne([
+                                    'brand_name'   => trim($value['A']),
+                                    'goods_number' => trim($value['B'])
+                                ]);
+                                if (!$temp) {
+                                    $temp = new TempNotGoods();
+                                }
+                                $temp->brand_name   = trim($value['A']);
+                                $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             } else {
                                 if ($supplier) {

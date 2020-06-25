@@ -299,7 +299,13 @@ class StockInLogController extends Controller
                                 'brand_id'     => $brand->id,
                             ])->one();
                             if (!$goods) {
-                                $temp = new TempNotGoods();
+                                $temp = TempNotGoods::findOne([
+                                    'brand_name'   => trim($value['A']),
+                                    'goods_number' => trim($value['B'])
+                                ]);
+                                if (!$temp) {
+                                    $temp = new TempNotGoods();
+                                }
                                 $temp->brand_name   = trim($value['A']);
                                 $temp->goods_number = trim($value['B']);
                                 $temp->save();
