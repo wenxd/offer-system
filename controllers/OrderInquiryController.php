@@ -140,49 +140,56 @@ class OrderInquiryController extends BaseController
                 $params['goods_info'][$key]['supplier_id'] = $supplier->id;
             }
         }
+        $transaction = Yii::$app->db->transaction;
+        try {
+            $orderInquiry = new OrderInquiry();
+            $orderInquiry->inquiry_sn = $params['inquiry_sn'];
+            $orderInquiry->order_id = $params['order_id'];
+            $orderInquiry->end_date = $params['end_date'];
+            $orderInquiry->admin_id = $params['admin_id'];
 
-        $orderInquiry = new OrderInquiry();
-        $orderInquiry->inquiry_sn = $params['inquiry_sn'];
-        $orderInquiry->order_id   = $params['order_id'];
-        $orderInquiry->end_date   = $params['end_date'];
-        $orderInquiry->admin_id   = $params['admin_id'];
+            $json = $params['goods_info'] ? $params['goods_info'] : [];
 
-        $json = $params['goods_info'] ? $params['goods_info'] : [];
-
-        $orderInquiry->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
-        if ($orderInquiry->save()) {
-            $data = [];
-            foreach ($params['goods_info'] as $goods) {
-                $row = [];
-                //批量数据
-                $row[] = $params['order_id'];
-                $row[] = $orderInquiry->id;
-                $row[] = $params['inquiry_sn'];
-                $row[] = $goods['goods_id'];
-                $row[] = $goods['number'];
-                $row[] = $goods['serial'];
-                $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
-                $data[] = $row;
+            $orderInquiry->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
+            if ($orderInquiry->save()) {
+                $data = [];
+                foreach ($params['goods_info'] as $goods) {
+                    $row = [];
+                    //批量数据
+                    $row[] = $params['order_id'];
+                    $row[] = $orderInquiry->id;
+                    $row[] = $params['inquiry_sn'];
+                    $row[] = $goods['goods_id'];
+                    $row[] = $goods['number'];
+                    $row[] = $goods['serial'];
+                    $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
+                    $row[] = $goods['remark'];
+                    $data[] = $row;
+                }
+                self::insertInquiryGoods($data);
+                //是否全部派送询价员
+                $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+                $orderGoodsCount = OrderGoodsBak::find()->select('id')->where(['order_id' => $params['order_id']])->count();
+                if ($count >= $orderGoodsCount) {
+                    $order = Order::findOne($params['order_id']);
+                    $order->is_dispatch = Order::IS_DISPATCH_YES;
+                    $order->save();
+                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '保存成功']);
+            } else {
+                return json_encode(['code' => 500, 'msg' => $orderInquiry->getErrors()]);
             }
-            self::insertInquiryGoods($data);
-            //是否全部派送询价员
-            $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
-            $orderGoodsCount = OrderGoodsBak::find()->select('id')->where(['order_id' => $params['order_id']])->count();
-            if ($count >= $orderGoodsCount) {
-                $order = Order::findOne($params['order_id']);
-                $order->is_dispatch = Order::IS_DISPATCH_YES;
-                $order->save();
-            }
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
-        } else {
-            return json_encode(['code' => 500, 'msg' => $orderInquiry->getErrors()]);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
         }
     }
 
     //批量插入
     public static function insertInquiryGoods($data)
     {
-        $feild = ['order_id', 'order_inquiry_id', 'inquiry_sn', 'goods_id', 'number', 'serial', 'supplier_id'];
+        $feild = ['order_id', 'order_inquiry_id', 'inquiry_sn', 'goods_id', 'number', 'serial', 'supplier_id', 'remark'];
         $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
     }
 
@@ -393,9 +400,9 @@ class OrderInquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
         $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '技术备注', '中文描述', '英文描述', '询价数量*', '单位', '含税单价*（不带符号）',
-            '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由'];
+            '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由', '特殊说明'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -422,8 +429,6 @@ class OrderInquiryController extends BaseController
                     //英文描述
                     $excel->setCellValue($letter[$i+6] . ($key + 2), $inquiry->goods->description_en);
                 }
-                //税率
-                $excel->setCellValue($letter[$i+11] . ($key + 2), $tax);
                 //含税单价
                 //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
@@ -434,7 +439,10 @@ class OrderInquiryController extends BaseController
                 //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
                 //$excel->setCellValue($letter[$i+11] . ($key + 2), '');
-                //备注
+                //税率
+                $excel->setCellValue($letter[$i+11] . ($key + 2), $tax);
+                //特殊说明
+                $excel->setCellValue($letter[$i+16] . ($key + 2), $inquiry->remark);
                 break;
             }
         }

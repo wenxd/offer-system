@@ -65,6 +65,7 @@ if ($model->isNewRecord) {
                     <th>零件号</th>
                     <th>厂家号</th>
                     <th style="width: 200px;">推荐供应商</th>
+                    <th style="width: 200px;">特殊说明</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
                     <th>原厂家</th>
@@ -97,6 +98,7 @@ if ($model->isNewRecord) {
                     <td>
                         <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -179,6 +181,9 @@ if ($model->isNewRecord) {
                             ['target' => 'blank'])?></td>
                     <td><?= $item->goods->goods_number_b?></td>
                     <td class="supplier">
+                        <input type="text" style="width: 150px;">
+                    </td>
+                    <td class="remark">
                         <input type="text" style="width: 150px;">
                     </td>
                     <td><?= $item->goods->description?></td>
@@ -275,11 +280,13 @@ if ($model->isNewRecord) {
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     var item = {};
-                    item.goods_id    = $(element).val();
-                    item.number      = $(element).parent().parent().find('.number').text();
-                    item.serial      = $(element).parent().parent().find('.serial').text();
+                    item.goods_id      = $(element).val();
+                    item.number        = $(element).parent().parent().find('.number').text();
+                    item.serial        = $(element).parent().parent().find('.serial').text();
                     var supplier_name  = $(element).parent().parent().find('.supplier input').val();
+                    var remark         = $(element).parent().parent().find('.remark input').val();
                     item.supplier_name = supplier_name;
+                    item.remark = remark;
                     goods_info.push(item);
                 }
             });

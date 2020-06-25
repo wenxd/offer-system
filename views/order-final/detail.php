@@ -535,7 +535,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     item.all_price           = $(element).parent().parent().find('.all_price').text();
                     item.all_tax_price       = $(element).parent().parent().find('.all_tax_price').text();
                     item.quote_price         = $(element).parent().parent().find('.quote_price input').val();
-                    item.quote_tax_price     = $(element).parent().parent().find('.quote_tax_price').text();
+                    item.quote_tax_price     = $(element).parent().parent().find('.quote_tax_price input').val();
                     item.quote_all_price     = $(element).parent().parent().find('.quote_all_price').text();
                     item.quote_all_tax_price = $(element).parent().parent().find('.quote_all_tax_price').text();
                     item.quote_delivery_time = $(element).parent().parent().find('.quote_delivery_time input').val();

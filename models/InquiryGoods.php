@@ -23,6 +23,7 @@ use Yii;
  * @property string $order_id
  * @property string $order_inquiry_id
  * @property string $supplier_id
+ * @property string $remark
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -55,7 +56,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
         return [
             [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at', 'supplier_id'], 'safe'],
-            [['inquiry_sn', 'reason'], 'string', 'max' => 255],
+            [['inquiry_sn', 'reason', 'remark'], 'string', 'max' => 255],
         ];
     }
 

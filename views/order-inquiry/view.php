@@ -67,6 +67,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>原厂家备注</th>
                 <th>技术备注</th>
                 <th>推荐供应商</th>
+                <th>特别说明</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>单位</th>
@@ -96,6 +97,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$item->goods->original_company_remark?></td>
                             <td><?=$item->goods->technique_remark?></td>
                             <td><?=$item->supplier ? $item->supplier->name : ''?></td>
+                            <td><?=$item->remark?></td>
                             <td><?=$item->goods->description?></td>
                             <td><?=$item->goods->description_en?></td>
                             <td><?=$item->goods->unit?></td>
@@ -130,6 +132,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><?=$item->goods->original_company_remark?></td>
                                 <td><?=$item->goods->technique_remark?></td>
                                 <td><?=$item->supplier ? $item->supplier->name : ''?></td>
+                                <td><?=$item->remark?></td>
                                 <td><?=$item->goods->description?></td>
                                 <td><?=$item->goods->description_en?></td>
                                 <td><?=$item->goods->unit?></td>

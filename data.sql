@@ -1022,3 +1022,6 @@ ALTER TABLE `order_agreement` ADD INDEX idx_order_id (`order_id`);
 ALTER TABLE `order_agreement` ADD INDEX idx_admin_id (`admin_id`);
 ALTER TABLE `order_final` ADD INDEX idx_admin_id (`admin_id`);
 ALTER TABLE `order_final` ADD INDEX idx_order_id (`order_id`);
+
+ALTER TABLE `inquiry_goods` ADD `remark` varchar(255)  NOT NULL DEFAULT ''  COMMENT '特殊说明';
+ALTER TABLE `order_quote` ADD `profit_rate` decimal(5,2) NOT NULL DEFAULT '0'  COMMENT '报价利润率';
