@@ -149,80 +149,87 @@ class OrderQuoteController extends Controller
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();
+        $transaction = Yii::$app->db->transaction;
+        try {
+            $orderFinal = OrderFinal::findOne($params['order_final_id']);
 
-        $orderFinal = OrderFinal::findOne($params['order_final_id']);
+            $orderQuote = new OrderQuote();
+            $orderQuote->quote_sn = $params['quote_sn'];
+            $orderQuote->order_id = $orderFinal->order_id;
+            $orderQuote->order_final_id = $params['order_final_id'];
+            $orderQuote->goods_info = json_encode([]);
+            $orderQuote->admin_id = $params['admin_id'];
+            $orderQuote->admin_id = $params['profit_rate'];
 
-        $orderQuote                    = new OrderQuote();
-        $orderQuote->quote_sn          = $params['quote_sn'];
-        $orderQuote->order_id          = $orderFinal->order_id;
-        $orderQuote->order_final_id    = $params['order_final_id'];
-        $orderQuote->goods_info        = json_encode([]);
-        $orderQuote->admin_id          = $params['admin_id'];
-
-        if ($params['sta_all_tax_price']) {
-            $orderQuote->quote_ratio   = number_format($params['sta_quote_all_tax_price']/$params['sta_all_tax_price'], 2, '.', '');
-        }
-        if ($params['mostLongTime']) {
-            $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time']/$params['mostLongTime'], 2, '.', '');
-        }
-        if ($params['publish_ratio'] == 0) {
-            return json_encode(['code' => 500, 'msg' => '不能为0']);
-        }
-        $competitor_ratio = 0;
-        if ($params['publish_ratio'] && $params['sta_all_publish_tax_price']) {
-            $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
-        }
-
-        $orderQuote->customer_id            = $orderFinal->customer_id;
-        $orderQuote->competitor_ratio       = $competitor_ratio;
-        $orderQuote->publish_ratio          = $params['publish_ratio'];
-        $orderQuote->quote_all_tax_price    = $params['sta_quote_all_tax_price'];
-        $orderQuote->all_tax_price          = $params['sta_all_tax_price'];
-
-        if ($orderQuote->save()) {
-
-            $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
-            $orderFinal->save();
-
-            $data = [];
-            foreach ($params['goods_info'] as $item) {
-                $row = [];
-
-                $row[] = $orderFinal->order_id;
-                $row[] = $params['order_final_id'];
-                $row[] = $orderFinal->final_sn;
-                $row[] = $orderQuote->primaryKey;
-                $row[] = $orderQuote->quote_sn;
-                $row[] = $item['goods_id'];
-                $row[] = $item['type'];
-                $row[] = $item['relevance_id'];
-                $row[] = $item['number'];
-                $row[] = $item['serial'];
-                $row[] = $item['tax_rate'];
-                $row[] = $item['price'];
-                $row[] = $item['tax_price'];
-                $row[] = $item['all_price'];
-                $row[] = $item['all_tax_price'];
-                $row[] = $item['quote_price'];
-                $row[] = $item['quote_tax_price'];
-                $row[] = $item['quote_all_price'];
-                $row[] = $item['quote_all_tax_price'];
-                $row[] = $item['delivery_time'];
-                $row[] = $item['quote_delivery_time'];
-                $row[] = $item['competitor_goods_id'];
-                $row[] = $item['competitor_goods_tax_price'];
-                $row[] = $item['competitor_goods_tax_price_all'];
-                $row[] = $item['competitor_goods_quote_tax_price'];
-                $row[] = $item['competitor_goods_quote_tax_price_all'];
-                $row[] = $item['publish_tax_price'];
-                $row[] = $item['all_publish_tax_price'];
-
-                $data[] = $row;
+            if ($params['sta_all_tax_price']) {
+                $orderQuote->quote_ratio = number_format($params['sta_quote_all_tax_price'] / $params['sta_all_tax_price'], 2, '.', '');
             }
-            self::insertQuoteGoods($data);
-            return json_encode(['code' => 200, 'msg' => '保存成功']);
-        } else {
-            return json_encode(['code' => 500, 'msg' => $orderQuote->getErrors()]);
+            if ($params['mostLongTime']) {
+                $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time'] / $params['mostLongTime'], 2, '.', '');
+            }
+            if ($params['publish_ratio'] == 0) {
+                return json_encode(['code' => 500, 'msg' => '不能为0']);
+            }
+            $competitor_ratio = 0;
+            if ($params['publish_ratio'] && $params['sta_all_publish_tax_price']) {
+                $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
+            }
+
+            $orderQuote->customer_id = $orderFinal->customer_id;
+            $orderQuote->competitor_ratio = $competitor_ratio;
+            $orderQuote->publish_ratio = $params['publish_ratio'];
+            $orderQuote->quote_all_tax_price = $params['sta_quote_all_tax_price'];
+            $orderQuote->all_tax_price = $params['sta_all_tax_price'];
+
+            if ($orderQuote->save()) {
+
+                $orderFinal->is_quote = OrderFinal::IS_QUOTE_YES;
+                $orderFinal->save();
+
+                $data = [];
+                foreach ($params['goods_info'] as $item) {
+                    $row = [];
+
+                    $row[] = $orderFinal->order_id;
+                    $row[] = $params['order_final_id'];
+                    $row[] = $orderFinal->final_sn;
+                    $row[] = $orderQuote->primaryKey;
+                    $row[] = $orderQuote->quote_sn;
+                    $row[] = $item['goods_id'];
+                    $row[] = $item['type'];
+                    $row[] = $item['relevance_id'];
+                    $row[] = $item['number'];
+                    $row[] = $item['serial'];
+                    $row[] = $item['tax_rate'];
+                    $row[] = $item['price'];
+                    $row[] = $item['tax_price'];
+                    $row[] = $item['all_price'];
+                    $row[] = $item['all_tax_price'];
+                    $row[] = $item['quote_price'];
+                    $row[] = $item['quote_tax_price'];
+                    $row[] = $item['quote_all_price'];
+                    $row[] = $item['quote_all_tax_price'];
+                    $row[] = $item['delivery_time'];
+                    $row[] = $item['quote_delivery_time'];
+                    $row[] = $item['competitor_goods_id'];
+                    $row[] = $item['competitor_goods_tax_price'];
+                    $row[] = $item['competitor_goods_tax_price_all'];
+                    $row[] = $item['competitor_goods_quote_tax_price'];
+                    $row[] = $item['competitor_goods_quote_tax_price_all'];
+                    $row[] = $item['publish_tax_price'];
+                    $row[] = $item['all_publish_tax_price'];
+
+                    $data[] = $row;
+                }
+                self::insertQuoteGoods($data);
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '保存成功']);
+            } else {
+                return json_encode(['code' => 500, 'msg' => $orderQuote->getErrors()]);
+            }
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
         }
     }
 

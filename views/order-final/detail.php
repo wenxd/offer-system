@@ -583,6 +583,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var sta_all_publish_tax_price           = parseFloat($('.sta_all_publish_tax_price').text());
             var sta_competitor_public_tax_price_all = parseFloat($('.sta_competitor_public_tax_price_all').text());
 
+            //报价利润率
+            var profit_rate = $('#orderquote-profit_rate').val();
+
             $.ajax({
                 type:"post",
                 url:'?r=order-quote/save-order',
@@ -591,7 +594,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
                     most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime,
                     publish_ratio:publish_ratio, sta_all_publish_tax_price:sta_all_publish_tax_price,
-                    sta_competitor_public_tax_price_all:sta_competitor_public_tax_price_all},
+                    sta_competitor_public_tax_price_all:sta_competitor_public_tax_price_all, profit_rate:profit_rate},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
