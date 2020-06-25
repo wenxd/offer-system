@@ -65,6 +65,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>厂家号</th>
                 <th>原厂家</th>
                 <th>原厂家备注</th>
+                <th>技术备注</th>
                 <th>推荐供应商</th>
                 <th>中文描述</th>
                 <?php if(!in_array($userId, $adminIds)):?>
@@ -95,6 +96,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                             <td><?=$item->goods->original_company?></td>
                             <td><?=$item->goods->original_company_remark?></td>
+                            <td><?=$item->goods->technique_remark?></td>
                             <td><?=$item->supplier ? $item->supplier->name : ''?></td>
                             <td><?=$item->goods->description?></td>
                             <td><?=$item->goods->description_en?></td>
@@ -128,6 +130,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                                 <td><?=$item->goods->original_company?></td>
                                 <td><?=$item->goods->original_company_remark?></td>
+                                <td><?=$item->goods->technique_remark?></td>
                                 <td><?=$item->supplier ? $item->supplier->name : ''?></td>
                                 <td><?=$item->goods->description?></td>
                                 <td><?=$item->goods->unit?></td>

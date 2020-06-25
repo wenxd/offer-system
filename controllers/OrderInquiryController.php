@@ -393,8 +393,8 @@ class OrderInquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-        $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '中文描述', '询价数量*', '单位', '含税单价*（不带符号）',
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+        $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '技术备注', '中文描述', '英文描述', '询价数量*', '单位', '含税单价*（不带符号）',
             '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
@@ -415,17 +415,21 @@ class OrderInquiryController extends BaseController
                     $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->original_company);
                     //厂家号
                     $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->goods_number_b);
+                    //技术备注
+                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->technique_remark);
                     //中文描述
-                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->description);
+                    $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->goods->description);
+                    //英文描述
+                    $excel->setCellValue($letter[$i+6] . ($key + 2), $inquiry->goods->description_en);
                 }
                 //税率
-                $excel->setCellValue($letter[$i+9] . ($key + 2), $tax);
+                $excel->setCellValue($letter[$i+11] . ($key + 2), $tax);
                 //含税单价
                 //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
-                $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->number);
+                $excel->setCellValue($letter[$i+7] . ($key + 2), $inquiry->number);
                 //单位
-                $excel->setCellValue($letter[$i+6] . ($key + 2), $inquiry->goods->unit);
+                $excel->setCellValue($letter[$i+8] . ($key + 2), $inquiry->goods->unit);
                 //货期(周)
                 //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
@@ -505,19 +509,19 @@ class OrderInquiryController extends BaseController
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行厂家号不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                            if (!$value['F']) {
+                            if (!$value['H']) {
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价数量不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                            if (!$value['H']) {
+                            if (!$value['J']) {
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行含税单价不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                            if (!$value['I']) {
+                            if (!$value['K']) {
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                            if (!$value['J']) {
+                            if (!$value['L']) {
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行税率不能为空'], JSON_UNESCAPED_UNICODE);
                             }
@@ -529,17 +533,15 @@ class OrderInquiryController extends BaseController
                             $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                         }
                         if ($key > 1) {
-                            $goods = Goods::find()->where([
-                                'goods_number_b' => trim($value['D']),
-                                'is_deleted'     => Goods::IS_DELETED_NO
-                            ])->one();
+                            $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
+                            $goods = Goods::findOne($inquiryGoods->goods_id);
                             if ($goods) {
-                                if (isset($supplierList[trim($value['K'])])) {
+                                if (isset($supplierList[trim($value['M'])])) {
                                     $is_inquiry = Inquiry::find()->where([
                                         'admin_id'         => Yii::$app->user->identity->id,
                                         'order_inquiry_id' => $orderInquiry->id,
                                         'good_id'          => $goods->id,
-                                        'tax_rate'         => trim($value['J']),
+                                        'tax_rate'         => trim($value['L']),
                                         'supplier_id'      => $supplierList[trim($value['K'])]->id,
                                     ])->one();
                                     if ($is_inquiry) {
@@ -548,25 +550,25 @@ class OrderInquiryController extends BaseController
                                     $inquiry                    = new Inquiry();
                                     $inquiry->inquiry_goods_id  = trim($value['A']);
                                     $inquiry->order_inquiry_id  = $orderInquiry->id;
-                                    $inquiry->tax_rate          = trim($value['J']);
-                                    $inquiry->price             = trim($value['H']) / ((100 + $inquiry->tax_rate) / 100);
-                                    $inquiry->number            = trim($value['F']);
-                                    $inquiry->tax_price         = trim($value['H']);
+                                    $inquiry->tax_rate          = trim($value['L']);
+                                    $inquiry->price             = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
+                                    $inquiry->number            = trim($value['H']);
+                                    $inquiry->tax_price         = trim($value['J']);
                                     $inquiry->good_id           = $goods->id;
-                                    $inquiry->supplier_id       = $supplierList[trim($value['K'])]->id;
+                                    $inquiry->supplier_id       = $supplierList[trim($value['M'])]->id;
                                     $inquiry->all_price         = $inquiry->price * $inquiry->number;
                                     $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
                                     $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                    $inquiry->remark            = trim($value['L']);
-                                    $inquiry->delivery_time     = trim($value['I']);
+                                    $inquiry->remark            = trim($value['N']);
+                                    $inquiry->delivery_time     = trim($value['K']);
                                     $inquiry->admin_id          = Yii::$app->user->identity->id;
                                     $inquiry->order_id          = $orderInquiry->order_id;
                                     $inquiry->is_upload         = Inquiry::IS_UPLOAD_YES;
-                                    if (trim($value['M']) && trim($value['M']) == '是') {
+                                    if (trim($value['O']) && trim($value['O']) == '是') {
                                         $inquiry->is_better     = Inquiry::IS_BETTER_YES;
                                     }
-                                    if (trim($value['N'])) {
-                                        $inquiry->better_reason = trim($value['N']);
+                                    if (trim($value['P'])) {
+                                        $inquiry->better_reason = trim($value['P']);
                                     }
 
                                     if ($inquiry->save()) {
