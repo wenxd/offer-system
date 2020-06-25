@@ -149,7 +149,7 @@ class OrderQuoteController extends Controller
     public function actionSaveOrder()
     {
         $params = Yii::$app->request->post();
-        $transaction = Yii::$app->db->transaction;
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $orderFinal = OrderFinal::findOne($params['order_final_id']);
 

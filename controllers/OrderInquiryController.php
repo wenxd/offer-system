@@ -140,7 +140,7 @@ class OrderInquiryController extends BaseController
                 $params['goods_info'][$key]['supplier_id'] = $supplier->id;
             }
         }
-        $transaction = Yii::$app->db->transaction;
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $orderInquiry = new OrderInquiry();
             $orderInquiry->inquiry_sn = $params['inquiry_sn'];
