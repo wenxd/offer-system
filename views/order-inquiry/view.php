@@ -68,9 +68,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>技术备注</th>
                 <th>推荐供应商</th>
                 <th>中文描述</th>
-                <?php if(!in_array($userId, $adminIds)):?>
                 <th>英文描述</th>
-                <?php endif;?>
                 <th>单位</th>
                 <th>铭牌照片</th>
                 <th>加工照片</th>
@@ -133,6 +131,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><?=$item->goods->technique_remark?></td>
                                 <td><?=$item->supplier ? $item->supplier->name : ''?></td>
                                 <td><?=$item->goods->description?></td>
+                                <td><?=$item->goods->description_en?></td>
                                 <td><?=$item->goods->unit?></td>
                                 <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
                                 <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
