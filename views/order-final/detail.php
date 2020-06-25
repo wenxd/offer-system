@@ -318,7 +318,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             var quote_all_price     = (quote_price * number).toFixed(2);
             var quote_all_tax_price = (quote_price * ratio * number).toFixed(2);
 
-            $(this).parent().parent().find('.quote_tax_price').text(quote_tax_price);
+            $(this).parent().parent().find('.quote_tax_price input').val(quote_tax_price);
             $(this).parent().parent().find('.quote_all_price').text(quote_all_price);
             $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
 
