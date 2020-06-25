@@ -521,14 +521,14 @@ class OrderInquiryController extends BaseController
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价数量不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                            if (!$value['J']) {
-                                unlink('./' . $saveName);
-                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行含税单价不能为空'], JSON_UNESCAPED_UNICODE);
-                            }
-                            if (!$value['K']) {
-                                unlink('./' . $saveName);
-                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
-                            }
+//                            if (!$value['J']) {
+//                                unlink('./' . $saveName);
+//                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行含税单价不能为空'], JSON_UNESCAPED_UNICODE);
+//                            }
+//                            if (!$value['K']) {
+//                                unlink('./' . $saveName);
+//                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
+//                            }
                             if (!$value['L']) {
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行税率不能为空'], JSON_UNESCAPED_UNICODE);
@@ -540,7 +540,7 @@ class OrderInquiryController extends BaseController
                         if ($key == 2) {
                             $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                         }
-                        if ($key > 1) {
+                        if ($key > 1 && trim($value['J']) && trim($value['K'])) {
                             $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
                             $goods = Goods::findOne($inquiryGoods->goods_id);
                             if ($goods) {
