@@ -550,7 +550,7 @@ class OrderInquiryController extends BaseController
                                         'order_inquiry_id' => $orderInquiry->id,
                                         'good_id'          => $goods->id,
                                         'tax_rate'         => trim($value['L']),
-                                        'supplier_id'      => $supplierList[trim($value['K'])]->id,
+                                        'supplier_id'      => $supplierList[trim($value['M'])]->id,
                                     ])->one();
                                     if ($is_inquiry) {
                                         continue;
