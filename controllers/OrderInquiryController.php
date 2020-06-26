@@ -501,7 +501,7 @@ class OrderInquiryController extends BaseController
                     $total = count($sheetData);
                     $num = 0;
                     $supplierList = Supplier::find()->select('id, name')
-                        ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->all();
+                        ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->asArray()->all();
 
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
@@ -550,7 +550,7 @@ class OrderInquiryController extends BaseController
                                         'order_inquiry_id' => $orderInquiry->id,
                                         'good_id'          => $goods->id,
                                         'tax_rate'         => trim($value['L']),
-                                        'supplier_id'      => $supplierList[trim($value['M'])]->id,
+                                        'supplier_id'      => $supplierList[trim($value['M'])]['id'],
                                     ])->one();
                                     if ($is_inquiry) {
                                         continue;
@@ -563,7 +563,7 @@ class OrderInquiryController extends BaseController
                                     $inquiry->number            = trim($value['H']);
                                     $inquiry->tax_price         = trim($value['J']);
                                     $inquiry->good_id           = $goods->id;
-                                    $inquiry->supplier_id       = $supplierList[trim($value['M'])]->id;
+                                    $inquiry->supplier_id       = $supplierList[trim($value['M'])]['id'];
                                     $inquiry->all_price         = $inquiry->price * $inquiry->number;
                                     $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
                                     $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
@@ -581,6 +581,8 @@ class OrderInquiryController extends BaseController
 
                                     if ($inquiry->save()) {
                                         $num++;
+                                    } else {
+                                        return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
                                     }
                                 }
                             }
