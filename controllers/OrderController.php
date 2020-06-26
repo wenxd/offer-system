@@ -824,4 +824,67 @@ class OrderController extends BaseController
             }
         }
     }
+
+    //获取没有发行价的零件
+    public function actionGoods($id)
+    {
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel=$spreadsheet->setActiveSheetIndex(0);
+
+        $letter      = ['A', 'B'];
+        $tableHeader = ['品牌', '零件号'];
+        for($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+        }
+
+        //获取数据
+        $orderGoods = OrderGoods::find()->where(['order_id' => $id])->all();
+        foreach ($orderGoods as $key => $record) {
+            if (!$record->goods->publish_tax_price) {
+                $excel->setCellValue('A' . ($key + 2), $record->goods->material_code);
+                $excel->setCellValue('B' . ($key + 2), $record->goods->goods_number);
+            }
+        }
+
+        $title = '没有发行价的零件号列表' . date('ymd-His');
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
+    }
 }
