@@ -61,74 +61,77 @@ class StockInController extends BaseController
     public function actionIn()
     {
         $params = Yii::$app->request->post();
-        $orderPayment = OrderPayment::findOne($params['order_payment_id']);
-        $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
-        $orderPayment->save();
 
-        //系统税率
-        $system_tax = SystemConfig::find()->select('value')->where([
-            'title'      => SystemConfig::TITLE_TAX,
-            'is_deleted' => SystemConfig::IS_DELETED_NO,
-        ])->scalar();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $orderPayment = OrderPayment::findOne($params['order_payment_id']);
+            $orderPayment->stock_admin_id = Yii::$app->user->identity->id;
+            $orderPayment->save();
 
-        $stockLog = StockLog::find()->where([
-            'order_id'          => $orderPayment['order_id'],
-            'order_payment_id'  => $orderPayment->id,
-            'goods_id'          => $params['goods_id'],
-            'type'              => StockLog::TYPE_IN,
-        ])->one();
-        if (!$stockLog) {
-            $stockLog                    = new StockLog();
-        }
-        $stockLog->order_id          = $orderPayment['order_id'];
-        $stockLog->order_payment_id  = $orderPayment->id;
-        $stockLog->payment_sn        = $orderPayment->payment_sn;
-        $stockLog->goods_id          = $params['goods_id'];
-        $stockLog->number            = $params['number'];
-        $stockLog->type              = StockLog::TYPE_IN;
-        $stockLog->operate_time      = date('Y-m-d H:i:s');
-        $stockLog->admin_id          = Yii::$app->user->identity->id;
-        $stockLog->position          = $params['position'];
-        if ($stockLog->save()) {
-            $stock = Stock::findOne(['good_id' => $params['goods_id']]);
-            $paymentGoods = PaymentGoods::findOne([
-                'order_payment_id'  => $orderPayment->id,
-                'order_id'          => $orderPayment['order_id'],
-                'goods_id'          => $params['goods_id']
-            ]);
-            if (!$stock) {
-                $inquiry = Inquiry::findOne($paymentGoods->relevance_id);
-                $stock   = new Stock();
-                $stock->good_id     = $params['goods_id'];
-                $stock->supplier_id = $inquiry->supplier_id;
-                $stock->price       = $paymentGoods->fixed_price;
-                $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
-                $stock->tax_rate    = $system_tax;
-                $stock->number      = 0;
-                $stock->position    = trim($params['position']);
-                $stock->save();
-            } else {
-                $stock->price       = $paymentGoods->fixed_price;
-                $stock->tax_price   = (1+$system_tax/100) * $paymentGoods->fixed_price;
-                $stock->tax_rate    = $system_tax;
-                $stock->position    = trim($params['position']);
-                $stock->save();
+            //系统税率
+            $system_tax = SystemConfig::find()->select('value')->where([
+                'title' => SystemConfig::TITLE_TAX,
+                'is_deleted' => SystemConfig::IS_DELETED_NO,
+            ])->scalar();
+
+            $stockLog = StockLog::find()->where([
+                'order_id' => $orderPayment['order_id'],
+                'order_payment_id' => $orderPayment->id,
+                'goods_id' => $params['goods_id'],
+                'type' => StockLog::TYPE_IN,
+            ])->one();
+            if (!$stockLog) {
+                $stockLog = new StockLog();
             }
-            //判断是否全部入库
-            $paymentCount = PaymentGoods::find()->where(['order_payment_id' => $orderPayment->id])->count();
-            $stockCount   = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
-            if ($paymentCount == $stockCount) {
-                $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
-                $orderPayment->stock_at = date('Y-m-d H:i:s');
-                if ($orderPayment->is_advancecharge && $orderPayment->is_payment && $orderPayment->is_bill) {
-                    $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+            $stockLog->order_id = $orderPayment['order_id'];
+            $stockLog->order_payment_id = $orderPayment->id;
+            $stockLog->payment_sn = $orderPayment->payment_sn;
+            $stockLog->goods_id = $params['goods_id'];
+            $stockLog->number = $params['number'];
+            $stockLog->type = StockLog::TYPE_IN;
+            $stockLog->operate_time = date('Y-m-d H:i:s');
+            $stockLog->admin_id = Yii::$app->user->identity->id;
+            $stockLog->position = $params['position'];
+            if ($stockLog->save()) {
+                $stock = Stock::findOne(['good_id' => $params['goods_id']]);
+                $paymentGoods = PaymentGoods::findOne([
+                    'order_payment_id' => $orderPayment->id,
+                    'order_id' => $orderPayment['order_id'],
+                    'goods_id' => $params['goods_id']
+                ]);
+                if (!$stock) {
+                    $inquiry = Inquiry::findOne($paymentGoods->relevance_id);
+                    $stock = new Stock();
+                    $stock->good_id = $params['goods_id'];
+                    $stock->supplier_id = $inquiry->supplier_id;
+                    $stock->price = $paymentGoods->fixed_price;
+                    $stock->tax_price = (1 + $system_tax / 100) * $paymentGoods->fixed_price;
+                    $stock->tax_rate = $system_tax;
+                    $stock->number = 0;
+                    $stock->position = trim($params['position']);
+                    $stock->save();
+                } else {
+                    $stock->price = $paymentGoods->fixed_price;
+                    $stock->tax_price = (1 + $system_tax / 100) * $paymentGoods->fixed_price;
+                    $stock->tax_rate = $system_tax;
+                    $stock->position = trim($params['position']);
+                    $stock->save();
                 }
-                $orderPayment->save();
-                //进行对收入合同的入库字段更改
-                //TODO $orderAgreement = OrderAgreement::findOne();
-            }
-            $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
-            if ($res) {
+                //判断是否全部入库
+                $paymentCount = PaymentGoods::find()->where(['order_payment_id' => $orderPayment->id])->count();
+                $stockCount = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
+                if ($paymentCount == $stockCount) {
+                    $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
+                    $orderPayment->stock_at = date('Y-m-d H:i:s');
+                    if ($orderPayment->is_advancecharge && $orderPayment->is_payment && $orderPayment->is_bill) {
+                        $orderPayment->is_complete = OrderPayment::IS_COMPLETE_YES;
+                    }
+                    $orderPayment->save();
+                    //进行对收入合同的入库字段更改
+                    //TODO $orderAgreement = OrderAgreement::findOne();
+                }
+                $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
+
                 //对采购商品进行入库改变
                 $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
                 $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
@@ -141,9 +144,11 @@ class StockInController extends BaseController
                     $purchaseOrder->is_stock = OrderPurchase::IS_STOCK_YES;
                     $purchaseOrder->save();
                 }
+                $transaction->commit();
                 return json_encode(['code' => 200, 'msg' => '入库成功'], JSON_UNESCAPED_UNICODE);
             }
-        } else {
+        } catch (\Exception $e) {
+            $transaction->rollBack();
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()], JSON_UNESCAPED_UNICODE);
         }
     }
