@@ -108,7 +108,7 @@ class StockLog extends ActiveRecord
             'goods_id'              => '零件编号',
             'number'                => '库存数量',
             'type'                  => '入库出库 1入库  2出库',
-            'operate_time'          => '操作时间',
+            'operate_time'          => '入库时间',
             'is_deleted'            => '是否删除：0未删除 1已删除',
             'updated_at'            => '更新时间',
             'created_at'            => '创建时间',
