@@ -103,7 +103,7 @@ $userId   = Yii::$app->user->identity->id;
                 ],
                 [
                     'attribute' => 'admin_id',
-                    'label'     => '管理员',
+                    'label'     => '库管员',
                     'filter'    => \app\models\Helper::getAdminList(['系统管理员', '采购员']),
                     'value'     => function ($model, $key, $index, $column) {
                         if ($model->admin) {
