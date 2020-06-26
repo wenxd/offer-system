@@ -153,21 +153,23 @@ class OrderPurchaseController extends BaseController
                 $open = true;
             }
         }
-        $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
-        if ($open) {
-            $orderPurchase                     = new OrderPurchase();
-            $orderPurchase->purchase_sn        = $params['purchase_sn'];
-            $orderPurchase->agreement_sn       = $orderAgreement->agreement_sn;
-            $orderPurchase->order_id           = $orderAgreement->order_id;
-            $orderPurchase->order_agreement_id = $params['order_agreement_id'];
-            $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
-            $orderPurchase->end_date           = $params['agreement_date'];
-            $orderPurchase->admin_id           = $params['admin_id'];
-            if ($orderPurchase->save()) {
-                $agreement_goods_ids = [];
-                foreach ($params['goods_info'] as $item) {
-                    $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
-                    //处理保存使用库存记录
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
+            if ($open) {
+                $orderPurchase = new OrderPurchase();
+                $orderPurchase->purchase_sn = $params['purchase_sn'];
+                $orderPurchase->agreement_sn = $orderAgreement->agreement_sn;
+                $orderPurchase->order_id = $orderAgreement->order_id;
+                $orderPurchase->order_agreement_id = $params['order_agreement_id'];
+                $orderPurchase->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
+                $orderPurchase->end_date = $params['agreement_date'];
+                $orderPurchase->admin_id = $params['admin_id'];
+                if ($orderPurchase->save()) {
+                    $agreement_goods_ids = [];
+                    foreach ($params['goods_info'] as $item) {
+                        $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                        //处理保存使用库存记录
 //                    $use_stock_number = $agreementGoods->order_number >= $item['number'] ?  $agreementGoods->order_number - $item['number'] : 0;
 //                    if ($use_stock_number) {
 //                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
@@ -186,117 +188,124 @@ class OrderPurchaseController extends BaseController
 //                        $agreementStock->save();
 //                    }
 
-                    if ($item['number'] > 0) {
-                        if ($agreementGoods) {
-                            $purchaseGoods = new PurchaseGoods();
+                        if ($item['number'] > 0) {
+                            if ($agreementGoods) {
+                                $purchaseGoods = new PurchaseGoods();
 
-                            $purchaseGoods->order_id            = $orderAgreement->order_id;
-                            $purchaseGoods->order_agreement_id  = $orderAgreement->id;
-                            $purchaseGoods->order_purchase_id   = $orderPurchase->primaryKey;
-                            $purchaseGoods->order_purchase_sn   = $orderPurchase->purchase_sn;
-                            $purchaseGoods->serial              = $agreementGoods->serial;
-                            $purchaseGoods->goods_id            = $agreementGoods->goods_id;
-                            $purchaseGoods->type                = $agreementGoods->type;
-                            $purchaseGoods->relevance_id        = $agreementGoods->relevance_id;
-                            $purchaseGoods->number              = $agreementGoods->order_number;
-                            $purchaseGoods->tax_rate            = $agreementGoods->tax_rate;
-                            $purchaseGoods->price               = $agreementGoods->price;
-                            $purchaseGoods->tax_price           = $agreementGoods->tax_price;
-                            $purchaseGoods->all_price           = $agreementGoods->all_price;
-                            $purchaseGoods->all_tax_price       = $agreementGoods->all_tax_price;
-                            $purchaseGoods->fixed_price         = $agreementGoods->price;
-                            $purchaseGoods->fixed_tax_price     = $agreementGoods->tax_price;
-                            $purchaseGoods->fixed_number        = $item['number'];
-                            $purchaseGoods->inquiry_admin_id    = $agreementGoods->inquiry_admin_id;
-                            $purchaseGoods->agreement_sn        = $orderAgreement->agreement_sn;
-                            $purchaseGoods->purchase_date       = $params['agreement_date'];
-                            $purchaseGoods->delivery_time       = $agreementGoods->delivery_time;
-                            $purchaseGoods->save();
+                                $purchaseGoods->order_id = $orderAgreement->order_id;
+                                $purchaseGoods->order_agreement_id = $orderAgreement->id;
+                                $purchaseGoods->order_purchase_id = $orderPurchase->primaryKey;
+                                $purchaseGoods->order_purchase_sn = $orderPurchase->purchase_sn;
+                                $purchaseGoods->serial = $agreementGoods->serial;
+                                $purchaseGoods->goods_id = $agreementGoods->goods_id;
+                                $purchaseGoods->type = $agreementGoods->type;
+                                $purchaseGoods->relevance_id = $agreementGoods->relevance_id;
+                                $purchaseGoods->number = $agreementGoods->order_number;
+                                $purchaseGoods->tax_rate = $agreementGoods->tax_rate;
+                                $purchaseGoods->price = $agreementGoods->price;
+                                $purchaseGoods->tax_price = $agreementGoods->tax_price;
+                                $purchaseGoods->all_price = $agreementGoods->all_price;
+                                $purchaseGoods->all_tax_price = $agreementGoods->all_tax_price;
+                                $purchaseGoods->fixed_price = $agreementGoods->price;
+                                $purchaseGoods->fixed_tax_price = $agreementGoods->tax_price;
+                                $purchaseGoods->fixed_number = $item['number'];
+                                $purchaseGoods->inquiry_admin_id = $agreementGoods->inquiry_admin_id;
+                                $purchaseGoods->agreement_sn = $orderAgreement->agreement_sn;
+                                $purchaseGoods->purchase_date = $params['agreement_date'];
+                                $purchaseGoods->delivery_time = $agreementGoods->delivery_time;
+                                $purchaseGoods->save();
+                            }
+                        } else {
+                            $agreement_goods_ids[] = $item['agreement_goods_id'];
+                            //处理保存使用库存记录
+                            $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                            $agreementStock = new AgreementStock();
+                            $agreementStock->order_id = $orderAgreement->order_id;
+                            $agreementStock->order_agreement_id = $orderAgreement->id;
+                            $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                            $agreementStock->order_purchase_id = $orderPurchase->id;
+                            $agreementStock->order_purchase_sn = $orderPurchase->purchase_sn;
+                            $agreementStock->goods_id = $agreementGoods->goods_id;
+                            $agreementStock->price = $stock ? $stock->price : 0;
+                            $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
+                            $agreementStock->use_number = $agreementGoods->order_number;
+                            $agreementStock->all_price = $agreementStock->price * $agreementGoods->order_number;
+                            $agreementStock->all_tax_price = $agreementStock->tax_price * $agreementGoods->order_number;
+                            $agreementStock->save();
                         }
-                    } else {
-                        $agreement_goods_ids[] = $item['agreement_goods_id'];
-                        //处理保存使用库存记录
-                        $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
-                        $agreementStock = new AgreementStock();
-                        $agreementStock->order_id           = $orderAgreement->order_id;
-                        $agreementStock->order_agreement_id = $orderAgreement->id;
-                        $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
-                        $agreementStock->order_purchase_id  = $orderPurchase->id;
-                        $agreementStock->order_purchase_sn  = $orderPurchase->purchase_sn;
-                        $agreementStock->goods_id           = $agreementGoods->goods_id;
-                        $agreementStock->price              = $stock ? $stock->price : 0;
-                        $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
-                        $agreementStock->use_number         = $agreementGoods->order_number;
-                        $agreementStock->all_price          = $agreementStock->price * $agreementGoods->order_number;
-                        $agreementStock->all_tax_price      = $agreementStock->tax_price * $agreementGoods->order_number;
-                        $agreementStock->save();
                     }
-                }
-                AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
-                //判断是否全部生成采购单
-                $agreementGoodsCount = AgreementGoods::find()->where([
-                    'order_agreement_id' => $orderAgreement->id,
-                    'is_deleted'         => 0,
-                    'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
-                ])->count();
-                $purchaseGoodsCount  = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
-                if ($agreementGoodsCount == $purchaseGoodsCount) {
-                    $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
-                    $orderAgreement->save();
+                    AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
+                    //判断是否全部生成采购单
+                    $agreementGoodsCount = AgreementGoods::find()->where([
+                        'order_agreement_id' => $orderAgreement->id,
+                        'is_deleted' => 0,
+                        'purchase_is_show' => AgreementGoods::IS_SHOW_YES
+                    ])->count();
+                    $purchaseGoodsCount = PurchaseGoods::find()->where(['order_agreement_id' => $orderAgreement->id])->count();
+                    if ($agreementGoodsCount == $purchaseGoodsCount) {
+                        $orderAgreement->is_purchase = OrderAgreement::IS_PURCHASE_YES;
+                        $orderAgreement->save();
+                    }
+                } else {
+                    return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
                 }
             } else {
-                return json_encode(['code' => 500, 'msg' => $orderPurchase->getErrors()]);
-            }
-        } else {
-            foreach ($params['goods_info'] as $item) {
-                $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
-                //处理保存使用库存记录
-                $use_stock_number = $agreementGoods->order_number;
-                $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
+                foreach ($params['goods_info'] as $item) {
+                    $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
+                    //处理保存使用库存记录
+                    $use_stock_number = $agreementGoods->order_number;
+                    $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
 
-                $agreementStock = new AgreementStock();
-                $agreementStock->order_id           = $orderAgreement->order_id;
-                $agreementStock->order_agreement_id = $orderAgreement->id;
-                $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
-                $agreementStock->goods_id           = $agreementGoods->goods_id;
-                $agreementStock->price              = $stock ? $stock->price : 0;
-                $agreementStock->tax_price          = $stock ? $stock->tax_price : 0;
-                $agreementStock->use_number         = $use_stock_number;
-                $agreementStock->all_price          = $agreementStock->price * $use_stock_number;
-                $agreementStock->all_tax_price      = $agreementStock->tax_price * $use_stock_number;
-                $agreementStock->save();
+                    $agreementStock = new AgreementStock();
+                    $agreementStock->order_id = $orderAgreement->order_id;
+                    $agreementStock->order_agreement_id = $orderAgreement->id;
+                    $agreementStock->order_agreement_sn = $orderAgreement->agreement_sn;
+                    $agreementStock->goods_id = $agreementGoods->goods_id;
+                    $agreementStock->price = $stock ? $stock->price : 0;
+                    $agreementStock->tax_price = $stock ? $stock->tax_price : 0;
+                    $agreementStock->use_number = $use_stock_number;
+                    $agreementStock->all_price = $agreementStock->price * $use_stock_number;
+                    $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
+                    $agreementStock->save();
+                }
+                $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
+                AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
             }
-            $agreement_goods_ids = ArrayHelper::getColumn($params['goods_info'], 'agreement_goods_id');
-            AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
-        }
 
-        //处理是否全部走库存
-        $agreementGoodsList = AgreementGoods::find()->where([
-            'order_agreement_id' => $orderAgreement->id,
-            'is_deleted'         => 0,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
-        ])->all();
-        $purchaseNumber = 0;
-        foreach ($agreementGoodsList as $value) {
-            $purchaseNumber += $value['purchase_number'];
-        }
-        if ($purchaseNumber == 0) {
-            $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_YES;
-            $orderAgreement->save();
-        }
-
-        if (count($agreement_goods_ids)) {
-            //采购数量是0，给库管员通知
-            $stockAdmin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
-            foreach ($stockAdmin as $key => $value) {
-                $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $value->user_id;
-                $systemNotice->content   = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
-                $systemNotice->notice_at = date('Y-m-d H:i:s');
-                $systemNotice->save();
+            //处理是否全部走库存
+            $agreementGoodsList = AgreementGoods::find()->where([
+                'order_agreement_id' => $orderAgreement->id,
+                'is_deleted' => 0,
+                'purchase_is_show' => AgreementGoods::IS_SHOW_YES
+            ])->all();
+            $purchaseNumber = 0;
+            foreach ($agreementGoodsList as $value) {
+                $purchaseNumber += $value['purchase_number'];
             }
+            if ($purchaseNumber == 0) {
+                $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_YES;
+                $orderAgreement->save();
+            }
+
+            if (count($agreement_goods_ids)) {
+                //采购数量是0，给库管员通知
+                $stockAdmin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
+                if (isset($orderPurchase)) {
+                    foreach ($stockAdmin as $key => $value) {
+                        $systemNotice = new SystemNotice();
+                        $systemNotice->admin_id = $value->user_id;
+                        $systemNotice->content = '采购合同单号' . $orderPurchase->purchase_sn . '需要确认库存';
+                        $systemNotice->notice_at = date('Y-m-d H:i:s');
+                        $systemNotice->save();
+                    }
+                }
+            }
+            $transaction->commit();
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
         }
-        return json_encode(['code' => 200, 'msg' => '保存成功']);
     }
 
     public function actionDetail($id)
