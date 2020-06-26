@@ -209,6 +209,8 @@ $model->order_inquiry_id = $inquiryGoods->order_inquiry_id;
 
         <?= $form->field($model, 'delivery_time')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('货期(周)');?>
 
+        <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
+
         <?= $form->field($model, 'remark')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
         <?= $form->field($model, 'is_better')->dropDownList(Inquiry::$better) ?>
