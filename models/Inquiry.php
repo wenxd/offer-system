@@ -32,6 +32,9 @@ use yii\helpers\ArrayHelper;
  * @property string $is_purchase
  * @property string $all_tax_price
  * @property string $admin_id
+ * @property string $technique_remark
+ * @property string $inquiry_goods_id
+ * @property string $order_inquiry_id
  */
 class Inquiry extends ActiveRecord
 {
@@ -115,7 +118,8 @@ class Inquiry extends ActiveRecord
                  'order_id', 'order_inquiry_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
             [['price', 'tax_price', 'number'], 'required'],
             [['number'], 'integer', 'min' => 1],
-            [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b'], 'safe'],
+            [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b',
+                'technique_remark'], 'safe'],
             [['price', 'tax_rate', 'tax_price', 'all_price', 'all_tax_price', 'delivery_time'], 'number', 'min' => 0],
             [['inquiry_datetime', 'remark', 'better_reason', 'goods_number_b'], 'string', 'max' => 255],
             [['good_id', 'supplier_name', 'inquiry_datetime'], 'required', "on" => ["create", "update"]],
@@ -156,6 +160,7 @@ class Inquiry extends ActiveRecord
             'is_upload'             => '是否导入',
             'is_confirm_better'     => '是否确认优选',
             'is_purchase'           => '是否采购记录',
+            'technique_remark'      => '技术备注',
         ];
     }
 

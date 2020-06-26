@@ -17,7 +17,6 @@ class InquirySearch extends Inquiry
     public $original_company;
     public $original_company_remark;
     public $unit;
-    public $technique_remark;
     public $is_process;
     public $img_id;
     public $inquiry_sn;
@@ -79,7 +78,7 @@ class InquirySearch extends Inquiry
             return $dataProvider;
         }
         if ($this->goods_number || $this->original_company || $this->original_company_remark || $this->unit
-            || $this->technique_remark || $this->is_process || $this->goods_number_b) {
+            || $this->is_process || $this->goods_number_b) {
             $query->leftJoin('goods as a', 'a.id = inquiry.good_id');
             $query->andFilterWhere(['like', 'a.goods_number', $this->goods_number]);
             $query->andFilterWhere(['like', 'a.goods_number_b', $this->goods_number_b]);
@@ -87,7 +86,6 @@ class InquirySearch extends Inquiry
             $query->andFilterWhere(['like', 'a.original_company_remark', $this->original_company_remark]);
             $query->andFilterWhere(['like', 'a.unit', $this->unit]);
             $query->andFilterWhere(['like', 'a.is_process', $this->is_process]);
-            $query->andFilterWhere(['like', 'a.technique_remark', $this->technique_remark]);
         }
         if ($this->supplier_name) {
             $query->leftJoin('supplier as s', 's.id = inquiry.supplier_id');
@@ -115,6 +113,7 @@ class InquirySearch extends Inquiry
             'inquiry.is_confirm_better' => $this->is_confirm_better,
             'inquiry.is_purchase'       => $this->is_purchase,
             'inquiry.tax_rate'          => $this->tax_rate,
+            'inquiry.technique_remark'  => $this->technique_remark,
         ]);
 
         $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);

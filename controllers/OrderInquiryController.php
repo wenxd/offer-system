@@ -558,6 +558,7 @@ class OrderInquiryController extends BaseController
                                     $inquiry                    = new Inquiry();
                                     $inquiry->inquiry_goods_id  = trim($value['A']);
                                     $inquiry->order_inquiry_id  = $orderInquiry->id;
+                                    $inquiry->technique_remark  = trim($value['E']) ? trim($value['E']) : '';
                                     $inquiry->tax_rate          = trim($value['L']);
                                     $inquiry->price             = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
                                     $inquiry->number            = trim($value['H']);

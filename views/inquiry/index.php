@@ -164,6 +164,11 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute'      => 'technique_remark',
+                'label'          => '技术备注',
+                'contentOptions' =>['style'=>'min-width: 100px;'],
+            ],
+            [
                 'attribute' => 'unit',
                 'label'     => '单位',
                 'contentOptions'=>['style'=>'min-width: 70px;'],
