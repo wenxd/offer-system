@@ -6,9 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\StockLog */
 
 $this->title = '更新入库';
-$this->params['breadcrumbs'][] = ['label' => 'Stock Logs', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = ['label' => '入库记录', 'url' => ['stock-in-log/index']];
 ?>
 <div class="stock-log-update">
 

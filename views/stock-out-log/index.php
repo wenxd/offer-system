@@ -22,6 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+
+$super_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员']])->all();
+$super_adminIds  = ArrayHelper::getColumn($super_admin, 'user_id');
+
 $userId   = Yii::$app->user->identity->id;
 ?>
 <div class="box table-responsive">
@@ -169,6 +173,18 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 ],
                 'remark',
+                [
+                    'attribute'      => '操作',
+                    'format'         => 'raw',
+                    'visible'        => in_array($userId, $super_adminIds),
+                    'contentOptions' =>['style'=>'min-width: 80px;'],
+                    'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
+                        return Html::a('<i class="fa fa-eidt"></i> 修改', Url::to(['update', 'id' => $model->id]), [
+                            'data-pjax' => '0',
+                            'class'     => 'btn btn-success btn-flat',
+                        ]);
+                    }
+                ],
             ],
         ]); ?>
         <?php Pjax::end(); ?>
