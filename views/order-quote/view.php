@@ -25,10 +25,6 @@ $userId   = Yii::$app->user->identity->id;
 
 //报价员权限
 $is_show = in_array($userId, $adminIds);
-
-if (floatval($model->quote_all_tax_price) > 0) {
-    $model->estimate_profit_ratio = number_format(($model->quote_all_tax_price - $model->all_tax_price) / $model->quote_all_tax_price, 2, '.', '');
-}
 ?>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
@@ -175,7 +171,7 @@ if (floatval($model->quote_all_tax_price) > 0) {
         <?= $form->field($model, 'quote_sn')->textInput(['readonly' => true]) ?>
 
         <?php if (!$is_show) :?>
-            <?= $form->field($model, 'estimate_profit_ratio')->textInput(['readonly' => true])->label('报价单利润率') ?>
+            <?= $form->field($model, 'profit_rate')->textInput(['readonly' => true])->label('报价单利润率') ?>
 
             <?= $form->field($model, 'quote_ratio')->textInput(['readonly' => true]) ?>
 
@@ -273,8 +269,8 @@ if (floatval($model->quote_all_tax_price) > 0) {
             //报价单利润率
             var sta_all_tax_price = $('.sta_all_tax_price').text();
             var sta_quote_all_tax_price = $('.sta_quote_all_tax_price').text();
-            var estimate_profit_ratio = (sta_quote_all_tax_price - sta_all_tax_price) / sta_quote_all_tax_price;
-            $('#orderquote-estimate_profit_ratio').val(estimate_profit_ratio.toFixed(2));
+            var profit_rate = (sta_quote_all_tax_price - sta_all_tax_price) / sta_quote_all_tax_price;
+            $('#orderquote-profit_rate').val(profit_rate.toFixed(2));
             //
         }
 

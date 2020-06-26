@@ -158,8 +158,8 @@ class OrderQuoteController extends Controller
             $orderQuote->order_id = $orderFinal->order_id;
             $orderQuote->order_final_id = $params['order_final_id'];
             $orderQuote->goods_info = json_encode([]);
-            $orderQuote->admin_id = $params['admin_id'];
-            $orderQuote->admin_id = $params['profit_rate'];
+            $orderQuote->admin_id   = $params['admin_id'];
+            $orderQuote->profit_rate = $params['profit_rate'];
 
             if ($params['sta_all_tax_price']) {
                 $orderQuote->quote_ratio = number_format($params['sta_quote_all_tax_price'] / $params['sta_all_tax_price'], 2, '.', '');
