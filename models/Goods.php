@@ -47,6 +47,7 @@ use app\extend\tencent\Cos;
  * @property string $publish_price
  * @property string $publish_tax
  * @property string $brand_id
+ * @property string $factory_price
  */
 class Goods extends ActiveRecord
 {
@@ -173,7 +174,8 @@ class Goods extends ActiveRecord
                 'required',
                 'on' => 'goods',
             ],
-            [['publish_tax', 'publish_tax_price', 'estimate_publish_price', 'publish_delivery_time', 'publish_price'], 'default', 'value' => 0],
+            [['publish_tax', 'publish_tax_price', 'estimate_publish_price', 'publish_delivery_time', 'publish_price',
+                'factory_price'], 'default', 'value' => 0],
         ];
     }
 
@@ -220,6 +222,7 @@ class Goods extends ActiveRecord
             'import_mark'             => '导入类别',
             'publish_price'           => '发行未税单价',
             'publish_tax'             => '发行税率',
+            'factory_price'           => '美金出厂价',
         ];
     }
 

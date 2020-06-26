@@ -107,6 +107,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style'=>'min-width: 100px;'],
             ],
             [
+                'attribute'      => 'factory_price',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+            ],
+            [
                 'attribute'      => 'publish_delivery_time',
                 'contentOptions' => ['style'=>'min-width: 100px;'],
             ],

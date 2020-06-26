@@ -212,10 +212,10 @@ class GoodsController extends BaseController
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC'];
+            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD'];
         $tableHeader = ['品牌', '零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
             '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
-            '发行货期', '预估发行价', '导入类别', '发行税率'];
+            '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -279,7 +279,12 @@ class GoodsController extends BaseController
 
                     $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
                     $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
-
+                    //汇率
+                    $rate = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_RATE, 'is_deleted' => SystemConfig::IS_DELETED_NO])->scalar();
+                    //到货系数
+                    $arrivalRatio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_ARRIVAL_RATIO, 'is_deleted' => SystemConfig::IS_DELETED_NO])->scalar();
+                    //税率
+                    $tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX, 'is_deleted' => SystemConfig::IS_DELETED_NO])->scalar();
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['B']) && empty($value['F'])) {
@@ -446,6 +451,13 @@ class GoodsController extends BaseController
                             //发行税率
                             if ($value['AC']) {
                                 $goods->publish_tax = trim($value['AC']);
+                            } else {
+                                $goods->publish_tax = $tax;
+                            }
+                            //美金出厂价
+                            if ($value['AD']) {
+                                $goods->factory_price = trim($value['AD']);
+                                $goods->publish_tax_price = $goods->factory_price * $rate * $arrivalRatio * (1+$goods->publish_tax/100);
                             }
                             if ($goods->save()) {
                                 $num++;

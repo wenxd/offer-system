@@ -7,14 +7,32 @@ use kartik\file\FileInput;
 use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Brand;
+use app\models\SystemConfig;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Goods */
 /* @var $form yii\widgets\ActiveForm */
 
+//汇率
+$rate = SystemConfig::find()->select('value')->where([
+    'title'      => SystemConfig::TITLE_RATE,
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+])->scalar();
+
+//到货系数
+$arrivalRatio = SystemConfig::find()->select('value')->where([
+    'title'      => SystemConfig::TITLE_ARRIVAL_RATIO,
+    'is_deleted' => SystemConfig::IS_DELETED_NO,
+])->scalar();
+
 $deviceList = [];
 if ($model->isNewRecord) {
     $model->unit = '件';
+    $tax = SystemConfig::find()->select('value')->where([
+        'title'      => SystemConfig::TITLE_TAX,
+        'is_deleted' => SystemConfig::IS_DELETED_NO,
+    ])->scalar();
+    $model->publish_tax = $tax ? $tax : 0;
 } else {
     $deviceList = json_decode($model->device_info, true);
     $stock = \app\models\Stock::find()->where(['good_id' => $model->id])->one();
@@ -50,6 +68,8 @@ $brandList = Brand::getList();
         <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'factory_price')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'publish_tax')->textInput(['maxlength' => true]) ?>
 
@@ -202,6 +222,29 @@ $brandList = Brand::getList();
 
     $('.file-preview').click(function () {
        console.log(111);
+    });
+
+    //美金出厂价变动
+    $("#goods-factory_price").bind('input propertychange', function (e) {
+        var factory_price  = parseFloat($(this).val());
+        if (factory_price) {
+            var rate = '<?=$rate?>';
+            var arrival_ratio = '<?=$arrivalRatio?>';
+            var publish_tax = $('#goods-publish_tax').val();
+            var publish_tax_price = factory_price * rate * arrival_ratio * (1+publish_tax/100);
+            $('#goods-publish_tax_price').val(publish_tax_price.toFixed(2));
+        }
+    });
+    //发行税率
+    $("#goods-publish_tax").bind('input propertychange', function (e) {
+        var publish_tax  = parseFloat($(this).val());
+        var factory_price  = $('#goods-factory_price').val();
+        if (factory_price) {
+            var rate = '<?=$rate?>';
+            var arrival_ratio = '<?=$arrivalRatio?>';
+            var publish_tax_price = factory_price * rate * arrival_ratio * (1+publish_tax/100);
+            $('#goods-publish_tax_price').val(publish_tax_price.toFixed(2));
+        }
     });
 
 </script>

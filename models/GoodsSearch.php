@@ -29,7 +29,7 @@ class GoodsSearch extends Goods
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
                 'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price',
-                'material_code', 'import_mark', 'publish_price'], 'safe'],
+                'material_code', 'import_mark', 'publish_price', 'factory_price'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'technique_remark', 'device_info', 'material', 'part', 'remark', 'publish_price', 'publish_tax_price',
                 'estimate_publish_price', 'material_code', 'import_mark'], 'trim'],
@@ -154,6 +154,7 @@ class GoodsSearch extends Goods
             'goods.publish_tax_price'       => $this->publish_tax_price,
             'goods.publish_delivery_time'   => $this->publish_delivery_time,
             'goods.estimate_publish_price'  => $this->estimate_publish_price,
+            'goods.factory_price'           => $this->factory_price,
         ]);
 
         $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
