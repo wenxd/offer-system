@@ -344,10 +344,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         //输入数量
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
-            if (number == 0) {
-                layer.msg('数量最少为1', {time:2000});
-                return false;
-            }
             var a = number.replace(/[^\d]/g,'');
             $(this).val(a);
 
