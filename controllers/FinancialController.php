@@ -155,4 +155,20 @@ class FinancialController extends BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    /**
+     * 修改时间
+     */
+    public function actionEditTime($id)
+    {
+        $model = OrderPayment::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['financial/detail', 'id' => $id]);
+        }
+
+        return $this->render('edit-time', [
+            'model' => $model,
+        ]);
+    }
 }

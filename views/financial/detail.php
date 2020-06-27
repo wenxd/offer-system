@@ -17,10 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 $use_admin = AuthAssignment::find()->where(['item_name' => '付款财务'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
-$stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
-$userId   = Yii::$app->user->identity->id;
+$super_admin = AuthAssignment::find()->where(['item_name' => ['系统管理员']])->all();
+$super_adminIds  = ArrayHelper::getColumn($super_admin, 'user_id');
 
+$userId   = Yii::$app->user->identity->id;
 $isShow = in_array($userId, $adminIds);
+
+$stock_goods_ids = ArrayHelper::getColumn($stockLog, 'goods_id');
 
 $payment_ratio = SystemConfig::find()->select('value')->where([
         'title' => SystemConfig::TITLE_PAYMENT_RATIO
@@ -137,6 +140,12 @@ if ($model->payment_ratio == '0.00') {
                 'class' => 'btn btn-info save_bill',
                 'name'  => 'submit-button']
         )?>
+        <?php endif;?>
+        <?php if(in_array($userId, $super_adminIds)):?>
+            <?= Html::a('<i class="fa fa-eidt"></i> 修改时间', Url::to(['edit-time', 'id' => $model->id]), [
+                'data-pjax' => '0',
+                'class'     => 'btn btn-success btn-flat',
+            ]);?>
         <?php endif;?>
     </div>
     <?php ActiveForm::end(); ?>

@@ -157,4 +157,20 @@ class FinancialCollectController extends BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    /**
+     * 修改时间
+     */
+    public function actionEditTime($id)
+    {
+        $model = OrderAgreement::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['financial-collect/detail', 'id' => $id]);
+        }
+
+        return $this->render('edit-time', [
+            'model' => $model,
+        ]);
+    }
 }
