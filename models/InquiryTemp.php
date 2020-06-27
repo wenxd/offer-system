@@ -33,6 +33,7 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property int $is_upload 是否导入 0否 1是
+ * @property string $technique_remark
  */
 class InquiryTemp extends \yii\db\ActiveRecord
 {
@@ -52,7 +53,7 @@ class InquiryTemp extends \yii\db\ActiveRecord
         return [
             [['good_id', 'supplier_id', 'number', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id', 'is_upload'], 'integer'],
             [['price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price'], 'number'],
-            [['offer_date', 'updated_at', 'created_at'], 'safe'],
+            [['offer_date', 'updated_at', 'created_at', 'technique_remark', 'remark'], 'safe'],
             [['inquiry_datetime', 'remark', 'better_reason'], 'string', 'max' => 255],
         ];
     }
@@ -80,7 +81,8 @@ class InquiryTemp extends \yii\db\ActiveRecord
             'is_priority'       => '是否优先',
             'is_deleted'        => '是否删除：0未删除 1已删除',
             'offer_date'        => '交货日期',
-            'remark'            => '备注',
+            'remark'            => '询价备注',
+            'technique_remark'  => '技术备注',
             'better_reason'     => '优选理由',
             'delivery_time'     => '货期（周）',
             'admin_id'          => '询价员ID',

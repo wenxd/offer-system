@@ -117,6 +117,16 @@ $userId   = Yii::$app->user->identity->id;
                 'all_tax_price',
                 'tax_rate',
                 [
+                    'attribute' => 'technique_remark',
+                    'label'     => '技术备注',
+                    'contentOptions'=>['style'=>'min-width: 100px;']
+                ],
+                [
+                    'attribute' => 'remark',
+                    'label'     => '询价备注',
+                    'contentOptions'=>['style'=>'min-width: 100px;']
+                ],
+                [
                     'attribute' => 'is_purchase',
                     'contentOptions' =>['style'=>'min-width: 80px;'],
                     'filter'    => Inquiry::$purchase,

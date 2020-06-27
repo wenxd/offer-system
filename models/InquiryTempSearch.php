@@ -25,8 +25,8 @@ class InquiryTempSearch extends InquiryTemp
             [['id', 'good_id', 'supplier_id', 'number', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id', 'is_upload'], 'integer'],
             [['price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price', 'is_purchase'], 'number'],
             [['inquiry_datetime', 'offer_date', 'remark', 'better_reason', 'updated_at', 'created_at', 'goods_number_b',
-                'original_company', 'unit', 'supplier_name'], 'safe'],
-            [['inquiry_datetime', 'goods_number_b', 'original_company', 'unit', 'supplier_name'], 'trim'],
+                'original_company', 'unit', 'supplier_name', 'technique_remark'], 'safe'],
+            [['inquiry_datetime', 'goods_number_b', 'original_company', 'unit', 'supplier_name', 'remark', 'technique_remark'], 'trim'],
         ];
     }
 
@@ -110,7 +110,9 @@ class InquiryTempSearch extends InquiryTemp
         ]);
 
         $query->andFilterWhere(['like', 'inquiry_temp.remark', $this->remark])
-            ->andFilterWhere(['like', 'inquiry_temp.better_reason', $this->better_reason]);
+            ->andFilterWhere(['like', 'inquiry_temp.better_reason', $this->better_reason])
+            ->andFilterWhere(['like', 'inquiry_temp.remark', $this->remark])
+            ->andFilterWhere(['like', 'inquiry_temp.technique_remark', $this->technique_remark]);
 
         if ($this->inquiry_datetime && strpos($this->inquiry_datetime, ' - ')) {
             list($inquiry_at_start, $inquiry_at_end) = explode(' - ', $this->inquiry_datetime);
