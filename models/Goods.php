@@ -176,6 +176,7 @@ class Goods extends ActiveRecord
             ],
             [['publish_tax', 'publish_tax_price', 'estimate_publish_price', 'publish_delivery_time', 'publish_price',
                 'factory_price'], 'default', 'value' => 0],
+            [['publish_tax_price', 'factory_price', 'estimate_publish_price', 'publish_tax', 'publish_delivery_time'], 'number'],
         ];
     }
 
