@@ -14,8 +14,6 @@ use kartik\widgets\DateTimePicker;
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
 
-        <?= $form->field($model, 'position')->textInput() ?>
-
         <?= $form->field($model, 'operate_time')->widget(DateTimePicker::classname(), [
                 'options' => ['placeholder' => 'Enter event time ...'],
                 'pluginOptions' => [
