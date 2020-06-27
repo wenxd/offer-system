@@ -859,11 +859,13 @@ class OrderController extends BaseController
         //获取数据
         $res = [];
         $orderGoods = OrderGoods::find()->where(['order_id' => $id])->all();
+        $i = 0;
         foreach ($orderGoods as $key => $record) {
-            if (!$record->goods->publish_tax_price && !in_array($record->goods_id, $res)) {
-                $excel->setCellValue('A' . ($key + 2), $record->goods->material_code);
-                $excel->setCellValue('B' . ($key + 2), $record->goods->goods_number);
+            if ($record->goods->publish_tax_price == 0 && !in_array($record->goods_id, $res)) {
+                $excel->setCellValue('A' . ($i + 2), $record->goods->material_code);
+                $excel->setCellValue('B' . ($i + 2), $record->goods->goods_number);
                 $res[] = $record->goods_id;
+                $i++;
             }
         }
 
