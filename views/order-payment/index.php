@@ -164,6 +164,20 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'format'    => 'raw',
+                'label'     => '理论货期',
+                'value'     => function ($model, $key, $index, $column) {
+                    $agreement_at  = substr($model->agreement_at, 0, 10);
+                    $delivery_date = substr($model->delivery_date, 0, 10);
+                    $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
+                    if ($theory_time) {
+                        return $theory_time/3600/24 . '天';
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
                 'attribute'     => 'stock_at',
                 'label'         => '合同实际交货日期',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -173,6 +187,24 @@ $userId   = Yii::$app->user->identity->id;
                 ]),
                 'value'     => function ($model, $key, $index, $column) {
                     return substr($model->stock_at, 0, 10);
+                }
+            ],
+            [
+                'format'    => 'raw',
+                'label'     => '实际货期',
+                'value'     => function ($model, $key, $index, $column) {
+                    $agreement_at  = substr($model->agreement_at, 0, 10);
+                    if ($model->stock_at) {
+                        $stock_at = substr($model->stock_at, 0, 10);
+                        $reality_time = strtotime($stock_at) - strtotime($agreement_at);
+                        if ($reality_time) {
+                            return $reality_time/3600/24 . '天';
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return 0;
+                    }
                 }
             ],
             [
