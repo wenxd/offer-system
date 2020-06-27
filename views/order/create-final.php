@@ -21,6 +21,12 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
 ?>
 <section class="content">
     <div class="box table-responsive">
+        <div class="box-header">
+            <?= Html::a('<i class="fa fa-download"></i> 没有发行价的零件导出', Url::to(['goods', 'id' => $_GET['id']]), [
+                'data-pjax' => '0',
+                'class'     => 'btn btn-primary btn-flat',
+            ]);?>
+        </div>
         <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
             <table id="example2" class="table table-bordered table-hover" style="width: 2000px; table-layout: auto">
