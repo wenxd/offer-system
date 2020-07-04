@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Admin;
+use app\models\AuthAssignment;
 use Yii;
 use app\actions;
 use app\models\{Brand,
@@ -20,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use yii\helpers\ArrayHelper;
 
 /**
  * InquiryController implements the CRUD actions for Inquiry model.
@@ -188,8 +191,9 @@ class InquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-        $tableHeader = ['品牌', '零件号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选', '优选理由'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        $tableHeader = ['品牌', '零件号', '供应商', '税率', '含税单价', '询价数量', '货期(周)', '询价备注', '是否优选',
+            '优选理由', '询价员'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -254,6 +258,11 @@ class InquiryController extends BaseController
                     $delivery = SystemConfig::find()->select('value')->where([
                         'title'  => SystemConfig::TITLE_DELIVERY_TIME,
                         'is_deleted' => SystemConfig::IS_DELETED_NO])->orderBy('id Desc')->scalar();
+
+                    $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+                    $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+                    $adminList = Admin::find()->where(['id' => $adminIds])->indexBy('username')->all();
+
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (empty($value['B'])) {
@@ -297,7 +306,7 @@ class InquiryController extends BaseController
                                     $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
                                     $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
                                     $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
-                                    $inquiry->admin_id          = Yii::$app->user->identity->id;
+                                    $inquiry->admin_id          = isset($adminList[trim($value['K'])]) ? $adminList[trim($value['K'])] : Yii::$app->user->identity->id;
                                     if ($inquiry->save()) {
                                         $num++;
                                     }
