@@ -80,9 +80,14 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                         <td class="publish_delivery_time"><?=$item->goods->publish_delivery_time?></td>
                         <?php
                             $price = $item->finalGoods ? $item->finalGoods->inquiry->price : 0;
+                            $tax_price = number_format($price * (1 + $tax/100), 2, '.', '');
+                            $arr = explode('.', $tax_price);
+                            if ($arr[1] == 99) {
+                                $tax_price = ceil($tax_price);
+                            }
                         ?>
                         <td class="price"><?=$price?></td>
-                        <td class="tax_price"><?=number_format($price * (1 + $tax/100), 2, '.', '')?></td>
+                        <td class="tax_price"><?=$tax_price?></td>
                         <td class="all_price"></td>
                         <td class="all_tax_price"></td>
                         <td><?= $item->finalGoods ? $item->finalGoods->inquiry->supplier->name : ''?></td>
