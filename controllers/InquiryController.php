@@ -306,9 +306,11 @@ class InquiryController extends BaseController
                                     $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
                                     $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
                                     $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
-                                    $inquiry->admin_id          = isset($adminList[trim($value['K'])]) ? $adminList[trim($value['K'])] : Yii::$app->user->identity->id;
+                                    $inquiry->admin_id          = isset($adminList[trim($value['K'])]) ? $adminList[trim($value['K'])]->id : Yii::$app->user->identity->id;
                                     if ($inquiry->save()) {
                                         $num++;
+                                    } else {
+                                        return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
                                     }
                                 }
                             }
