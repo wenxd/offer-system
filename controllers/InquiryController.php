@@ -292,26 +292,35 @@ class InquiryController extends BaseController
                                 $temp->save();
                             } else {
                                 if ($supplier) {
-                                    $inquiry = new Inquiry();
-                                    $inquiry->good_id           = $goods->id;
-                                    $inquiry->supplier_id       = $supplier->id;
-                                    $inquiry->tax_rate          = trim($value['D']);
-                                    $inquiry->price             = $value['E'] / (1 + trim($value['D']) / 100);
-                                    $inquiry->tax_price         = $value['E'] ? trim($value['E']) : 0;
-                                    $inquiry->number            = $value['F'] ? trim($value['F']) : 0;
-                                    $inquiry->delivery_time     = $value['G'] ? trim($value['G']) : $delivery;
-                                    $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                    $inquiry->all_price         = $inquiry->number * $inquiry->price;
-                                    $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
-                                    $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
-                                    $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
-                                    $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
-                                    $inquiry->admin_id          = isset($adminList[trim($value['K'])]) ? $adminList[trim($value['K'])]->id : Yii::$app->user->identity->id;
-                                    if ($inquiry->save()) {
-                                        $num++;
-                                    } else {
-                                        return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
+                                    $inquiry = Inquiry::find()->where([
+                                        'good_id'       => $goods->id,
+                                        'supplier_id'   => $supplier->id,
+                                        'tax_rate'      => trim($value['D']),
+                                        'tax_price'     => trim($value['E']),
+                                    ])->one();
+                                    if (!$inquiry) {
+                                        $inquiry = new Inquiry();
+                                        $inquiry->good_id           = $goods->id;
+                                        $inquiry->supplier_id       = $supplier->id;
+                                        $inquiry->tax_rate          = trim($value['D']);
+                                        $inquiry->price             = $value['E'] / (1 + trim($value['D']) / 100);
+                                        $inquiry->tax_price         = $value['E'] ? trim($value['E']) : 0;
+                                        $inquiry->number            = $value['F'] ? trim($value['F']) : 0;
+                                        $inquiry->delivery_time     = $value['G'] ? trim($value['G']) : $delivery;
+                                        $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
+                                        $inquiry->all_price         = $inquiry->number * $inquiry->price;
+                                        $inquiry->all_tax_price     = $inquiry->number * $inquiry->tax_price;
+                                        $inquiry->is_better         = (trim($value['I']) == '是') ? 1 : 0;
+                                        $inquiry->better_reason     = $value['J'] ? trim($value['J']) : '';
+                                        $inquiry->remark            = $value['H'] ? trim($value['H']) : '';
+                                        $inquiry->admin_id          = isset($adminList[trim($value['K'])]) ? $adminList[trim($value['K'])]->id : Yii::$app->user->identity->id;
+                                        if ($inquiry->save()) {
+                                            $num++;
+                                        } else {
+                                            return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
+                                        }
                                     }
+                                    
                                 }
                             }
                         }
