@@ -116,6 +116,9 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <?php if (!$item->is_inquiry && !$item->is_result):?>
                                     <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                                 <?php endif;?>
+                                <?php if (!$inquiry_number) :?>
+                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
+                                <?php endif;?>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -153,7 +156,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                         <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                                     <?php endif;?>
                                     <?php if (!$inquiry_number) :?>
-                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">从新派送</a>
+                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
                                     <?php endif;?>
                                 </td>
                             </tr>
