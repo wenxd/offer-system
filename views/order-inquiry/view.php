@@ -141,7 +141,8 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><?=$item->number?></td>
                                 <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                                 <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
-                                <td class="inquiry_number"><?=isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0?></td>
+                                <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
+                                <td class="inquiry_number"><?=$inquiry_number?></td>
                                 <td><?=$item->reason?></td>
                                 <td>
                                     <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
@@ -150,6 +151,9 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                     <?php endif;?>
                                     <?php if (!$item->is_inquiry && !$item->is_result):?>
                                         <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                                    <?php endif;?>
+                                    <?php if (!$inquiry_number) :?>
+                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">从新派送</a>
                                     <?php endif;?>
                                 </td>
                             </tr>
@@ -307,6 +311,24 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
             '    </div>\n' +
             '  </div>\n' +
             '</form>'
+        });
+    }
+
+    function redistribution(obj) {
+        var id = $(obj).data('id');
+        $.ajax({
+            type:"post",
+            url:"?r=order-inquiry/redistribution",
+            data:{id:id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200) {
+                    window.location.href = '?r=order-inquiry';
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
         });
     }
 

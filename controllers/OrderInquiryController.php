@@ -595,4 +595,30 @@ class OrderInquiryController extends BaseController
             }
         }
     }
+
+    /**
+    * 询价员从新分配
+    */
+    public function actionRedistribution()
+    {
+        $id = Yii::$app->request->post('id');
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $inqueryGoods = InquiryGoods::findOne($id);
+            $orderId = $inqueryGoods->order_id;
+            $orderInquiry = OrderInquiry::findOne($inqueryGoods->order_inquiry_id);
+            $orderInquiry->delete();
+            $inqueryGoods->delete();
+            $order = Order::findOne($orderId);
+            $order->is_dispatch = 0;
+            $order->save();
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => $e->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+
+        return json_encode(['code' => 200, 'id' => $orderId], JSON_UNESCAPED_UNICODE);
+    }
 }
