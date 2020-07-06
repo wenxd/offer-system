@@ -106,7 +106,8 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$item->number?></td>
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                             <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
-                            <td class="inquiry_number"><?=isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0?></td>
+                            <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
+                                <td class="inquiry_number"><?=$inquiry_number?></td>
                             <td><?=$item->reason?></td>
                             <td>
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
