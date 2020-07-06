@@ -607,8 +607,12 @@ class OrderInquiryController extends BaseController
         try {
             $inqueryGoods = InquiryGoods::findOne($id);
             $orderId = $inqueryGoods->order_id;
-            $orderInquiry = OrderInquiry::findOne($inqueryGoods->order_inquiry_id);
-            $orderInquiry->delete();
+            //判断是否只有一个询价，如果只有一个，就删除这个询价单
+            $inqueryGoodsCount = InquiryGoods::findAll(['order_inquiry_id' => $inqueryGoods->order_inquiry_id]);
+            if ($inqueryGoodsCount == 1) {
+                $orderInquiry = OrderInquiry::findOne($inqueryGoods->order_inquiry_id);
+                $orderInquiry->delete();
+            }
             $inqueryGoods->delete();
             $order = Order::findOne($orderId);
             $order->is_dispatch = 0;
