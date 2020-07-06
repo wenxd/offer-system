@@ -609,7 +609,7 @@ class OrderInquiryController extends BaseController
             $orderId = $inqueryGoods->order_id;
             //判断是否只有一个询价，如果只有一个，就删除这个询价单
             $inqueryGoodsCount = InquiryGoods::findAll(['order_inquiry_id' => $inqueryGoods->order_inquiry_id]);
-            if ($inqueryGoodsCount == 1) {
+            if (count($inqueryGoodsCount) == 1) {
                 $orderInquiry = OrderInquiry::findOne($inqueryGoods->order_inquiry_id);
                 $orderInquiry->delete();
             }
