@@ -151,6 +151,11 @@ class Supplier extends ActiveRecord
         if ($this->is_confirm && !$this->agree_at) {
             $this->agree_at = date('Y-m-d H:i:s');
         }
+
+        $this->name = trim($this->name);
+        $this->short_name = trim($this->short_name);
+        $this->full_name = trim($this->full_name);
+
         return parent::beforeSave($insert);
     }
 
