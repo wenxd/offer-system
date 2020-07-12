@@ -129,6 +129,11 @@ class Supplier extends ActiveRecord
         $admin_id = Yii::$app->user->identity->id;
         if ($insert) {
             $this->admin_id = $admin_id;
+            $isHasSupplier = Supplier::find()->where(['name' => $this->name])->one();
+            if ($isHasSupplier) {
+                $this->addError('id', '此供应商名称已存在');
+                return false;
+            }
         }
         if ($admin_id != $user_super->user_id) {
             //给超管通知
