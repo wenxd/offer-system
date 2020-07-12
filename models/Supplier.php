@@ -131,7 +131,12 @@ class Supplier extends ActiveRecord
             $this->admin_id = $admin_id;
             $isHasSupplier = Supplier::find()->where(['name' => $this->name])->one();
             if ($isHasSupplier) {
-                $this->addError('id', '此供应商名称已存在');
+                $this->addError('name', '此供应商名称已存在');
+                return false;
+            }
+            $isHasSupplier = Supplier::find()->where(['short_name' => $this->short_name])->one();
+            if ($isHasSupplier) {
+                $this->addError('short_name', '此供应商简称已存在');
                 return false;
             }
         }
