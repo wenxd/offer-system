@@ -62,7 +62,7 @@ class OrderFinal extends \yii\db\ActiveRecord
             [['order_id', 'is_deleted', 'is_quote', 'customer_id', 'is_purchase', 'is_merge', 'admin_id'], 'integer'],
             [['updated_at', 'created_at', 'provide_date', 'agreement_date'], 'safe'],
             [['final_sn'], 'string', 'max' => 255],
-            [['goods_info'], 'string', 'max' => 512],
+            [['goods_info'], 'string'],
         ];
     }
 
