@@ -432,7 +432,7 @@ class OrderQuoteController extends Controller
             $excel->setCellValue('J'.($key + 2), $value->quote_all_tax_price);
             $excel->setCellValue('K'.($key + 2), $value->tax_rate);
             $excel->setCellValue('L'.($key + 2), $value->quote_delivery_time);
-            $excel->setCellValue('M'.($key + 2), $value->stockNumber->number);
+            $excel->setCellValue('M'.($key + 2), $value->stockNumber ? $value->stockNumber->number : 0);
             $name = $value->order_quote_sn;
         }
 
