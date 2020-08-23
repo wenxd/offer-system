@@ -131,7 +131,7 @@ class NoGoodsController extends Controller
     }
 
     /**
-     * 下载零件模板
+     * 下载库中没有的零件号
      */
     public function actionDownload()
     {

@@ -1,20 +1,20 @@
 <?php
 namespace app\controllers;
 
-use app\models\AgreementGoods;
-use app\models\Inquiry;
-use app\models\Order;
-use app\models\OrderAgreement;
-use app\models\OrderAgreementStockOutSearch;
-use app\models\OrderGoods;
-use app\models\OrderPayment;
-use app\models\OrderPurchase;
-use app\models\PaymentGoods;
-use app\models\PurchaseGoods;
-use app\models\Stock;
-use app\models\StockLog;
 use Yii;
-use app\models\OrderSearch;
+use app\models\Stock;
+use app\models\Inquiry;
+use app\models\StockLog;
+use app\models\PaymentGoods;
+use app\models\TempNotGoods;
+use app\models\PurchaseGoods;
+use app\models\OrderAgreement;
+use app\models\AgreementGoods;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use app\models\OrderAgreementStockOutSearch;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class StockOutController extends BaseController
 {
@@ -264,5 +264,101 @@ class StockOutController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => '失败'], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    /**
+     * 下载库中没有的零件号
+     */
+    public function actionDownload()
+    {
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel=$spreadsheet->setActiveSheetIndex(0);
+
+        $letter      = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $tableHeader = ['零件号', '中文描述', '英文描述', '单位', '数量', '库存数量', '库存位置', '到齐', '出库', '质检'];
+        for($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+        }
+        //获取数据
+        $id = $_GET['id'] ?? 0;
+        $orderAgreement = OrderAgreement::findOne($id);
+        if (!$orderAgreement){
+            yii::$app->getSession()->setFlash('error', '查不到此订单信息');
+            return $this->redirect(yii::$app->request->headers['referer']);
+        }
+        $agreementGoods    = AgreementGoods::find()->where([
+            'order_agreement_id' => $id,
+            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+        ])->all();
+
+        foreach ($agreementGoods as $key => $item) {
+            if ($item->goods) {
+                $excel->setCellValue('A' . ($key + 2), $item->goods->goods_number . ' ' . $item->goods->material_code);
+                $excel->setCellValue('B' . ($key + 2), $item->goods->description);
+                $excel->setCellValue('C' . ($key + 2), $item->goods->description_en);
+                $excel->setCellValue('D' . ($key + 2), $item->goods->unit);
+            } else {
+                $excel->setCellValue('A' . ($key + 2), '');
+                $excel->setCellValue('B' . ($key + 2), '');
+                $excel->setCellValue('C' . ($key + 2), '');
+                $excel->setCellValue('D' . ($key + 2), '');
+            }
+            $excel->setCellValue('E' . ($key + 2), $item->order_number);
+
+            if ($item->stock) {
+                $excel->setCellValue('F' . ($key + 2), $item->stock->number);
+                $excel->setCellValue('G' . ($key + 2), $item->stock->position);
+                $excel->setCellValue('H' . ($key + 2), $item->stock->number > $item->order_number ? '是' : '否');
+                $excel->setCellValue('I' . ($key + 2), $item->is_out ? '是' : '否');
+                $excel->setCellValue('J' . ($key + 2), $item->is_quality ? '是' : '否');
+            } else {
+                $excel->setCellValue('F' . ($key + 2), '');
+                $excel->setCellValue('G' . ($key + 2), '');
+                $excel->setCellValue('H' . ($key + 2), '');
+                $excel->setCellValue('I' . ($key + 2), '');
+                $excel->setCellValue('J' . ($key + 2), '');
+            }
+        }
+
+        $title = '出库管理' . $orderAgreement->agreement_sn;
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
     }
 }

@@ -25,13 +25,17 @@ $isShow = in_array($userId, $adminIds);
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="box-header">
+        <?= Html::a('<i class="fa fa-download"></i> 导出', Url::to(['download', 'id' => $_GET['id']]), [
+            'data-pjax' => '0',
+            'class'     => 'btn btn-primary btn-flat',
+        ])?>
         <?= Html::button('批量出库', [
-                'class' => 'btn btn-success more-stock',
-                'name'  => 'submit-button']
+            'class' => 'btn btn-success more-stock',
+            'name'  => 'submit-button']
         )?>
         <?= Html::button('批量质检', [
-                'class' => 'btn btn-info more-quality',
-                'name'  => 'submit-button']
+            'class' => 'btn btn-info more-quality',
+            'name'  => 'submit-button']
         )?>
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
