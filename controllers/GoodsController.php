@@ -5,24 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\actions;
 use app\models\{Admin,
-    AgreementGoods,
-    Brand,
-    PaymentGoods,
-    Stock,
-    Goods,
-    GoodsSearch,
-    Inquiry,
-    CompetitorGoods,
-    OrderGoods,
-    OrderInquiry,
-    PurchaseGoods,
-    StockLog,
-    SystemConfig,
-    TempOrderInquiry};
-use yii\helpers\ArrayHelper;
-use PhpOffice\PhpSpreadsheet\Helper\Sample;
+    AgreementGoods, Brand, PaymentGoods, Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods,
+    OrderInquiry, SystemConfig, TempOrderInquiry};
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 /**
@@ -496,5 +483,29 @@ class GoodsController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => $temp->getErrors()], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    //添加子零件
+    public function actionAddson($id)
+    {
+        $searchModel  = new GoodsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
+        $data = [
+            'dataProvider' => $dataProvider,
+            'searchModel'  => $searchModel,
+        ];
+        return $this->render('addson', $data);
+    }
+
+    public function actionDoAddson()
+    {
+        $params = Yii::$app->request->post();
+
+        $pGoodsId = $params['p_goods_id'];
+        $goodsIds = $params['goods_list'];
+
+        $data = [];
+
+
     }
 }
