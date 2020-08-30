@@ -1028,3 +1028,16 @@ ALTER TABLE `order_quote` ADD `profit_rate` decimal(5,2) NOT NULL DEFAULT '0'  C
 ALTER TABLE `inquiry`     ADD `technique_remark` varchar(255) NOT NULL DEFAULT ''  COMMENT '技术备注';
 ALTER TABLE `inquiry_temp`  ADD `technique_remark` varchar(255) NOT NULL DEFAULT ''  COMMENT '技术备注';
 ALTER TABLE `goods`     ADD `factory_price` decimal(10,2) NOT NULL DEFAULT '0'  COMMENT '美金出厂价';
+#2020年8月29日
+CREATE TABLE `goods_relation` (
+   `id`         int(11) NOT NULL AUTO_INCREMENT,
+   `p_goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '父零件ID',
+   `goods_id`   int(11) NOT NULL DEFAULT '0' COMMENT '零件ID',
+   `number`     int(11) NOT NULL DEFAULT '0' COMMENT '数量',
+   `is_deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除：0未删除 1已删除',
+   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   PRIMARY KEY (`id`),
+   INDEX p_goods_id (`p_goods_id`),
+   INDEX goods_id (`goods_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='零件与零件关系表(大零件包含几个小零件)';

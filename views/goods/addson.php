@@ -13,36 +13,24 @@ use app\models\Goods;
 /* @var $searchModel app\models\GoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '零件列表';
+$this->title = '添加子零件';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {inquiry} {index}',
+            'template' => '{create} {index} {addson}',
             'buttons' => [
-                'download' => function () {
-                    return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-primary btn-flat',
-                    ]);
-                },
-                'upload' => function () {
-                    return Html::a('<i class="fa fa-upload"></i> 上传导入', 'Javascript: void(0)', [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-info btn-flat upload',
-                    ]);
-                },
-                'inquiry' => function () {
-                    return Html::a('<i class="fa fa-plus-circle"></i> 生成非项目订单', 'Javascript: void(0)', [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-primary btn-flat add_inquiry',
-                    ]);
-                },
                 'index' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
                         'data-pjax' => '0',
                         'class'     => 'btn btn-success btn-flat',
+                    ]);
+                },
+                'addson' => function () {
+                    return Html::a('<i class="fa fa-add"></i> 添加子零件', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class'     => 'btn btn-info btn-flat add_son',
                     ]);
                 }
             ]
@@ -63,24 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => CheckboxColumn::className(),
             ],
-            [
-                'attribute'      => '操作',
-                'format'         => 'raw',
-                'contentOptions' =>['style'=>'min-width: 200px;'],
-                'value'         => function ($model, $key, $index, $column) {
-                    $html = Html::a('<i class="fa fa-edit"></i> 修改', Url::to(['update', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-warning btn-xs btn-flat',
-                    ]);
-
-                    $html .= Html::a('<i class="fa fa-plus"></i> 添加子零件', Url::to(['addson', 'id' => $model['id']]), [
-                        'data-pjax' => '0',
-                        'class' => 'btn btn-success btn-xs btn-flat',
-                    ]);
-
-                    return $html;
-                }
-            ],
             'id',
             [
                 'attribute'      => 'material_code',
@@ -92,6 +62,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
                     return Html::a($model->goods_number, Url::to(['view', 'id' => $model->id]));
+                }
+            ],
+            [
+                'attribute'      => '子零件数量',
+                'contentOptions' => ['style'=>'min-width: 100px;'],
+                'format'    => 'raw',
+                'value'     => function ($model, $key, $index, $column) {
+                    return Html::input('text', 'son_number');
                 }
             ],
             [
@@ -404,57 +382,46 @@ $this->params['breadcrumbs'][] = $this->title;
     //上传文件名称
     $.ajaxUploadSettings.name = 'FileName';
 
-    //监听事件
-    $('.upload').ajaxUploadPrompt({
-        //上传地址
-        url : '?r=goods/upload',
-        //上传文件类型
-        accept:'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
-        //上传前加载动画
-        beforeSend : function () {
-            layer.msg('上传中。。。', {
-                icon: 16 ,shade: 0.01
-            });
-        },
-        onprogress : function (e) {},
-        error : function () {},
-        success : function (data) {
-            //关闭动画
-            window.top.layer.close(index);
-            //字符串转换json
-            var data = JSON.parse(data);
-            if(data.code == 200){
-                //导入成功
-                layer.msg(data.msg,{time:3000},function(){
-                    window.location.reload();
-                });
-            }else{
-                //失败提示
-                layer.msg(data.msg,{icon:1});
-            }
-        }
-    });
-
     //生成询价单
-    $('.add_inquiry').click(function () {
-        var goods_ids = [];
+    $('.add_son').click(function () {
+        var p_goods_id = '<?=$_GET['id'] ?? 0?>';
+        if (!p_goods_id) {
+            layer.msg('请从零件列表进入', {icon:1});
+            return;
+        }
+
+        var flag = false;
+        var goods_list = [];
         $("input[name='selection[]']").each(function (i, e) {
             if ($(e).prop('checked')) {
-                goods_ids.push($(e).val())
+                var item = {};
+                item.goods_id = $(e).val();
+                var number = $(e).parent().parent().find('input[name="son_number"]').val();
+                var preg = /[1-9]\d*/i;
+                if (!preg.test(number)) {
+                    flag = true;
+                }
+                item.number = number;
+                goods_list.push(item);
             }
         });
-        if (!goods_ids.length) {
-            layer.msg('请选择要询价的商品', {icon:1});
+        if (flag) {
+            layer.msg('请输入正确的子零件数量', {icon:1});
+            return;
+        }
+
+        if (!goods_list.length) {
+            layer.msg('请选择要添加的子商品', {icon:1});
             return;
         }
         $.ajax({
             type:"POST",
-            url:"?r=goods/inquiry-order",
-            data:{goods_ids:goods_ids},
+            url:"?r=goods/do-addson",
+            data:{p_goods_id:p_goods_id, goods_list:goods_list},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
-                    location.replace("?r=order/create&temp_id=" + res.data);
+                    location.replace("?r=goods/index");
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;
