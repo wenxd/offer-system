@@ -5,8 +5,19 @@ namespace app\controllers;
 use Yii;
 use app\actions;
 use app\models\{Admin,
-    AgreementGoods, Brand, PaymentGoods, Stock, Goods, GoodsSearch, Inquiry, CompetitorGoods, OrderGoods,
-    OrderInquiry, SystemConfig, TempOrderInquiry};
+    AgreementGoods,
+    Brand,
+    GoodsRelation,
+    PaymentGoods,
+    Stock,
+    Goods,
+    GoodsSearch,
+    Inquiry,
+    CompetitorGoods,
+    OrderGoods,
+    OrderInquiry,
+    SystemConfig,
+    TempOrderInquiry};
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -505,7 +516,22 @@ class GoodsController extends BaseController
         $goodsIds = $params['goods_list'];
 
         $data = [];
+        foreach ($goodsIds as $key => $record) {
+            $item = [];
 
+            $item[] = $pGoodsId;
+            $item[] = $record['goods_id'];
+            $item[] = $record['number'];
 
+            $data[] = $item;
+        }
+
+        $num = Yii::$app->db->createCommand()->batchInsert(GoodsRelation::className(), ['p_goods_id', 'goods_id', 'number'], $data)->execute();
+
+        if ($num) {
+            return $this->success(200, 'success', $num);
+        } else {
+            
+        }
     }
 }

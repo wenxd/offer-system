@@ -25,4 +25,9 @@ class BaseController extends Controller
             ],
         ];
     }
+
+    public function success($code = 200, $msg = 'success', $data = [])
+    {
+        return json_encode(['code' => $code, 'msg' => $msg, 'data' => $data], JSON_UNESCAPED_UNICODE);
+    }
 }
