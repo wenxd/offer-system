@@ -30,4 +30,9 @@ class BaseController extends Controller
     {
         return json_encode(['code' => $code, 'msg' => $msg, 'data' => $data], JSON_UNESCAPED_UNICODE);
     }
+
+    public function error($code = 500, $msg = 'error', $data = [])
+    {
+        return json_encode(['code' => $code, 'msg' => $msg, 'data' => $data], JSON_UNESCAPED_UNICODE);
+    }
 }
