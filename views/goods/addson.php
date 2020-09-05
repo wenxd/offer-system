@@ -421,6 +421,7 @@ $this->params['breadcrumbs'][] = $this->title;
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
                     location.replace("?r=goods/index");
                 } else {
                     layer.msg(res.msg, {time:2000});

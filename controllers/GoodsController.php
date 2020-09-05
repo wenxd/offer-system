@@ -22,6 +22,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use yii\base\ErrorException;
+use yii\base\UserException;
+use yii\db\Exception;
+use yii\web\NotFoundHttpException;
 
 /**
  * GoodsController implements the CRUD actions for Goods model.
@@ -64,10 +68,6 @@ class GoodsController extends BaseController
             ],
             'status' => [
                 'class'      => actions\StatusAction::className(),
-                'modelClass' => Goods::className(),
-            ],
-            'view' => [
-                'class'      => actions\ViewAction::className(),
                 'modelClass' => Goods::className(),
             ],
         ];
@@ -496,7 +496,7 @@ class GoodsController extends BaseController
         }
     }
 
-    //添加子零件
+    //添加子零件页面
     public function actionAddson($id)
     {
         $searchModel  = new GoodsSearch();
@@ -508,6 +508,7 @@ class GoodsController extends BaseController
         return $this->render('addson', $data);
     }
 
+    //添加子零件的操作
     public function actionDoAddson()
     {
         $params = Yii::$app->request->post();
@@ -515,23 +516,58 @@ class GoodsController extends BaseController
         $pGoodsId = $params['p_goods_id'];
         $goodsIds = $params['goods_list'];
 
-        $data = [];
+        //循环处理子零件
         foreach ($goodsIds as $key => $record) {
-            $item = [];
-
-            $item[] = $pGoodsId;
-            $item[] = $record['goods_id'];
-            $item[] = $record['number'];
-
-            $data[] = $item;
+            $goodsRelation = GoodsRelation::find()->where([
+                'p_goods_id' => $pGoodsId,
+                'goods_id' => $record['goods_id'],
+            ])->one();
+            if ($goodsRelation) {
+                $goodsRelation->number = $record['number'];
+                $goodsRelation->is_deleted = GoodsRelation::IS_DELETED_NO;
+            } else {
+                $goodsRelation = new GoodsRelation();
+                $goodsRelation->p_goods_id = $pGoodsId;
+                $goodsRelation->goods_id = $record['goods_id'];
+                $goodsRelation->number = $record['number'];
+            }
+            if (!$goodsRelation->save()) {
+                return $this->error(500, $goodsRelation->getErrors());
+            }
         }
 
-        $num = Yii::$app->db->createCommand()->batchInsert(GoodsRelation::className(), ['p_goods_id', 'goods_id', 'number'], $data)->execute();
+        //修改零件为总成
+        $goods = Goods::findOne($pGoodsId);
+        $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+        $goods->save();
 
-        if ($num) {
-            return $this->success(200, 'success', $num);
-        } else {
-            
-        }
+        return $this->success(200, '添加成功');
+    }
+
+    /**
+     * 零件详情
+     * @param $id
+     * @return string
+     */
+    public function actionView($id)
+    {
+        $model = Goods::findOne($id);
+
+        $goodsRelationList = GoodsRelation::find()->where([
+            'p_goods_id' => $id,
+            'is_deleted'  => GoodsRelation::IS_DELETED_NO,
+        ])->all();
+
+        return $this->render('view', [
+            'model'     => $model,
+            'goodsList' => $goodsRelationList,
+        ]);
+    }
+
+    public function actionDeleteSon($id)
+    {
+        $model = Goods::findOne($id);
+
+        return $this->redirect(['index']);
     }
 }

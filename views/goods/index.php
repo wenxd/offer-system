@@ -81,6 +81,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $html;
                 }
             ],
+            [
+                'attribute' => 'is_assembly',
+                'contentOptions' => ['style'=>'min-width: 80px;'],
+                'filter'    => Goods::$assembly,
+                'value'     => function ($model, $key, $index, $column) {
+                    return Goods::$assembly[$model->is_assembly];
+                }
+            ],
             'id',
             [
                 'attribute'      => 'material_code',
@@ -203,14 +211,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'    => Goods::$emerg,
                 'value'     => function ($model, $key, $index, $column) {
                     return Goods::$emerg[$model->is_emerg];
-                }
-            ],
-            [
-                'attribute' => 'is_assembly',
-                'contentOptions' => ['style'=>'min-width: 80px;'],
-                'filter'    => Goods::$assembly,
-                'value'     => function ($model, $key, $index, $column) {
-                    return Goods::$assembly[$model->is_assembly];
                 }
             ],
             [

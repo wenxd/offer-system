@@ -17,6 +17,9 @@ use Yii;
  */
 class GoodsRelation extends \yii\db\ActiveRecord
 {
+    const IS_DELETED_NO    = '0';
+    const IS_DELETED_YES   = '1';
+
     /**
      * {@inheritdoc}
      */
@@ -59,5 +62,10 @@ class GoodsRelation extends \yii\db\ActiveRecord
     public static function find()
     {
         return new GoodsRelationQuery(get_called_class());
+    }
+
+    public function getGoods()
+    {
+        return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
 }
