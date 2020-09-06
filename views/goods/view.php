@@ -134,6 +134,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <table id="example2" class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th>序号</th>
                     <th>是否总成</th>
                     <th>品牌</th>
                     <th>零件号</th>
@@ -154,6 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tbody>
             <?php foreach ($goodsList as $key => $item):?>
                 <tr>
+                    <td class="goods_id"><?= $item->goods_id?></td>
                     <td><?= Goods::$assembly[$item->goods->is_assembly]?></td>
                     <td><?= $item->goods->material_code?></td>
                     <td><?= $item->goods->goods_number?></td>
@@ -163,10 +165,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?= $item->goods->original_company?></td>
                     <td><?= $item->goods->original_company_remark?></td>
                     <td><?= $item->goods->unit?></td>
-                    <td class="number"><?= $item->number?></td>
-                    <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
-                    <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
-                    <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
+                    <td><?= $item->number?></td>
+                    <td><?= Goods::$process[$item->goods->is_process]?></td>
+                    <td><?= Goods::$special[$item->goods->is_special]?></td>
+                    <td><?= Goods::$nameplate[$item->goods->is_nameplate]?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?=Html::a('<i class="fa fa-trash"></i> 删除', 'Javascript: void(0)', [
                             'data-pjax'    => '0',
@@ -185,9 +187,23 @@ $this->params['breadcrumbs'][] = $this->title;
     $('.delete').click(function (e) {
         var res = confirm("确认删除吗");
         if (res) {
-
-        } else {
-
+            var goods_id = $(this).parent().parent().find('.goods_id').text();
+            var p_goods_id = "<?=$_GET['id'] ?? 0?>";
+            $.ajax({
+                type:"POST",
+                url:"?r=goods/delete-son",
+                data:{p_goods_id:p_goods_id, goods_id:goods_id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.replace("?r=goods/view&id=" +  "<?=$_GET['id'] ?? 0?>");
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
         }
     });
 </script>
