@@ -564,10 +564,24 @@ class GoodsController extends BaseController
         ]);
     }
 
-    public function actionDeleteSon($id)
+    public function actionDeleteSon()
     {
-        $model = Goods::findOne($id);
+        $params = Yii::$app->request->post();
 
-        return $this->redirect(['index']);
+        $pGoodsId = $params['p_goods_id'];
+        $goodsId = $params['goods_id'];
+
+        $goodsRelation = GoodsRelation::find()->where([
+            'p_goods_id' => $pGoodsId,
+            'goods_id' => $goodsId,
+        ])->one();
+
+        if ($goodsRelation) {
+            $goodsRelation->is_deleted = GoodsRelation::IS_DELETED_YES;
+            $goodsRelation->save();
+            return $this->success(200, '删除成功');
+        } else {
+            return $this->error(500, '没有此关联关系');
+        }
     }
 }
