@@ -528,6 +528,12 @@ class GoodsController extends BaseController
                 $goodsRelation->number = $record['number'];
                 $goodsRelation->is_deleted = GoodsRelation::IS_DELETED_NO;
             } else {
+                //循环判断上下级零件互斥
+                $mutex_res = GoodsRelation::goodsMutex($record['goods_id'], [$pGoodsId, $record['goods_id']]);
+                if ($mutex_res) {
+                    return $this->success(500, '添加失败，互斥错误');
+                    continue;
+                }
                 $goodsRelation = new GoodsRelation();
                 $goodsRelation->p_goods_id = $pGoodsId;
                 $goodsRelation->goods_id = $record['goods_id'];
@@ -651,6 +657,12 @@ class GoodsController extends BaseController
                             //获取子级零件数据
                             $son_part = GoodsSearch::getGoods(trim($v['C']), trim($v['D']));
                             if (!$son_part) {
+                                $err[] = $k;
+                                continue;
+                            }
+                            //循环判断上下级零件互斥
+                            $mutex_res = GoodsRelation::goodsMutex($son_part['id'], [$top_part['id'], $son_part['id']]);
+                            if ($mutex_res) {
                                 $err[] = $k;
                                 continue;
                             }

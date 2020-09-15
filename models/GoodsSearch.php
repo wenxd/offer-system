@@ -77,7 +77,11 @@ class GoodsSearch extends Goods
             return $dataProvider;
         }
         if (isset($params['id'])) {
-            $query->with('son');
+            $query->with([
+                'son' => function($query) use($params) {
+                    $query->andWhere(['p_goods_id' => $params['id']]);
+                },
+            ]);
         }
         $goods = self::find()->all();
         $goodsIds = ArrayHelper::getColumn($goods, 'id');

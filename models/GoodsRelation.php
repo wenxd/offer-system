@@ -68,4 +68,27 @@ class GoodsRelation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
+
+    /**
+     * @param $goods_id 当前goods_id
+     * @param $goods_mutex 互斥数组
+     */
+    public static function goodsMutex($goods_id, $goods_mutex)
+    {
+        //查询子级
+        $data = self::find()->select(['goods_id'])->where(['is_deleted' => 0, 'p_goods_id' => $goods_id])->asArray()->all();
+        if (empty($data)) {
+            return false;
+        }
+        foreach ($data as $item) {
+            if (in_array($item['goods_id'], $goods_mutex)) {
+                return true;
+            }
+            $goods_mutex[] = $item['goods_id'];
+        }
+        foreach ($data as $item) {
+            return self::goodsMutex($item['goods_id'], $goods_mutex);
+        }
+        return false;
+    }
 }
