@@ -17,7 +17,8 @@ use app\models\{Admin,
     OrderGoods,
     OrderInquiry,
     SystemConfig,
-    TempOrderInquiry};
+    TempOrderInquiry
+};
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -39,35 +40,35 @@ class GoodsController extends BaseController
         return [
             'index' => [
                 'class' => actions\IndexAction::className(),
-                'data'  => function(){
-                    $searchModel  = new GoodsSearch();
+                'data' => function () {
+                    $searchModel = new GoodsSearch();
                     $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
                     return [
                         'dataProvider' => $dataProvider,
-                        'searchModel'  => $searchModel,
+                        'searchModel' => $searchModel,
                     ];
                 }
             ],
             'create' => [
-                'class'      => actions\CreateAction::className(),
+                'class' => actions\CreateAction::className(),
                 'modelClass' => Goods::className(),
-                'scenario'   => 'goods',
+                'scenario' => 'goods',
             ],
             'update' => [
-                'class'      => actions\UpdateAction::className(),
+                'class' => actions\UpdateAction::className(),
                 'modelClass' => Goods::className(),
-                'scenario'   => 'goods',
+                'scenario' => 'goods',
             ],
             'delete' => [
-                'class'      => actions\DeleteAction::className(),
+                'class' => actions\DeleteAction::className(),
                 'modelClass' => Goods::className(),
             ],
             'sort' => [
-                'class'      => actions\SortAction::className(),
+                'class' => actions\SortAction::className(),
                 'modelClass' => Goods::className(),
             ],
             'status' => [
-                'class'      => actions\StatusAction::className(),
+                'class' => actions\StatusAction::className(),
                 'modelClass' => Goods::className(),
             ],
         ];
@@ -124,43 +125,43 @@ class GoodsController extends BaseController
         $paymentDay = PaymentGoods::find()->andWhere(['goods_id' => $goods_id, 'is_payment' => PaymentGoods::IS_PAYMENT_YES])->orderBy('delivery_time asc')->one();
 
         //收入记录 最新
-        $agreementGoodsNew  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        $agreementGoodsNew = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //最高价
         $agreementGoodsHigh = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price Desc')->one();
         //最低价
-        $agreementGoodsLow  = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price asc')->one();
+        $agreementGoodsLow = AgreementGoods::find()->where(['goods_id' => $goods_id])->orderBy('quote_price asc')->one();
 
         //竞争对手 发行价
-        $competitorGoodsIssue  = CompetitorGoods::find()->where(['goods_id' => $goods_id, 'is_issue' => CompetitorGoods::IS_ISSUE_YES])->one();
+        $competitorGoodsIssue = CompetitorGoods::find()->where(['goods_id' => $goods_id, 'is_issue' => CompetitorGoods::IS_ISSUE_YES])->one();
         //最新
-        $competitorGoodsNew  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
+        $competitorGoodsNew = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('updated_at Desc')->one();
         //最高价
         $competitorGoodsHigh = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price Desc')->one();
         //最低价
-        $competitorGoodsLow  = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price asc')->one();
+        $competitorGoodsLow = CompetitorGoods::find()->where(['goods_id' => $goods_id])->orderBy('price asc')->one();
 
         $data = [];
-        $data['goods']            = $goods ? $goods : [];
+        $data['goods'] = $goods ? $goods : [];
 
-        $data['stock']            = $stockQuery;
+        $data['stock'] = $stockQuery;
 
-        $data['inquiryPrice']     = $inquiryPriceQuery;
-        $data['inquiryTime']      = $inquiryTimeQuery;
-        $data['inquiryNew']       = $inquiryNewQuery;
-        $data['inquiryBetter']    = $inquiryBetterQuery;
+        $data['inquiryPrice'] = $inquiryPriceQuery;
+        $data['inquiryTime'] = $inquiryTimeQuery;
+        $data['inquiryNew'] = $inquiryNewQuery;
+        $data['inquiryBetter'] = $inquiryBetterQuery;
 
-        $data['paymentNew']       = $paymentNew;
-        $data['paymentPrice']     = $paymentPrice;
-        $data['paymentDay']       = $paymentDay;
+        $data['paymentNew'] = $paymentNew;
+        $data['paymentPrice'] = $paymentPrice;
+        $data['paymentDay'] = $paymentDay;
 
-        $data['agreementGoodsNew']  = $agreementGoodsNew;
+        $data['agreementGoodsNew'] = $agreementGoodsNew;
         $data['agreementGoodsHigh'] = $agreementGoodsHigh;
-        $data['agreementGoodsLow']  = $agreementGoodsLow;
+        $data['agreementGoodsLow'] = $agreementGoodsLow;
 
-        $data['competitorGoodsIssue']  = $competitorGoodsIssue;
-        $data['competitorGoodsNew']    = $competitorGoodsNew;
-        $data['competitorGoodsHigh']   = $competitorGoodsHigh;
-        $data['competitorGoodsLow']    = $competitorGoodsLow;
+        $data['competitorGoodsIssue'] = $competitorGoodsIssue;
+        $data['competitorGoodsNew'] = $competitorGoodsNew;
+        $data['competitorGoodsHigh'] = $competitorGoodsHigh;
+        $data['competitorGoodsLow'] = $competitorGoodsLow;
 
         //所有用户
         $adminList = Admin::find()->indexBy('id')->all();
@@ -173,13 +174,13 @@ class GoodsController extends BaseController
     {
         $goods_id = Yii::$app->request->get('goods_id');
 
-        $goods        = Goods::findOne($goods_id);
-        $orderGoods   = OrderGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->asArray()->one();
+        $goods = Goods::findOne($goods_id);
+        $orderGoods = OrderGoods::find()->where(['goods_id' => $goods_id])->orderBy('created_at Desc')->asArray()->one();
         $orderInquiry = OrderInquiry::find()->where(['order_id' => $orderGoods['order_id']])->orderBy('created_at Desc')->asArray()->one();
 
-        $data                 = [];
-        $data['goods']        = $goods->toArray();
-        $data['orderGoods']   = $orderGoods;
+        $data = [];
+        $data['goods'] = $goods->toArray();
+        $data['orderGoods'] = $orderGoods;
         $data['orderInquiry'] = $orderInquiry;
 
         return json_encode(['code' => 200, 'data' => $data]);
@@ -207,18 +208,18 @@ class GoodsController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
             'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD'];
         $tableHeader = ['品牌', '零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
             '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
             '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         $title = '零件上传模板' . date('ymd-His');
@@ -228,7 +229,7 @@ class GoodsController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -276,7 +277,7 @@ class GoodsController extends BaseController
                     $num = 0;
 
                     $high_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_HIGH_STOCK_RATIO])->scalar();
-                    $low_stock_ratio  = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
+                    $low_stock_ratio = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_LOW_STOCK_RATIO])->scalar();
                     //汇率
                     $rate = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_RATE, 'is_deleted' => SystemConfig::IS_DELETED_NO])->scalar();
                     //到货系数
@@ -295,15 +296,15 @@ class GoodsController extends BaseController
                             }
                             if (trim($value['B'])) {
                                 $goods = Goods::find()->where([
-                                    'is_deleted'   => Goods::IS_DELETED_NO,
+                                    'is_deleted' => Goods::IS_DELETED_NO,
                                     'goods_number' => trim($value['B']),
-                                    'brand_id'     => $brand->id,
+                                    'brand_id' => $brand->id,
                                 ])->one();
                             } else {
                                 $goods = Goods::find()->where([
-                                    'is_deleted'     => Goods::IS_DELETED_NO,
+                                    'is_deleted' => Goods::IS_DELETED_NO,
                                     'goods_number_b' => trim($value['F']),
-                                    'brand_id'       => $brand->id,
+                                    'brand_id' => $brand->id,
                                 ])->one();
                             }
                             if (!$goods) {
@@ -406,7 +407,7 @@ class GoodsController extends BaseController
                                 $goods->remark = (string)trim($value['X']);
                             }
                             if ($value['Q'] && $value['T']) {
-                                $deviceName   = strtoupper(trim($value['Q']));
+                                $deviceName = strtoupper(trim($value['Q']));
                                 $deviceNumber = trim($value['T']);
                                 $device = [];
                                 $device[$deviceName] = $deviceNumber;
@@ -455,7 +456,7 @@ class GoodsController extends BaseController
                             //美金出厂价
                             if ($value['AD']) {
                                 $goods->factory_price = trim($value['AD']);
-                                $goods->publish_tax_price = $goods->factory_price * $rate * $arrivalRatio * (1+$goods->publish_tax/100);
+                                $goods->publish_tax_price = $goods->factory_price * $rate * $arrivalRatio * (1 + $goods->publish_tax / 100);
                             }
                             if ($goods->save()) {
                                 $num++;
@@ -467,11 +468,11 @@ class GoodsController extends BaseController
                                 $stock = Stock::find()->where(['good_id' => $goods->id])->one();
                                 if (!$stock) {
                                     $stock = new Stock();
-                                    $stock->good_id         = $goods->id;
+                                    $stock->good_id = $goods->id;
                                 }
-                                $stock->suggest_number  = trim($value['S']);
-                                $stock->high_number     = (int) round($high_stock_ratio * trim($value['S']));
-                                $stock->low_number      = (int) round($low_stock_ratio * trim($value['S']));
+                                $stock->suggest_number = trim($value['S']);
+                                $stock->high_number = (int)round($high_stock_ratio * trim($value['S']));
+                                $stock->low_number = (int)round($low_stock_ratio * trim($value['S']));
                                 $stock->save();
                             }
                         }
@@ -488,7 +489,7 @@ class GoodsController extends BaseController
     {
         $goodsIds = Yii::$app->request->post('goods_ids');
         $temp = new TempOrderInquiry();
-        $temp->goods_ids = implode(',',$goodsIds);
+        $temp->goods_ids = implode(',', $goodsIds);
         if ($temp->save()) {
             return json_encode(['code' => 200, 'msg' => '成功', 'data' => $temp->primaryKey], JSON_UNESCAPED_UNICODE);
         } else {
@@ -499,11 +500,11 @@ class GoodsController extends BaseController
     //添加子零件页面
     public function actionAddson($id)
     {
-        $searchModel  = new GoodsSearch();
+        $searchModel = new GoodsSearch();
         $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
         $data = [
             'dataProvider' => $dataProvider,
-            'searchModel'  => $searchModel,
+            'searchModel' => $searchModel,
         ];
         return $this->render('addson', $data);
     }
@@ -555,11 +556,11 @@ class GoodsController extends BaseController
 
         $goodsRelationList = GoodsRelation::find()->where([
             'p_goods_id' => $id,
-            'is_deleted'  => GoodsRelation::IS_DELETED_NO,
+            'is_deleted' => GoodsRelation::IS_DELETED_NO,
         ])->all();
 
         return $this->render('view', [
-            'model'     => $model,
+            'model' => $model,
             'goodsList' => $goodsRelationList,
         ]);
     }
@@ -582,6 +583,107 @@ class GoodsController extends BaseController
             return $this->success(200, '删除成功');
         } else {
             return $this->error(500, '没有此关联关系');
+        }
+    }
+
+    /**
+     * 下载零件模板(子)
+     */
+    public function actionDownloadSon()
+    {
+        $fileName = '零件模板(子).csv';
+        $columns = ["品牌", "零件号", "品牌(子)", "零件号(子)", "数量(子)",];
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        $fp = fopen('php://output', 'a');//打开output流
+        mb_convert_variables('GBK', 'UTF-8', $columns);
+        fputcsv($fp, $columns);
+        ob_flush();
+        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+        fclose($fp);
+        exit();
+    }
+
+    /**
+     * 批量上传零件(子)
+     */
+    public function actionUploadSon()
+    {
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件']);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' || $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['FileName']['type'] == 'application/octet-stream') {
+                //获取文件名称
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+                //保存文件
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    $info = [];
+                    $err = [];
+                    //组装数据
+                    foreach ($sheetData as $k => $v) {
+                        if ($k > 1) {
+                            $number = trim($v['E']);
+                            if (!is_numeric($number) || $number < 1) {
+                                $err[] = $k;
+                                continue;
+                            }
+                            //获取顶级零件数据
+                            $top_part = GoodsSearch::getGoods(trim($v['A']), trim($v['B']));
+                            if (!$top_part) {
+                                $err[] = $k;
+                                continue;
+                            }
+                            //获取子级零件数据
+                            $son_part = GoodsSearch::getGoods(trim($v['C']), trim($v['D']));
+                            if (!$son_part) {
+                                $err[] = $k;
+                                continue;
+                            }
+                            $info[$top_part['id']][] = [
+                                'p_goods_id' => $top_part['id'],
+                                'goods_id' => $son_part['id'],
+                                'number' => trim($v['E']),
+                            ];
+                        }
+                    }
+                    //循环保存(更改顶级为软删除)
+                    $num = 0;
+                    $model = new GoodsRelation();
+                    foreach ($info as $k => $v) {
+                        GoodsRelation::updateAll(['is_deleted' => 1], ['p_goods_id' => $k]);
+                        foreach ($v as $item) {
+                            $model->isNewRecord = true;
+                            $model->setAttributes($item);
+                            $model->save() && $model->id = 0;
+                            $num++;
+                        }
+                    }
+                    $msg = "{$num}条成功";
+                    $err_num = count($err);
+                    if ($err_num > 0) {
+                        $err_json = implode(',', $err);
+                        $msg = "{$num}条成功, {$err_num}条失败,失败行号($err_json)";
+                    }
+                    unlink('./' . $saveName);
+                    return json_encode(['code' => 200, 'msg' => $msg], JSON_UNESCAPED_UNICODE);
+                }
+                return json_encode(['code' => 500, 'msg' => "数据保存失败"], JSON_UNESCAPED_UNICODE);
+            }
+
         }
     }
 }

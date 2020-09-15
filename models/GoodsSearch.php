@@ -189,4 +189,18 @@ class GoodsSearch extends Goods
 //        var_dump($query->createCommand()->getRawSql());die;
         return $dataProvider;
     }
+
+    /**
+     * 零件数据缓存
+     */
+    public static function getGoods($material_code, $goods_number)
+    {
+        $spu_name = "{$material_code}_{$goods_number}";
+        $cache = Yii::$app->cache;
+        if ($cache->exists($spu_name)) return json_decode($cache->get($spu_name), true);
+        $spu_info = self::find()->where(['goods_number' => $goods_number, 'material_code' => $material_code])->asArray()->one();
+        if (empty($spu_info)) return false;
+        $cache->set($spu_name, json_encode($spu_info), 3600);
+        return $spu_info;
+    }
 }
