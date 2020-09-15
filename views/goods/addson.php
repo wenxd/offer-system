@@ -69,6 +69,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style'=>'min-width: 100px;'],
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) {
+                    if (isset($model->son->number)) {
+                        return Html::input('text', 'son_number', $model->son->number);
+                    }
                     return Html::input('text', 'son_number');
                 }
             ],

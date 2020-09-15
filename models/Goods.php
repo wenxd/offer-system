@@ -415,4 +415,9 @@ class Goods extends ActiveRecord
     {
         return $this->hasOne(Stock::className(), ['good_id' => 'id']);
     }
+
+    public function getSon()
+    {
+        return $this->hasOne(GoodsRelation::className(), ['goods_id' => 'id'])->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO]);
+    }
 }

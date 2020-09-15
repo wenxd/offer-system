@@ -522,6 +522,7 @@ class GoodsController extends BaseController
             $goodsRelation = GoodsRelation::find()->where([
                 'p_goods_id' => $pGoodsId,
                 'goods_id' => $record['goods_id'],
+                'is_deleted' => GoodsRelation::IS_DELETED_NO,
             ])->one();
             if ($goodsRelation) {
                 $goodsRelation->number = $record['number'];
