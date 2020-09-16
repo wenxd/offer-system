@@ -70,13 +70,14 @@ class GoodsRelation extends \yii\db\ActiveRecord
     }
 
     /**
+     * 互斥子零件
      * @param $goods_id 当前goods_id
      * @param $goods_mutex 互斥数组
      */
     public static function goodsMutex($goods_id, $goods_mutex)
     {
         //查询子级
-        $data = self::find()->select(['goods_id'])->where(['is_deleted' => 0, 'p_goods_id' => $goods_id])->asArray()->all();
+        $data = self::find()->select(['goods_id'])->where(['is_deleted' => GoodsRelation::IS_DELETED_YES, 'p_goods_id' => $goods_id])->asArray()->all();
         if (empty($data)) {
             return false;
         }
@@ -90,5 +91,34 @@ class GoodsRelation extends \yii\db\ActiveRecord
             return self::goodsMutex($item['goods_id'], $goods_mutex);
         }
         return false;
+    }
+
+    /**
+     * 获取最低级零件数据
+     */
+    public static function getGoodsSon($goods, $info = [])
+    {
+        //查询子级
+        $data = self::find()
+            ->select(['goods.*', 'goods_relation.number', 'goods_relation.p_goods_id'])
+            ->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $goods['id']])
+            ->join('LEFT JOIN', Goods::tableName(), 'goods.id=goods_relation.goods_id')
+            ->asArray()->all();
+        foreach ($data as $item) {
+            $item['sum'] = $item['number'] * $goods['sum'];
+            $item['info'][$goods['goods_number']] = $item['sum'];
+            if ($item['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
+                $info = GoodsRelation::getGoodsSon($item, $info);
+            } else {
+                if (isset($info[$item['id']])) {
+                    $item['info'] = $info[$item['id']]['info'];
+                    $item['info'][$goods['goods_number']] = $item['sum'];
+                    $item['sum'] += $info[$item['id']]['sum'];
+                }
+                $info[$item['id']] = $item;
+            }
+        }
+        return $info;
+
     }
 }

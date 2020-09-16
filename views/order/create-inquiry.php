@@ -72,6 +72,7 @@ if ($model->isNewRecord) {
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
+                    <th>主零件</th>
                     <th style="width: 80px;">加工</th>
                     <th style="width: 80px;">特制</th>
                     <th style="width: 80px;">进口</th>
@@ -106,6 +107,7 @@ if ($model->isNewRecord) {
                     <td>
                         <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -200,6 +202,14 @@ if ($model->isNewRecord) {
                     <td><?= $item->goods->original_company_remark?></td>
                     <td><?= $item->goods->unit?></td>
                     <td class="number"><?= $item->number?></td>
+                    <td><?php
+                        $text = '';
+                        foreach (json_decode($item->belong_to, true) as $key => $device) {
+                            $text .= $key . ':' . $device . '<br/>';
+                        }
+                        echo $text
+                        ?>
+                    </td>
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$import[$item->goods->is_import]?></td>

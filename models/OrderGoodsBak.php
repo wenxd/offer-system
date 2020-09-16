@@ -38,7 +38,7 @@ class OrderGoodsBak extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'goods_id', 'number', 'is_out', 'is_deleted'], 'integer'],
-            [['serial', 'out_time', 'updated_at', 'created_at'], 'safe'],
+            [['serial', 'out_time', 'updated_at', 'created_at', 'belong_to'], 'safe'],
         ];
     }
 

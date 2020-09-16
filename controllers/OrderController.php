@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\AgreementStock;
 use app\models\FinalGoods;
 use app\models\Goods;
+use app\models\GoodsRelation;
 use app\models\Inquiry;
 use app\models\InquiryGoods;
 use app\models\OrderAgreement;
@@ -243,29 +244,88 @@ class OrderController extends BaseController
         return $this->render('detail', $data);
     }
 
+    /**
+     * 2020-09-16 俊杰替换(旧的已注释)
+     */
     public function actionCreateInquiryNew($id)
     {
-        //处理订单零件合并
+        //清除订单零件对应表临时数据
         OrderGoodsBak::deleteAll();
-        $orderGoodsOldList = OrderGoods::find()->where(['order_id' => $id])->asArray()->all();
-        $orderGoodsOldList = ArrayHelper::index($orderGoodsOldList, null, 'goods_id');
 
-        $newOrderGoods = [];
-        foreach ($orderGoodsOldList as $key => $orderGoodsList) {
-            $number = 0;
-            foreach ($orderGoodsList as $k => $orderGoods) {
-                if ($k == 0) {
-                    $saveOrderGoods = $orderGoods;
+        $orderGoodsOldList = OrderGoods::find()
+            ->select(['order_goods.*', 'goods.is_assembly', 'goods_number'])
+            ->join('LEFT JOIN', Goods::tableName(), "goods.id=order_goods.goods_id AND goods.is_deleted=0")
+            ->where(['order_id' => $id])->asArray()->all();
+        $OrderGoodsBak = [];
+        foreach ($orderGoodsOldList as $goods) {
+            //是否是总成
+            if ($goods['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
+                $goods['info'] = '';
+                $goods['sum'] = $goods['number'];
+                $goods['id'] = $goods['goods_id'];
+                $data = GoodsRelation::getGoodsSon($goods);
+                if ($data) {
+                    foreach ($data as $k => $item) {
+                        if (isset($OrderGoodsBak[$item['id']])) {
+                            $OrderGoodsBak[$item['id']]['number'] +=  $item['sum'];
+                            foreach ($item['info'] as $info_k => $info_v) {
+                                if (isset($OrderGoodsBak[$item['id']]['info'][$info_k])) {
+                                    $OrderGoodsBak[$item['id']]['info'][$info_k] += $info_v;
+                                } else {
+                                    $OrderGoodsBak[$item['id']]['info'][$info_k] = $info_v;
+                                }
+                            }
+                        } else {
+                            $OrderGoodsBak[$item['id']] = [
+                                'order_id' => $goods['order_id'],
+                                'goods_id' => $item['id'],
+                                'number' => $item['sum'],
+                                'serial' => $item['id'],
+                                'is_out' => $goods['is_out'],
+                                'out_time' => $goods['out_time'],
+                                'created_at' => $goods['created_at'],
+                                'updated_at' => $goods['updated_at'],
+                                'info' => $item['info'],
+                            ];
+                        }
+                    }
                 }
-                $number += $orderGoods['number'];
             }
-            $saveOrderGoods['number'] = $number;
-            $newOrderGoods[] = $saveOrderGoods;
         }
-        $keys = [];
-        $res = Yii::$app->db->createCommand()->batchInsert(OrderGoodsBak::tableName(), $keys, $newOrderGoods)->execute();
+        $model = new OrderGoodsBak();
+        foreach ($OrderGoodsBak as $item) {
+            if (isset($item['info'])) {
+                $item['belong_to'] = json_encode($item['info'], JSON_UNESCAPED_UNICODE);
+            }
+            $model->isNewRecord = true;
+            $model->setAttributes($item);
+            $model->save() && $model->id = 0;
+        }
         return $this->redirect(['order/create-inquiry', 'id' => $id]);
     }
+//    public function actionCreateInquiryNew($id)
+//    {
+//        //处理订单零件合并
+//        OrderGoodsBak::deleteAll();
+//        $orderGoodsOldList = OrderGoods::find()->where(['order_id' => $id])->asArray()->all();
+//        $orderGoodsOldList = ArrayHelper::index($orderGoodsOldList, null, 'goods_id');
+//
+//        $newOrderGoods = [];
+//        foreach ($orderGoodsOldList as $key => $orderGoodsList) {
+//            $number = 0;
+//            foreach ($orderGoodsList as $k => $orderGoods) {
+//                if ($k == 0) {
+//                    $saveOrderGoods = $orderGoods;
+//                }
+//                $number += $orderGoods['number'];
+//            }
+//            $saveOrderGoods['number'] = $number;
+//            $newOrderGoods[] = $saveOrderGoods;
+//        }
+//        $keys = [];
+//        $res = Yii::$app->db->createCommand()->batchInsert(OrderGoodsBak::tableName(), $keys, $newOrderGoods)->execute();
+//        return $this->redirect(['order/create-inquiry', 'id' => $id]);
+//    }
 
     /**生成询价单
      * @param $id
@@ -533,6 +593,26 @@ class OrderController extends BaseController
         } else {
             return json_encode(['code' => 500, 'msg' => '没有此零件']);
         }
+    }
+
+    //创建订单  添加动作
+    public function actionAddGoodsNew()
+    {
+        $data = [];
+        $goods_id   = (string)Yii::$app->request->post('goods_id');
+        $number   = (string)Yii::$app->request->get('number', 10);
+        $goods = Goods::find()->where(['id' => $goods_id])->asArray()->one();
+        if (empty($goods)) {
+            return json_encode(['code' => 500, 'msg' => '没有此零件']);
+        }
+        $goods['info'] = '';
+        $goods['sum'] = $number;
+        $data = [$goods];
+        //是否是总成
+        if ($goods['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
+            $data = GoodsRelation::getGoodsSon($goods);
+        }
+        return json_encode(['code' => 200, 'data' => $data]);
     }
 
     //保存订单

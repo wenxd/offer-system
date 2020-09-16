@@ -677,7 +677,8 @@ class GoodsController extends BaseController
                     $num = 0;
                     $model = new GoodsRelation();
                     foreach ($info as $k => $v) {
-                        GoodsRelation::updateAll(['is_deleted' => 1], ['p_goods_id' => $k]);
+                        GoodsRelation::updateAll(['is_deleted' => GoodsRelation::IS_DELETED_YES], ['p_goods_id' => $k]);
+                        Goods::updateAll(['is_assembly' => Goods::IS_ASSEMBLY_YES], ['id' => $k]);
                         foreach ($v as $item) {
                             $model->isNewRecord = true;
                             $model->setAttributes($item);
