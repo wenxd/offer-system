@@ -201,9 +201,8 @@ class OrderInquiryController extends BaseController
             yii::$app->getSession()->setFlash('error', '没有此询价单');
             return $this->redirect(['index']);
         }
-
-        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->orderBy('serial')->all();
-        $goods_ids = ArrayHelper::getColumn($orderGoods, 'goods_id');
+//        $orderGoods = OrderGoods::find()->where(['order_id' => $orderInquiry->order_id])->orderBy('serial')->all();
+//        $goods_ids = ArrayHelper::getColumn($orderGoods, 'goods_id');
 
         $data = [];
         $data['orderInquiry'] = $orderInquiry;
@@ -214,8 +213,9 @@ class OrderInquiryController extends BaseController
             'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
             'g.is_deleted' => Goods::IS_DELETED_NO,
             ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('i.serial asc')->all();
+        $goods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
         $data['inquiryGoods'] = $inquiryGoods;
-        $data['orderGoods']   = $orderGoods;
+//        $data['orderGoods']   = $orderGoods;
 
         //总询价数
         $inquiryList = Inquiry::find()->where(['good_id' => $goods_ids])->asArray()->all();
