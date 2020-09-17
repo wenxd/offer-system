@@ -300,8 +300,18 @@ class OrderController extends BaseController
                 }
             }
         }
-        $model = new OrderGoodsBak();
+        $OrderGoodsBakInfo = [];
         foreach ($OrderGoodsBak as $item) {
+            $key = $item['goods_id'];
+            if (!isset($OrderGoodsBakInfo[$key])) {
+                $OrderGoodsBakInfo[$key] = $item;
+                continue;
+            }
+            $OrderGoodsBakInfo[$key]['number'] += $item['number'];
+            $OrderGoodsBakInfo[$key]['info'][$item['goods_number']] = (int)$item['number'];
+        }
+        $model = new OrderGoodsBak();
+        foreach ($OrderGoodsBakInfo as $item) {
             if (isset($item['info'])) {
                 $item['belong_to'] = json_encode($item['info'], JSON_UNESCAPED_UNICODE);
             }

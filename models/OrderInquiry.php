@@ -79,4 +79,20 @@ class OrderInquiry extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Admin::className(), ['id' => 'admin_id']);
     }
+
+    /**
+     * 询价单号生成
+     */
+    public static function getInquirySn()
+    {
+        $date = date('ymd_');
+        $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $inquirySn = explode('_', $orderI->inquiry_sn);
+            $number = sprintf("%03d", $inquirySn[1]+1);
+        } else {
+            $number = '001';
+        }
+        return 'X' . date('ymd_') . $number;
+    }
 }
