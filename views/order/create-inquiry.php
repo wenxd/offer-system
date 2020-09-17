@@ -214,6 +214,7 @@ if ($model->isNewRecord) {
                         echo $text;
                         ?>
                     </td>
+                    <td class="belong_to" style="display: none"><?=$item->belong_to?></td>
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
                     <td class="addColor"><?= Goods::$special[$item->goods->is_special]?></td>
                     <td class="addColor"><?= Goods::$import[$item->goods->is_import]?></td>
@@ -308,6 +309,7 @@ if ($model->isNewRecord) {
                     item.goods_id      = $(element).val();
                     item.number        = $(element).parent().parent().find('.number').text();
                     item.serial        = $(element).parent().parent().find('.serial').text();
+                    item.belong_to     = $(element).parent().parent().find('.belong_to').text();
                     var supplier_name  = $(element).parent().parent().find('.supplier input').val();
                     var remark         = $(element).parent().parent().find('.remark input').val();
                     item.supplier_name = supplier_name;

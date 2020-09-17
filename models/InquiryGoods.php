@@ -26,6 +26,7 @@ use Yii;
  * @property string $supplier_id
  * @property string $remark
  * @property int $level 零件等级：1顶级，2子级
+ * @property string $belong_to 所属json
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -58,7 +59,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
         return [
             [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number', 'is_inquiry', 'level'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at', 'supplier_id'], 'safe'],
-            [['inquiry_sn', 'reason', 'remark'], 'string', 'max' => 255],
+            [['inquiry_sn', 'reason', 'remark', 'belong_to'], 'string', 'max' => 255],
         ];
     }
 
