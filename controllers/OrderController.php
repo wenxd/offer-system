@@ -43,6 +43,7 @@ use yii\filters\VerbFilter;
 class OrderController extends BaseController
 {
     public $enableCsrfValidation = false;
+
     /**
      * {@inheritdoc}
      */
@@ -103,7 +104,7 @@ class OrderController extends BaseController
             ->andWhere(['order_type' => order::ORDER_TYPE_PROJECT_YES])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $num = strrpos($orderI->order_sn, '_');
-            $str    = substr($orderI->order_sn, $num+1);
+            $str = substr($orderI->order_sn, $num + 1);
             if (is_numeric($str)) {
                 $number = sprintf("%02d", $str + 1);
             } else {
@@ -113,7 +114,7 @@ class OrderController extends BaseController
             $number = '01';
         }
         return $this->render('create', [
-            'model'  => $model,
+            'model' => $model,
             'number' => $number
         ]);
     }
@@ -171,18 +172,18 @@ class OrderController extends BaseController
     public function actionSubmit()
     {
         $params = Yii::$app->request->get();
-        $ids    = Yii::$app->request->get('ids');
+        $ids = Yii::$app->request->get('ids');
 
         $order = new Order();
-        $order->customer_id  = $params['customer_id'];
-        $order->admin_id     = $params['admin_id'];
-        $order->order_sn     = $params['order_sn'];
-        $order->description  = $params['description'];
+        $order->customer_id = $params['customer_id'];
+        $order->admin_id = $params['admin_id'];
+        $order->order_sn = $params['order_sn'];
+        $order->description = $params['description'];
         $order->provide_date = $params['provide_date'];
-        $order->order_price  = $params['order_price'];
-        $order->remark       = $params['remark'];
-        $order->type         = $params['type'];
-        $order->status       = Order::STATUS_NO;
+        $order->order_price = $params['order_price'];
+        $order->remark = $params['remark'];
+        $order->type = $params['type'];
+        $order->status = Order::STATUS_NO;
         if ($order->save()) {
             $cartList = Cart::find()->where(['id' => $ids])->all();
             $data = [];
@@ -217,29 +218,29 @@ class OrderController extends BaseController
         $data = [];
 
         $order = Order::findOne($id);
-        if (!$order){
+        if (!$order) {
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
 
-        $orderGoods     = OrderGoods::find()->where(['order_id' => $id])->all();
-        $orderInquiry   = OrderInquiry::findAll(['order_id' => $id]);
-        $orderFinal     = OrderFinal::findAll(['order_id' => $id]);
-        $orderQuote     = OrderQuote::findAll(['order_id' => $id]);
-        $orderPurchase  = OrderPurchase::findAll(['order_id' => $id]);
+        $orderGoods = OrderGoods::find()->where(['order_id' => $id])->all();
+        $orderInquiry = OrderInquiry::findAll(['order_id' => $id]);
+        $orderFinal = OrderFinal::findAll(['order_id' => $id]);
+        $orderQuote = OrderQuote::findAll(['order_id' => $id]);
+        $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
         $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
-        $orderPayment   = OrderPayment::findAll(['order_id' => $id]);
-        $orderUseStock  = AgreementStock::find()->where(['order_id' => $id])->all();
+        $orderPayment = OrderPayment::findAll(['order_id' => $id]);
+        $orderUseStock = AgreementStock::find()->where(['order_id' => $id])->all();
 
-        $data['model']          = $order;
-        $data['orderGoods']     = $orderGoods;
-        $data['orderInquiry']   = $orderInquiry;
-        $data['orderFinal']     = $orderFinal;
-        $data['orderQuote']     = $orderQuote;
-        $data['orderPurchase']  = $orderPurchase;
+        $data['model'] = $order;
+        $data['orderGoods'] = $orderGoods;
+        $data['orderInquiry'] = $orderInquiry;
+        $data['orderFinal'] = $orderFinal;
+        $data['orderQuote'] = $orderQuote;
+        $data['orderPurchase'] = $orderPurchase;
         $data['orderAgreement'] = $orderAgreement;
-        $data['orderPayment']   = $orderPayment;
-        $data['orderUseStock']     = $orderUseStock;
+        $data['orderPayment'] = $orderPayment;
+        $data['orderUseStock'] = $orderUseStock;
 
         return $this->render('detail', $data);
     }
@@ -247,7 +248,7 @@ class OrderController extends BaseController
     /**
      * 2020-09-16 俊杰替换(旧的已注释)
      */
-    public function actionCreateInquiryNew($id, $level)
+    public function actionCreateInquiryNew($id, $level = 1)
     {
         //清除订单零件对应表临时数据
         OrderGoodsBak::deleteAll();
@@ -271,7 +272,7 @@ class OrderController extends BaseController
                     if ($data) {
                         foreach ($data as $k => $item) {
                             if (isset($OrderGoodsBak[$item['id']])) {
-                                $OrderGoodsBak[$item['id']]['number'] +=  $item['sum'];
+                                $OrderGoodsBak[$item['id']]['number'] += $item['sum'];
                                 foreach ($item['info'] as $info_k => $info_v) {
                                     if (isset($OrderGoodsBak[$item['id']]['info'][$info_k])) {
                                         $OrderGoodsBak[$item['id']]['info'][$info_k] += $info_v;
@@ -349,22 +350,22 @@ class OrderController extends BaseController
      * @param $id
      * @return false|string
      */
-    public function actionCreateInquiry($id, $level)
+    public function actionCreateInquiry($id, $level = 1)
     {
         $request = Yii::$app->request->get();
-        $order     = Order::findOne($id);
+        $order = Order::findOne($id);
         if (!$order) {
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
 
-        $goods_ids            = json_decode($order->goods_ids, true);
-        $orderInquiry         = OrderInquiry::find()->where(['order_id' => $order->id])->all();
+        $goods_ids = json_decode($order->goods_ids, true);
+        $orderInquiry = OrderInquiry::find()->where(['order_id' => $order->id])->all();
 
         //询价记录
         $inquiryListOld = Inquiry::find()->where(['good_id' => $goods_ids])->all();
         $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
 
-        $orderGoodsQuery      = OrderGoodsBak::find()->from('order_goods_bak og')
+        $orderGoodsQuery = OrderGoodsBak::find()->from('order_goods_bak og')
             ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
             ->where(['order_id' => $order->id]);
         if (isset($request['goods_number']) && $request['goods_number']) {
@@ -375,6 +376,9 @@ class OrderController extends BaseController
         }
         if (isset($request['original_company']) && $request['original_company']) {
             $orderGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        if (isset($request['belong_to']) && $request['belong_to']) {
+            $orderGoodsQuery->andWhere(['like', 'belong_to', $request['belong_to']]);
         }
         if (isset($request['is_process']) && $request['is_process'] !== '') {
             $orderGoodsQuery->andWhere(['is_process' => $request['is_process']]);
@@ -402,7 +406,7 @@ class OrderController extends BaseController
                 $orderGoodsQuery->andWhere(['not in', 'goods_id', $inquiryGoodsIds]);
             }
         }
-        $orderGoods           = $orderGoodsQuery->all();
+        $orderGoods = $orderGoodsQuery->all();
 
         //库存数量
         $stockList = Stock::find()->indexBy('good_id')->all();
@@ -411,21 +415,21 @@ class OrderController extends BaseController
         $orderI = OrderInquiry::find()->where(['like', 'inquiry_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $inquirySn = explode('_', $orderI->inquiry_sn);
-            $number = sprintf("%03d", $inquirySn[1]+1);
+            $number = sprintf("%03d", $inquirySn[1] + 1);
         } else {
             $number = '001';
         }
         $supplierList = Supplier::find()->where(['is_deleted' => 0, 'is_confirm' => 1])->all();
 
-        $data                 = [];
+        $data = [];
         $data['level'] = $level;
         $data['orderInquiry'] = $orderInquiry;
-        $data['model']        = new OrderInquiry();
-        $data['order']        = $order;
-        $data['orderGoods']   = $orderGoods;
-        $data['number']       = $number;
-        $data['inquiryList']  = $inquiryList;
-        $data['stockList']    = $stockList;
+        $data['model'] = new OrderInquiry();
+        $data['order'] = $order;
+        $data['orderGoods'] = $orderGoods;
+        $data['number'] = $number;
+        $data['inquiryList'] = $inquiryList;
+        $data['stockList'] = $stockList;
         $data['supplierList'] = $supplierList;
 
         return $this->render('create-inquiry', $data);
@@ -440,36 +444,36 @@ class OrderController extends BaseController
 
         $oldOrder = Order::findOne($orderRecord['0']->order_id);
         $order = new Order();
-        $order->customer_id   = $oldOrder->customer_id ;
-        $order->order_sn      = $oldOrder->order_sn    ;
-        $order->description   = $oldOrder->description ;
-        $order->order_price   = $oldOrder->order_price ;
-        $order->remark        = $oldOrder->remark      ;
-        $order->type          = Order::TYPE_FINAL      ;
-        $order->status        = $oldOrder->status      ;
-        $order->provide_date  = $oldOrder->provide_date;
+        $order->customer_id = $oldOrder->customer_id;
+        $order->order_sn = $oldOrder->order_sn;
+        $order->description = $oldOrder->description;
+        $order->order_price = $oldOrder->order_price;
+        $order->remark = $oldOrder->remark;
+        $order->type = Order::TYPE_FINAL;
+        $order->status = $oldOrder->status;
+        $order->provide_date = $oldOrder->provide_date;
         $order->save();
 
         $data = [];
         foreach ($orderRecord as $key => $value) {
             $row = [];
 
-            $row[] = $value->type       ;
-            $row[] = $value->inquiry_id ;
-            $row[] = $value->goods_id   ;
+            $row[] = $value->type;
+            $row[] = $value->inquiry_id;
+            $row[] = $value->goods_id;
             $row[] = $value->quote_price;
-            $row[] = $value->number     ;
+            $row[] = $value->number;
             $row[] = $order->id;
             $row[] = Order::TYPE_FINAL;
-            $row[] = $value->status     ;
-            $row[] = $value->remark     ;
-            $row[] = $value->offer_date ;
+            $row[] = $value->status;
+            $row[] = $value->remark;
+            $row[] = $value->offer_date;
 
             $data[] = $row;
         }
 
         $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_id', 'order_type', 'status', 'remark', 'offer_date'];
-        $num   = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+        $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
         if ($num) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -495,15 +499,16 @@ class OrderController extends BaseController
         $data = [];
 
         $model = Order::findOne($id);
-        if (!$model){
-            echo '查不到此报价单信息';die;
+        if (!$model) {
+            echo '查不到此报价单信息';
+            die;
         }
         Yii::$app->session->set('order_inquiry_id', $id);
         $list = QuoteRecord::findAll(['order_id' => $id]);
 
         $model->loadDefaultValues();
         $data['model'] = $model;
-        $data['list']  = $list;
+        $data['list'] = $list;
 
         return $this->render('final-quote-detail', $data);
     }
@@ -511,44 +516,44 @@ class OrderController extends BaseController
     //保存为采购单
     public function actionSubmitPurchase()
     {
-        $ids      = Yii::$app->request->post('ids');
+        $ids = Yii::$app->request->post('ids');
         $admin_id = Yii::$app->request->post('admin_id');
 
         $orderRecord = QuoteRecord::findAll(['id' => $ids]);
 
         $oldOrder = Order::findOne($orderRecord['0']->order_id);
         $order = new Order();
-        $order->customer_id   = $oldOrder->customer_id ;
-        $order->order_sn      = $oldOrder->order_sn    ;
-        $order->admin_id      = $admin_id;
-        $order->description   = $oldOrder->description ;
-        $order->order_price   = $oldOrder->order_price ;
-        $order->remark        = $oldOrder->remark      ;
-        $order->type          = Order::TYPE_PURCHASE   ;
-        $order->status        = $oldOrder->status      ;
-        $order->provide_date  = $oldOrder->provide_date;
+        $order->customer_id = $oldOrder->customer_id;
+        $order->order_sn = $oldOrder->order_sn;
+        $order->admin_id = $admin_id;
+        $order->description = $oldOrder->description;
+        $order->order_price = $oldOrder->order_price;
+        $order->remark = $oldOrder->remark;
+        $order->type = Order::TYPE_PURCHASE;
+        $order->status = $oldOrder->status;
+        $order->provide_date = $oldOrder->provide_date;
         $order->save();
 
         $data = [];
         foreach ($orderRecord as $key => $value) {
             $row = [];
 
-            $row[] = $value->type       ;
-            $row[] = $value->inquiry_id ;
-            $row[] = $value->goods_id   ;
+            $row[] = $value->type;
+            $row[] = $value->inquiry_id;
+            $row[] = $value->goods_id;
             $row[] = $value->quote_price;
-            $row[] = $value->number     ;
+            $row[] = $value->number;
             $row[] = $order->id;
             $row[] = Order::TYPE_PURCHASE;
-            $row[] = $value->status     ;
-            $row[] = $value->remark     ;
-            $row[] = $value->offer_date ;
+            $row[] = $value->status;
+            $row[] = $value->remark;
+            $row[] = $value->offer_date;
 
             $data[] = $row;
         }
 
         $field = ['type', 'inquiry_id', 'goods_id', 'quote_price', 'number', 'order_id', 'order_type', 'status', 'remark', 'offer_date'];
-        $num   = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
+        $num = Yii::$app->db->createCommand()->batchInsert(QuoteRecord::tableName(), $field, $data)->execute();
         if ($num) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -574,15 +579,16 @@ class OrderController extends BaseController
         $data = [];
 
         $model = Order::findOne($id);
-        if (!$model){
-            echo '查不到此报价单信息';die;
+        if (!$model) {
+            echo '查不到此报价单信息';
+            die;
         }
         Yii::$app->session->set('order_inquiry_id', $id);
         $list = QuoteRecord::findAll(['order_id' => $id]);
 
         $model->loadDefaultValues();
         $data['model'] = $model;
-        $data['list']  = $list;
+        $data['list'] = $list;
 
         return $this->render('purchase-detail', $data);
     }
@@ -596,7 +602,7 @@ class OrderController extends BaseController
             $tempGoods = TempOrderGoods::findAll(['token' => $params['token']]);
         }
         return $this->render('add-goods', [
-            'params'    => $params,
+            'params' => $params,
             'tempGoods' => $tempGoods,
         ]);
     }
@@ -604,7 +610,7 @@ class OrderController extends BaseController
     //创建订单  添加动作
     public function actionAddGoods()
     {
-        $goods_id   = (string)Yii::$app->request->post('goods_id');
+        $goods_id = (string)Yii::$app->request->post('goods_id');
         $goods = Goods::find()->where(['id' => $goods_id])->asArray()->one();
 
         if ($goods) {
@@ -618,8 +624,8 @@ class OrderController extends BaseController
     public function actionAddGoodsNew()
     {
         $data = [];
-        $goods_id   = (string)Yii::$app->request->post('goods_id');
-        $number   = (string)Yii::$app->request->get('number', 10);
+        $goods_id = (string)Yii::$app->request->post('goods_id');
+        $number = (string)Yii::$app->request->get('number', 10);
         $goods = Goods::find()->where(['id' => $goods_id])->asArray()->one();
         if (empty($goods)) {
             return json_encode(['code' => 500, 'msg' => '没有此零件']);
@@ -640,14 +646,14 @@ class OrderController extends BaseController
         $params = Yii::$app->request->get();
         $goods = Yii::$app->request->post();
 
-        $order               = new Order();
-        $order->customer_id  = $params['customer_id'];
-        $order->order_sn     = $params['order_sn'];
-        $order->manage_name  = $params['manage_name'];
+        $order = new Order();
+        $order->customer_id = $params['customer_id'];
+        $order->order_sn = $params['order_sn'];
+        $order->manage_name = $params['manage_name'];
         $goodsIds = ArrayHelper::getColumn($goods['goodsInfo'], 'goods_id');
-        $order->goods_ids    = json_encode($goodsIds);
-        $order->order_type   = $params['order_type'];
-        $order->created_at   = $params['created_at'];
+        $order->goods_ids = json_encode($goodsIds);
+        $order->order_type = $params['order_type'];
+        $order->created_at = $params['created_at'];
 
         if ($order->save()) {
             $data = [];
@@ -674,68 +680,68 @@ class OrderController extends BaseController
      */
     public function actionCreateFinal($id, $key = 0)
     {
-        $data      = [];
-        $order     = Order::findOne($id);
+        $data = [];
+        $order = Order::findOne($id);
         if (!$order) {
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
-        $goods_ids     = json_decode($order->goods_ids, true);
-        $goods         = Goods::find()->where(['id' => $goods_ids])->all();
-        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->all();
+        $goods_ids = json_decode($order->goods_ids, true);
+        $goods = Goods::find()->where(['id' => $goods_ids])->all();
+        $orderGoods = OrderGoods::find()->where(['order_id' => $order->id])->all();
 
         //先删除库里的垃圾数据
-        FinalGoods::deleteAll(['and', ['order_id'  => $id], ['!=', 'key', $key]]);
+        FinalGoods::deleteAll(['and', ['order_id' => $id], ['!=', 'key', $key]]);
 
         //订单零件生成成本零件记录
         foreach ($orderGoods as $value) {
             $isHaveFinalGoods = FinalGoods::find()->where([
-                'order_id'  => $id,
-                'key'       => $key,
-                'goods_id'  => $value->goods_id,
-                'serial'    => $value->serial,
+                'order_id' => $id,
+                'key' => $key,
+                'goods_id' => $value->goods_id,
+                'serial' => $value->serial,
             ])->one();
             if (!$isHaveFinalGoods) {
                 $inquiry = Inquiry::find()->where([
-                    'good_id'           => $value->goods_id,
-                    'is_better'         => Inquiry::IS_BETTER_YES,
+                    'good_id' => $value->goods_id,
+                    'is_better' => Inquiry::IS_BETTER_YES,
                     'is_confirm_better' => 1
                 ])->one();
                 if (!$inquiry) {
                     $inquiry = Inquiry::find()->where([
-                        'good_id'           => $value->goods_id,
+                        'good_id' => $value->goods_id,
                     ])->orderBy('price asc')->one();
                     if (!$inquiry) {
                         continue;
                     }
                 }
                 $isHaveFinalGoods = new FinalGoods();
-                $isHaveFinalGoods->order_id     = $id;
-                $isHaveFinalGoods->goods_id     = $value->goods_id;
-                $isHaveFinalGoods->serial       = $value->serial;
+                $isHaveFinalGoods->order_id = $id;
+                $isHaveFinalGoods->goods_id = $value->goods_id;
+                $isHaveFinalGoods->serial = $value->serial;
                 $isHaveFinalGoods->relevance_id = $inquiry->id;
-                $isHaveFinalGoods->key          = $key;
-                $isHaveFinalGoods->number       = $value->number;
+                $isHaveFinalGoods->key = $key;
+                $isHaveFinalGoods->number = $value->number;
                 $isHaveFinalGoods->save();
             }
         }
 
-        $finalGoods    = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
+        $finalGoods = FinalGoods::find()->where(['order_id' => $id, 'key' => $key])->indexBy('goods_id')->all();
 
         $date = date('ymd_');
         $orderI = OrderFinal::find()->where(['like', 'final_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $finalSn = explode('_', $orderI->final_sn);
-            $number = sprintf("%03d", $finalSn[2]+1);
+            $number = sprintf("%03d", $finalSn[2] + 1);
         } else {
             $number = '001';
         }
 
-        $data['goods']        = $goods;
-        $data['order']        = $order;
-        $data['finalGoods']   = $finalGoods;
-        $data['orderGoods']   = $orderGoods;
-        $data['model']        = new OrderFinal();
-        $data['number']       = $number;
+        $data['goods'] = $goods;
+        $data['order'] = $order;
+        $data['finalGoods'] = $finalGoods;
+        $data['orderGoods'] = $orderGoods;
+        $data['model'] = new OrderFinal();
+        $data['number'] = $number;
 
         return $this->render('create-final', $data);
     }
@@ -751,7 +757,7 @@ class OrderController extends BaseController
         $goodsList = Goods::findAll(['id' => $goodsIds]);
 
         return $this->render('add-goods-inquiry', [
-            'params'    => $params,
+            'params' => $params,
             'goodsList' => $goodsList
         ]);
     }
@@ -763,13 +769,13 @@ class OrderController extends BaseController
     {
         $params = Yii::$app->request->post();
 
-        $order               = new Order();
-        $order->customer_id  = $params['customer_id'];
-        $order->order_sn     = $params['order_sn'];
-        $order->manage_name  = $params['manage_name'];
-        $order->goods_ids    = json_encode($params['goodsIds']);
-        $order->order_type   = Order::ORDER_TYPE_PROJECT_NO;
-        $order->created_at   = $params['created_at'];
+        $order = new Order();
+        $order->customer_id = $params['customer_id'];
+        $order->order_sn = $params['order_sn'];
+        $order->manage_name = $params['manage_name'];
+        $order->goods_ids = json_encode($params['goodsIds']);
+        $order->order_type = Order::ORDER_TYPE_PROJECT_NO;
+        $order->created_at = $params['created_at'];
 
         if ($order->save()) {
             $data = [];
@@ -811,15 +817,15 @@ class OrderController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C'];
         $tableHeader = ['品牌', '零件号', '数量'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         $title = '订单添加零件上传模板' . date('ymd-His');
@@ -829,7 +835,7 @@ class OrderController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -884,12 +890,12 @@ class OrderController extends BaseController
                                 continue;
                             }
                             $goods = Goods::find()->where([
-                                'goods_number'  => trim($value['B']),
+                                'goods_number' => trim($value['B']),
                                 'material_code' => trim($value['A']),
                             ])->one();
                             if ($goods) {
                                 $item = [];
-                                $item[] = $key-1;
+                                $item[] = $key - 1;
                                 $item[] = $goods->id;
                                 $item[] = trim($value['C']);
                                 $item[] = $time;
@@ -897,22 +903,22 @@ class OrderController extends BaseController
                                 if (!$goods->goods_number_b) {
                                     $temp_b = TempNotGoodsB::findOne(['goods_id' => $goods->id]);
                                     if (!$temp_b) {
-                                        $temp_b            = new TempNotGoodsB();
+                                        $temp_b = new TempNotGoodsB();
                                     }
-                                    $temp_b->goods_id       = $goods->id;
-                                    $temp_b->goods_number   = $goods->goods_number;
+                                    $temp_b->goods_id = $goods->id;
+                                    $temp_b->goods_number = $goods->goods_number;
                                     $temp_b->goods_number_b = $goods->goods_number_b;
                                     $temp_b->save();
                                 }
                             } else {
                                 $temp = TempNotGoods::findOne([
-                                    'brand_name'   => trim($value['A']),
+                                    'brand_name' => trim($value['A']),
                                     'goods_number' => trim($value['B'])
                                 ]);
                                 if (!$temp) {
                                     $temp = new TempNotGoods();
                                 }
-                                $temp->brand_name   = trim($value['A']);
+                                $temp->brand_name = trim($value['A']);
                                 $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             }
@@ -947,15 +953,15 @@ class OrderController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter      = ['A', 'B'];
+        $letter = ['A', 'B'];
         $tableHeader = ['品牌', '零件号'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         //获取数据
@@ -978,7 +984,7 @@ class OrderController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');

@@ -114,7 +114,9 @@ if ($model->isNewRecord) {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>
+                        <input type="text" class="form-control" name="belong_to" value="<?=$_GET['belong_to'] ?? ''?>">
+                    </td>
                     <td>
                         <select class="form-control" name="is_process">
                             <option value=""></option>
@@ -371,6 +373,9 @@ if ($model->isNewRecord) {
                         break;
                     case 'original_company':
                         parameter += '&original_company=' + $(e).val();
+                        break;
+                    case 'belong_to':
+                        parameter += '&belong_to=' + $(e).val();
                         break;
                     default:
                         break;
