@@ -74,6 +74,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>铭牌照片</th>
                 <th>加工照片</th>
                 <th>数量</th>
+                <th>主零件</th>
                 <th>询价</th>
                 <th>总询价条目</th>
                 <th>我的询价条目</th>
@@ -104,6 +105,14 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
                             <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                             <td><?=$item->number?></td>
+                            <td><?php
+                                $text = '';
+                                foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                    $text .= $key . ':' . $device . '<br/>';
+                                }
+                                echo $text;
+                                ?>
+                            </td>
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                             <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                             <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
