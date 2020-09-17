@@ -112,10 +112,15 @@ $userId   = Yii::$app->user->identity->id;
                     'format'         => 'raw',
                     'contentOptions' =>['style'=>'min-width: 200px;'],
                     'value'          => function ($model, $key, $index, $column){
-                        $html = Html::a('<i class="fa fa-paper-plane-o"></i> 生成询价单', Url::to(['create-inquiry-new', 'id' => $model['id']]), [
+                        $html = Html::a('<i class="fa fa-paper-plane-o"></i>询价单(顶)', Url::to(['create-inquiry-new', 'id' => $model['id'], 'level' => 1]), [
                             'data-pjax' => '0',
                             'class' => 'btn btn-primary btn-xs btn-flat',
                         ]);
+                        $html .= Html::a('<i class="fa fa-paper-plane-o"></i>询价单(子)', Url::to(['create-inquiry-new', 'id' => $model['id'], 'level' => 2]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-info btn-xs btn-flat',
+                        ]);
+
                         if (!$model->cost) {
                             $html .= Html::a('<i class="fa fa-heart"></i> 生成成本单', Url::to(['create-final', 'id' => $model['id'], 'key' => date('YmdHis') . rand(10, 99)]), [
                                 'data-pjax' => '0',

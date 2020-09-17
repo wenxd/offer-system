@@ -11,6 +11,7 @@ use Yii;
  * @property string $inquiry_sn 询价单号
  * @property int $goods_id 零件ID
  * @property int $is_deleted 是否删除：0未删除 1已删除
+ * @property int $is_inquiry 是否询价 0否 1是
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $not_result_at
@@ -24,6 +25,7 @@ use Yii;
  * @property string $order_inquiry_id
  * @property string $supplier_id
  * @property string $remark
+ * @property int $level 零件等级：1顶级，2子级
  */
 class InquiryGoods extends \yii\db\ActiveRecord
 {
@@ -54,7 +56,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number'], 'integer'],
+            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number', 'is_inquiry', 'level'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at', 'supplier_id'], 'safe'],
             [['inquiry_sn', 'reason', 'remark'], 'string', 'max' => 255],
         ];

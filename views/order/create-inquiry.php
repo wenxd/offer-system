@@ -10,7 +10,11 @@ use app\models\Admin;
 use app\models\InquiryGoods;
 use app\models\AuthAssignment;
 
-$this->title = '生成询价单';
+if ($level == 1) {
+    $this->title = '生成询价单(顶)';
+} else {
+    $this->title = '生成询价单(子)';
+}
 $this->params['breadcrumbs'][] = $this->title;
 
 $inquiryInfo = [];
@@ -207,7 +211,7 @@ if ($model->isNewRecord) {
                         foreach (json_decode($item->belong_to, true) as $key => $device) {
                             $text .= $key . ':' . $device . '<br/>';
                         }
-                        echo $text
+                        echo $text;
                         ?>
                     </td>
                     <td class="addColor"><?= Goods::$process[$item->goods->is_process]?></td>
@@ -257,19 +261,21 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'inquiry_sn')->textInput(['readonly' => true]) ?>
     </div>
     <?php if (!$order->is_dispatch):?>
-        <div class="box-footer">
-            <?= Html::button('保存询价单', [
-                    'class' => 'btn btn-success inquiry_save',
-                    'name'  => 'submit-button']
-            )?>
-        </div>
+
     <?php endif;?>
+    <div class="box-footer">
+        <?= Html::button('保存询价单', [
+                'class' => 'btn btn-success inquiry_save',
+                'name'  => 'submit-button']
+        )?>
+    </div>
     <?php ActiveForm::end(); ?>
 </div>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    var level = <?=$level?>;
     $(document).ready(function () {
         init();
         //全选
@@ -314,11 +320,11 @@ if ($model->isNewRecord) {
             var end_date   = $('#orderinquiry-end_date').val();
             var order_id   = $('#orderinquiry-order_id').val();
             var inquiry_sn = $('#orderinquiry-inquiry_sn').val();
-
+            console.log({inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info, level:level});
             $.ajax({
                 type:"post",
                 url:'?r=order-inquiry/save-order',
-                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info},
+                data:{inquiry_sn:inquiry_sn, order_id:order_id, end_date:end_date, admin_id:admin_id, goods_info:goods_info, level:level},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){

@@ -13,10 +13,12 @@ use Yii;
  * @property int $number 数量
  * @property string $serial 序号
  * @property int $is_out 是否出库 0否 1是
+ * @property int $level 零件等级：1顶级，2子级
  * @property string $out_time 出库时间
  * @property int $is_deleted 是否删除：0未删除 1已删除
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
+ * @property string $belong_to 所属json
  */
 class OrderGoodsBak extends \yii\db\ActiveRecord
 {
@@ -37,7 +39,7 @@ class OrderGoodsBak extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'goods_id', 'number', 'is_out', 'is_deleted'], 'integer'],
+            [['order_id', 'goods_id', 'number', 'is_out', 'is_deleted', 'level'], 'integer'],
             [['serial', 'out_time', 'updated_at', 'created_at', 'belong_to'], 'safe'],
         ];
     }

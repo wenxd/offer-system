@@ -247,7 +247,7 @@ class OrderController extends BaseController
     /**
      * 2020-09-16 俊杰替换(旧的已注释)
      */
-    public function actionCreateInquiryNew($id)
+    public function actionCreateInquiryNew($id, $level)
     {
         //清除订单零件对应表临时数据
         OrderGoodsBak::deleteAll();
@@ -259,40 +259,45 @@ class OrderController extends BaseController
         $OrderGoodsBak = [];
         foreach ($orderGoodsOldList as $goods) {
             //是否是总成
-            if ($goods['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
-                $goods['info'] = '';
-                $goods['sum'] = $goods['number'];
-                $goods['id'] = $goods['goods_id'];
-                $data = GoodsRelation::getGoodsSon($goods);
-                if ($data) {
-                    foreach ($data as $k => $item) {
-                        if (isset($OrderGoodsBak[$item['id']])) {
-                            $OrderGoodsBak[$item['id']]['number'] +=  $item['sum'];
-                            foreach ($item['info'] as $info_k => $info_v) {
-                                if (isset($OrderGoodsBak[$item['id']]['info'][$info_k])) {
-                                    $OrderGoodsBak[$item['id']]['info'][$info_k] += $info_v;
-                                } else {
-                                    $OrderGoodsBak[$item['id']]['info'][$info_k] = $info_v;
-                                }
-                            }
-                        } else {
-                            $OrderGoodsBak[$item['id']] = [
-                                'order_id' => $goods['order_id'],
-                                'goods_id' => $item['id'],
-                                'number' => $item['sum'],
-                                'serial' => $item['id'],
-                                'is_out' => $goods['is_out'],
-                                'out_time' => $goods['out_time'],
-                                'created_at' => $goods['created_at'],
-                                'updated_at' => $goods['updated_at'],
-                                'info' => $item['info'],
-                            ];
-                        }
-                    }
-                }
-            } else {
+            if ($level == 1) {
                 $goods['info'] = [];
                 $OrderGoodsBak[] = $goods;
+            } else {
+                if ($goods['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
+                    $goods['info'] = '';
+                    $goods['sum'] = $goods['number'];
+                    $goods['id'] = $goods['goods_id'];
+                    $data = GoodsRelation::getGoodsSon($goods);
+                    if ($data) {
+                        foreach ($data as $k => $item) {
+                            if (isset($OrderGoodsBak[$item['id']])) {
+                                $OrderGoodsBak[$item['id']]['number'] +=  $item['sum'];
+                                foreach ($item['info'] as $info_k => $info_v) {
+                                    if (isset($OrderGoodsBak[$item['id']]['info'][$info_k])) {
+                                        $OrderGoodsBak[$item['id']]['info'][$info_k] += $info_v;
+                                    } else {
+                                        $OrderGoodsBak[$item['id']]['info'][$info_k] = $info_v;
+                                    }
+                                }
+                            } else {
+                                $OrderGoodsBak[$item['id']] = [
+                                    'order_id' => $goods['order_id'],
+                                    'goods_id' => $item['id'],
+                                    'number' => $item['sum'],
+                                    'serial' => $item['id'],
+                                    'is_out' => $goods['is_out'],
+                                    'out_time' => $goods['out_time'],
+                                    'created_at' => $goods['created_at'],
+                                    'updated_at' => $goods['updated_at'],
+                                    'info' => $item['info'],
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    $goods['info'] = [];
+                    $OrderGoodsBak[] = $goods;
+                }
             }
         }
         $model = new OrderGoodsBak();
@@ -304,14 +309,37 @@ class OrderController extends BaseController
             $model->setAttributes($item);
             $model->save() && $model->id = 0;
         }
-        return $this->redirect(['order/create-inquiry', 'id' => $id]);
+        return $this->redirect(['order/create-inquiry', 'id' => $id, 'level' => $level]);
     }
+//    public function actionCreateInquiryNew($id)
+//    {
+//        //处理订单零件合并
+//        OrderGoodsBak::deleteAll();
+//        $orderGoodsOldList = OrderGoods::find()->where(['order_id' => $id])->asArray()->all();
+//        $orderGoodsOldList = ArrayHelper::index($orderGoodsOldList, null, 'goods_id');
+//
+//        $newOrderGoods = [];
+//        foreach ($orderGoodsOldList as $key => $orderGoodsList) {
+//            $number = 0;
+//            foreach ($orderGoodsList as $k => $orderGoods) {
+//                if ($k == 0) {
+//                    $saveOrderGoods = $orderGoods;
+//                }
+//                $number += $orderGoods['number'];
+//            }
+//            $saveOrderGoods['number'] = $number;
+//            $newOrderGoods[] = $saveOrderGoods;
+//        }
+//        $keys = [];
+//        $res = Yii::$app->db->createCommand()->batchInsert(OrderGoodsBak::tableName(), $keys, $newOrderGoods)->execute();
+//        return $this->redirect(['order/create-inquiry', 'id' => $id]);
+//    }
 
     /**生成询价单
      * @param $id
      * @return false|string
      */
-    public function actionCreateInquiry($id)
+    public function actionCreateInquiry($id, $level)
     {
         $request = Yii::$app->request->get();
         $order     = Order::findOne($id);
@@ -380,6 +408,7 @@ class OrderController extends BaseController
         $supplierList = Supplier::find()->where(['is_deleted' => 0, 'is_confirm' => 1])->all();
 
         $data                 = [];
+        $data['level'] = $level;
         $data['orderInquiry'] = $orderInquiry;
         $data['model']        = new OrderInquiry();
         $data['order']        = $order;

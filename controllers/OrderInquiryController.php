@@ -164,6 +164,7 @@ class OrderInquiryController extends BaseController
                     $row[] = $goods['serial'];
                     $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
                     $row[] = $goods['remark'];
+                    $row[] = $params['level'] ? $params['level'] : 1;
                     $data[] = $row;
                 }
                 self::insertInquiryGoods($data);
@@ -189,7 +190,7 @@ class OrderInquiryController extends BaseController
     //批量插入
     public static function insertInquiryGoods($data)
     {
-        $feild = ['order_id', 'order_inquiry_id', 'inquiry_sn', 'goods_id', 'number', 'serial', 'supplier_id', 'remark'];
+        $feild = ['order_id', 'order_inquiry_id', 'inquiry_sn', 'goods_id', 'number', 'serial', 'supplier_id', 'remark', 'level'];
         $num = Yii::$app->db->createCommand()->batchInsert(InquiryGoods::tableName(), $feild, $data)->execute();
     }
 
