@@ -276,27 +276,28 @@ class OrderInquiryController extends BaseController
             $res = InquiryGoods::find()->where(['order_id' => $info->order_id, 'is_inquiry' => InquiryGoods::IS_INQUIRY_NO])->one();
             if (!$res) {
                 //订单改状态
-                $order = Order::findOne($info->order_id);
+//                $order = Order::findOne($info->order_id);
+                $order = Order::find()->where(['id' => $info->order_id])->with('orderGoods')->one();
                 $order->status = Order::STATUS_YES;
                 $order->save();
                 //如果是多个零件组成
                 if ($level == 2) {
                     // 获取询价单号
-                    $inquiry_sn = OrderInquiry::getInquirySn();
+//                    $inquiry_sn = OrderInquiry::getInquirySn();
                     // 添加询价单
                     $orderInquiryInfo = $orderInquiry->toArray();
-                    $orderInquiryInfo['inquiry_sn'] = $inquiry_sn;
+//                    $orderInquiryInfo['inquiry_sn'] = $inquiry_sn;
                     unset($orderInquiryInfo['id']);
-                    $OrderInquiryModel = new OrderInquiry();
-                    foreach ($orderInquiryInfo as $k => $v) {
-                        $OrderInquiryModel->$k = $v;
-                    }
-                    $OrderInquiryModel->save();
+//                    $OrderInquiryModel = new OrderInquiry();
+//                    foreach ($orderInquiryInfo as $k => $v) {
+//                        $OrderInquiryModel->$k = $v;
+//                    }
+//                    $OrderInquiryModel->save();
                     //询价单号与零件ID对应表数据组装
                     $inquiry_goods_model = new InquiryGoods();
                     $inquiry_goods = $info->toArray();
-                    $inquiry_goods['order_inquiry_id'] = $OrderInquiryModel->id;
-                    $inquiry_goods['inquiry_sn'] = $inquiry_sn;
+//                    $inquiry_goods['order_inquiry_id'] = $OrderInquiryModel->id;
+//                    $inquiry_goods['inquiry_sn'] = $inquiry_sn;
                     // 查询税率
                     $tax = SystemConfig::find()->where(['title' => SystemConfig::TITLE_TAX])->asArray()->one();
                     // 获取总成用户id
