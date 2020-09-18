@@ -310,10 +310,12 @@ class OrderInquiryController extends BaseController
                         $inquiry_goods['tax_rate'] = $tax['value'];
                         $inquiry_goods['supplier_id'] = $supplier['id'];
                         $inquiry_goods['number'] = $goods->number;
-                        Inquiry::createTop($inquiry_goods, $inquiry_goods);
-                        $inquiry_goods_model->isNewRecord = true;
-                        $inquiry_goods_model->setAttributes($inquiry_goods);
-                        $inquiry_goods_model->save() && $inquiry_goods_model->id = 0;
+                        $res = Inquiry::createTop($inquiry_goods, $inquiry_goods);
+                        if ($res) {
+                            $inquiry_goods_model->isNewRecord = true;
+                            $inquiry_goods_model->setAttributes($inquiry_goods);
+                            $inquiry_goods_model->save() && $inquiry_goods_model->id = 0;
+                        }
                     }
                 }
             }

@@ -304,5 +304,6 @@ class Inquiry extends ActiveRecord
             $model->setAttributes($item);
             $model->save() && $model->id = 0;
         }
+        return true;
     }
 }
