@@ -20,6 +20,7 @@ class InquirySearch extends Inquiry
     public $is_process;
     public $img_id;
     public $inquiry_sn;
+    public $is_assembly;
 
     public $supplier_name;
     /**
@@ -29,7 +30,7 @@ class InquirySearch extends Inquiry
     {
         return [
             [['id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'delivery_time', 'number',
-                'admin_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
+                'admin_id', 'is_upload', 'is_confirm_better', 'is_purchase', 'is_assembly'], 'integer'],
             [['good_id', 'supplier_name', 'inquiry_datetime', 'updated_at', 'created_at', 'goods_number', 'tax_price',
                 'offer_date', 'remark', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'is_process', 'goods_number_b', 'tax_rate', 'inquiry_sn'], 'safe'],
@@ -114,6 +115,7 @@ class InquirySearch extends Inquiry
             'inquiry.is_purchase'       => $this->is_purchase,
             'inquiry.tax_rate'          => $this->tax_rate,
             'inquiry.technique_remark'  => $this->technique_remark,
+            'inquiry.is_assembly'  => $this->is_assembly,
         ]);
 
         $query->andFilterWhere(['inquiry.good_id' => $this->good_id]);

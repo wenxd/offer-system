@@ -35,6 +35,7 @@ use yii\helpers\ArrayHelper;
  * @property string $technique_remark
  * @property string $inquiry_goods_id
  * @property string $order_inquiry_id
+ * @property string $is_assembly
  */
 class Inquiry extends ActiveRecord
 {
@@ -117,7 +118,7 @@ class Inquiry extends ActiveRecord
     {
         return [
             [['good_id', 'supplier_id', 'sort', 'is_better', 'is_newest', 'is_deleted', 'is_priority', 'admin_id',
-                'order_id', 'order_inquiry_id', 'is_upload', 'is_confirm_better', 'is_purchase'], 'integer'],
+                'order_id', 'order_inquiry_id', 'is_upload', 'is_confirm_better', 'is_purchase', 'is_assembly'], 'integer'],
             [['price', 'tax_price', 'number'], 'required'],
             [['number'], 'integer', 'min' => 1],
             [['updated_at', 'created_at', 'offer_date', 'supplier_name', 'goods_number', 'goods_number_b',
@@ -281,7 +282,7 @@ class Inquiry extends ActiveRecord
                 'order_id' => $base_info['order_id'],//订单ID
                 'order_inquiry_id' => $base_info['order_inquiry_id'],//询价单ID
                 'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
-                'technique_remark' => '总成',
+                'is_assembly' => 1,
             ],
         ];
         foreach ($orderGoods as $goods) {

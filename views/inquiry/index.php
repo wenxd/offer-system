@@ -182,6 +182,19 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute'      => 'is_assembly',
+                'label'          => '总成',
+                'contentOptions' =>['style'=>'min-width: 80px;'],
+                'filter'         => Goods::$assembly,
+                'value'          => function ($model, $key, $index, $column) {
+                    if ($model->goods) {
+                        return Goods::$assembly[$model->goods->is_assembly];
+                    } else {
+                        return '';
+                    }
+                }
+            ],
+            [
                 'attribute'      => 'is_process',
                 'label'          => '加工',
                 'contentOptions' =>['style'=>'min-width: 80px;'],
