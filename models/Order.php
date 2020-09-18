@@ -150,6 +150,12 @@ class Order extends ActiveRecord
         return $this->hasOne(OrderFinal::className(), ['order_id' => 'id']);
     }
 
+    //关联订单与零件对应表
+    public function getOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::className(), ['order_id' => 'id']);
+    }
+
     public static function getInquiry($order_id)
     {
         $orderGoodsList = OrderGoods::find()->where(['order_id' => $order_id])->indexBy('goods_id')->asArray()->all();

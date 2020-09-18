@@ -244,7 +244,7 @@ class OrderInquiryController extends BaseController
         $super_user_id = $use_admin->user_id;
 
         $info = InquiryGoods::findOne($id);
-
+        $level = $info->level ? $info->level : 1;
         //询价单
         $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
 
@@ -279,6 +279,43 @@ class OrderInquiryController extends BaseController
                 $order = Order::findOne($info->order_id);
                 $order->status = Order::STATUS_YES;
                 $order->save();
+                //如果是多个零件组成
+                if ($level == 2) {
+                    // 获取询价单号
+                    $inquiry_sn = OrderInquiry::getInquirySn();
+                    // 添加询价单
+                    $orderInquiryInfo = $orderInquiry->toArray();
+                    $orderInquiryInfo['inquiry_sn'] = $inquiry_sn;
+                    unset($orderInquiryInfo['id']);
+                    $OrderInquiryModel = new OrderInquiry();
+                    foreach ($orderInquiryInfo as $k => $v) {
+                        $OrderInquiryModel->$k = $v;
+                    }
+                    $OrderInquiryModel->save();
+                    //询价单号与零件ID对应表数据组装
+                    $inquiry_goods_model = new InquiryGoods();
+                    $inquiry_goods = $info->toArray();
+                    $inquiry_goods['order_inquiry_id'] = $OrderInquiryModel->id;
+                    $inquiry_goods['inquiry_sn'] = $inquiry_sn;
+                    // 查询税率
+                    $tax = SystemConfig::find()->where(['title' => SystemConfig::TITLE_TAX])->asArray()->one();
+                    // 获取总成用户id
+                    $supplier = Supplier::find()->where(['name' => '总成'])->asArray()->one();
+                    // 询价单号与零件ID对应表
+                    foreach ($order->orderGoods as $goods) {
+                        $inquiry_goods['goods_id'] = $goods->goods_id;
+                        $inquiry_goods['serial'] = $goods->serial;
+                        unset($inquiry_goods['id']);
+                        unset($inquiry_goods['belong_to']);
+                        $inquiry_goods['tax_rate'] = $tax['value'];
+                        $inquiry_goods['supplier_id'] = $supplier['id'];
+                        $inquiry_goods['number'] = $goods->number;
+                        Inquiry::createTop($inquiry_goods, $inquiry_goods);
+                        $inquiry_goods_model->isNewRecord = true;
+                        $inquiry_goods_model->setAttributes($inquiry_goods);
+                        $inquiry_goods_model->save() && $inquiry_goods_model->id = 0;
+                    }
+                }
             }
             return json_encode(['code' => 200, 'msg' => '确认成功']);
         } else {

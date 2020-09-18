@@ -57,9 +57,9 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number', 'is_inquiry', 'level'], 'integer'],
+            [['goods_id', 'is_deleted', 'is_result', 'admin_id', 'is_result_tag', 'number', 'is_inquiry', 'level', 'order_id', 'order_inquiry_id'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at', 'inquiry_at', 'supplier_id'], 'safe'],
-            [['inquiry_sn', 'reason', 'remark', 'belong_to'], 'string', 'max' => 255],
+            [['inquiry_sn', 'reason', 'remark', 'belong_to', 'serial'], 'string', 'max' => 255],
         ];
     }
 
