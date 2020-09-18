@@ -66,6 +66,12 @@ $config = [
                     'logFile' => '@app/runtime/logs/'.date('Y-m-d').'.log',
                     'logVars' => ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'],
                 ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error'],
+                    'logVars' => [],
+                    'logFile' => '@runtime/logs/' . date('Y-m-d') . '/error.txt'
+                ],
             ],
         ],
         /*
