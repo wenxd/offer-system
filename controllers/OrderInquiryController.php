@@ -305,7 +305,7 @@ class OrderInquiryController extends BaseController
                     // 询价单号与零件ID对应表
                     foreach ($order->orderGoods as $goods) {
                         $inquiry_goods['goods_id'] = $goods->goods_id;
-                        $inquiry_goods['serial'] = $goods->serial;
+                        $inquiry_goods['serial'] = $goods->goods_id;
                         unset($inquiry_goods['id']);
                         unset($inquiry_goods['belong_to']);
                         $inquiry_goods['tax_rate'] = $tax['value'];

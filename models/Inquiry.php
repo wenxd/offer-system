@@ -266,7 +266,7 @@ class Inquiry extends ActiveRecord
         foreach ($orderGoods as $goods) {
             $info = $base_info;
             $info['goods_id'] = $goods['goods_id'];
-            $info['serial'] = $goods['serial'];
+            $info['serial'] = $goods['goods_id'];
             self::createTop($goods, $info);
         }
         //单价
