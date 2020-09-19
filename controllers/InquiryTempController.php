@@ -149,7 +149,12 @@ class InquiryTempController extends Controller
         } else {
             $inquiryList = Inquiry::find()->where(['good_id' => $goods_id])->asArray()->all();
         }
-
+        if (!empty($inquiryList)) {
+            $keys = [];
+            foreach ($inquiryList[0] as $k => $v) {
+                $keys[] = $k;
+            }
+        }
         $res = Yii::$app->db->createCommand()->batchInsert(InquiryTemp::tableName(), $keys, $inquiryList)->execute();
 
         return $this->redirect(['index']);
