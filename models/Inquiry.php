@@ -328,7 +328,6 @@ class Inquiry extends ActiveRecord
                 $data['time']['delivery_time'] = $time['delivery_time'];
             }
         }
-        $data['low'] = $data['excellent'];
         $model = new Inquiry();
         foreach ($data as $item) {
             $item['number'] = $base_info['number'];//询价数量
