@@ -192,14 +192,17 @@ class OrderAgreementController extends Controller
                         $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
                         //需要拆分
                         if (in_array($item['goods_id'], $post)) {
+                            $good->belong_to = '';
                             $data = GoodsRelation::getGoodsSonPrice($item, []);
                             foreach ($data as $v) {
                                 $agreementGoodsNews[] = $v;
                             }
                         } else {
+                            $good->belong_to = '[]';
                             //不需要拆分
                             $agreementGoodsNews[] = $item;
                         }
+                        $good->save();
                     }
                     //重组采购策略
                     $goodsNews = [];
