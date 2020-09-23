@@ -234,12 +234,28 @@ $userId   = Yii::$app->user->identity->id;
                     if ($model->is_purchase) {
                         return '';
                     } else {
-                        if ($model->is_merge) {
-                            if (!$model->is_all_stock) {
-                                return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['detail', 'id' => $model['id']]), [
+                        if (!$model->is_all_stock) {
+                            $html = Html::a('<i class="fa fa-plus"></i> 采购策略', Url::to(['detail', 'id' => $model['id'], 'type' => 'strategy']), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-success btn-xs btn-flat',
+                            ]);
+                            return $html . Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['detail', 'id' => $model['id'], 'type' => 'order']), [
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-primary btn-xs btn-flat',
                                 ]);
+                        } else {
+                            return '';
+                        }
+                        if ($model->is_merge) {
+                            if (!$model->is_all_stock) {
+                                $html = Html::a('<i class="fa fa-plus"></i> 采购策略', Url::to(['detail', 'id' => $model['id'], 'type' => 'strategy']), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-success btn-xs btn-flat',
+                                ]);
+                                return $html . Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['detail', 'id' => $model['id'], 'type' => 'order']), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-primary btn-xs btn-flat',
+                                    ]);
                             } else {
                                 return '';
                             }

@@ -41,6 +41,7 @@ use Yii;
  * @property string $purchase_number
  * @property string $purchase_is_show
  * @property string $order_number
+ * @property string $belong_to
  */
 class AgreementGoods extends \yii\db\ActiveRecord
 {
@@ -73,7 +74,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
                 'quote_all_price', 'quote_all_tax_price'], 'number'],
             [['updated_at', 'created_at', 'quote_delivery_time', 'delivery_time', 'purchase_number', 'serial'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'agreement_sn', 'purchase_date',
-                'agreement_date'], 'string', 'max' => 255],
+                'agreement_date', 'belong_to'], 'string', 'max' => 255],
         ];
     }
 
@@ -133,5 +134,10 @@ class AgreementGoods extends \yii\db\ActiveRecord
     public function getOrderAgreement()
     {
         return $this->hasOne(OrderAgreement::className(), ['id' => 'order_agreement_id']);
+    }
+
+    public function getGoodsRelation()
+    {
+        return $this->hasOne(GoodsRelation::className(), ['p_goods_id' => 'goods_id']);
     }
 }

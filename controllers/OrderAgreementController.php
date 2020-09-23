@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\{AgreementGoodsBak,
+    AgreementGoodsData,
+    GoodsRelation,
     Inquiry,
     Order,
     OrderAgreement,
@@ -69,16 +71,16 @@ class OrderAgreementController extends Controller
         $orderI = OrderAgreement::find()->where(['like', 'agreement_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $num = strrpos($orderI->agreement_sn, '_');
-            $str = substr($orderI->agreement_sn, $num+1);
-            $number = sprintf("%02d", $str+1);
+            $str = substr($orderI->agreement_sn, $num + 1);
+            $number = sprintf("%02d", $str + 1);
         } else {
             $number = '01';
         }
 
         return $this->render('view', [
-            'model'          => $model,
+            'model' => $model,
             'agreementGoods' => $agreementGoods,
-            'number'         => $number,
+            'number' => $number,
         ]);
     }
 
@@ -150,24 +152,119 @@ class OrderAgreementController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionDetail($id)
+    public function actionDetail($id, $type = 'order')
     {
         $request = Yii::$app->request->get();
         $orderAgreement = OrderAgreement::findOne($id);
-        $agreementGoodsQuery = AgreementGoods::find()->from('agreement_goods ag')
-            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1]);
-        if (isset($request['admin_id'])) {
-            $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
+        if ($type == 'strategy') {
+            //判断是否有原始数据
+            $agreementGoods = AgreementGoodsData::find()->alias('ag')
+                ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+                ->with('goodsRelation')->with('goods')
+                ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+                ->orderBy('serial')->all();
+            //如果没有则添加
+            if (empty($agreementGoods)) {
+                $agreementGoods = AgreementGoods::find()->alias('ag')
+                    ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+                    ->with('goodsRelation')->with('goods')
+                    ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+                    ->orderBy('serial')->all();
+                //保存到原始数据表
+                $AgreementGoodsDataModel = new AgreementGoodsData();
+                foreach ($agreementGoods as $item) {
+                    $AgreementGoodsDataModel->isNewRecord = true;
+                    $AgreementGoodsDataModel->setAttributes($item->toArray());
+                    $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
+                }
+            }/* else {
+                //如果有则覆盖现有数据，一键恢复数据
+                AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
+                AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
+                $model = new AgreementGoods();
+                $model_bak = new AgreementGoodsBak();
+                foreach ($AgreementGoodsData as $item) {
+                    $model->isNewRecord = true;
+                    $model->setAttributes($item->toArray());
+                    $model->save() && $model->id = 0;
+                    $model_bak->isNewRecord = true;
+                    $model_bak->setAttributes($item->toArray());
+                    $model_bak->save() && $model_bak->id = 0;
+                }
+                $agreementGoods = $AgreementGoodsData;
+            }*/
+            //展示原始数据
+            if(Yii::$app->request->isPost) {
+                $post = Yii::$app->request->post('goods_info');
+//                $post = [414, 415];
+                AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
+                AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
+                $agreementGoodsNews = [];
+                foreach ($agreementGoods as $good) {
+                    $item = $good->toArray();
+                    unset($item['id']);
+                    $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
+                    //需要拆分
+                    if (in_array($item['goods_id'], $post)) {
+                        $data = GoodsRelation::getGoodsSonPrice($item, []);
+                        foreach ($data as $v) {
+                            $agreementGoodsNews[] = $v;
+                        }
+                    } else {
+                        //不需要拆分
+                        $agreementGoodsNews[] = $item;
+                    }
+                }
+                //重组采购策略
+                $goodsNews = [];
+                foreach ($agreementGoodsNews as $goodsNew) {
+                    $goods_id = $goodsNew['goods_id'];
+                    $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                    if (isset($goodsNews[$goods_id])) {
+                        $goodsNew['info'] = $goodsNews[$goods_id]['info'];
+                        $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                        $goodsNew['number'] += $goodsNews[$goods_id]['number'];
+                        $goodsNew['order_number'] = $goodsNew['number'];
+                        $goodsNew['purchase_number'] = $goodsNew['number'];
+                    }
+                    $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
+                    $goodsNew['belong_to'] = $info;
+                    $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
+                    $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
+                    $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
+                    $goodsNew['quote_delivery_time'] = $goodsNew['delivery_time'];
+                    $goodsNews[$goods_id] = $goodsNew;
+                }
+                $model = new AgreementGoods();
+                $model_bak = new AgreementGoodsBak();
+                foreach ($goodsNews as $item) {
+                    $model->isNewRecord = true;
+                    $model->setAttributes($item);
+                    $model->save() && $model->id = 0;
+                    $model_bak->isNewRecord = true;
+                    $model_bak->setAttributes($item);
+                    $model_bak->save() && $model_bak->id = 0;
+                }
+                return json_encode($post);
+            }
+        } else {
+            $agreementGoodsQuery = AgreementGoods::find()->alias('ag')
+                ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+                ->with('goodsRelation')
+                ->with('goods')
+                ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1]);
+            //采购单
+            if (isset($request['admin_id'])) {
+                $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
+            }
+            if (isset($request['original_company']) && $request['original_company']) {
+                $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+            }
+            $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
         }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
-        }
-
-        $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
-        $inquiryGoods   = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
-        $purchaseGoods  = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();
-        $purchaseGoods  = ArrayHelper::index($purchaseGoods, null, 'goods_id');
+        $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
+        $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();
+        $purchaseGoods = ArrayHelper::index($purchaseGoods, null, 'goods_id');
 
         $date = date('ymd_');
         $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
@@ -182,12 +279,14 @@ class OrderAgreementController extends Controller
         $data = [];
         $data['orderAgreement'] = $orderAgreement;
         $data['agreementGoods'] = $agreementGoods;
-        $data['model']          = new OrderAgreement();
-        $data['number']         = $number;
-        $data['inquiryGoods']   = $inquiryGoods;
-        $data['purchaseGoods']  = $purchaseGoods;
-        $data['order']          = Order::findOne($orderAgreement->order_id);
-
+        $data['model'] = new OrderAgreement();
+        $data['number'] = $number;
+        $data['inquiryGoods'] = $inquiryGoods;
+        $data['purchaseGoods'] = $purchaseGoods;
+        $data['order'] = Order::findOne($orderAgreement->order_id);
+        if ($type == 'strategy') {
+            return $this->render('strategy', $data);
+        }
         return $this->render('detail', $data);
     }
 
@@ -199,18 +298,18 @@ class OrderAgreementController extends Controller
         $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
         $system_tax = SystemConfig::find()->select('value')->where([
             'is_deleted' => SystemConfig::IS_DELETED_NO,
-            'title'      => SystemConfig::TITLE_TAX,
+            'title' => SystemConfig::TITLE_TAX,
         ])->scalar();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('price asc')->one();
             if ($inquiry) {
-                $agreementGoods->price              = $inquiry->price;
-                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
-                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
-                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
-                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
-                $agreementGoods->relevance_id       = $inquiry->id;
-                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->price = $inquiry->price;
+                $agreementGoods->tax_price = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id = $inquiry->admin_id;
+                $agreementGoods->relevance_id = $inquiry->id;
+                $agreementGoods->delivery_time = $inquiry->delivery_time;
                 $agreementGoods->save();
             }
         }
@@ -226,18 +325,18 @@ class OrderAgreementController extends Controller
         $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
         $system_tax = SystemConfig::find()->select('value')->where([
             'is_deleted' => SystemConfig::IS_DELETED_NO,
-            'title'      => SystemConfig::TITLE_TAX,
+            'title' => SystemConfig::TITLE_TAX,
         ])->scalar();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('delivery_time asc')->one();
             if ($inquiry) {
-                $agreementGoods->price              = $inquiry->price;
-                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
-                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
-                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
-                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
-                $agreementGoods->relevance_id       = $inquiry->id;
-                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->price = $inquiry->price;
+                $agreementGoods->tax_price = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id = $inquiry->admin_id;
+                $agreementGoods->relevance_id = $inquiry->id;
+                $agreementGoods->delivery_time = $inquiry->delivery_time;
                 $agreementGoods->save();
             }
         }
@@ -253,22 +352,22 @@ class OrderAgreementController extends Controller
         $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
         $system_tax = SystemConfig::find()->select('value')->where([
             'is_deleted' => SystemConfig::IS_DELETED_NO,
-            'title'      => SystemConfig::TITLE_TAX,
+            'title' => SystemConfig::TITLE_TAX,
         ])->scalar();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $inquiry = Inquiry::find()->where([
-                'good_id'           => $agreementGoods->goods_id,
-                'is_better'         => Inquiry::IS_BETTER_YES,
+                'good_id' => $agreementGoods->goods_id,
+                'is_better' => Inquiry::IS_BETTER_YES,
                 'is_confirm_better' => 1
             ])->one();
             if ($inquiry) {
-                $agreementGoods->price              = $inquiry->price;
-                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
-                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
-                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
-                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
-                $agreementGoods->relevance_id       = $inquiry->id;
-                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->price = $inquiry->price;
+                $agreementGoods->tax_price = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id = $inquiry->admin_id;
+                $agreementGoods->relevance_id = $inquiry->id;
+                $agreementGoods->delivery_time = $inquiry->delivery_time;
                 $agreementGoods->save();
             }
         }
@@ -284,18 +383,18 @@ class OrderAgreementController extends Controller
         $agreementGoodsList = AgreementGoods::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0])->all();
         $system_tax = SystemConfig::find()->select('value')->where([
             'is_deleted' => SystemConfig::IS_DELETED_NO,
-            'title'      => SystemConfig::TITLE_TAX,
+            'title' => SystemConfig::TITLE_TAX,
         ])->scalar();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $inquiry = Inquiry::find()->where(['good_id' => $agreementGoods->goods_id])->orderBy('created_at Desc')->one();
             if ($inquiry) {
-                $agreementGoods->price              = $inquiry->price;
-                $agreementGoods->tax_price          = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
-                $agreementGoods->all_price          = $agreementGoods->number * $inquiry->price;
-                $agreementGoods->all_tax_price      = $agreementGoods->number * $agreementGoods->tax_price;
-                $agreementGoods->inquiry_admin_id   = $inquiry->admin_id;
-                $agreementGoods->relevance_id       = $inquiry->id;
-                $agreementGoods->delivery_time      = $inquiry->delivery_time;
+                $agreementGoods->price = $inquiry->price;
+                $agreementGoods->tax_price = number_format($inquiry->price * (1 + $system_tax / 100), 2, '.', '');
+                $agreementGoods->all_price = $agreementGoods->number * $inquiry->price;
+                $agreementGoods->all_tax_price = $agreementGoods->number * $agreementGoods->tax_price;
+                $agreementGoods->inquiry_admin_id = $inquiry->admin_id;
+                $agreementGoods->relevance_id = $inquiry->id;
+                $agreementGoods->delivery_time = $inquiry->delivery_time;
                 $agreementGoods->save();
             }
         }
@@ -310,7 +409,7 @@ class OrderAgreementController extends Controller
     {
         $agreementGoodsList = AgreementGoods::find()->where([
             'order_agreement_id' => $id,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+            'purchase_is_show' => AgreementGoods::IS_SHOW_YES
         ])->all();
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $stock = Stock::find()->where(['good_id' => $agreementGoods->goods_id])->one();
@@ -333,21 +432,21 @@ class OrderAgreementController extends Controller
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             $agreementGoodsBak = AgreementGoodsBak::find()->where(['order_agreement_id' => $id, 'agreement_goods_id' => $agreementGoods->id])->one();
             if ($agreementGoodsBak) {
-                $agreementGoods->tax_rate         = $agreementGoodsBak->tax_rate;
-                $agreementGoods->price            = $agreementGoodsBak->price;
-                $agreementGoods->tax_price        = $agreementGoodsBak->tax_price;
-                $agreementGoods->all_price        = $agreementGoodsBak->all_price;
-                $agreementGoods->all_tax_price    = $agreementGoodsBak->all_tax_price;
-                $agreementGoods->purchase_number  = $agreementGoodsBak->purchase_number;
-                $agreementGoods->delivery_time    = $agreementGoodsBak->delivery_time;
+                $agreementGoods->tax_rate = $agreementGoodsBak->tax_rate;
+                $agreementGoods->price = $agreementGoodsBak->price;
+                $agreementGoods->tax_price = $agreementGoodsBak->tax_price;
+                $agreementGoods->all_price = $agreementGoodsBak->all_price;
+                $agreementGoods->all_tax_price = $agreementGoodsBak->all_tax_price;
+                $agreementGoods->purchase_number = $agreementGoodsBak->purchase_number;
+                $agreementGoods->delivery_time = $agreementGoodsBak->delivery_time;
                 $agreementGoods->purchase_is_show = AgreementGoods::IS_SHOW_YES;
-                $agreementGoods->order_number     = $agreementGoods->number;
+                $agreementGoods->order_number = $agreementGoods->number;
                 $agreementGoods->save();
             }
         }
 
         $orderAgreement = OrderAgreement::findOne($id);
-        $orderAgreement->is_merge     = OrderAgreement::IS_MERGE_NO;
+        $orderAgreement->is_merge = OrderAgreement::IS_MERGE_NO;
         $orderAgreement->is_all_stock = OrderAgreement::IS_ALL_STOCK_NO;
         $orderAgreement->save();
 
@@ -364,12 +463,11 @@ class OrderAgreementController extends Controller
         $orderAgreement = OrderAgreement::findOne($id);
         $agreementGoodsList = AgreementGoods::find()->where([
             'order_agreement_id' => $id,
-            'is_deleted'         => 0,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            'is_deleted' => 0,
+            'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
         ])->all();
-
-        $goods_ids     = [];
-        $remainIds     = [];
+        $goods_ids = [];
+        $remainIds = [];
         $repetitionIds = [];
         foreach ($agreementGoodsList as $key => $agreementGoods) {
             if (in_array($agreementGoods->goods_id, $goods_ids)) {
@@ -382,7 +480,6 @@ class OrderAgreementController extends Controller
 
         //剩下的数据
         $remainList = AgreementGoods::find()->where(['id' => $remainIds])->indexBy('goods_id')->all();
-
         //需要合并的数据
         $repetitionList = AgreementGoods::find()->where(['id' => $repetitionIds])->all();
         foreach ($remainList as $remain) {

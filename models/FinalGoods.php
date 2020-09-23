@@ -88,6 +88,11 @@ class FinalGoods extends \yii\db\ActiveRecord
         return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id']);
     }
 
+    public function getInquirylow()
+    {
+        return $this->hasOne(Inquiry::className(), ['id' => 'relevance_id'])->orderBy('price ASC');
+    }
+
     public function getStock()
     {
         return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
