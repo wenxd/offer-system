@@ -71,7 +71,7 @@ class AgreementGoods extends \yii\db\ActiveRecord
             [['order_id', 'order_agreement_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_agreement',
                 'is_deleted', 'order_quote_id', 'is_quality', 'purchase_is_show', 'order_number'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price',
-                'quote_all_price', 'quote_all_tax_price'], 'number'],
+                'quote_all_price', 'quote_all_tax_price', 'inquiry_admin_id'], 'number'],
             [['updated_at', 'created_at', 'quote_delivery_time', 'delivery_time', 'purchase_number', 'serial'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'agreement_sn', 'purchase_date',
                 'agreement_date', 'belong_to'], 'string', 'max' => 255],

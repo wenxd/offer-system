@@ -212,7 +212,14 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td><?=$item->goods->original_company?></td>
                 <td><?=$item->goods->original_company_remark?></td>
                 <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
-                <td><?=Admin::findOne($item->inquiry_admin_id)->username?></td>
+                <td><?php
+                    $user = Admin::findOne($item->inquiry_admin_id);
+                    if (isset($user->username)) {
+                        echo $user->username;
+                    } else {
+                        echo '';
+                    }
+                    ?></td>
                 <td><?=$item->tax_rate?></td>
                 <?php
                     $lowPriceInquiry = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('price asc')->one();

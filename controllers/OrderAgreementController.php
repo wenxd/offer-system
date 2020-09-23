@@ -177,26 +177,11 @@ class OrderAgreementController extends Controller
                     $AgreementGoodsDataModel->setAttributes($item->toArray());
                     $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
                 }
-            }/* else {
-                //如果有则覆盖现有数据，一键恢复数据
-                AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
-                AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
-                $model = new AgreementGoods();
-                $model_bak = new AgreementGoodsBak();
-                foreach ($AgreementGoodsData as $item) {
-                    $model->isNewRecord = true;
-                    $model->setAttributes($item->toArray());
-                    $model->save() && $model->id = 0;
-                    $model_bak->isNewRecord = true;
-                    $model_bak->setAttributes($item->toArray());
-                    $model_bak->save() && $model_bak->id = 0;
-                }
-                $agreementGoods = $AgreementGoodsData;
-            }*/
+            }
             //展示原始数据
-            if(Yii::$app->request->isPost) {
-                $post = Yii::$app->request->post('goods_info');
-//                $post = [414, 415];
+//            if(Yii::$app->request->isPost) {
+//                $post = Yii::$app->request->post('goods_info', []);
+                $post = [414, 415];
                 AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
                 AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
                 $agreementGoodsNews = [];
@@ -246,7 +231,7 @@ class OrderAgreementController extends Controller
                     $model_bak->save() && $model_bak->id = 0;
                 }
                 return json_encode($post);
-            }
+//            }
         } else {
             $agreementGoodsQuery = AgreementGoods::find()->alias('ag')
                 ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
