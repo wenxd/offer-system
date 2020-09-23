@@ -195,9 +195,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 data:{goods_info:goods_info},
                 dataType:'JSON',
                 success:function(res){
-                    console.log(res);
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
+                        window.history.back();
                     } else {
                         layer.msg(res.msg, {time:2000});
                     }

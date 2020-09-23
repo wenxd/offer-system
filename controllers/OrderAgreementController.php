@@ -180,57 +180,69 @@ class OrderAgreementController extends Controller
             }
             //展示原始数据
             if(Yii::$app->request->isPost) {
-                $post = Yii::$app->request->post('goods_info', []);
-//                $post = [414, 415];
-                AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
-                AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
-                $agreementGoodsNews = [];
-                foreach ($agreementGoods as $good) {
-                    $item = $good->toArray();
-                    unset($item['id']);
-                    $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
-                    //需要拆分
-                    if (in_array($item['goods_id'], $post)) {
-                        $data = GoodsRelation::getGoodsSonPrice($item, []);
-                        foreach ($data as $v) {
-                            $agreementGoodsNews[] = $v;
+                try {
+                    $post = Yii::$app->request->post('goods_info', []);
+                    $transaction = Yii::$app->db->beginTransaction();
+                    AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
+                    AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
+                    $agreementGoodsNews = [];
+                    foreach ($agreementGoods as $good) {
+                        $item = $good->toArray();
+                        unset($item['id']);
+                        $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
+                        //需要拆分
+                        if (in_array($item['goods_id'], $post)) {
+                            $data = GoodsRelation::getGoodsSonPrice($item, []);
+                            foreach ($data as $v) {
+                                $agreementGoodsNews[] = $v;
+                            }
+                        } else {
+                            //不需要拆分
+                            $agreementGoodsNews[] = $item;
                         }
-                    } else {
-                        //不需要拆分
-                        $agreementGoodsNews[] = $item;
                     }
-                }
-                //重组采购策略
-                $goodsNews = [];
-                foreach ($agreementGoodsNews as $goodsNew) {
-                    $goods_id = $goodsNew['goods_id'];
-                    $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
-                    if (isset($goodsNews[$goods_id])) {
-                        $goodsNew['info'] = $goodsNews[$goods_id]['info'];
+                    //重组采购策略
+                    $goodsNews = [];
+                    foreach ($agreementGoodsNews as $goodsNew) {
+                        $goods_id = $goodsNew['goods_id'];
                         $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
-                        $goodsNew['number'] += $goodsNews[$goods_id]['number'];
-                        $goodsNew['order_number'] = $goodsNew['number'];
-                        $goodsNew['purchase_number'] = $goodsNew['number'];
+                        if (isset($goodsNews[$goods_id])) {
+                            $goodsNew['info'] = $goodsNews[$goods_id]['info'];
+                            $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                            $goodsNew['number'] += $goodsNews[$goods_id]['number'];
+                            $goodsNew['order_number'] = $goodsNew['number'];
+                            $goodsNew['purchase_number'] = $goodsNew['number'];
+                        }
+                        $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
+                        $goodsNew['belong_to'] = $info;
+                        $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
+                        $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
+                        $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
+                        $goodsNew['quote_delivery_time'] = $goodsNew['delivery_time'];
+                        $goodsNews[$goods_id] = $goodsNew;
                     }
-                    $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
-                    $goodsNew['belong_to'] = $info;
-                    $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
-                    $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
-                    $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
-                    $goodsNew['quote_delivery_time'] = $goodsNew['delivery_time'];
-                    $goodsNews[$goods_id] = $goodsNew;
+                    $model = new AgreementGoods();
+                    $model_bak = new AgreementGoodsBak();
+                    foreach ($goodsNews as $item) {
+                        $model->isNewRecord = true;
+                        $model->setAttributes($item);
+                        if (!$model->save()) {
+                            return json_encode(['code' => 500, 'msg' => 'Goods数据添加失败']);
+                        }
+                        $model->id = 0;
+                        $model_bak->isNewRecord = true;
+                        $model_bak->setAttributes($item);
+                        if (!$model_bak->save()) {
+                            return json_encode(['code' => 500, 'msg' => 'GoodsBak数据添加失败']);
+                        }
+                        $model_bak->id = 0;
+                    }
+                    $transaction->commit();
+                    return json_encode(['code' => 200, 'msg' => '修改策略成功']);
+                } catch (\Exception $e) {
+                    return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
                 }
-                $model = new AgreementGoods();
-                $model_bak = new AgreementGoodsBak();
-                foreach ($goodsNews as $item) {
-                    $model->isNewRecord = true;
-                    $model->setAttributes($item);
-                    $model->save() && $model->id = 0;
-                    $model_bak->isNewRecord = true;
-                    $model_bak->setAttributes($item);
-                    $model_bak->save() && $model_bak->id = 0;
-                }
-                return json_encode($post);
+
             }
         } else {
             $agreementGoodsQuery = AgreementGoods::find()->alias('ag')
