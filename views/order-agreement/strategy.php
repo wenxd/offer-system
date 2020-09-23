@@ -90,6 +90,18 @@ $system_tax = SystemConfig::find()->select('value')->where([
                     if (isset($item->goodsRelation)) {
                         $checkbox = true;
                     }
+                    $order_purchase_sn = '';
+                    $purchase_number = 0;
+                    if (isset($purchaseGoods[$item->goods_id])) {
+                        $purchaseGoodsList = $purchaseGoods[$item->goods_id];
+                        foreach ($purchaseGoodsList as $k => $v) {
+                            if ($v['serial'] == $item->serial && $v['goods_id'] == $item->goods_id) {
+                                $checkbox           = false;
+                                $order_purchase_sn  = $v['order_purchase_sn'];
+                                $purchase_number    = $v['fixed_number'];
+                            }
+                        }
+                    }
                     ?>
                     <td>
                         <?=$checkbox ? "<input type='checkbox' name='select_id' 
