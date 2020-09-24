@@ -12,6 +12,8 @@ use app\models\Helper;
 use app\models\Inquiry;
 use app\models\SystemConfig;
 use app\models\AuthAssignment;
+use kartik\select2\Select2;
+use yii\web\JsExpression;
 
 $this->title = '生成采购单';
 $this->params['breadcrumbs'][] = $this->title;
@@ -47,136 +49,151 @@ $system_tax = SystemConfig::find()->select('value')->where([
 
 </style>
 <div class="box table-responsive">
-    <div class="box-header">
-        <?= Bar::widget([
-            'template' => '{low} {short} {stock} {better} {new} {recover}',
-            'buttons' => [
-                'low' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-success btn-flat',
-                    ]);
-                },
-                'short' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键最短', Url::to(['short', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-info btn-flat',
-                    ]);
-                },
-                'stock' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-primary btn-flat',
-                    ]);
-                },
-                'better' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-success btn-flat',
-                    ]);
-                },
-                'new' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键最新', Url::to(['new', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-info btn-flat',
-                    ]);
-                },
-                'recover' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 一键恢复', Url::to(['recover', 'id' => $_GET['id']]), [
-                        'data-pjax' => '0',
-                        'class'     => 'btn btn-danger btn-flat',
-                    ]);
-                }
-            ]
-        ])?>
-    </div>
     <?php $form = ActiveForm::begin(); ?>
+    <div class="box-header">
+
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <?= Bar::widget([
+                    'template' => '{low} {short} {stock} {better} {new} {recover}',
+                    'buttons' => [
+                        'low' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键最低', Url::to(['low', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-success btn-flat',
+                            ]);
+                        },
+                        'short' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键最短', Url::to(['short', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-info btn-flat',
+                            ]);
+                        },
+                        'stock' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-primary btn-flat',
+                            ]);
+                        },
+                        'better' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-success btn-flat',
+                            ]);
+                        },
+                        'new' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键最新', Url::to(['new', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-info btn-flat',
+                            ]);
+                        },
+                        'recover' => function () {
+                            return Html::a('<i class="fa fa-reload"></i> 一键恢复', Url::to(['recover', 'id' => $_GET['id']]), [
+                                'data-pjax' => '0',
+                                'class'     => 'btn btn-danger btn-flat',
+                            ]);
+                        }
+                    ]
+                ])?>
+            </div>
+            <div class="col-md-2">
+                <?=$form->field($model, 'admin_id')->widget(\kartik\select2\Select2::className(), [
+                    'data' => ArrayHelper::map(Goods::getGoodsCode(), 'goods_id', 'info'),
+                    'options' => ['placeholder' => '请输入零件号', 'class'=>'form-control'],
+                ])->label(false)?>
+            </div>
+            <div class="col-md-2">
+                <?= Html::button('添加', ['class' => 'btn btn-primary','style'=>'width:60px']); ?>
+            </div>
+        </div>
+
+    </div>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover" style="width: 3000px; table-layout: auto">
             <thead class="data" data-order_agreement_id="<?=$_GET['id']?>">
-                <tr>
-                    <th><input type="checkbox" name="select_all" class="select_all"></th>
-                    <th>序号</th>
-                    <th>操作</th>
-                    <th style="width: 100px;">零件号</th>
-                    <th style="width: 100px;">厂家号</th>
-                    <th style="width: 100px;">总成</th>
-                    <th style="width: 100px;">中文描述</th>
-                    <th style="max-width: 150px;">英文描述</th>
-                    <th>原厂家</th>
-                    <th>原厂家备注</th>
-                    <th style="width: 100px;">供应商</th>
-                    <th>询价员</th>
-                    <th>税率</th>
-                    <th>最低未税单价</th>
-                    <th>最低含税总价</th>
-                    <th>最低货期</th>
-                    <th>货期最短未税单价</th>
-                    <th>货期最短含税总价</th>
-                    <th>货期最短货期</th>
-                    <th>采购未税单价</th>
-                    <th>采购未税总价</th>
-                    <th>采购含税单价</th>
-                    <th>采购含税总价</th>
-                    <th>采购货期</th>
-                    <th>采购单号</th>
-                    <th>合同货期</th>
-                    <th>合同需求数量</th>
-                    <th>采购数量</th>
-                    <th>单位</th>
-                    <th>使用库存数量</th>
-                    <th>库存数量</th>
-                    <th>建议库存</th>
-                    <th>高储</th>
-                    <th>低储</th>
-                </tr>
-                <tr id="w3-filters" class="filters">
-                    <td><button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button></td>
-                    <td>
-                        <?=Html::a('复位', '?r=order-agreement/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="width:100px">
-                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <select class="form-control" name="admin_id">
-                            <option value=""></option>
-                            <?php foreach ($admins as $key => $value) :?>
-                                <option value="<?=$key?>" <?=isset($_GET['admin_id']) ? ($_GET['admin_id'] === (string)$key ? 'selected' : '') : ''?>><?=$value?></option>
-                            <?php endforeach;?>
-                        </select>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <tr>
+                <th><input type="checkbox" name="select_all" class="select_all"></th>
+                <th>序号</th>
+                <th>操作</th>
+                <th style="width: 100px;">零件号</th>
+                <th style="width: 100px;">厂家号</th>
+                <th style="width: 100px;">总成</th>
+                <th style="width: 100px;">中文描述</th>
+                <th style="max-width: 150px;">英文描述</th>
+                <th>原厂家</th>
+                <th>原厂家备注</th>
+                <th style="width: 100px;">供应商</th>
+                <th>询价员</th>
+                <th>税率</th>
+                <th>最低未税单价</th>
+                <th>最低含税总价</th>
+                <th>最低货期</th>
+                <th>货期最短未税单价</th>
+                <th>货期最短含税总价</th>
+                <th>货期最短货期</th>
+                <th>采购未税单价</th>
+                <th>采购未税总价</th>
+                <th>采购含税单价</th>
+                <th>采购含税总价</th>
+                <th>采购货期</th>
+                <th>采购单号</th>
+                <th>合同货期</th>
+                <th>合同需求数量</th>
+                <th>采购数量</th>
+                <th>单位</th>
+                <th>使用库存数量</th>
+                <th>库存数量</th>
+                <th>建议库存</th>
+                <th>高储</th>
+                <th>低储</th>
+            </tr>
+            <tr id="w3-filters" class="filters">
+                <td><button type="button" class="btn btn-success btn-xs inquiry_search">搜索</button></td>
+                <td>
+                    <?=Html::a('复位', '?r=order-agreement/detail&id=' . $_GET['id'], ['class' => 'btn btn-info btn-xs'])?>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="width:100px">
+                    <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <select class="form-control" name="admin_id">
+                        <option value=""></option>
+                        <?php foreach ($admins as $key => $value) :?>
+                            <option value="<?=$key?>" <?=isset($_GET['admin_id']) ? ($_GET['admin_id'] === (string)$key ? 'selected' : '') : ''?>><?=$value?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
             </thead>
             <tbody>
             <?php foreach ($agreementGoods as $item):?>
-            <tr class="order_agreement_list">
-                <?php
+                <tr class="order_agreement_list">
+                    <?php
                     $checkbox = true;
                     $order_purchase_sn = '';
                     $purchase_number = 0;
@@ -190,91 +207,91 @@ $system_tax = SystemConfig::find()->select('value')->where([
                             }
                         }
                     }
-                ?>
-                <td>
-                    <?=$checkbox ? "<input type='checkbox' name='select_id' 
-data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>" : ""?>
-                </td>
-                <td><?=$item->serial?></td>
-                <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
-                <td><?=Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
-                <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
-                <td><?php
-                    $text = '';
-                    foreach (json_decode($item->belong_to, true) as $key => $device) {
-                        $text .= $key . ':' . $device . '<br/>';
-                    }
-                    echo $text;
                     ?>
-                </td>
-                <td><?=$item->goods->description?></td>
-                <td><?=$item->goods->description_en?></td>
-                <td><?=$item->goods->original_company?></td>
-                <td><?=$item->goods->original_company_remark?></td>
-                <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
-                <td><?php
-                    $user = Admin::findOne($item->inquiry_admin_id);
-                    if (isset($user->username)) {
-                        echo $user->username;
-                    } else {
-                        echo '';
-                    }
-                    ?></td>
-                <td><?=$item->tax_rate?></td>
-                <?php
+                    <td>
+                        <?=$checkbox ? "<input type='checkbox' name='select_id' 
+data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>" : ""?>
+                    </td>
+                    <td><?=$item->serial?></td>
+                    <td><?=Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat']))?></td>
+                    <td><?=Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
+                    <td><?php
+                        $text = '';
+                        foreach (json_decode($item->belong_to, true) as $key => $device) {
+                            $text .= $key . ':' . $device . '<br/>';
+                        }
+                        echo $text;
+                        ?>
+                    </td>
+                    <td><?=$item->goods->description?></td>
+                    <td><?=$item->goods->description_en?></td>
+                    <td><?=$item->goods->original_company?></td>
+                    <td><?=$item->goods->original_company_remark?></td>
+                    <td class="supplier_name"><?=$item->inquiry->supplier->name?></td>
+                    <td><?php
+                        $user = Admin::findOne($item->inquiry_admin_id);
+                        if (isset($user->username)) {
+                            echo $user->username;
+                        } else {
+                            echo '';
+                        }
+                        ?></td>
+                    <td><?=$item->tax_rate?></td>
+                    <?php
                     $lowPriceInquiry = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('price asc')->one();
                     $deliverInquiry  = Inquiry::find()->where(['good_id' => $item->goods_id])->orderBy('delivery_time asc')->one();
-                ?>
-                <td class="low_price" style="background-color:#00FF33"><?=$lowPriceInquiry ? $lowPriceInquiry->price : 0?></td>
-                <td class="low_tax_price"><?=$lowPriceInquiry ? ($lowPriceInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
-                <td class="low_delivery"><?=$lowPriceInquiry ? $lowPriceInquiry->delivery_time : 0?></td>
-                <td class="short_price"><?=$deliverInquiry ? $deliverInquiry->price : 0?></td>
-                <td class="short_tax_price"><?=$deliverInquiry ? ($deliverInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
-                <td class="short_delivery" style="background-color:#0099FF"><?=$deliverInquiry ? $deliverInquiry->delivery_time : 0?></td>
-                <td class="price" style="background-color:#00FF33"><?=$item->price?></td>
-                <td class="all_price"><?=$item->all_price?></td>
-                <td class="tax_price"><?=$item->tax_price?></td>
-                <td class="all_tax_price"><?=number_format($item->price * (1+$system_tax/100) * $item->purchase_number, 2, '.', '')?></td>
-                <td class="delivery_time" style="background-color:#0099FF"><?=$item->delivery_time?></td>
-                <td><?=$order_purchase_sn?></td>
-                <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
-                <td class="oldNumber"><?=$item->order_number?></td>
-                <td class="afterNumber">
-                    <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->purchase_number?>">
-                </td>
-                <td><?=$item->goods->unit?></td>
-                <td class="use_stock"></td>
-                <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
-                <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
-                <td><?=$item->stock ? $item->stock->high_number : 0?></td>
-                <td><?=$item->stock ? $item->stock->low_number : 0?></td>
-            </tr>
+                    ?>
+                    <td class="low_price" style="background-color:#00FF33"><?=$lowPriceInquiry ? $lowPriceInquiry->price : 0?></td>
+                    <td class="low_tax_price"><?=$lowPriceInquiry ? ($lowPriceInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
+                    <td class="low_delivery"><?=$lowPriceInquiry ? $lowPriceInquiry->delivery_time : 0?></td>
+                    <td class="short_price"><?=$deliverInquiry ? $deliverInquiry->price : 0?></td>
+                    <td class="short_tax_price"><?=$deliverInquiry ? ($deliverInquiry->price * (1 + $system_tax/100)) * $item->number  : 0?></td>
+                    <td class="short_delivery" style="background-color:#0099FF"><?=$deliverInquiry ? $deliverInquiry->delivery_time : 0?></td>
+                    <td class="price" style="background-color:#00FF33"><?=$item->price?></td>
+                    <td class="all_price"><?=$item->all_price?></td>
+                    <td class="tax_price"><?=$item->tax_price?></td>
+                    <td class="all_tax_price"><?=number_format($item->price * (1+$system_tax/100) * $item->purchase_number, 2, '.', '')?></td>
+                    <td class="delivery_time" style="background-color:#0099FF"><?=$item->delivery_time?></td>
+                    <td><?=$order_purchase_sn?></td>
+                    <td class="quote_delivery_time"><?=$item->quote_delivery_time?></td>
+                    <td class="oldNumber"><?=$item->order_number?></td>
+                    <td class="afterNumber">
+                        <input type="number" size="4" class="number" min="1" style="width: 50px;" value="<?=$item->purchase_number?>">
+                    </td>
+                    <td><?=$item->goods->unit?></td>
+                    <td class="use_stock"></td>
+                    <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->suggest_number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->high_number : 0?></td>
+                    <td><?=$item->stock ? $item->stock->low_number : 0?></td>
+                </tr>
             <?php endforeach;?>
-                <tr style="background-color: #acccb9">
-                    <td colspan="13" rowspan="2">汇总统计</td>
-                    <td>最低含税总价</td>
-                    <td>最低最长货期</td>
-                    <td rowspan="2"></td>
-                    <td>货期最短含税总价</td>
-                    <td>货期最短最长货期</td>
-                    <td colspan="3" rowspan="2"></td>
-                    <td>采购含税总价</td>
-                    <td>采购最长货期</td>
-                    <td></td>
-                    <td>合同最长货期</td>
-                    <td colspan="8"></td>
-                </tr>
-                <tr style="background-color: #acccb9">
-                    <td class="stat_low_tax_price_all"></td>
-                    <td class="most_low_deliver"></td>
-                    <td class="stat_short_tax_price_all"></td>
-                    <td class="most_short_deliver"></td>
-                    <td class="purchase_all_price"></td>
-                    <td class="mostLongTime"></td>
-                    <td></td>
-                    <td class="quote_mostLongTime"></td>
-                    <td colspan="8"></td>
-                </tr>
+            <tr style="background-color: #acccb9">
+                <td colspan="13" rowspan="2">汇总统计</td>
+                <td>最低含税总价</td>
+                <td>最低最长货期</td>
+                <td rowspan="2"></td>
+                <td>货期最短含税总价</td>
+                <td>货期最短最长货期</td>
+                <td colspan="3" rowspan="2"></td>
+                <td>采购含税总价</td>
+                <td>采购最长货期</td>
+                <td></td>
+                <td>合同最长货期</td>
+                <td colspan="8"></td>
+            </tr>
+            <tr style="background-color: #acccb9">
+                <td class="stat_low_tax_price_all"></td>
+                <td class="most_low_deliver"></td>
+                <td class="stat_short_tax_price_all"></td>
+                <td class="most_short_deliver"></td>
+                <td class="purchase_all_price"></td>
+                <td class="mostLongTime"></td>
+                <td></td>
+                <td class="quote_mostLongTime"></td>
+                <td colspan="8"></td>
+            </tr>
             </tbody>
         </table>
         <?= $form->field($model, 'purchase_sn')->textInput()->label('采购订单号') ?>
@@ -300,6 +317,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
     </div>
     <?php ActiveForm::end(); ?>
 </div>
+<style>
+    #example2 {
+        position: relative;
+        clear: both;
+        zoom: 1;
+        overflow-x: auto;
+    }
+
+</style>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
@@ -561,22 +587,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             }
 
             var order_agreement_id = $('.data').data('order_agreement_id');
-
-            $.ajax({
-                type:"post",
-                url:'?r=order-purchase/save-order',
-                data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        window.location.reload();
-                    } else {
-                        layer.msg(res.msg, {time:2000});
-                        return false;
-                    }
-                }
-            });
+            console.log({order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info});
+            // $.ajax({
+            //     type:"post",
+            //     url:'?r=order-purchase/save-order',
+            //     data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info},
+            //     dataType:'JSON',
+            //     success:function(res){
+            //         if (res && res.code == 200){
+            //             layer.msg(res.msg, {time:2000});
+            //             window.location.reload();
+            //         } else {
+            //             layer.msg(res.msg, {time:2000});
+            //             return false;
+            //         }
+            //     }
+            // });
         });
 
         //搜索功能

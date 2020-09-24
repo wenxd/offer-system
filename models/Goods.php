@@ -227,6 +227,19 @@ class Goods extends ActiveRecord
         ];
     }
 
+    public static function getGoodsCode()
+    {
+        $res = Goods::find()->andWhere(['is_deleted' => Goods::IS_DELETED_NO])->asArray()->all();
+        $data = [];
+        foreach ($res as $item) {
+            $data[] = [
+                'goods_id' => $item['id'],
+                'info' => "{$item['goods_number']} {$item['material_code']}",
+            ];
+        }
+        return $data;
+    }
+
     public function afterFind()
     {
         if ($this->img_id) {
