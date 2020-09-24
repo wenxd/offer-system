@@ -96,15 +96,6 @@ $system_tax = SystemConfig::find()->select('value')->where([
                     ]
                 ])?>
             </div>
-            <div class="col-md-2">
-                <?=$form->field($model, 'admin_id')->widget(\kartik\select2\Select2::className(), [
-                    'data' => ArrayHelper::map(Goods::getGoodsCode(), 'goods_id', 'info'),
-                    'options' => ['placeholder' => '请输入零件号', 'class'=>'form-control'],
-                ])->label(false)?>
-            </div>
-            <div class="col-md-2">
-                <?= Html::button('添加', ['class' => 'btn btn-primary','style'=>'width:60px']); ?>
-            </div>
         </div>
 
     </div>
@@ -588,21 +579,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 
             var order_agreement_id = $('.data').data('order_agreement_id');
             console.log({order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info});
-            // $.ajax({
-            //     type:"post",
-            //     url:'?r=order-purchase/save-order',
-            //     data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info},
-            //     dataType:'JSON',
-            //     success:function(res){
-            //         if (res && res.code == 200){
-            //             layer.msg(res.msg, {time:2000});
-            //             window.location.reload();
-            //         } else {
-            //             layer.msg(res.msg, {time:2000});
-            //             return false;
-            //         }
-            //     }
-            // });
+            $.ajax({
+                type:"post",
+                url:'?r=order-purchase/save-order',
+                data:{order_agreement_id:order_agreement_id, purchase_sn:purchase_sn, agreement_date:agreement_date, admin_id:admin_id, goods_info:goods_info},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
         });
 
         //搜索功能

@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\AgreementGoods;
 use app\models\AgreementStock;
 use app\models\AuthAssignment;
+use app\models\Goods;
+use app\models\Inquiry;
 use app\models\OrderAgreement;
 use app\models\OrderPayment;
 use app\models\PaymentGoods;
@@ -327,7 +329,7 @@ class OrderPurchaseController extends BaseController
         if (isset($request['is_stock']) && $request['is_stock'] !== '') {
             $purchaseQuery->andWhere(['pg.is_stock' => $request['is_stock']]);
         }
-        $purchaseGoods         = $purchaseQuery->orderBy('serial')->all();
+        $purchaseGoods = $purchaseQuery->orderBy('serial')->all();
 
         $data = [];
         $data['orderPurchase'] = $data['model'] = $orderPurchase;
@@ -338,7 +340,7 @@ class OrderPurchaseController extends BaseController
         $orderI = OrderPayment::find()->where(['like', 'payment_sn', $date])->orderBy('created_at Desc')->one();
         if ($orderI) {
             $finalSn = explode('_', $orderI->payment_sn);
-            $number = sprintf("%03d", $finalSn[2]+1);
+            $number = sprintf("%03d", $finalSn[2] + 1);
         } else {
             $number = '001';
         }
@@ -352,6 +354,67 @@ class OrderPurchaseController extends BaseController
         $data['paymentGoods'] = $paymentGoods;
 
         return $this->render('detail', $data);
+    }
+
+    /**
+     * 单独添加采购单零件
+     */
+    public function actionAddGoods()
+    {
+        $post = Yii::$app->request->post();
+        //去重
+        if (PurchaseGoods::find()->where(['order_purchase_id' => $post['id'], 'goods_id' => $post['goods_id']])->asArray()->one()) {
+            return json_encode(['code' => 500, 'msg' => '零件已存在']);
+        }
+        $data = PurchaseGoods::find()->where(['order_purchase_id' => $post['id']])->asArray()->one();
+        if (empty($data)) {
+            return json_encode(['code' => 500, 'msg' => '零件未找到']);
+        }
+        // 获取零件询价信息
+        $goods = Goods::findOne($post['goods_id']);
+        $data['goods_id'] = $goods['id'];
+        $data['type'] = 0;
+        $data['number'] = 1;
+        $data['fixed_number'] = 1;
+        $data['serial'] = $goods['id'];
+        $data['order_final_id'] =0;
+        $data['is_purchase'] = 0;
+        //询价单
+        if (isset($goods->inquirylow) && !empty($goods->inquirylow)) {
+            $inquirylow = $goods->inquirylow->toArray();
+            $data['relevance_id'] = $inquirylow['id'];
+            $data['tax_rate'] = $inquirylow['tax_rate'];
+            $data['price'] = $inquirylow['price'];
+            $data['fixed_price'] = $inquirylow['price'];
+            $data['tax_price'] = $inquirylow['tax_price'];
+            $data['inquiry_admin_id'] = $inquirylow['admin_id'];
+            $data['delivery_time'] = $inquirylow['delivery_time'];
+            $data['fixed_delivery_time'] = $inquirylow['delivery_time'];
+        }
+        //成本单
+        if (isset($goods->finallow) && !empty($goods->finallow)) {
+            $finallow = $goods->finallow->toArray();
+            $data['order_final_id'] = !empty($finallow['final_sn']) ? $finallow['final_sn'] : 0;
+            $data['serial'] = !empty($finallow['serial']) ? $finallow['serial'] : $goods['id'];
+            $data['is_purchase'] = $finallow['is_purchase'];
+            $inquirylow = $goods->finallow->inquirylow->toArray();
+            $data['relevance_id'] = $inquirylow['id'];
+            $data['tax_rate'] = $inquirylow['tax_rate'];
+            $data['price'] = $inquirylow['price'];
+            $data['fixed_price'] = $inquirylow['price'];
+            $data['tax_price'] = $inquirylow['tax_price'];
+            $data['inquiry_admin_id'] = $inquirylow['admin_id'];
+            $data['delivery_time'] = $inquirylow['delivery_time'];
+            $data['fixed_delivery_time'] = $inquirylow['delivery_time'];
+        }
+        $data['all_price'] = $data['price'];
+        $data['all_tax_price'] = round($data['price'] * (1 + $data['tax_rate'] / 100),2);
+        $data['fixed_tax_price'] = $data['all_tax_price'];
+        $model = new PurchaseGoods();
+        if ($model->load(['PurchaseGoods' => $data]) && $model->save()) {
+            return json_encode(['code' => 200, 'msg' => '零件添加成功']);
+        }
+        return json_encode(['code' => 500, 'msg' => $model->errors]);
     }
 
     public function actionComplete($id)
@@ -374,10 +437,10 @@ class OrderPurchaseController extends BaseController
             return json_encode(['code' => 500, 'msg' => '不存在此条数据']);
         }
 
-        $purchaseGoods->is_purchase   = PurchaseGoods::IS_PURCHASE_YES;
-        $purchaseGoods->agreement_sn  = $params['this_agreement_sn'];
+        $purchaseGoods->is_purchase = PurchaseGoods::IS_PURCHASE_YES;
+        $purchaseGoods->agreement_sn = $params['this_agreement_sn'];
         $purchaseGoods->purchase_date = $params['this_delivery_date'];
-        if ($purchaseGoods->save()){
+        if ($purchaseGoods->save()) {
             $purchaseComplete = PurchaseGoods::find()
                 ->where(['order_purchase_id' => $purchaseGoods->order_purchase_id])
                 ->andWhere('is_purchase = 0')->one();
@@ -398,7 +461,7 @@ class OrderPurchaseController extends BaseController
         $orderPurchase = OrderPurchase::findOne($params['id']);
         $orderPurchase->agreement_date = $params['agreement_date'];
         $orderPurchase->agreement_time = date('Y-m-d H:i:s');
-        $orderPurchase->is_purchase    = OrderPurchase::IS_PURCHASE_YES;
+        $orderPurchase->is_purchase = OrderPurchase::IS_PURCHASE_YES;
         if ($orderPurchase->save()) {
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
@@ -428,43 +491,43 @@ class OrderPurchaseController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         $tableHeader = ['序号', '原厂家', '厂家号', '中文描述', '采购数量', '单位', '含税单价', '含税总价', '货期(周)', '供应商'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         $purchaseGoods = PurchaseGoods::find()->where(['order_purchase_id' => $id])->orderBy('serial')->all();
         foreach ($purchaseGoods as $key => $value) {
-            for($i = 0; $i < count($letter); $i++) {
+            for ($i = 0; $i < count($letter); $i++) {
                 $excel->setCellValue($letter[$i] . ($key + 2), $value->serial);
                 if ($value->goods) {
                     //厂家号
-                    $excel->setCellValue($letter[$i+1] . ($key + 2), $value->goods->original_company);
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $value->goods->goods_number_b);
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), $value->goods->description);
-                    $excel->setCellValue($letter[$i+5] . ($key + 2), $value->goods->unit);
+                    $excel->setCellValue($letter[$i + 1] . ($key + 2), $value->goods->original_company);
+                    $excel->setCellValue($letter[$i + 2] . ($key + 2), $value->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i + 3] . ($key + 2), $value->goods->description);
+                    $excel->setCellValue($letter[$i + 5] . ($key + 2), $value->goods->unit);
                 } else {
-                    $excel->setCellValue($letter[$i+1] . ($key + 2), '');
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), '');
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), '');
-                    $excel->setCellValue($letter[$i+5] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 1] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 2] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 3] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 5] . ($key + 2), '');
                 }
                 //采购数量
-                $excel->setCellValue($letter[$i+4] . ($key + 2), $value->fixed_number);
+                $excel->setCellValue($letter[$i + 4] . ($key + 2), $value->fixed_number);
                 //含税单价
-                $excel->setCellValue($letter[$i+6] . ($key + 2), $value->fixed_tax_price);
+                $excel->setCellValue($letter[$i + 6] . ($key + 2), $value->fixed_tax_price);
                 //含税总价
-                $excel->setCellValue($letter[$i+7] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
+                $excel->setCellValue($letter[$i + 7] . ($key + 2), $value->fixed_tax_price * $value->fixed_number);
                 //货期(周)
-                $excel->setCellValue($letter[$i+8] . ($key + 2), $value->delivery_time);
+                $excel->setCellValue($letter[$i + 8] . ($key + 2), $value->delivery_time);
                 //供应商
-                $excel->setCellValue($letter[$i+9] . ($key + 2), $value->inquiry->supplier->name);
+                $excel->setCellValue($letter[$i + 9] . ($key + 2), $value->inquiry->supplier->name);
                 break;
             }
         }
@@ -476,7 +539,7 @@ class OrderPurchaseController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');

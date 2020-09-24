@@ -414,6 +414,22 @@ class Goods extends ActiveRecord
         return $this->hasMany(Inquiry::className(), ['good_id' => 'id'])->count();
     }
 
+    /**
+     * 关联成本单
+     */
+    public function getFinallow()
+    {
+        return $this->hasOne(FinalGoods::className(), ['goods_id' => 'id'])->with('inquirylow')->orderBy('price ASC');
+    }
+
+    /**
+     * 关联询价单
+     */
+    public function getInquirylow()
+    {
+        return $this->hasOne(Inquiry::className(), ['good_id' => 'id'])->orderBy('price ASC');
+    }
+
     public function getInquiryBetter()
     {
         return $this->hasOne(Inquiry::className(), ['good_id' => 'id'])->where(['is_better' => 1]);

@@ -171,7 +171,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 $res['inquiry_admin_id'] = $inquirylow->admin_id;
                 $res['relevance_id'] = $inquirylow->id;
                 $res['delivery_time'] = $inquirylow->delivery_time;
-                $res['delivery_time'] = $inquirylow->delivery_time;
+                $res['quote_delivery_time'] = $inquirylow->delivery_time;
             }
             //成本单
             if (isset($item->finallow->inquirylow) && !empty($item->finallow->inquirylow)) {
@@ -184,7 +184,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 $res['inquiry_admin_id'] = $inquirylow->admin_id;
                 $res['relevance_id'] = $inquirylow->id;
                 $res['delivery_time'] = $finallow->delivery_time;
-                $res['delivery_time'] = $finallow->delivery_time;
+                $res['quote_delivery_time'] = $finallow->delivery_time;
             }
             if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
                 $info = GoodsRelation::getGoodsSonPrice($res, $info);
