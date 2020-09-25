@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\AgreementGoods;
 use app\models\Inquiry;
+use app\models\OrderAgreement;
 use app\models\OrderQuote;
 use app\models\QuoteGoods;
 use app\models\SystemConfig;
@@ -320,9 +322,8 @@ class OrderFinalController extends BaseController
     public function actionSavePurchase()
     {
         $params = Yii::$app->request->post();
-
         $orderFinal = OrderFinal::findOne($params['order_final_id']);
-        $orderFinal->is_purchase = OrderFinal::IS_PURCHASE_YES;
+//        $orderFinal->is_purchase = OrderFinal::IS_PURCHASE_YES;
         $orderFinal->save();
 
         $orderPurchase                     = new OrderPurchase();
@@ -362,6 +363,13 @@ class OrderFinalController extends BaseController
                     //$purchaseGoods->agreement_sn        = $orderAgreement->order_id;
                     $purchaseGoods->save();
                 }
+            }
+            //判断是否全部生成采购单
+            $finalGoodsCount = FinalGoods::find()->where(['order_final_id' => $params['order_final_id'], 'purchase_is_show' => FinalGoods::IS_SHOW_YES])->count();
+            $purchaseGoodsCount = PurchaseGoods::find()->where(['order_final_id' => $params['order_final_id']])->count();
+            if ($finalGoodsCount == $purchaseGoodsCount) {
+                $orderFinal->is_purchase = OrderFinal::IS_PURCHASE_YES;
+                $orderFinal->save();
             }
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
