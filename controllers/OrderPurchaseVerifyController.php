@@ -313,6 +313,8 @@ class OrderPurchaseVerifyController extends BaseController
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
                     $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
                     $purchaseGoods->save();
+                    //更新采购单与零件ID对应表后添加零件状态
+                    PurchaseGoods::updateAll(['after' => 9], ['order_id' => $paymentGoods->order_id, 'goods_id' => $paymentGoods->goods_id, 'after' => 1]);
                 }
             }
 
