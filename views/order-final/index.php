@@ -155,7 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'          => function ($model, $key, $index, $column){
                     if ($model->order->order_type == Order::ORDER_TYPE_PROJECT_YES) {
                         if (!$model->is_agreement) {
-                            return Html::a('<i class="fa fa-plus"></i> 生成报价单', Url::to(['detail', 'id' => $model['id']]), [
+                            return Html::a('<i class="fa fa-plus"></i> 报价单', Url::to(['detail', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
@@ -163,6 +163,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             return '';
                         }
                     } else {
+                        if ($model->is_merge) {
+                            return Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-success btn-xs btn-flat',
+                            ]);
+                        } else {
+                            return Html::a('<i class="fa fa-d"></i> 合并采购数据', Url::to(['merge', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-info btn-xs btn-flat',
+                            ]);
+                        }
                         if (!$model->is_purchase) {
                             if ($model->is_merge) {
                                 return Html::a('<i class="fa fa-plus"></i> 生成采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
