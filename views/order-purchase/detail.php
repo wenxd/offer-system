@@ -42,7 +42,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
     <div class="box-header">
 
         <div class="col-md-12">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <?= Html::a('导出', Url::to(['download', 'id' => $_GET['id']]), [
                     'data-pjax' => '0',
                     'class' => 'btn btn-primary btn-flat',
@@ -75,7 +75,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         return false;
                     }
                     OrderPurchase.goods_id = goods_id;
-                    console.log(OrderPurchase);
                     $.ajax({
                         type:"post",
                         url:"?r=order-purchase/add-goods",
@@ -125,6 +124,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>库存数量</th>
                 <th>审核状态</th>
                 <th>驳回原因</th>
+                <th>操作</th>
             </tr>
             <tr id="w3-filters" class="filters">
                 <td>
@@ -171,6 +171,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         </option>
                     </select>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -237,6 +238,35 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         ?>
                     </td>
                     <td><?= $item->reason ?></td>
+                    <td><?php
+                        if ($item->after == 1) {
+                            echo Html::button('删除', [
+                                'class' => 'btn btn-danger btn-sm',
+                                'onclick' => "del_goods($item->id)"
+                            ]);
+                        }
+                         ?></td>
+                    <script>
+                        function del_goods(id) {
+                            console.log(id);
+                            $.ajax({
+                                type:"post",
+                                url:"?r=order-purchase/del-goods",
+                                data:{id:id},
+                                dataType:'JSON',
+                                success:function(res){
+                                    console.log(res);
+                                    if (res && res.code == 200) {
+                                        layer.msg(res.msg, {time: 2000});
+                                        location.reload();
+                                    } else {
+                                        layer.msg(res.msg, {time: 2000});
+                                        return false;
+                                    }
+                                }
+                            });
+                        }
+                    </script>
                 </tr>
             <?php endforeach; ?>
             <tr style="background-color: #acccb9">

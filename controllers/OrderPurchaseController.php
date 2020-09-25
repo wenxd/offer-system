@@ -379,6 +379,9 @@ class OrderPurchaseController extends BaseController
         $data['serial'] = $goods['id'];
         $data['order_final_id'] =0;
         $data['is_purchase'] = 0;
+        $data['after'] = 1;
+        $data['updated_at'] = date("y-m-d H:i:s");
+        $data['created_at'] = date("y-m-d H:i:s");
         //询价单
         if (isset($goods->inquirylow) && !empty($goods->inquirylow)) {
             $inquirylow = $goods->inquirylow->toArray();
@@ -415,6 +418,28 @@ class OrderPurchaseController extends BaseController
             return json_encode(['code' => 200, 'msg' => '零件添加成功']);
         }
         return json_encode(['code' => 500, 'msg' => $model->errors]);
+    }
+
+    /**
+     * 删除单独零件
+     */
+    public function actionDelGoods()
+    {
+        $id = Yii::$app->request->post('id', '');
+        if (empty($id)) {
+            return json_encode(['code' => 500, 'msg' => '参数错误']);
+        }
+        $model = PurchaseGoods::findOne($id);
+        if (empty($model)) {
+            return json_encode(['code' => 500, 'msg' => '数据未找到']);
+        }
+        if ($model->after != 1) {
+            return json_encode(['code' => 500, 'msg' => '不可删除']);
+        }
+        if ($model->delete()) {
+            return json_encode(['code' => 200, 'msg' => '删除成功']);
+        }
+        return json_encode(['code' => 500, 'msg' => '删除失败']);
     }
 
     public function actionComplete($id)

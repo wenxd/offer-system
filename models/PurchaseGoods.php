@@ -35,6 +35,7 @@ use Yii;
  * @property string $is_stock
  * @property string $delivery_time
  * @property string $fixed_delivery_time
+ * @property int $after
  */
 class PurchaseGoods extends \yii\db\ActiveRecord
 {
@@ -78,7 +79,7 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_final_id', 'goods_id', 'type', 'number', 'relevance_id', 'is_purchase', 'is_deleted'
-            , 'order_purchase_id', 'is_stock', 'order_agreement_id', 'inquiry_admin_id'], 'integer'],
+            , 'order_purchase_id', 'is_stock', 'order_agreement_id', 'inquiry_admin_id', 'after'], 'integer'],
             [['price', 'tax_rate', 'tax_price', 'all_price', 'all_tax_price', 'fixed_price', 'fixed_tax_price'], 'number', 'min' => 0],
             [['updated_at', 'created_at', 'fixed_number', 'delivery_time', 'fixed_delivery_time', 'serial'], 'safe'],
             [['order_purchase_sn', 'goods_number', 'order_sn', 'purchase_date', 'agreement_sn'], 'string', 'max' => 255],
