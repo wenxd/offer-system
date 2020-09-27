@@ -9,6 +9,7 @@ namespace app\controllers;
 
 
 use app\models\Goods;
+use app\models\OrderPurchase;
 use app\models\PaymentGoods;
 use app\models\Supplier;
 use Yii;
@@ -176,6 +177,18 @@ class SearchController extends BaseController
         }
 
         return $this->render('search', $data);
+    }
+
+    /**
+     * 选择采购员时判断同一个订单同一个采购员下是否已经有采购单号
+     */
+    public function actionGetPurchaseSn($order_id = 239, $admin_id = 28)
+    {
+        $data = OrderPurchase::find()->where(['order_id' => $order_id, 'admin_id' => $admin_id])->asArray()->one();
+        if (empty($data)) {
+            return json_encode(['code' => 500,  'msg' => '数据未找到']);
+        }
+        return json_encode(['code' => 200,  'msg' => '成功', 'data' => ['purchase_sn' => $data['purchase_sn']]]);
     }
 
 

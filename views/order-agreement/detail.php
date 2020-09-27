@@ -323,7 +323,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 <script type="text/javascript">
     $(document).ready(function () {
         init();
-
+        var order_id = <?=$order->id?>;
+        var temporary_purchase_sn = '<?=$model->purchase_sn?>';
+        //选择采购员时判断同一个订单是否已经有过同一个人的采购单号
+        $('#orderagreement-admin_id').change(function (e) {
+            var admin_id = $('#orderagreement-admin_id').val();
+            $.ajax({
+                type:"get",
+                url:'?r=search/get-purchase-sn',
+                data:{order_id:order_id, admin_id:admin_id},
+                dataType:'JSON',
+                success:function(res){
+                    console.log(res);
+                    if (res && res.code == 200){
+                        $('#orderagreement-purchase_sn').val(res.data.purchase_sn);
+                    } else {
+                        $('#orderagreement-purchase_sn').val(temporary_purchase_sn);
+                    }
+                }
+            });
+        });
         function init(){
             if (!$('.select_id').length) {
                 $('.select_all').hide();

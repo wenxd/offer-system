@@ -230,7 +230,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
         </table>
         <?= $form->field($model, 'purchase_sn')->textInput() ?>
 
-        <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择采购员') ?>
+        <?= $form->field($model, 'admin_id')->dropDownList($admins, ['prompt' => '请选择采购员'])->label('选择采购员') ?>
 
         <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
@@ -256,8 +256,28 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        init();
+        var order_id = <?=$order->id?>;
+        var temporary_purchase_sn = '<?=$model->purchase_sn?>';
+        //选择采购员时判断同一个订单是否已经有过同一个人的采购单号
+        $('#orderpurchase-admin_id').change(function (e) {
+            var admin_id = $('#orderpurchase-admin_id').val();
+            $.ajax({
+                type:"get",
+                url:'?r=search/get-purchase-sn',
+                data:{order_id:order_id, admin_id:admin_id},
+                dataType:'JSON',
+                success:function(res){
+                    console.log(res);
+                    if (res && res.code == 200){
+                        $('#orderpurchase-purchase_sn').val(res.data.purchase_sn);
+                    } else {
+                        $('#orderpurchase-purchase_sn').val(temporary_purchase_sn);
+                    }
+                }
+            });
+        });
 
+        init();
         function init(){
             if (!$('.select_id').length) {
                 $('.select_all').hide();
