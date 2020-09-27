@@ -239,14 +239,43 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     </td>
                     <td><?= $item->reason ?></td>
                     <td><?php
-                        if ($item->after == 1) {
-                            echo Html::button('删除', [
-                                'class' => 'btn btn-danger btn-sm',
-                                'onclick' => "del_goods($item->id)"
-                            ]);
+                        if (!in_array($item->apply_status, [1, 2])) {
+                            if ($item->after == 1) {
+                                echo Html::button('删除', [
+                                    'class' => 'btn btn-danger btn-sm',
+                                    'onclick' => "del_goods($item->id)"
+                                ]);
+                            }
+                            if ($item->after == 0) {
+                                echo Html::button('回退', [
+                                    'class' => 'btn btn-success btn-sm',
+                                    'onclick' => "exit_goods($item->id)"
+                                ]);
+                            }
                         }
-                         ?></td>
+
+                         ?>
+                    </td>
                     <script>
+                        function exit_goods(id) {
+                            console.log(id);
+                            $.ajax({
+                                type:"get",
+                                url:"?r=order-purchase/exit-goods",
+                                data:{id:id},
+                                dataType:'JSON',
+                                success:function(res){
+                                    console.log(res);
+                                    if (res && res.code == 200) {
+                                        layer.msg(res.msg, {time: 2000});
+                                        window.history.go(-1);
+                                    } else {
+                                        layer.msg(res.msg, {time: 2000});
+                                        return false;
+                                    }
+                                }
+                            });
+                        }
                         function del_goods(id) {
                             console.log(id);
                             $.ajax({

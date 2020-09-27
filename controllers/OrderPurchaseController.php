@@ -357,6 +357,31 @@ class OrderPurchaseController extends BaseController
     }
 
     /**
+     * 回退采购单零件
+     */
+    public function actionExitGoods($id = 254)
+    {
+        if (empty($id)) {
+            return json_encode(['code' => 500, 'msg' => '参数错误']);
+        }
+        //查询采购单零件
+        $model = PurchaseGoods::findOne($id);
+        //查询采购单OrderPurchase是不是最后一个零件
+        $purchase_goods_count = PurchaseGoods::find()
+            ->where(['order_purchase_sn' => $model->order_purchase_sn, 'order_purchase_id' => $model->order_purchase_id])
+            ->count();
+        if ($purchase_goods_count == 1) {
+            //是的话删除采购单
+            OrderPurchase::deleteAll(['id' => $model->order_purchase_id]);
+        }
+        OrderAgreement::updateAll(['is_purchase' => OrderAgreement::IS_PURCHASE_NO], ['id' => $model->order_agreement_id]);
+        if ($model->delete()) {
+            return json_encode(['code' => 200, 'msg' => '删除成功']);
+        }
+        return json_encode(['code' => 500, 'msg' => '删除失败']);
+    }
+
+    /**
      * 单独添加采购单零件
      */
     public function actionAddGoods()
