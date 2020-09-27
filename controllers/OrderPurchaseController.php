@@ -370,13 +370,16 @@ class OrderPurchaseController extends BaseController
         $purchase_goods_count = PurchaseGoods::find()
             ->where(['order_purchase_sn' => $model->order_purchase_sn, 'order_purchase_id' => $model->order_purchase_id])
             ->count();
+        $return = ['code' => 200, 'msg' => '删除成功'];
         if ($purchase_goods_count == 1) {
             //是的话删除采购单
             OrderPurchase::deleteAll(['id' => $model->order_purchase_id]);
+            $return = ['code' => 202, 'msg' => '删除成功'];
         }
         OrderAgreement::updateAll(['is_purchase' => OrderAgreement::IS_PURCHASE_NO], ['id' => $model->order_agreement_id]);
+        OrderFinal::updateAll(['is_purchase' => OrderAgreement::IS_PURCHASE_NO], ['id' => $model->order_final_id]);
         if ($model->delete()) {
-            return json_encode(['code' => 200, 'msg' => '删除成功']);
+            return json_encode($return);
         }
         return json_encode(['code' => 500, 'msg' => '删除失败']);
     }

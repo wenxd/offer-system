@@ -266,11 +266,12 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                                 dataType:'JSON',
                                 success:function(res){
                                     console.log(res);
+                                    layer.msg(res.msg, {time: 2000});
                                     if (res && res.code == 200) {
-                                        layer.msg(res.msg, {time: 2000});
+                                        location.reload();
+                                    }if (res && res.code == 202) {
                                         window.history.go(-1);
                                     } else {
-                                        layer.msg(res.msg, {time: 2000});
                                         return false;
                                     }
                                 }
