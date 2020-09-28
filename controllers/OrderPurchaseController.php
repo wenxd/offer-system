@@ -171,6 +171,7 @@ class OrderPurchaseController extends BaseController
                     $orderPurchase->admin_id = $params['admin_id'];
                 }
                 $orderPurchase->is_agreement = 0;
+                $orderPurchase->is_complete = 0;
                 if ($orderPurchase->save()) {
                     $agreement_goods_ids = [];
                     foreach ($params['goods_info'] as $item) {
