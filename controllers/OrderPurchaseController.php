@@ -159,14 +159,18 @@ class OrderPurchaseController extends BaseController
         try {
             $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
             if ($open) {
-                $orderPurchase = new OrderPurchase();
-                $orderPurchase->purchase_sn = $params['purchase_sn'];
-                $orderPurchase->agreement_sn = $orderAgreement->agreement_sn;
-                $orderPurchase->order_id = $orderAgreement->order_id;
-                $orderPurchase->order_agreement_id = $params['order_agreement_id'];
-                $orderPurchase->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
-                $orderPurchase->end_date = $params['agreement_date'];
-                $orderPurchase->admin_id = $params['admin_id'];
+                $orderPurchase = OrderPurchase::findOne(['purchase_sn' => $params['purchase_sn']]);
+                if (!$orderPurchase) {
+                    $orderPurchase = new OrderPurchase();
+                    $orderPurchase->purchase_sn = $params['purchase_sn'];
+                    $orderPurchase->agreement_sn = $orderAgreement->agreement_sn;
+                    $orderPurchase->order_id = $orderAgreement->order_id;
+                    $orderPurchase->order_agreement_id = $params['order_agreement_id'];
+                    $orderPurchase->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
+                    $orderPurchase->end_date = $params['agreement_date'];
+                    $orderPurchase->admin_id = $params['admin_id'];
+                }
+                $orderPurchase->is_agreement = 0;
                 if ($orderPurchase->save()) {
                     $agreement_goods_ids = [];
                     foreach ($params['goods_info'] as $item) {
