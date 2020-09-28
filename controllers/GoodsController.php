@@ -73,6 +73,24 @@ class GoodsController extends BaseController
             ],
         ];
     }
+    /**
+     * 零件锁定
+     */
+    public function actionLocking($id)
+    {
+        $model = Goods::findOne($id);
+        if ($model->locking == 1) {
+            $model->locking = 0;
+            $msg = '解锁';
+        } else {
+            $model->locking = 1;
+            $msg = '锁定';
+        }
+        if ($model->save()) {
+            return json_encode(['code' => 200, 'msg' => "{$msg}  成功"]);
+        }
+        return json_encode(['code' => 500, 'msg' => "{$msg}  失败"]);
+    }
 
     /**获取商品编号
      * @return string
@@ -309,6 +327,9 @@ class GoodsController extends BaseController
                             }
                             if (!$goods) {
                                 $goods = new Goods();
+                            }
+                            if (isset($goods->locking) && $goods->locking == 1) {
+                                continue;
                             }
                             //零件号
                             if ($value['B']) {
