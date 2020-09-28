@@ -48,6 +48,7 @@ use app\extend\tencent\Cos;
  * @property string $publish_tax
  * @property string $brand_id
  * @property string $factory_price
+ * @property string $locking
  */
 class Goods extends ActiveRecord
 {
@@ -163,7 +164,7 @@ class Goods extends ActiveRecord
     {
         return [
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
-                'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number', 'brand_id'], 'integer'],
+                'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number', 'brand_id', 'locking'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
                 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
