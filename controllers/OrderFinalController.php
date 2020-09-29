@@ -299,7 +299,7 @@ class OrderFinalController extends BaseController
             }
             //展示原始数据
             if(Yii::$app->request->isPost) {
-//                try {
+                try {
                     $post = Yii::$app->request->post('goods_info', []);
                     $transaction = Yii::$app->db->beginTransaction();
                     FinalGoods::deleteAll(['order_final_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
@@ -336,6 +336,12 @@ class OrderFinalController extends BaseController
                         }
                         $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
                         $goodsNew['belong_to'] = $info;
+                        if (!isset($goodsNew['tax']) && isset($goodsNew['tax_rate'])) {
+                            $goodsNew['tax'] = $goodsNew['tax_rate'] ? $goodsNew['tax_rate'] : 13;
+                        }
+                        if (!isset($goodsNew['tax_rate'])) {
+                            $goodsNew['tax_rate'] = $goodsNew['tax'] ? $goodsNew['tax'] : 13;
+                        }
                         $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
                         $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
                         $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
@@ -352,9 +358,9 @@ class OrderFinalController extends BaseController
                     }
                     $transaction->commit();
                     return json_encode(['code' => 200, 'msg' => '修改策略成功']);
-//                } catch (\Exception $e) {
-//                    return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
-//                }
+                } catch (\Exception $e) {
+                    return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+                }
             }
         } else {
             $finalGoodsQuery = FinalGoods::find()
