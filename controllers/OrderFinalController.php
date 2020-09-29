@@ -325,14 +325,18 @@ class OrderFinalController extends BaseController
         $orderFinal = OrderFinal::findOne($params['order_final_id']);
 //        $orderFinal->is_purchase = OrderFinal::IS_PURCHASE_YES;
         $orderFinal->save();
-
-        $orderPurchase                     = new OrderPurchase();
-        $orderPurchase->purchase_sn        = $params['purchase_sn'];
-        $orderPurchase->order_id           = $orderFinal->order_id;
-        $orderPurchase->order_agreement_id = 0;
-        $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
-        $orderPurchase->end_date           = $params['end_date'];
-        $orderPurchase->admin_id           = $params['admin_id'];
+        $orderPurchase = OrderPurchase::findOne(['purchase_sn' => $params['purchase_sn']]);
+        if (!$orderPurchase) {
+            $orderPurchase                     = new OrderPurchase();
+            $orderPurchase->purchase_sn        = $params['purchase_sn'];
+            $orderPurchase->order_id           = $orderFinal->order_id;
+            $orderPurchase->order_agreement_id = 0;
+            $orderPurchase->goods_info         = json_encode([], JSON_UNESCAPED_UNICODE);
+            $orderPurchase->end_date           = $params['end_date'];
+            $orderPurchase->admin_id           = $params['admin_id'];
+        }
+        $orderPurchase->is_agreement = 0;
+        $orderPurchase->is_complete = 0;
         if ($orderPurchase->save()) {
             foreach ($params['goods_info'] as $item) {
                 $finalGoods = FinalGoods::findOne($item['final_goods_id']);
