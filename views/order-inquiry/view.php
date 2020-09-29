@@ -153,6 +153,14 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
                                 <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                                 <td><?=$item->number?></td>
+                                <td><?php
+                                    $text = '';
+                                    foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                        $text .= $key . ':' . $device . '<br/>';
+                                    }
+                                    echo $text;
+                                    ?>
+                                </td>
                                 <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                                 <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                                 <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
