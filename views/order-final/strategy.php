@@ -175,10 +175,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
         //保存
         $('.purchase_save').click(function (e) {
             var select_length = $('.select_id:checked').length;
-            if (!select_length) {
-                layer.msg('请最少选择一个零件', {time:2000});
-                return false;
-            }
+            // if (!select_length) {
+            //     layer.msg('请最少选择一个零件', {time:2000});
+            //     return false;
+            // }
 
             var goods_info = [];
             $('.select_id').each(function (index, element) {
