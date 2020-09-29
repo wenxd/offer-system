@@ -107,8 +107,10 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$item->number?></td>
                             <td><?php
                                 $text = '';
-                                foreach (json_decode($item->belong_to, true) as $key => $device) {
-                                    $text .= $key . ':' . $device . '<br/>';
+                                if (!empty($item->belong_to)) {
+                                    foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                        $text .= $key . ':' . $device . '<br/>';
+                                    }
                                 }
                                 echo $text;
                                 ?>
@@ -155,8 +157,10 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><?=$item->number?></td>
                                 <td><?php
                                     $text = '';
-                                    foreach (json_decode($item->belong_to, true) as $key => $device) {
-                                        $text .= $key . ':' . $device . '<br/>';
+                                    if (!empty($item->belong_to)) {
+                                        foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                            $text .= $key . ':' . $device . '<br/>';
+                                        }
                                     }
                                     echo $text;
                                     ?>
