@@ -164,6 +164,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         if (!$model->is_purchase) {
+                            $html = Html::a('<i class="fa fa-plus"></i> 采购策略', Url::to(['create-purchase', 'id' => $model['id'], 'type' => 'strategy']), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-success btn-xs btn-flat',
+                            ]);
+                            return $html . Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['create-purchase', 'id' => $model['id'], 'type' => 'order']), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-primary btn-xs btn-flat',
+                                ]);
                             if ($model->is_merge) {
                                 return Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['create-purchase', 'id' => $model['id']]), [
                                     'data-pjax' => '0',

@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\AgreementGoods;
+use app\models\FinalGoodsData;
+use app\models\GoodsRelation;
 use app\models\Inquiry;
 use app\models\OrderAgreement;
 use app\models\OrderQuote;
@@ -268,31 +270,113 @@ class OrderFinalController extends BaseController
      * @param $id
      * @return string
      */
-    public function actionCreatePurchase($id)
+    public function actionCreatePurchase($id, $type = 'order')
     {
         $request = Yii::$app->request->get();
         $orderFinal      = OrderFinal::findOne($id);
         $order           = Order::findOne($orderFinal->order_id);
-        $finalGoodsQuery = FinalGoods::find()
-            ->from('final_goods fg')
-            ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
-            ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
-            ->where(['order_final_id' => $id, 'purchase_is_show' => FinalGoods::IS_SHOW_YES]);
-        if (isset($request['admin_id'])) {
-            $finalGoodsQuery->andFilterWhere(['i.admin_id' => $request['admin_id']]);
+        if ($type == 'strategy') {
+            //判断是否有原始数据
+            $finalGoodsQuery = FinalGoodsData::find()->alias('fg')
+                ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
+                ->with('goodsRelation')->with('goods')
+                ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
+                ->where(['order_final_id' => $id, 'purchase_is_show' => FinalGoods::IS_SHOW_YES])->all();
+            //如果没有则添加
+            if (empty($finalGoodsQuery)) {
+                $finalGoodsQuery = FinalGoods::find()
+                    ->from('final_goods fg')
+                    ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
+                    ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
+                    ->where(['order_final_id' => $id, 'purchase_is_show' => FinalGoods::IS_SHOW_YES])->all();
+                //保存到原始数据表
+                $FinalGoodsData = new FinalGoodsData();
+                foreach ($finalGoodsQuery as $item) {
+                    $FinalGoodsData->isNewRecord = true;
+                    $FinalGoodsData->setAttributes($item->toArray());
+                    $FinalGoodsData->save() && $FinalGoodsData->id = 0;
+                }
+            }
+            //展示原始数据
+            if(Yii::$app->request->isPost) {
+                try {
+                    $post = Yii::$app->request->post('goods_info', []);
+                    $transaction = Yii::$app->db->beginTransaction();
+                    FinalGoods::deleteAll(['order_final_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
+                    $agreementGoodsNews = [];
+                    foreach ($finalGoodsQuery as $good) {
+                        $item = $good->toArray();
+                        unset($item['id']);
+                        $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
+                        //需要拆分
+                        if (in_array($item['goods_id'], $post)) {
+                            $good->belong_to = '';
+                            $data = GoodsRelation::getGoodsSonPriceFinal($item, []);
+                            foreach ($data as $v) {
+                                $agreementGoodsNews[] = $v;
+                            }
+                        } else {
+                            $good->belong_to = '[]';
+                            //不需要拆分
+                            $agreementGoodsNews[] = $item;
+                        }
+                        $good->save();
+                    }
+                    //重组采购策略
+                    $goodsNews = [];
+                    foreach ($agreementGoodsNews as $goodsNew) {
+                        $goods_id = $goodsNew['goods_id'];
+                        $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                        if (isset($goodsNews[$goods_id])) {
+                            $goodsNew['info'] = $goodsNews[$goods_id]['info'];
+                            $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                            $goodsNew['number'] += $goodsNews[$goods_id]['number'];
+                            $goodsNew['order_number'] = $goodsNew['number'];
+                            $goodsNew['purchase_number'] = $goodsNew['number'];
+                        }
+                        $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
+                        $goodsNew['belong_to'] = $info;
+                        $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
+                        $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
+                        $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
+                        $goodsNews[$goods_id] = $goodsNew;
+                    }
+                    $model = new FinalGoods();
+                    foreach ($goodsNews as $item) {
+                        $model->isNewRecord = true;
+                        $model->setAttributes($item);
+                        if (!$model->save()) {
+                            return json_encode(['code' => 500, 'msg' => 'Goods数据添加失败']);
+                        }
+                        $model->id = 0;
+                    }
+                    $transaction->commit();
+                    return json_encode(['code' => 200, 'msg' => '修改策略成功']);
+                } catch (\Exception $e) {
+                    return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+                }
+            }
+        } else {
+            $finalGoodsQuery = FinalGoods::find()
+                ->from('final_goods fg')
+                ->select('fg.*')->leftJoin('goods g', 'fg.goods_id=g.id')
+                ->leftJoin('inquiry i', 'fg.relevance_id=i.id')
+                ->where(['order_final_id' => $id, 'purchase_is_show' => FinalGoods::IS_SHOW_YES]);
+            if (isset($request['admin_id'])) {
+                $finalGoodsQuery->andFilterWhere(['i.admin_id' => $request['admin_id']]);
+            }
+            if (isset($request['original_company']) && $request['original_company']) {
+                $finalGoodsQuery->andWhere(['like', 'g.original_company', $request['original_company']]);
+            }
+            $finalGoodsQuery = $finalGoodsQuery->all();
         }
-        if (isset($request['original_company']) && $request['original_company']) {
-            $finalGoodsQuery->andWhere(['like', 'g.original_company', $request['original_company']]);
-        }
-        $finalGoodsQuery = $finalGoodsQuery->all();
-
         $inquiryGoods  = InquiryGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
         $purchaseGoods  = PurchaseGoods::find()
             ->where(['order_id' => $orderFinal->order_id])
             ->indexBy('goods_id')
             ->all();
 
-        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
+//        $orderGoods    = OrderGoods::find()->where(['order_id' => $order->id])->indexBy('goods_id')->all();
 
         $date = date('ymd_');
         $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
@@ -312,7 +396,9 @@ class OrderFinalController extends BaseController
         $data['inquiryGoods']   = $inquiryGoods;
         $data['purchaseGoods']  = $purchaseGoods;
         $data['order']          =   $order;
-
+        if ($type == 'strategy') {
+            return $this->render('strategy', $data);
+        }
         return $this->render('create-purchase', $data);
     }
 

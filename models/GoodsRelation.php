@@ -123,7 +123,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
     }
 
     /**
-     * 获取最低级零件价格
+     * 获取最低级零件价格（项目）
      */
     public static function getGoodsSonPrice($goods, $info = [])
     {
@@ -200,6 +200,83 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 $res['purchase_number'] = $res['number'];
                 $info[$id] = $res;
             }
+        }
+        return $info;
+    }
+
+    /**
+     * 获取最低级零件价格(非项目)
+     */
+    public static function getGoodsSonPriceFinal($goods, $info = [])
+    {
+        //查询子级
+        $data = self::find()
+            ->alias("relation")
+//            ->select(['relation.number', 'relation.p_goods_id', 'goods.is_assembly', 'goods_number'])
+            ->where(['relation.is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $goods['goods_id']])
+            ->with('goods')
+            ->with('finallow')
+            ->with('inquirylow')
+            ->groupBy('relation.goods_id')->all();
+        foreach ($data as $item) {
+            $number = $item['number'] * $goods['number'];
+            $res = [
+                'order_id' => $goods['order_id'], //'订单ID',
+                'order_final_id' => $goods['order_final_id'], //'合同订单ID',
+                'order_agreement_sn' => $goods['final_sn'], //'合同订单号',
+                'key' => $goods['key'], //'合同订单号',
+                'serial' => $item->goods_id, //'序号',
+                'goods_id' => $item->goods_id, //'零件ID',
+                'tax_rate' => 0, //'税率',
+                'price' => 0, //'单价',
+                'type' => 0, //'关联类型  0询价  1库存',
+                'relevance_id' => 0, //'关联ID（询价或库存）',
+                'number' => $number, //'订单需求数量（原始数据，报价单生成收入合同而来）',
+                'purchase_is_show' => 1, //'生成采购单的时候合并数据后不显示 1默认显示 0为不显示',
+                'is_agreement' => 0, //'是否报价 0否 1是',
+                'agreement_sn' => '', //'单条合同号',
+                'purchase_date' => '', //'采购时间',
+                'agreement_date' => '', //'采购时间',
+                'inquiry_admin_id' => '', //'询价员ID',
+                'delivery_time' => '', //'报价货期（周）',
+                'top_goods_number' => $goods['top_goods_number'],
+            ];
+            //询价单
+            if (isset($item->inquirylow) && !empty($item->inquirylow)) {
+                $inquirylow = $item->inquirylow;
+                $res['tax_rate'] = $inquirylow->tax_rate;
+                $res['price'] = $inquirylow->price;
+                $res['inquiry_admin_id'] = $inquirylow->admin_id;
+                $res['relevance_id'] = $inquirylow->id;
+                $res['delivery_time'] = $inquirylow->delivery_time;
+            }
+            //成本单
+            if (isset($item->finallow->inquirylow) && !empty($item->finallow->inquirylow)) {
+                $finallow = $item->finallow;
+                $inquirylow = $finallow->inquirylow;
+                //序号
+                $res['serial'] = $finallow->serial;
+                $res['tax_rate'] = $inquirylow->tax_rate;
+                $res['price'] = $inquirylow->price;
+                $res['inquiry_admin_id'] = $inquirylow->admin_id;
+                $res['relevance_id'] = $inquirylow->id;
+                $res['delivery_time'] = $inquirylow->delivery_time;
+            }
+            if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
+                $info = GoodsRelation::getGoodsSonPrice($res, $info);
+            } else {
+                $id = $item->goods_id;
+                if (isset($info[$id])) {
+                    $res['number'] += $info[$id]['number'];
+                    if ($info[$id]['delivery_time'] > $res['delivery_time'] && $info[$id]['delivery_time'] > 0) {
+                        $res['delivery_time'] = $info[$id]['delivery_time'];
+                    }
+                }
+                $res['order_number'] = $res['number'];
+                $res['purchase_number'] = $res['number'];
+                $info[$id] = $res;
+            }
+
         }
         return $info;
     }

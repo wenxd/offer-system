@@ -224,7 +224,8 @@ class OrderAgreementController extends Controller
                         $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
                         $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
                         $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
-                        $goodsNew['quote_delivery_time'] = $goodsNew['delivery_time'];
+                        $goodsNew['delivery_time'] = $goodsNew['delivery_time'];
+                        $goodsNew['quote_delivery_time'] = $goodsNew['quote_delivery_time'];
                         $goodsNews[$goods_id] = $goodsNew;
                     }
                     $model = new AgreementGoods();

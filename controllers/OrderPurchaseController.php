@@ -410,7 +410,7 @@ class OrderPurchaseController extends BaseController
         $data['number'] = 1;
         $data['fixed_number'] = 1;
         $data['serial'] = $goods['id'];
-        $data['order_final_id'] =0;
+        $data['order_final_id'] = 0;
         $data['is_purchase'] = 0;
         $data['after'] = 1;
         $data['updated_at'] = date("y-m-d H:i:s");
@@ -444,7 +444,7 @@ class OrderPurchaseController extends BaseController
             $data['fixed_delivery_time'] = $inquirylow['delivery_time'];
         }
         $data['all_price'] = $data['price'];
-        $data['all_tax_price'] = round($data['price'] * (1 + $data['tax_rate'] / 100),2);
+        $data['all_tax_price'] = round($data['price'] * (1 + $data['tax_rate'] / 100), 2);
         $data['fixed_tax_price'] = $data['all_tax_price'];
         $model = new PurchaseGoods();
         if ($model->load(['PurchaseGoods' => $data]) && $model->save()) {
