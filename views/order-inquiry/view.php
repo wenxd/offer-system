@@ -132,7 +132,8 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             </td>
                         </tr>
                     <?php else: ?>
-                        <?php if ($item->is_inquiry):?>
+                    <!--if (!$item->is_inquiry)-->
+                        <?php if (1):?>
                             <tr class="order_inquiry_list" data-id="<?=$item->id?>" <?=(!$item->is_inquiry&& !$orderInquiry->is_inquiry && (strtotime($item->orderInquiry->end_date) - time()) < 3600 * 24) ? 'class="alarm"' : ''?>>
                                 <td><?=$item->serial?></td>
                                 <td><?=$orderInquiry->inquiry_sn?></td>
