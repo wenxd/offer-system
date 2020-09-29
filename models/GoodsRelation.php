@@ -263,7 +263,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 $res['delivery_time'] = $inquirylow->delivery_time;
             }
             if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
-                $info = GoodsRelation::getGoodsSonPrice($res, $info);
+                $info = GoodsRelation::getGoodsSonPriceFinal($res, $info);
             } else {
                 $id = $item->goods_id;
                 if (isset($info[$id])) {
