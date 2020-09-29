@@ -223,7 +223,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
             $res = [
                 'order_id' => $goods['order_id'], //'订单ID',
                 'order_final_id' => $goods['order_final_id'], //'合同订单ID',
-                'order_agreement_sn' => $goods['final_sn'], //'合同订单号',
+                'final_sn' => $goods['final_sn'], //'合同订单号',
                 'key' => $goods['key'], //'合同订单号',
                 'serial' => $item->goods_id, //'序号',
                 'goods_id' => $item->goods_id, //'零件ID',
