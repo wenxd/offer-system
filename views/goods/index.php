@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {inquiry} {download-son} {upload-son} {index}',
+            'template' => '{create} {delete} {download} {upload} {inquiry} {download-son} {upload-son} {download-check} {upload-check} {index}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -48,9 +48,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                 },
                 'upload-son' => function () {
-                    return Html::a('<i class="fa fa-upload" onclick="upload-son"></i> 导入(子)', 'Javascript: void(0)', [
+                    return Html::a('<i class="fa fa-upload"></i> 导入(子)', 'Javascript: void(0)', [
                         'data-pjax' => '0',
                         'class' => 'btn btn-info btn-flat upload-son',
+                    ]);
+                },
+                'download-check' => function () {
+                    return Html::a('<i class="fa fa-download"></i> 检测模板', Url::to(['download-check']), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'upload-check' => function () {
+                    return Html::a('<i class="fa fa-upload"></i> 检测', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-flat upload-check',
                     ]);
                 },
                 'index' => function () {
@@ -511,6 +523,40 @@ $this->params['breadcrumbs'][] = $this->title;
             //字符串转换json
             var data = JSON.parse(data);
             if (data.code == 200) {
+                //导入成功
+                layer.msg(data.msg, {time: 5000}, function () {
+                    window.location.reload();
+                });
+            } else {
+                //失败提示
+                layer.msg(data.msg, {icon: 1});
+            }
+        }
+    });
+
+    $('.upload-check').ajaxUploadPrompt({
+        //上传地址
+        url: '?r=goods/upload-check',
+        //上传文件类型
+        accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
+        //上传前加载动画
+        beforeSend: function () {
+            layer.msg('上传中。。。', {
+                icon: 16, shade: 0.01
+            });
+        },
+        onprogress: function (e) {
+        },
+        error: function () {
+        },
+        success: function (data) {
+            console.log(data);
+            //关闭动画
+            window.top.layer.close(index);
+            //字符串转换json
+            var data = JSON.parse(data);
+            if (data.code == 200) {
+                window.location.href = '?r=goods/upload-check';
                 //导入成功
                 layer.msg(data.msg, {time: 5000}, function () {
                     window.location.reload();

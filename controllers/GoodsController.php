@@ -73,6 +73,7 @@ class GoodsController extends BaseController
             ],
         ];
     }
+
     /**
      * 零件锁定
      */
@@ -727,6 +728,118 @@ class GoodsController extends BaseController
                 return json_encode(['code' => 500, 'msg' => "数据保存失败"], JSON_UNESCAPED_UNICODE);
             }
 
+        }
+    }
+
+    /**
+     * 下载零件校验模板
+     */
+    public function actionDownloadCheck()
+    {
+        $fileName = '检测模板.csv';
+        $columns = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存",];
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        $fp = fopen('php://output', 'a');//打开output流
+        mb_convert_variables('GBK', 'UTF-8', $columns);
+        fputcsv($fp, $columns);
+        ob_flush();
+        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+        fclose($fp);
+        exit();
+    }
+
+    /**
+     * 上传校验模板
+     */
+    public function actionUploadCheck()
+    {
+        $cache = Yii::$app->cache;
+        $spu_name = 'goods_number_check';
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            if ($cache->exists($spu_name)) {
+                $data = json_decode($cache->get($spu_name), true);
+                $cache->delete($spu_name);
+                $fileName = '检测结果.csv';
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                $fp = fopen('php://output', 'a');//打开output流
+                foreach ($data as $rowData) {
+                    mb_convert_variables('GBK', 'UTF-8', $rowData);
+                    fputcsv($fp, $rowData);
+                }
+                unset($data);//释放变量的内存
+                ob_flush();
+                flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+                fclose($fp);
+                exit();
+            }
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件'], JSON_UNESCAPED_UNICODE);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' || $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['FileName']['type'] == 'application/octet-stream') {
+                //获取文件名称
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+                //保存文件
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    //组装数据
+                    $data = [
+                        ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存",]
+                    ];
+                    foreach ($sheetData as $k => $v) {
+                        if ($k > 1) {
+                            $brand = trim($v['A']);
+                            $goods_number = trim($v['B']);
+                            $info = [$brand, $goods_number];
+                            $goods = Goods::find()
+                                ->with('inquirylow')
+                                ->with('stock')
+                                ->where(['is_deleted' => Goods::IS_DELETED_NO, 'goods_number' => $goods_number, 'material_code' => $brand])
+                                ->asArray()->one();
+                            if (empty($goods)) {
+                                $info[] = '否';
+                            } else {
+                                $info[] = '是';
+                                $info[] = !empty($goods['goods_number_b']) ? '是' : '否';
+                                $info[] = $goods['locking'] == 1 ? '是' : '否';
+                                $info[] = $goods['publish_tax_price'] > 0 ? '是' : '否';
+                                $info[] = $goods['is_tz'] ? '是' : '否';
+                                $info[] = $goods['is_assembly'] ? '是' : '否';
+                                $info[] = $goods['is_process'] ? '是' : '否';
+                                $info[] = $goods['is_standard'] ? '是' : '否';
+                                $info[] = !empty($goods['inquirylow']) ? '是' : '否';
+                                $info[] = !empty($goods['stock']) && $goods['stock']['number'] > 0 ? '是' : '否';
+
+
+                            }
+                            $data[] = $info;
+                        }
+                    }
+                    if (count($data) > 1) {
+                        $cache->set($spu_name, json_encode($data), 60);
+                    }
+                    unlink('./' . $saveName);
+                    return json_encode(['code' => 200, 'msg' => '数据生成成功'], JSON_UNESCAPED_UNICODE);
+                }
+                return json_encode(['code' => 500, 'msg' => "数据生成失败"], JSON_UNESCAPED_UNICODE);
+            }
         }
     }
 }

@@ -55,6 +55,7 @@ $system_tax= SystemConfig::find()->select('value')->where([
                 <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
                 <th>总成</th>
+                <th>拆分</th>
                 <th style="width: 100px;">零件号</th>
                 <th style="width: 100px;">厂家号</th>
                 <th style="width: 100px;">中文描述</th>
@@ -101,6 +102,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-final_goods
                     </td>
                     <td><?=$item->serial?></td>
                     <td><?=$checkbox ? '是' : "否"?></td>
+                    <td><?=empty($item->belong_to) ? '是' : "否"?></td>
                     <td><?=Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <td><?=Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]))?></td>
                     <td><?=$item->goods->description?></td>
