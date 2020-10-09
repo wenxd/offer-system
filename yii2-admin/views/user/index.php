@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'update-password' => function($url, $model) {
                         $options = [
-                            'title' => '修改密码',
+                            'title' => '修改',
                         ];
                         return Html::a('<span class="glyphicon glyphicon-edit"></span>', $url, $options);
                     }

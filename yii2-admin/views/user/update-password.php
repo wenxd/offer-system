@@ -15,6 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'form-change']); ?>
+                <?= $form->field($model, 'username')->passwordInput() ?>
+                <?= $form->field($model, 'email')->passwordInput() ?>
                 <?= $form->field($model, 'newPassword')->passwordInput() ?>
                 <?= $form->field($model, 'retypePassword')->passwordInput() ?>
                 <div class="form-group">
