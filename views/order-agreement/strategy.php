@@ -97,7 +97,6 @@ $system_tax = SystemConfig::find()->select('value')->where([
                         $purchaseGoodsList = $purchaseGoods[$item->goods_id];
                         foreach ($purchaseGoodsList as $k => $v) {
                             if ($v['serial'] == $item->serial && $v['goods_id'] == $item->goods_id) {
-                                $checkbox           = false;
                                 $order_purchase_sn  = $v['order_purchase_sn'];
                                 $purchase_number    = $v['fixed_number'];
                             }
