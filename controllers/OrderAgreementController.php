@@ -181,10 +181,16 @@ class OrderAgreementController extends Controller
                     $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
                 }
             }
-            //展示原始数据
             if(Yii::$app->request->isPost) {
                 try {
-                    $post = Yii::$app->request->post('goods_info', []);
+                    $goods_info = Yii::$app->request->post('goods_info', []);
+                    $goods_info= array_filter($goods_info);
+                    $post = [];
+                    foreach ($goods_info as $k => $v) {
+                        if ($v) {
+                            $post[] = $k;
+                        }
+                    }
                     $transaction = Yii::$app->db->beginTransaction();
                     AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
                     AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
@@ -195,16 +201,22 @@ class OrderAgreementController extends Controller
                         $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
                         //需要拆分
                         if (in_array($item['goods_id'], $post)) {
+                            //策略采购数量
+                            $strategy_number = (int)$goods_info[$item['goods_id']];
+                            $item['number'] = $strategy_number;
                             $good->belong_to = '';
                             $data = GoodsRelation::getGoodsSonPrice($item, []);
                             foreach ($data as $v) {
                                 $agreementGoodsNews[] = $v;
                             }
                         } else {
+                            //策略采购数量
+                            $strategy_number = $item['number'];
                             $good->belong_to = '[]';
                             //不需要拆分
                             $agreementGoodsNews[] = $item;
                         }
+                        $good->strategy_number = $strategy_number;
                         $good->save();
                     }
                     //重组采购策略
