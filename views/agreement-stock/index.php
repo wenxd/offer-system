@@ -168,10 +168,13 @@ $userId   = Yii::$app->user->identity->id;
                             'data-pjax' => '0',
                             'class' => 'btn btn-success btn-xs btn-flat',
                         ]);
-                        $html .= Html::a('<i class="fa fa-times"></i> 驳回', Url::to(['reject', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-danger btn-xs btn-flat',
-                        ]);
+                        if (in_array($model->source, ['strategy', 'purchase', 'payment'])) {
+                            $html .= Html::a('<i class="fa fa-times"></i> 驳回', Url::to(['reject', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-danger btn-xs btn-flat',
+                            ]);
+                        }
+
                     }
                     return $html;
                 }
