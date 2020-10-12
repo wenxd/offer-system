@@ -258,6 +258,8 @@ class OrderAgreementController extends Controller
                 foreach ($agreementGoods as $good) {
                     $item = $good->toArray();
                     unset($item['id']);
+                    $item['number'] = $good['strategy_number'];
+                    $item['order_number'] = $good['strategy_number'];
                     $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
                     //需要拆分
                     if (in_array($item['goods_id'], $post)) {

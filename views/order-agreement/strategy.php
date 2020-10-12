@@ -274,11 +274,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             var goods_info = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
-                    var purchase_number = $(element).attr('number');
-                    if (purchase_number > 0) {
-                        goods_id = $(element).val();
-                        goods_info[goods_id] = purchase_number;
-                    }
+                    goods_info.push($(element).val());
                 }
             });
             console.log(goods_info);
