@@ -226,14 +226,7 @@ class OrderAgreementController extends Controller
     {
         $orderAgreement = OrderAgreement::findOne($id);
         //判断是否有原始数据
-        $agreementGoods = AgreementGoodsData::find()->alias('ag')
-            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-            ->with('goodsRelation')->with('goods')
-            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
-            ->andWhere("strategy_number > 0")
-            ->orderBy('serial')->all();
-        //如果没有则添加
-        if (empty($agreementGoods)) {
+        if (!AgreementGoodsData::find()->where(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1])->count()) {
             $agreementGoods = AgreementGoods::find()->alias('ag')
                 ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
                 ->with('goodsRelation')->with('goods')
@@ -243,20 +236,21 @@ class OrderAgreementController extends Controller
             $AgreementGoodsDataModel = new AgreementGoodsData();
             foreach ($agreementGoods as $item) {
                 $AgreementGoodsDataModel->isNewRecord = true;
-                $AgreementGoodsDataModel->setAttributes($item->toArray());
+                $item_arr = $item->toArray();
+                $item_arr['strategy_number'] = $item_arr['number'];
+                $AgreementGoodsDataModel->setAttributes($item_arr);
                 $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
             }
         }
+        $agreementGoods = AgreementGoodsData::find()->alias('ag')
+            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+            ->with('goodsRelation')->with('goods')
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+            ->andWhere("strategy_number > 0")
+            ->orderBy('serial')->all();
         if (Yii::$app->request->isPost) {
             try {
-                $goods_info = Yii::$app->request->post('goods_info', []);
-                $goods_info = array_filter($goods_info);
-                $post = [];
-                foreach ($goods_info as $k => $v) {
-                    if ($v) {
-                        $post[] = $k;
-                    }
-                }
+                $post = Yii::$app->request->post('goods_info', []);
                 $transaction = Yii::$app->db->beginTransaction();
                 AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
                 AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
@@ -268,21 +262,17 @@ class OrderAgreementController extends Controller
                     //需要拆分
                     if (in_array($item['goods_id'], $post)) {
                         //策略采购数量
-                        $strategy_number = (int)$goods_info[$item['goods_id']];
-                        $item['number'] = $strategy_number;
+                        $item['number'] = $good['strategy_number'];
                         $good->belong_to = '';
                         $data = GoodsRelation::getGoodsSonPrice($item, []);
                         foreach ($data as $v) {
                             $agreementGoodsNews[] = $v;
                         }
                     } else {
-                        //策略采购数量
-                        $strategy_number = $item['number'];
                         $good->belong_to = '[]';
                         //不需要拆分
                         $agreementGoodsNews[] = $item;
                     }
-                    $good->strategy_number = $strategy_number;
                     $good->save();
                 }
                 //重组采购策略
@@ -327,7 +317,6 @@ class OrderAgreementController extends Controller
             } catch (\Exception $e) {
                 return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
             }
-
         }
         $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
         $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();

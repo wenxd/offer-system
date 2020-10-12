@@ -138,6 +138,6 @@ class AgreementGoods extends \yii\db\ActiveRecord
 
     public function getGoodsRelation()
     {
-        return $this->hasOne(GoodsRelation::className(), ['p_goods_id' => 'goods_id']);
+        return $this->hasOne(GoodsRelation::className(), ['p_goods_id' => 'goods_id'])->where(['is_deleted' => GoodsRelation::IS_DELETED_NO]);
     }
 }

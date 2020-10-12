@@ -62,7 +62,7 @@ class AgreementGoodsData extends AgreementGoods
             [['id'], 'required'],
             [['id', 'order_id', 'order_agreement_id', 'order_quote_id', 'goods_id', 'type', 'relevance_id', 'number', 'order_number', 'is_agreement', 'is_deleted', 'inquiry_admin_id', 'is_out', 'is_quality', 'purchase_number', 'purchase_is_show'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'quote_delivery_time', 'delivery_time'], 'number'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['updated_at', 'created_at', 'strategy_number'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'serial', 'agreement_sn', 'purchase_date', 'agreement_date'], 'string', 'max' => 255],
             [['id'], 'unique'],
         ];
