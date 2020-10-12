@@ -33,10 +33,23 @@ class AgreementStock extends \yii\db\ActiveRecord
 {
     const IS_CONFIRM_NO  = '0';
     const IS_CONFIRM_YES = '1';
+    const IS_CONFIRM_REJECT = '4';
 
     public static $confirm = [
         self::IS_CONFIRM_NO  => '否',
-        self::IS_CONFIRM_YES => '是'
+        self::IS_CONFIRM_YES => '是',
+        self::IS_CONFIRM_REJECT => '驳回'
+    ];
+
+    // 来源source
+    const STRATEGY = 'strategy';
+    const PURCHASE = 'purchase';
+    const PAYMENT = 'payment';
+
+    public static $source = [
+        self::STRATEGY  => '采购策略',
+        self::PURCHASE  => '采购订单',
+        self::PAYMENT => '支出合同'
     ];
 
     public function behaviors()
@@ -74,7 +87,7 @@ class AgreementStock extends \yii\db\ActiveRecord
                 'is_confirm'], 'integer'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['confirm_at', 'admin_id'], 'safe'],
-            [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn'], 'string', 'max' => 255],
+            [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'source'], 'string', 'max' => 255],
         ];
     }
 

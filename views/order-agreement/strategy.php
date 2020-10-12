@@ -139,23 +139,57 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td><?= $order_purchase_sn ?></td>
                     <td class="quote_delivery_time"><?= $item->quote_delivery_time ?></td>
                     <td class="oldNumber"><?= $item->order_number ?></td>
-                    <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" style="width: 50px;"
-                               value="<?= $item->purchase_number ?>">
-                    </td>
-                    <td><?= $item->goods->unit ?></td>
-                    <td class="use_stock">0</td>
+                    <?php if ($orderAgreement->is_strategy_number == 1) :?>
+                        <td class="afterNumber">
+                            <input goods_id="<?=$item->goods_id?>" type="number" size="4" class="number" min="1" style="width: 50px;"
+                                   value="<?= $item->strategy_number ?>">
+                        </td>
+                        <td><?= $item->goods->unit ?></td>
+                        <td class="use_stock">
+                            <!--计算库存-->
+                            <?php
+                                if ($item->strategy_number == 0 ) {
+                                    echo $item->number;
+                                } elseif ($item->strategy_number < $item->number) {
+                                    echo $item->number - $item->strategy_number;
+                                } else {
+                                    echo 0;
+                                }
+                            ?>
+                        </td>
+                    <?php else:;?>
+                        <td class="afterNumber">
+                            <input goods_id="<?=$item->goods_id?>" type="number" size="4" class="number" min="1" style="width: 50px;"
+                                   value="<?= $item->number ?>">
+                        </td>
+                        <td><?= $item->goods->unit ?></td>
+                        <td class="use_stock">0</td>
+                    <?php endif;?>
                     <td class="stock_number"><?= $item->stock ? $item->stock->number : 0 ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
+
     <div class="box-footer">
-        <?= Html::button('保存购策略', [
-                'class' => 'btn btn-success purchase_save',
-                'name' => 'submit-button']
-        ) ?>
+        <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary strategy_save', 'name' => 'submit-button']) ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        <?php
+        // 保存采购数量/使用库存保存后才允许显示
+        if ($orderAgreement->is_strategy_number == 1) {
+            // 查询是否有未确认使用库存列表
+            $count = \app\models\AgreementStock::find()
+                ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $orderAgreement->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
+                ->count();
+            if (!$count) {
+                echo Html::button('保存采购策略', ['class' => 'btn btn-success purchase_save', 'name' => 'submit-button']);
+            } else {
+                echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
+            }
+        }
+        ?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -205,7 +239,35 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             }
         });
 
-        //保存
+        //保存采购数量/使用库存
+        $('.strategy_save').click(function (e) {
+            //防止双击
+            // $(".purchase_save").attr("disabled", true).addClass("disabled");
+            var goods_info = [];
+            $('.number').each(function (index, element) {
+                var goods_id = $(element).attr('goods_id');
+                var strategy_number = $(element).val();
+                var goods = [];
+                goods_info.push({goods_id:goods_id,strategy_number:strategy_number});
+            });
+            console.log(goods_info);
+            $.ajax({
+               type:"post",
+               url:'<?=Url::to(['save-strategy-number', 'id' => $id])?>',
+               data:{goods_info:goods_info},
+               dataType:'JSON',
+               success:function(res){
+                   if (res && res.code == 200){
+                       layer.msg(res.msg, {time:2000});
+                       window.location.reload();
+                   } else {
+                       layer.msg(res.msg, {time:2000});
+                   }
+               }
+            });
+        });
+
+        //保存采购策略
         $('.purchase_save').click(function (e) {
             //防止双击
             // $(".purchase_save").attr("disabled", true).addClass("disabled");

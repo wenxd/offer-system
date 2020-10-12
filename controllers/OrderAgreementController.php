@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementStock;
 use Yii;
 use app\models\{AgreementGoodsBak,
     AgreementGoodsData,
@@ -14,9 +15,11 @@ use app\models\{AgreementGoodsBak,
     AgreementGoods,
     PurchaseGoods,
     Stock,
-    SystemConfig};
+    SystemConfig
+};
 use app\models\OrderAgreementSearch;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -155,128 +158,176 @@ class OrderAgreementController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionDetail($id, $type = 'order')
+    /**
+     * 保存采购数量并生成使用库存记录
+     */
+    public function actionSaveStrategyNumber($id)
     {
-        $request = Yii::$app->request->get();
+        $params = Yii::$app->request->post('goods_info', []);
+        $goods_info = [];
+        foreach ($params as $v) {
+            $goods_info[$v['goods_id']] = $v['strategy_number'];
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        // 查询收入合同单号与零件ID对应表
+        $agreementGoods = AgreementGoodsData::find()->alias('ag')
+            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+            ->with('goodsRelation')->with('goods')
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+            ->orderBy('serial')->all();
+        foreach ($agreementGoods as $goods) {
+            // 匹配零件号，更新采购策略采购数量
+            if (isset($goods_info[$goods->goods_id])) {
+                $goods->strategy_number = $goods_info[$goods->goods_id];
+                if (!$goods->save()) {
+                    $transaction->rollBack();
+                    return json_encode(['code' => 501, 'msg' => $goods->errors], JSON_UNESCAPED_UNICODE);
+                }
+                // 判断是否使用库存（策略采购数量 < 订单需求数量）
+                if ($goods->strategy_number < $goods->number) {
+                    $use_number = $goods->number - $goods->strategy_number;
+                    // 加入使用库存列表
+                    $stock_model = new AgreementStock();
+                    $stock_data = [
+                        'order_id' => $goods->order_id,
+                        'order_agreement_id' => $goods->order_agreement_id,
+                        'order_agreement_sn' => $goods->order_agreement_sn,
+                        'goods_id' => $goods->goods_id,
+                        'serial' => $goods->serial,
+                        'price' => $goods->price,
+                        'tax_price' => $goods->tax_price,
+                        'use_number' => $use_number,
+                        'all_price' => $goods->price * $use_number,
+                        'all_tax_price' => $goods->tax_price * $use_number,
+                        'source' => AgreementStock::STRATEGY,
+                    ];
+                    if (!$stock_model->load(['AgreementStock' => $stock_data]) || !$stock_model->save()) {
+                        $transaction->rollBack();
+                        return json_encode(['code' => 502, 'msg' => $stock_model->errors], JSON_UNESCAPED_UNICODE);
+                    }
+                }
+            }
+        }
+        // 更新收入合同
         $orderAgreement = OrderAgreement::findOne($id);
-        if ($type == 'strategy') {
-            //判断是否有原始数据
-            $agreementGoods = AgreementGoodsData::find()->alias('ag')
+        $orderAgreement->is_strategy_number = 1;
+        if (!$orderAgreement->save()) {
+            $transaction->rollBack();
+            return json_encode(['code' => 503, 'msg' => $orderAgreement->errors], JSON_UNESCAPED_UNICODE);
+        }
+        $transaction->commit();
+        return json_encode(['code' => 200, 'msg' => '保存采购数量并生成使用库存记录成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 生成采购策略
+     */
+    public function actionStrategy($id)
+    {
+        $orderAgreement = OrderAgreement::findOne($id);
+        //判断是否有原始数据
+        $agreementGoods = AgreementGoodsData::find()->alias('ag')
+            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+            ->with('goodsRelation')->with('goods')
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+            ->andWhere("strategy_number > 0")
+            ->orderBy('serial')->all();
+        //如果没有则添加
+        if (empty($agreementGoods)) {
+            $agreementGoods = AgreementGoods::find()->alias('ag')
                 ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
                 ->with('goodsRelation')->with('goods')
                 ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
                 ->orderBy('serial')->all();
-            //如果没有则添加
-            if (empty($agreementGoods)) {
-                $agreementGoods = AgreementGoods::find()->alias('ag')
-                    ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-                    ->with('goodsRelation')->with('goods')
-                    ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
-                    ->orderBy('serial')->all();
-                //保存到原始数据表
-                $AgreementGoodsDataModel = new AgreementGoodsData();
-                foreach ($agreementGoods as $item) {
-                    $AgreementGoodsDataModel->isNewRecord = true;
-                    $AgreementGoodsDataModel->setAttributes($item->toArray());
-                    $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
-                }
+            //保存到原始数据表
+            $AgreementGoodsDataModel = new AgreementGoodsData();
+            foreach ($agreementGoods as $item) {
+                $AgreementGoodsDataModel->isNewRecord = true;
+                $AgreementGoodsDataModel->setAttributes($item->toArray());
+                $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
             }
-            if(Yii::$app->request->isPost) {
-                try {
-                    $goods_info = Yii::$app->request->post('goods_info', []);
-                    $goods_info= array_filter($goods_info);
-                    $post = [];
-                    foreach ($goods_info as $k => $v) {
-                        if ($v) {
-                            $post[] = $k;
-                        }
+        }
+        if (Yii::$app->request->isPost) {
+            try {
+                $goods_info = Yii::$app->request->post('goods_info', []);
+                $goods_info = array_filter($goods_info);
+                $post = [];
+                foreach ($goods_info as $k => $v) {
+                    if ($v) {
+                        $post[] = $k;
                     }
-                    $transaction = Yii::$app->db->beginTransaction();
-                    AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
-                    AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
-                    $agreementGoodsNews = [];
-                    foreach ($agreementGoods as $good) {
-                        $item = $good->toArray();
-                        unset($item['id']);
-                        $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
-                        //需要拆分
-                        if (in_array($item['goods_id'], $post)) {
-                            //策略采购数量
-                            $strategy_number = (int)$goods_info[$item['goods_id']];
-                            $item['number'] = $strategy_number;
-                            $good->belong_to = '';
-                            $data = GoodsRelation::getGoodsSonPrice($item, []);
-                            foreach ($data as $v) {
-                                $agreementGoodsNews[] = $v;
-                            }
-                        } else {
-                            //策略采购数量
-                            $strategy_number = $item['number'];
-                            $good->belong_to = '[]';
-                            //不需要拆分
-                            $agreementGoodsNews[] = $item;
+                }
+                $transaction = Yii::$app->db->beginTransaction();
+                AgreementGoods::deleteAll(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1]);
+                AgreementGoodsBak::deleteAll(['order_agreement_id' => $id]);
+                $agreementGoodsNews = [];
+                foreach ($agreementGoods as $good) {
+                    $item = $good->toArray();
+                    unset($item['id']);
+                    $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
+                    //需要拆分
+                    if (in_array($item['goods_id'], $post)) {
+                        //策略采购数量
+                        $strategy_number = (int)$goods_info[$item['goods_id']];
+                        $item['number'] = $strategy_number;
+                        $good->belong_to = '';
+                        $data = GoodsRelation::getGoodsSonPrice($item, []);
+                        foreach ($data as $v) {
+                            $agreementGoodsNews[] = $v;
                         }
-                        $good->strategy_number = $strategy_number;
-                        $good->save();
+                    } else {
+                        //策略采购数量
+                        $strategy_number = $item['number'];
+                        $good->belong_to = '[]';
+                        //不需要拆分
+                        $agreementGoodsNews[] = $item;
                     }
-                    //重组采购策略
-                    $goodsNews = [];
-                    foreach ($agreementGoodsNews as $goodsNew) {
-                        $goods_id = $goodsNew['goods_id'];
+                    $good->strategy_number = $strategy_number;
+                    $good->save();
+                }
+                //重组采购策略
+                $goodsNews = [];
+                foreach ($agreementGoodsNews as $goodsNew) {
+                    $goods_id = $goodsNew['goods_id'];
+                    $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
+                    if (isset($goodsNews[$goods_id])) {
+                        $goodsNew['info'] = $goodsNews[$goods_id]['info'];
                         $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
-                        if (isset($goodsNews[$goods_id])) {
-                            $goodsNew['info'] = $goodsNews[$goods_id]['info'];
-                            $goodsNew['info'][$goodsNew['top_goods_number']] = $goodsNew['number'];
-                            $goodsNew['number'] += $goodsNews[$goods_id]['number'];
-                            $goodsNew['order_number'] = $goodsNew['number'];
-                            $goodsNew['purchase_number'] = $goodsNew['number'];
-                        }
-                        $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
-                        $goodsNew['belong_to'] = $info;
-                        $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
-                        $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
-                        $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
-                        $goodsNew['delivery_time'] = $goodsNew['delivery_time'];
-                        $goodsNew['quote_delivery_time'] = $goodsNew['quote_delivery_time'];
-                        $goodsNews[$goods_id] = $goodsNew;
+                        $goodsNew['number'] += $goodsNews[$goods_id]['number'];
+                        $goodsNew['order_number'] = $goodsNew['number'];
+                        $goodsNew['purchase_number'] = $goodsNew['number'];
                     }
-                    $model = new AgreementGoods();
-                    $model_bak = new AgreementGoodsBak();
-                    foreach ($goodsNews as $item) {
-                        $model->isNewRecord = true;
-                        $model->setAttributes($item);
-                        if (!$model->save()) {
-                            return json_encode(['code' => 500, 'msg' => 'Goods数据添加失败']);
-                        }
-                        $model->id = 0;
-                        $model_bak->isNewRecord = true;
-                        $model_bak->setAttributes($item);
-                        if (!$model_bak->save()) {
-                            return json_encode(['code' => 500, 'msg' => 'GoodsBak数据添加失败']);
-                        }
-                        $model_bak->id = 0;
-                    }
-                    $transaction->commit();
-                    return json_encode(['code' => 200, 'msg' => '修改策略成功']);
-                } catch (\Exception $e) {
-                    return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+                    $info = json_encode($goodsNew['info'], JSON_UNESCAPED_UNICODE);
+                    $goodsNew['belong_to'] = $info;
+                    $goodsNew['tax_price'] = $goodsNew['price'] * (1 + $goodsNew['tax_rate'] / 100);//'含税单价',
+                    $goodsNew['all_price'] = $goodsNew['number'] * $goodsNew['price'];
+                    $goodsNew['all_tax_price'] = $goodsNew['number'] * $goodsNew['tax_price'];
+                    $goodsNew['delivery_time'] = $goodsNew['delivery_time'];
+                    $goodsNew['quote_delivery_time'] = $goodsNew['quote_delivery_time'];
+                    $goodsNews[$goods_id] = $goodsNew;
                 }
+                $model = new AgreementGoods();
+                $model_bak = new AgreementGoodsBak();
+                foreach ($goodsNews as $item) {
+                    $model->isNewRecord = true;
+                    $model->setAttributes($item);
+                    if (!$model->save()) {
+                        return json_encode(['code' => 500, 'msg' => 'Goods数据添加失败']);
+                    }
+                    $model->id = 0;
+                    $model_bak->isNewRecord = true;
+                    $model_bak->setAttributes($item);
+                    if (!$model_bak->save()) {
+                        return json_encode(['code' => 500, 'msg' => 'GoodsBak数据添加失败']);
+                    }
+                    $model_bak->id = 0;
+                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '修改策略成功']);
+            } catch (\Exception $e) {
+                return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+            }
 
-            }
-        } else {
-            $agreementGoodsQuery = AgreementGoods::find()->alias('ag')
-                ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
-                ->with('goodsRelation')
-                ->with('goods')
-                ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1]);
-            //采购单
-            if (isset($request['admin_id'])) {
-                $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
-            }
-            if (isset($request['original_company']) && $request['original_company']) {
-                $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
-            }
-            $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
         }
         $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
         $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();
@@ -300,9 +351,55 @@ class OrderAgreementController extends Controller
         $data['inquiryGoods'] = $inquiryGoods;
         $data['purchaseGoods'] = $purchaseGoods;
         $data['order'] = Order::findOne($orderAgreement->order_id);
-        if ($type == 'strategy') {
-            return $this->render('strategy', $data);
+        $data['id'] = $id;
+        return $this->render('strategy', $data);
+    }
+
+    /**
+     * 生成采购订单
+     * @param $id
+     * @param string $type
+     * @return false|string
+     */
+    public function actionDetail($id, $type = 'order')
+    {
+        $request = Yii::$app->request->get();
+        $orderAgreement = OrderAgreement::findOne($id);
+        $agreementGoodsQuery = AgreementGoods::find()->alias('ag')
+            ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+            ->with('goodsRelation')
+            ->with('goods')
+            ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1]);
+        //采购单
+        if (isset($request['admin_id'])) {
+            $agreementGoodsQuery->andFilterWhere(['inquiry_admin_id' => $request['admin_id']]);
         }
+        if (isset($request['original_company']) && $request['original_company']) {
+            $agreementGoodsQuery->andWhere(['like', 'original_company', $request['original_company']]);
+        }
+        $agreementGoods = $agreementGoodsQuery->orderBy('serial')->all();
+        $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderAgreement->order_id])->indexBy('goods_id')->all();
+        $purchaseGoods = PurchaseGoods::find()->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $id])->asArray()->all();
+        $purchaseGoods = ArrayHelper::index($purchaseGoods, null, 'goods_id');
+
+        $date = date('ymd_');
+        $orderI = OrderPurchase::find()->where(['like', 'purchase_sn', $date])->orderBy('created_at Desc')->one();
+        if ($orderI) {
+            $num = strrpos($orderI->purchase_sn, '_');
+            $str = substr($orderI->purchase_sn, $num + 1);
+            $number = sprintf("%02d", $str + 1);
+        } else {
+            $number = '01';
+        }
+
+        $data = [];
+        $data['orderAgreement'] = $orderAgreement;
+        $data['agreementGoods'] = $agreementGoods;
+        $data['model'] = new OrderAgreement();
+        $data['number'] = $number;
+        $data['inquiryGoods'] = $inquiryGoods;
+        $data['purchaseGoods'] = $purchaseGoods;
+        $data['order'] = Order::findOne($orderAgreement->order_id);
         return $this->render('detail', $data);
     }
 

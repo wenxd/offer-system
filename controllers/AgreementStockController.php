@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementGoodsData;
 use Yii;
 use app\models\AgreementStock;
 use app\models\AgreementStockSearch;
@@ -134,5 +135,46 @@ class AgreementStockController extends Controller
         $agreementStock->save();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * 驳回
+     * @param $id
+     */
+    public function actionReject($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        $agreementStock = AgreementStock::findOne($id);
+        $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_REJECT;
+        $agreementStock->confirm_at = date('Y-m-d H:i:s');
+        $agreementStock->admin_id   = Yii::$app->user->identity->id;
+        $agreementStock->save();
+        if (!$agreementStock->save()) {
+            Yii::$app->getSession()->setFlash('error', $agreementStock->errors);
+            return "<script>history.go(-1);</script>";
+
+        }
+
+        // 判断来源(采购策略)
+        if ($agreementStock->source == 'strategy') {
+            // 判断订单类型（项目订单）
+            if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
+                // 恢复收入合同单号与零件ID对应表 采购数量
+                $agreementGoods = AgreementGoodsData::find()
+                    ->where(['order_id' => $agreementStock->order_id,
+                        'order_agreement_id' => $agreementStock->order_agreement_id,
+                        'order_agreement_sn' => $agreementStock->order_agreement_sn,
+                        'goods_id' => $agreementStock->goods_id])
+                    ->one();
+                $agreementGoods->strategy_number = $agreementGoods->strategy_number + $agreementStock->use_number;
+                if (!$agreementGoods->save()) {
+                    Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
+                    return "<script>history.go(-1);</script>";
+                }
+            }
+        }
+        $transaction->commit();
+        Yii::$app->getSession()->setFlash('error', '驳回成功');
+        return "<script>history.go(-1);</script>";
     }
 }
