@@ -311,10 +311,20 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
         ])->label('收入合同交货时间'); ?>
     </div>
     <div class="box-footer">
-        <?= Html::button('保存采购单', [
-                'class' => 'btn btn-success purchase_save',
-                'name' => 'submit-button']
-        ) ?>
+        <?php
+        // 查询是否有未确认使用库存列表
+        $count = \app\models\AgreementStock::find()
+            ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $orderAgreement->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
+            ->count();
+        if (!$count) {
+            echo Html::button('保存采购单', [
+                    'class' => 'btn btn-success purchase_save',
+                    'name' => 'submit-button']
+            );
+        } else {
+            echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
+        }
+        ?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
