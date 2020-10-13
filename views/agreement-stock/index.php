@@ -133,6 +133,16 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'source',
+                'filter'    => AgreementStock::$source,
+                'value'     => function ($model, $key, $index, $column) {
+                    if (isset(AgreementStock::$source[$model->source])) {
+                        return AgreementStock::$source[$model->source];
+                    }
+                    return '';
+                }
+            ],
+            [
                 'attribute'      => 'created_at',
                 'label'          => '创建时间',
                 'contentOptions' =>['style'=>'min-width: 150px;'],

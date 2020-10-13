@@ -115,6 +115,7 @@ class AgreementStock extends \yii\db\ActiveRecord
             'created_at'            => '更新时间',
             'is_confirm'            => '是否确认',
             'admin_id'              => '操作人',
+            'source'              => '来源',
         ];
     }
 

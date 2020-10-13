@@ -25,7 +25,7 @@ class AgreementStockSearch extends AgreementStock
             [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number',
                 'is_confirm'], 'integer'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number',
-                'admin_id', 'confirm_at'], 'safe'],
+                'admin_id', 'confirm_at', 'source'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number'], 'trim'],
         ];
@@ -96,6 +96,7 @@ class AgreementStockSearch extends AgreementStock
             'agreement_stock.all_price'             => $this->all_price,
             'agreement_stock.all_tax_price'         => $this->all_tax_price,
             'agreement_stock.is_confirm'            => $this->is_confirm,
+            'agreement_stock.source'            => $this->source,
         ]);
 
         $query->andFilterWhere(['like', 'agreement_stock.order_agreement_sn', $this->order_agreement_sn])
