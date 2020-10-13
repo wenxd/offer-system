@@ -57,7 +57,10 @@ $isShow = in_array($userId, $adminIds);
                 <th>原厂家</th>
                 <?php endif;?>
                 <th>单位</th>
-                <th>数量</th>
+                <th>合同数量</th>
+                <th>采购数量</th>
+                <th>采购策略(拆分)</th>
+                <th>使用库存数量</th>
                 <th>库存数量</th>
                 <th>库存位置</th>
                 <th>到齐</th>
@@ -84,6 +87,17 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
                     <td class="number"><?=$item->order_number?></td>
+                    <td><?=$item->strategy_number?></td>
+                    <td><?= empty($item->belong_to) ? '是' : "否" ?></td>
+                    <td><?php
+                        if ($item->strategy_number == 0 ) {
+                            echo $item->order_number;
+                        } elseif ($item->strategy_number < $item->number) {
+                            echo $item->order_number - $item->strategy_number;
+                        } else {
+                            echo 0;
+                        }
+                        ?></td>
                     <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->position : ''?></td>
                     <td class="is_enough"></td>
@@ -96,6 +110,12 @@ $isShow = in_array($userId, $adminIds);
                         <?php if (!$item->is_out):?>
                             <a class="btn btn-success btn-xs btn-flat stock_out" href="javascript:void(0);" data-id="<?=$item->id?>">出库</a>
                         <?php endif;?>
+                        <?php if (empty($item->belong_to)) {
+                            echo Html::a('<i class="fa fa-d"></i> 总成', Url::to(['assemble', 'id' => $item->id]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-warning btn-xs btn-flat',
+                            ]);
+                        }?>
                     </td>
                 </tr>
             <?php endforeach;?>

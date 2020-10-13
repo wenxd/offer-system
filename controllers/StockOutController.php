@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\AgreementGoodsData;
 use Yii;
 use app\models\Stock;
 use app\models\Inquiry;
@@ -42,10 +43,17 @@ class StockOutController extends BaseController
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $agreementGoods    = AgreementGoods::find()->where([
-            'order_agreement_id' => $id,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
-        ])->all();
+        if ($orderAgreement->is_strategy_number == 1) {
+            $agreementGoods    = AgreementGoodsData::find()->where([
+                'order_agreement_id' => $id,
+                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            ])->all();
+        } else {
+            $agreementGoods    = AgreementGoods::find()->where([
+                'order_agreement_id' => $id,
+                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            ])->all();
+        }
 
         $stockLog = StockLog::find()->where([
             'order_id' => $orderAgreement->order_id,
@@ -59,18 +67,22 @@ class StockOutController extends BaseController
         return $this->render('detail', $data);
     }
 
-    /**出库
+    /**
+     * 出库管理
      * @return false|string
      */
     public function actionOut()
     {
         $params = Yii::$app->request->post();
 
-        $agreementGoods = AgreementGoods::findOne($params['id']);
-
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
         $orderAgreement->save();
+        if ($orderAgreement->is_strategy_number == 1) {
+            $agreementGoods = AgreementGoodsData::findOne($params['id']);
+        } else {
+            $agreementGoods = AgreementGoods::findOne($params['id']);
+        }
 
         $order_id = $orderAgreement->order_id;
 
@@ -360,5 +372,15 @@ class StockOutController extends BaseController
         $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
         exit;
+    }
+
+    /**
+     * 子零件组装顶级零件
+     */
+    public function actionAssemble($id)
+    {
+        $agreementGoods = AgreementGoodsData::findOne($id);
+//        var_dump($agreementGoods->order->order_sn);
+        return $this->render('assemble', ['agreementGoods' => $agreementGoods]);
     }
 }
