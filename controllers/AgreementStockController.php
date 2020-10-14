@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\AgreementGoodsData;
+use app\models\OrderAgreement;
 use Yii;
 use app\models\AgreementStock;
 use app\models\AgreementStockSearch;
@@ -145,16 +146,21 @@ class AgreementStockController extends Controller
     {
         $transaction = Yii::$app->db->beginTransaction();
         $agreementStock = AgreementStock::findOne($id);
-        $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_REJECT;
-        $agreementStock->confirm_at = date('Y-m-d H:i:s');
-        $agreementStock->admin_id   = Yii::$app->user->identity->id;
-        $agreementStock->save();
-        if (!$agreementStock->save()) {
+//        $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_REJECT;
+//        $agreementStock->confirm_at = date('Y-m-d H:i:s');
+//        $agreementStock->admin_id   = Yii::$app->user->identity->id;
+        // 驳回则删除
+        if (!$agreementStock->delete()) {
             Yii::$app->getSession()->setFlash('error', $agreementStock->errors);
             return "<script>history.go(-1);</script>";
 
         }
-
+        //如果查询同数据
+        $count = AgreementStock::find()->where([
+            'order_id' => $agreementStock->order_id,
+            'order_agreement_id' => $agreementStock->order_agreement_id,
+            'goods_id' => $agreementStock->goods_id, 'source' => $agreementStock->source
+        ])->count();
         // 判断来源(采购策略)
         if ($agreementStock->source == 'strategy') {
             // 判断订单类型（项目订单）
@@ -170,6 +176,10 @@ class AgreementStockController extends Controller
                 if (!$agreementGoods->save()) {
                     Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
                     return "<script>history.go(-1);</script>";
+                }
+                // 如所有被驳回，更新成未点击报错使用库存
+                if (!$count) {
+                    OrderAgreement::updateAll(['is_strategy_number' => 0], ['id' => $agreementStock->order_agreement_id]);
                 }
             }
         }

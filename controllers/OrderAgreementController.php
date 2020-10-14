@@ -178,6 +178,13 @@ class OrderAgreementController extends Controller
         foreach ($agreementGoods as $goods) {
             // 匹配零件号，更新采购策略采购数量
             if (isset($goods_info[$goods->goods_id])) {
+                // 判断使用库存中是否已经存在
+                $count = AgreementStock::find()->where([
+                    'order_id' => $goods->order_id,
+                    'order_agreement_id' => $goods->order_agreement_id,
+                    'goods_id' => $goods->goods_id, 'source' => AgreementStock::STRATEGY
+                ])->count();
+                if ($count) continue;
                 $goods->strategy_number = $goods_info[$goods->goods_id];
                 if (!$goods->save()) {
                     $transaction->rollBack();
