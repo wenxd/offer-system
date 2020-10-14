@@ -87,10 +87,10 @@ $isShow = in_array($userId, $adminIds);
                     <?php endif;?>
                     <td><?=$item->goods->unit?></td>
                     <td class="number"><?=$item->order_number?></td>
-                    <td><?=$item->strategy_number?></td>
+                    <td><?=$item->strategy_number ?? 0?></td>
                     <td><?= empty($item->belong_to) ? '是' : "否" ?></td>
                     <td><?php
-                        if ($item->strategy_number == 0 ) {
+                        if ($item->strategy_number ?? 0 == 0 ) {
                             echo $item->order_number;
                         } elseif ($item->strategy_number < $item->number) {
                             echo $item->order_number - $item->strategy_number;

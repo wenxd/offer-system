@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\models\AgreementGoodsData;
+use app\models\GoodsRelation;
 use Yii;
 use app\models\Stock;
 use app\models\Inquiry;
@@ -377,10 +378,38 @@ class StockOutController extends BaseController
     /**
      * 子零件组装顶级零件
      */
-    public function actionAssemble($id)
+    public function actionAssemble($id = false)
     {
+        // 子零件出库，顶级零件入库并增加减少库存
+        if (Yii::$app->request->isPost) {
+            try {
+                $transaction = Yii::$app->db->beginTransaction();
+
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '暂时没开通']);
+            } catch (\Exception $e) {
+                return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+            }
+        }
+        //页面部分
         $agreementGoods = AgreementGoodsData::findOne($id);
-//        var_dump($agreementGoods->order->order_sn);
-        return $this->render('assemble', ['agreementGoods' => $agreementGoods]);
+
+        // 获取最低级子零件
+        $goods_son = GoodsRelation::getGoodsSonNumber(['goods_id' => $agreementGoods->goods_id, 'number' => 1]);
+        //计算最大组装数据
+        $mix_number = 1000000;
+        foreach ($goods_son as $item) {
+            $son_mix_number = intval($item['stock_number'] / $item['number']);
+            if ($son_mix_number > 0) {
+                if ($son_mix_number < $mix_number) $mix_number = $son_mix_number;
+            } else {
+                $mix_number = 0;
+            }
+        }
+        return $this->render('assemble', [
+            'agreementGoods' => $agreementGoods,
+            'mix_number' => $mix_number,
+            'goods_son' => $goods_son,
+        ]);
     }
 }

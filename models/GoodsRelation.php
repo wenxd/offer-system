@@ -296,4 +296,48 @@ class GoodsRelation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Inquiry::className(), ['good_id' => 'goods_id'])->orderBy('price ASC');
     }
+
+    /**
+     * 关联库存
+     */
+    public function getStock()
+    {
+        return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
+    }
+
+    /**
+     * 获取最低级零件对应数量
+     */
+    public static function getGoodsSonNumber($goods, $info = [])
+    {
+        //查询子级
+        $data = self::find()
+            ->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $goods['goods_id']])
+            ->all();
+        foreach ($data as $item) {
+            $goods_son = [
+                'goods_id' => $item->goods->id,
+                'goods_number' => $item->goods->goods_number,
+                'goods_number_b' => $item->goods->goods_number_b,
+                'description' => $item->goods->description,
+                'description_en' => $item->goods->description_en,
+                'original_company' => $item->goods->original_company,
+                'unit' => $item->goods->unit,
+                'stock_number' => $item->stock->number,
+                'stock_position' => $item->stock->position,
+                'number' => $item->number * $goods['number'],
+            ];
+            if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
+                $info = GoodsRelation::getGoodsSon($item, $info);
+            } else {
+                $goods_son['number'] += $info[$goods_son['goods_id']]['number'];
+                if (isset($info[$goods_son['goods_id']])) {
+                    $goods_son['number'] += $info[$goods_son['goods_id']]['number'];
+                }
+                $info[$goods_son['goods_id']] = $goods_son;
+            }
+        }
+        return $info;
+
+    }
 }
