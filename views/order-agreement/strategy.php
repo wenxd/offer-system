@@ -184,7 +184,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $orderAgreement->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
                 ->count();
             if (!$count) {
-                echo Html::button('保存采购策略', ['class' => 'btn btn-success purchase_save', 'name' => 'submit-button']);
+                // 判断是不是有支出合同产生
+                if (!(\app\models\OrderPayment::find()->where(['order_id' => $orderAgreement->order_id])->count())) {
+                    echo Html::button('保存采购策略', ['class' => 'btn btn-success purchase_save', 'name' => 'submit-button']);
+                }
             } else {
                 echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
             }
