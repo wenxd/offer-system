@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use app\models\AgreementGoodsData;
@@ -40,30 +41,30 @@ class StockOutController extends BaseController
         $data = [];
 
         $orderAgreement = OrderAgreement::findOne($id);
-        if (!$orderAgreement){
+        if (!$orderAgreement) {
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
         if ($orderAgreement->is_strategy_number == 1) {
-            $agreementGoods    = AgreementGoodsData::find()->where([
+            $agreementGoods = AgreementGoodsData::find()->where([
                 'order_agreement_id' => $id,
-                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+                'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
             ])->all();
         } else {
-            $agreementGoods    = AgreementGoods::find()->where([
+            $agreementGoods = AgreementGoods::find()->where([
                 'order_agreement_id' => $id,
-                'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+                'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
             ])->all();
         }
 
         $stockLog = StockLog::find()->where([
             'order_id' => $orderAgreement->order_id,
-            'type'     => StockLog::TYPE_OUT,
+            'type' => StockLog::TYPE_OUT,
         ])->all();
 
-        $data['model']          = $orderAgreement;
+        $data['model'] = $orderAgreement;
         $data['agreementGoods'] = $agreementGoods;
-        $data['stockLog']       = $stockLog;
+        $data['stockLog'] = $stockLog;
 
         return $this->render('detail', $data);
     }
@@ -89,10 +90,10 @@ class StockOutController extends BaseController
 
         //采购
         $purchaseGoods = PurchaseGoods::find()->where([
-            'order_id'           => $order_id,
+            'order_id' => $order_id,
             'order_agreement_id' => $orderAgreement->id,
-            'serial'             => $agreementGoods->serial,
-            'goods_id'           => $agreementGoods->goods_id,
+            'serial' => $agreementGoods->serial,
+            'goods_id' => $agreementGoods->goods_id,
         ])->one();
 
         //支出
@@ -106,33 +107,33 @@ class StockOutController extends BaseController
             return json_encode(['code' => 500, 'msg' => '库存不够了'], JSON_UNESCAPED_UNICODE);
         }
 
-        $stockLog                       = new StockLog();
-        $stockLog->order_id             = $orderAgreement['order_id'];
+        $stockLog = new StockLog();
+        $stockLog->order_id = $orderAgreement['order_id'];
 
-        $stockLog->order_payment_id     = $paymentGoods ? $paymentGoods->order_payment_id : 0;
-        $stockLog->payment_sn           = $paymentGoods ? $paymentGoods->order_payment_sn : '';
+        $stockLog->order_payment_id = $paymentGoods ? $paymentGoods->order_payment_id : 0;
+        $stockLog->payment_sn = $paymentGoods ? $paymentGoods->order_payment_sn : '';
 
-        $stockLog->order_agreement_id   = $orderAgreement->id;
-        $stockLog->agreement_sn         = $orderAgreement->agreement_sn;
+        $stockLog->order_agreement_id = $orderAgreement->id;
+        $stockLog->agreement_sn = $orderAgreement->agreement_sn;
 
-        $stockLog->order_purchase_id    = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
-        $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
+        $stockLog->order_purchase_id = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
+        $stockLog->purchase_sn = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
 
-        $stockLog->goods_id             = $agreementGoods['goods_id'];
-        $stockLog->number               = $agreementGoods['order_number'];
-        $stockLog->type                 = StockLog::TYPE_OUT;
-        $stockLog->operate_time         = date('Y-m-d H:i:s');
-        $stockLog->admin_id             = Yii::$app->user->identity->id;
+        $stockLog->goods_id = $agreementGoods['goods_id'];
+        $stockLog->number = $agreementGoods['order_number'];
+        $stockLog->type = StockLog::TYPE_OUT;
+        $stockLog->operate_time = date('Y-m-d H:i:s');
+        $stockLog->admin_id = Yii::$app->user->identity->id;
         if ($stockLog->save()) {
             if (!$stock) {
                 $inquiry = Inquiry::findOne($agreementGoods->relevance_id);
                 $stock = new Stock();
-                $stock->good_id     = $agreementGoods->goods_id;
+                $stock->good_id = $agreementGoods->goods_id;
                 $stock->supplier_id = $inquiry->supplier_id;
-                $stock->price       = $agreementGoods->quote_price;
-                $stock->tax_price   = $agreementGoods->quote_tax_price;
-                $stock->tax_rate    = $agreementGoods->tax_rate;
-                $stock->number      = $agreementGoods->order_number;
+                $stock->price = $agreementGoods->quote_price;
+                $stock->tax_price = $agreementGoods->quote_tax_price;
+                $stock->tax_rate = $agreementGoods->tax_rate;
+                $stock->number = $agreementGoods->order_number;
                 $stock->save();
             }
             $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
@@ -143,14 +144,14 @@ class StockOutController extends BaseController
                 //判断所有收入合同的零件都已近出库
                 $isHasAgreementGoods = AgreementGoods::find()->where([
                     'order_agreement_id' => $params['order_agreement_id'],
-                    'is_out'             => AgreementGoods::IS_OUT_NO,
-                    'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+                    'is_out' => AgreementGoods::IS_OUT_NO,
+                    'purchase_is_show' => AgreementGoods::IS_SHOW_YES
                 ])->one();
                 if (!$isHasAgreementGoods) {
                     $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
                     $orderAgreement->stock_at = date('Y-m-d H:i:s');
                     if ($orderAgreement->is_bill && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
-                        $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+                        $orderAgreement->is_complete = OrderAgreement::IS_COMPLETE_YES;
                     }
                     $orderAgreement->save();
                 }
@@ -179,10 +180,10 @@ class StockOutController extends BaseController
         foreach ($agreementGoods as $agreementGood) {
             //采购
             $purchaseGoods = PurchaseGoods::find()->where([
-                'order_id'           => $order_id,
+                'order_id' => $order_id,
                 'order_agreement_id' => $orderAgreement->id,
-                'serial'             => $agreementGood->serial,
-                'goods_id'           => $agreementGood->goods_id,
+                'serial' => $agreementGood->serial,
+                'goods_id' => $agreementGood->goods_id,
             ])->one();
 
             //支出
@@ -195,33 +196,33 @@ class StockOutController extends BaseController
                 return json_encode(['code' => 500, 'msg' => $agreementGood->goods->goods_number . '库存不够了'], JSON_UNESCAPED_UNICODE);
             }
 
-            $stockLog                    = new StockLog();
-            $stockLog->order_id          = $orderAgreement['order_id'];
+            $stockLog = new StockLog();
+            $stockLog->order_id = $orderAgreement['order_id'];
 
-            $stockLog->order_payment_id     = $paymentGoods ? $paymentGoods->order_payment_id : 0;
-            $stockLog->payment_sn           = $paymentGoods ? $paymentGoods->order_payment_sn : '';
+            $stockLog->order_payment_id = $paymentGoods ? $paymentGoods->order_payment_id : 0;
+            $stockLog->payment_sn = $paymentGoods ? $paymentGoods->order_payment_sn : '';
 
-            $stockLog->order_agreement_id   = $orderAgreement->id;
-            $stockLog->agreement_sn         = $orderAgreement->agreement_sn;
+            $stockLog->order_agreement_id = $orderAgreement->id;
+            $stockLog->agreement_sn = $orderAgreement->agreement_sn;
 
-            $stockLog->order_purchase_id    = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
-            $stockLog->purchase_sn          = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
+            $stockLog->order_purchase_id = $purchaseGoods ? $purchaseGoods->order_purchase_id : 0;
+            $stockLog->purchase_sn = $purchaseGoods ? $purchaseGoods->order_purchase_sn : '';
 
-            $stockLog->goods_id          = $agreementGood['goods_id'];
-            $stockLog->number            = $agreementGood['order_number'];
-            $stockLog->type              = StockLog::TYPE_OUT;
-            $stockLog->operate_time      = date('Y-m-d H:i:s');
-            $stockLog->admin_id          = Yii::$app->user->identity->id;
+            $stockLog->goods_id = $agreementGood['goods_id'];
+            $stockLog->number = $agreementGood['order_number'];
+            $stockLog->type = StockLog::TYPE_OUT;
+            $stockLog->operate_time = date('Y-m-d H:i:s');
+            $stockLog->admin_id = Yii::$app->user->identity->id;
             if ($stockLog->save()) {
                 if (!$stock) {
                     $inquiry = Inquiry::findOne($agreementGood->relevance_id);
                     $stock = new Stock();
-                    $stock->good_id     = $agreementGood->goods_id;
+                    $stock->good_id = $agreementGood->goods_id;
                     $stock->supplier_id = $inquiry->supplier_id;
-                    $stock->price       = $agreementGood->quote_price;
-                    $stock->tax_price   = $agreementGood->quote_tax_price;
-                    $stock->tax_rate    = $agreementGood->tax_rate;
-                    $stock->number      = $agreementGood->order_number;
+                    $stock->price = $agreementGood->quote_price;
+                    $stock->tax_price = $agreementGood->quote_tax_price;
+                    $stock->tax_rate = $agreementGood->tax_rate;
+                    $stock->number = $agreementGood->order_number;
                     $stock->save();
                 }
                 $res = Stock::updateAllCounters(['number' => -$agreementGood->order_number], ['good_id' => $agreementGood->goods_id]);
@@ -235,14 +236,14 @@ class StockOutController extends BaseController
         //判断所有收入合同的零件都已近出库
         $isHasAgreementGoods = AgreementGoods::find()->where([
             'order_agreement_id' => $params['order_agreement_id'],
-            'is_out'             => AgreementGoods::IS_OUT_NO,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES
+            'is_out' => AgreementGoods::IS_OUT_NO,
+            'purchase_is_show' => AgreementGoods::IS_SHOW_YES
         ])->one();
         if (!$isHasAgreementGoods) {
             $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
             $orderAgreement->stock_at = date('Y-m-d H:i:s');
             if ($orderAgreement->is_bill && $orderAgreement->is_payment && $orderAgreement->is_advancecharge) {
-                $orderAgreement->is_complete    = OrderAgreement::IS_COMPLETE_YES;
+                $orderAgreement->is_complete = OrderAgreement::IS_COMPLETE_YES;
             }
             $orderAgreement->save();
         }
@@ -301,26 +302,26 @@ class StockOutController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter      = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         $tableHeader = ['零件号', '中文描述', '英文描述', '单位', '数量', '库存数量', '库存位置', '到齐', '出库', '质检'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
         //获取数据
         $id = $_GET['id'] ?? 0;
         $orderAgreement = OrderAgreement::findOne($id);
-        if (!$orderAgreement){
+        if (!$orderAgreement) {
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        $agreementGoods    = AgreementGoods::find()->where([
+        $agreementGoods = AgreementGoods::find()->where([
             'order_agreement_id' => $id,
-            'purchase_is_show'   => AgreementGoods::IS_SHOW_YES,
+            'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
         ])->all();
 
         foreach ($agreementGoods as $key => $item) {
@@ -359,7 +360,7 @@ class StockOutController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -384,9 +385,55 @@ class StockOutController extends BaseController
         if (Yii::$app->request->isPost) {
             try {
                 $transaction = Yii::$app->db->beginTransaction();
-
+                $post = Yii::$app->request->post('info', []);
+                // 子零件出库 && 减库存
+                $stockLog = new StockLog();
+                foreach ($post['son_info'] as $son) {
+                    $item = [
+                        'order_id' => $post['order_id'],
+                        'order_agreement_id' => $post['order_agreement_id'],
+                        'agreement_sn' => $post['order_agreement_sn'],
+                        'goods_id' =>$son['goods_id'],
+                        'number' =>$son['number'],
+                        'type' => StockLog::TYPE_OUT,
+                        'operate_time' => date('Y-m-d H:i:s'),
+                        'admin_id' => Yii::$app->user->identity->id,
+                        'position' => $son['position'],
+                        'direction' => '总成组装',
+                    ];
+                    $stockLog->isNewRecord = true;
+                    $stockLog->setAttributes($item);
+                    if (!$stockLog->save()) {
+                        return json_encode(['code' => 501, 'msg' => $stockLog->errors]);
+                    }
+                    // 更新子零件库存
+                    Stock::updateAllCounters(['number' => -$item['number']], ['good_id' => $item['goods_id']]);
+                    $stockLog->id = 0;
+                }
+                // 顶级零件入库 && 加库存
+                $item = [
+                    'order_id' => $post['order_id'],
+                    'order_agreement_id' => $post['order_agreement_id'],
+                    'agreement_sn' => $post['order_agreement_sn'],
+                    'goods_id' =>$post['goods_id'],
+                    'number' =>$post['number'],
+                    'type' => StockLog::TYPE_IN,
+                    'operate_time' => date('Y-m-d H:i:s'),
+                    'admin_id' => Yii::$app->user->identity->id,
+                    'position' => $post['goods_position'],
+                    'source' => '总成组装',
+                    'direction' => '',
+                ];
+                $stockLog->isNewRecord = true;
+                $stockLog->setAttributes($item);
+                if (!$stockLog->save()) {
+                    return json_encode(['code' => 501, 'msg' => $stockLog->errors]);
+                }
+                $stockLog->id = 0;
+                // 更新顶级零件库存
+                Stock::updateAllCounters(['number' => $post['number']], ['good_id' => $post['goods_id']]);
                 $transaction->commit();
-                return json_encode(['code' => 200, 'msg' => '暂时没开通']);
+                return json_encode(['code' => 200, 'msg' => '零件总成成功']);
             } catch (\Exception $e) {
                 return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
             }

@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $item['original_company'] ?></td>
                             <td><?= $item['unit'] ?></td>
                             <td><?= $item['stock_number'] ?></td>
-                            <td><?= $item['stock_position'] ?></td>
+                            <td class="position"><?= $item['stock_position'] ?></td>
                             <td class="min_number"><?= $item['number'] ?></td>
                             <td class="max_number">0</td>
                         </tr>
@@ -75,7 +75,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>单位</th>
                         <th>合同数量</th>
                         <th>库存数量</th>
-                        <th>库存位置</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,7 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $agreementGoods->goods->unit ?></td>
                         <td><?= $agreementGoods->order_number ?></td>
                         <td><?= $agreementGoods->stock ? $agreementGoods->stock->number : 0 ?></td>
-                        <td><?= $agreementGoods->stock ? $agreementGoods->stock->position : '' ?></td>
                     </tr>
                     </tbody>
                     <thead>
@@ -106,7 +104,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>总成数量</th>
                         <td>
                             <input type="number" size="4" class="number" min="0" max="<?= $mix_number ?>"
-                                   style="width: 100px;" value="2">
+                                   style="width: 100px;" value="0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>库存位置</th>
+                        <td><?php
+                            $position = $agreementGoods->stock ? $agreementGoods->stock->position : '';
+//                            $position = 0;
+                            if ($position) :
+                            ?>
+                                <input type="text" class="goods_position" style="width: 100px;" disabled="disabled" value="<?=$position?>">
+                            <?php else:;?>
+                                <input type="text" class="goods_position" style="width: 100px;">
+                            <?php endif;?>
                         </td>
                     </tr>
                     </thead>
@@ -161,24 +172,31 @@ $this->params['breadcrumbs'][] = $this->title;
         //保存
         $('.assembly_save').click(function (e) {
             var number = $('.number').val();
+            var goods_position = $('.goods_position').val();
+            console.log(goods_position);
+            if (!goods_position) {
+                layer.msg('库存位置不可为空', {time:2000});
+                return false;
+            }
             var son_info = [];
             $('.goods_id').each(function (index, element) {
                 var goods_id = $(element).html();
                 var max_number = $(element).parent().find('.max_number').html();
-                son_info.push({goods_id: goods_id, max_number: max_number});
+                var position = $(element).parent().find('.position').html();
+                son_info.push({goods_id: goods_id, number: max_number, position: position});
             });
-            var info = [];
-            info['order_id'] = "<?=$agreementGoods->order_id?>";
-            info['order_sn'] = "<?=$agreementGoods->order->order_sn?>";
-            info['order_agreement_id'] = "<?=$agreementGoods->order_agreement_id?>";
-            info['order_agreement_sn'] = "<?=$agreementGoods->order_agreement_sn?>";
-            info['goods_id'] = "<?=$agreementGoods->goods_id?>";
-            info['goods_number'] = "<?=$agreementGoods->goods->goods_number?>";
-            info['number'] = number;
-            info['son_info'] = son_info;
+            var info = {
+                order_id: "<?=$agreementGoods->order_id?>",
+                order_sn: "<?=$agreementGoods->order->order_sn?>",
+                order_agreement_id: "<?=$agreementGoods->order_agreement_id?>",
+                order_agreement_sn: "<?=$agreementGoods->order_agreement_sn?>",
+                goods_id: "<?=$agreementGoods->goods_id?>",
+                goods_number: "<?=$agreementGoods->goods->goods_number?>",
+                goods_position: goods_position,
+                number: number,
+                son_info: son_info
+            };
             console.log(info);
-            console.log(number);
-            console.log(son_info);
             $.ajax({
                 type:"post",
                 url:'<?=$_SERVER['REQUEST_URI']?>',
@@ -187,6 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
+                        window.history.back();
                     } else {
                         layer.msg(res.msg, {time:2000});
                     }
