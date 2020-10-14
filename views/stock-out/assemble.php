@@ -8,7 +8,7 @@ use app\models\Goods;
 /* @var $this yii\web\View */
 /* @var $model app\models\Goods */
 $goods_number = $agreementGoods->goods->goods_number;
-$this->title = "出库零件总成";
+$this->title = "总成组装";
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -128,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?php
         if ($mix_number > 0) {
-            echo Html::button('保存总成', ['class' => 'btn btn-success assembly_save', 'name' => 'submit-button']);
+            echo Html::button('总成组装', ['class' => 'btn btn-success assembly_save', 'name' => 'submit-button']);
         }
         ?>
     </div>

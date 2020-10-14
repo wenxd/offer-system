@@ -111,7 +111,7 @@ $isShow = in_array($userId, $adminIds);
                             <a class="btn btn-success btn-xs btn-flat stock_out" href="javascript:void(0);" data-id="<?=$item->id?>">出库</a>
                         <?php endif;?>
                         <?php if (empty($item->belong_to)) {
-                            echo Html::a('<i class="fa fa-d"></i> 总成', Url::to(['assemble', 'id' => $item->id]), [
+                            echo Html::a('<i class="fa fa-d"></i> 总成组装', Url::to(['assemble', 'id' => $item->id]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-warning btn-xs btn-flat',
                             ]);
