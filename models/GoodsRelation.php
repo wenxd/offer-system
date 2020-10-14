@@ -330,7 +330,6 @@ class GoodsRelation extends \yii\db\ActiveRecord
             if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
                 $info = GoodsRelation::getGoodsSon($item, $info);
             } else {
-                $goods_son['number'] += $info[$goods_son['goods_id']]['number'];
                 if (isset($info[$goods_son['goods_id']])) {
                     $goods_son['number'] += $info[$goods_son['goods_id']]['number'];
                 }
