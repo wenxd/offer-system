@@ -227,7 +227,7 @@ $userId = Yii::$app->user->identity->id;
         }
         $.ajax({
             type:"post",
-            url:"?r=inquiry-goods/clarify",
+            url:"?r=inquiry-goods/index",
             data:{id:id, reason:reason},
             dataType:'JSON',
             success:function(res){
