@@ -181,6 +181,7 @@ $userId = Yii::$app->user->identity->id;
             [
                 'attribute' => '操作',
                 'format' => 'raw',
+                'visible' => !in_array($userId, $adminIds),
                 'value' => function ($model, $key, $index, $column) {
                     if ($model->clarify) {
                         return '';

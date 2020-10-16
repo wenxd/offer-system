@@ -34,23 +34,23 @@ class InquiryGoodsController extends Controller
      * Lists all InquiryGoods models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        return $this->redirect(['clarify']);
-        $searchModel = new InquiryGoodsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+//    public function actionIndex()
+//    {
+//        return $this->redirect(['clarify']);
+//        $searchModel = new InquiryGoodsSearch();
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//
+//        return $this->render('index', [
+//            'searchModel' => $searchModel,
+//            'dataProvider' => $dataProvider,
+//        ]);
+//    }
 
     /**
      * Lists all InquiryGoods models.
      * @return mixed
      */
-    public function actionClarify()
+    public function actionIndex()
     {
         // 更新澄清记录
         if (Yii::$app->request->isPost) {

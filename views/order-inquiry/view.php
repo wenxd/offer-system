@@ -168,7 +168,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
 
                                 <?php endif;?>
-                                <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                                <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 澄清问题</a>
                                 <?php if (!$item->is_inquiry && !$item->is_result):?>
 
                                 <?php endif;?>
@@ -256,7 +256,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                     <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
 
                                     <?php endif;?>
-                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 澄清问题</a>
                                     <?php if (!$item->is_inquiry && !$item->is_result):?>
 
                                     <?php endif;?>
@@ -404,7 +404,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
         var id = $(obj).data('id');
         layer.open({
             type: 1,
-            title: '询不出原因',
+            title: '澄清问题原因',
             skin: 'layui-layer-rim', //加上边框
             area: ['500px', '240px'], //宽高
             content: '<form class="form-horizontal">\n' +
