@@ -258,7 +258,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td class="oldNumber"><?= $item->order_number ?></td>
                     <td class="afterNumber">
                         <input type="number" size="4" class="number" min="1" style="width: 50px;"
-                               value="<?= $item->number ?>">
+                               value="<?= $item->purchase_number ?>">
                     </td>
                     <td><?= $item->goods->unit ?></td>
                     <td class="use_stock"></td>
