@@ -229,11 +229,19 @@ class OrderInquiryController extends BaseController
             'order_inquiry_id'  => $id,
             'admin_id'          => Yii::$app->user->identity->id,
         ])->asArray()->all();
+
         $inquiryMyList = ArrayHelper::index($inquiryMyList, null, 'good_id');
 
         $data['inquiryList']    = $inquiryList;
         $data['inquiryMyList']  = $inquiryMyList;
-
+        // 获取当前询价单询价员
+        $user_inquiry_count = Inquiry::find()->where([
+            'good_id'           => $goods_ids,
+            'order_inquiry_id'  => $id,
+            'admin_id'          => $orderInquiry->admin_id,
+        ])->asArray()->all();
+        $user_inquiry_count = ArrayHelper::index($user_inquiry_count, null, 'good_id');
+        $data['user_inquiry_count']    = $user_inquiry_count;
         return $this->render('view', $data);
     }
 

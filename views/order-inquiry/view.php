@@ -74,10 +74,15 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <th>铭牌照片</th>
                 <th>加工照片</th>
                 <th>数量</th>
-                <th>主零件</th>
+                <?php if(!in_array($userId, $adminIds)):?>
+                    <th>主零件</th>
+                <?php endif;?>
                 <th>询价</th>
                 <th>总询价条目</th>
                 <th>我的询价条目</th>
+                <?php if(!in_array($userId, $adminIds)):?>
+                    <th>Ta的询价条目</th>
+                <?php endif;?>
                 <th>寻不出原因</th>
                 <th width="300px">操作</th>
             </tr>
@@ -105,31 +110,41 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
                             <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                             <td><?=$item->number?></td>
-                            <td><?php
-                                $text = '';
-                                if (!empty($item->belong_to)) {
-                                    foreach (json_decode($item->belong_to, true) as $key => $device) {
-                                        $text .= $key . ':' . $device . '<br/>';
+                            <?php if(!in_array($userId, $adminIds)):?>
+                                <td><?php
+                                    $text = '';
+                                    if (!empty($item->belong_to)) {
+                                        foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                            $text .= $key . ':' . $device . '<br/>';
+                                        }
                                     }
-                                }
-                                echo $text;
-                                ?>
-                            </td>
+                                    echo $text;
+                                    ?>
+                                </td>
+                            <?php endif;?>
+
                             <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                             <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                             <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
                                 <td class="inquiry_number"><?=$inquiry_number?></td>
+                            <?php if(!in_array($userId, $adminIds)):?>
+                                <?php $inquiry_ta_number = isset($user_inquiry_count[$item->goods_id]) ? count($user_inquiry_count[$item->goods_id]) : 0;?>
+                                <td class="inquiry_ta_number"><?=$inquiry_ta_number?></td>
+                            <?php endif;?>
                             <td><?=$item->reason?></td>
                             <td>
+                                <a class="btn btn-success btn-xs btn-flat adminConfirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
+                                <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                 <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
-                                    <a class="btn btn-success btn-xs btn-flat adminConfirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
-                                    <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+
                                 <?php endif;?>
+                                <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                                 <?php if (!$item->is_inquiry && !$item->is_result):?>
-                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+
                                 <?php endif;?>
+                                <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
                                 <?php if (!$inquiry_number) :?>
-                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
+
                                 <?php endif;?>
                             </td>
                         </tr>
@@ -155,31 +170,40 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
                                 <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                                 <td><?=$item->number?></td>
-                                <td><?php
-                                    $text = '';
-                                    if (!empty($item->belong_to)) {
-                                        foreach (json_decode($item->belong_to, true) as $key => $device) {
-                                            $text .= $key . ':' . $device . '<br/>';
+                                <?php if(!in_array($userId, $adminIds)):?>
+                                    <td><?php
+                                        $text = '';
+                                        if (!empty($item->belong_to)) {
+                                            foreach (json_decode($item->belong_to, true) as $key => $device) {
+                                                $text .= $key . ':' . $device . '<br/>';
+                                            }
                                         }
-                                    }
-                                    echo $text;
-                                    ?>
-                                </td>
+                                        echo $text;
+                                        ?>
+                                    </td>
+                                <?php endif;?>
                                 <td><?=isset($inquiryList[$item->goods_id]) ? '是' : '否'?></td>
                                 <td class="inquiry_number_all"><?=isset($inquiryList[$item->goods_id]) ? count($inquiryList[$item->goods_id]) : 0?></td>
                                 <?php $inquiry_number = isset($inquiryMyList[$item->goods_id]) ? count($inquiryMyList[$item->goods_id]) : 0;?>
                                 <td class="inquiry_number"><?=$inquiry_number?></td>
+                                <?php if(!in_array($userId, $adminIds)):?>
+                                    <?php $inquiry_ta_number = isset($user_inquiry_count[$item->goods_id]) ? count($user_inquiry_count[$item->goods_id]) : 0;?>
+                                    <td class="inquiry_ta_number"><?=$inquiry_ta_number?></td>
+                                <?php endif;?>
                                 <td><?=$item->reason?></td>
                                 <td>
+                                    <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
+                                    <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
                                     <?php if (!isset($inquiryList[$item->goods_id]) || !$item->is_inquiry):?>
-                                        <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
-                                        <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
+
                                     <?php endif;?>
+                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
                                     <?php if (!$item->is_inquiry && !$item->is_result):?>
-                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="reasons(this)" data-id="<?=$item->id?>"><i class="fa fa-question"></i> 询不出</a>
+
                                     <?php endif;?>
+                                    <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
                                     <?php if (!$inquiry_number) :?>
-                                        <a class="btn btn-info btn-xs btn-flat" href="javascript:void(0)" onclick="redistribution(this)" data-id="<?=$item->id?>">重新派送</a>
+
                                     <?php endif;?>
                                 </td>
                             </tr>
