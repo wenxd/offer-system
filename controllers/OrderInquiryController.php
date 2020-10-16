@@ -5,12 +5,14 @@
  * Date: 2018/8/24
  * Time: 14:02
  */
+
 namespace app\controllers;
 
 use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\Goods;
 use app\models\InquiryGoods;
+use app\models\InquiryGoodsClarify;
 use app\models\OrderGoods;
 use app\models\OrderGoodsBak;
 use app\models\QuoteRecord;
@@ -41,12 +43,12 @@ class OrderInquiryController extends BaseController
         return [
             'index' => [
                 'class' => actions\IndexAction::className(),
-                'data'  => function(){
-                    $searchModel  = new OrderInquirySearch();
+                'data' => function () {
+                    $searchModel = new OrderInquirySearch();
                     $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
                     return [
                         'dataProvider' => $dataProvider,
-                        'searchModel'  => $searchModel,
+                        'searchModel' => $searchModel,
                     ];
                 }
             ]
@@ -59,7 +61,7 @@ class OrderInquiryController extends BaseController
     public function actionSubmit()
     {
         $params = Yii::$app->request->get('OrderInquiry');
-        $type   = Yii::$app->request->get('type');
+        $type = Yii::$app->request->get('type');
 
         $orderType = 1;
         if ($type == 1) {
@@ -69,12 +71,12 @@ class OrderInquiryController extends BaseController
             $orderType = 2;
         }
 
-        $order->customer_id  = $params['customer_id'];
-        $order->order_id     = $params['order_id'];
-        $order->description  = $params['description'];
+        $order->customer_id = $params['customer_id'];
+        $order->order_id = $params['order_id'];
+        $order->description = $params['description'];
         $order->provide_date = $params['provide_date'];
-        $order->quote_price  = $params['quote_price'];
-        $order->remark       = $params['remark'];
+        $order->quote_price = $params['quote_price'];
+        $order->remark = $params['remark'];
 
         $order->record_ids = json_encode([], JSON_UNESCAPED_UNICODE);
         if ($order->save()) {
@@ -113,15 +115,16 @@ class OrderInquiryController extends BaseController
         $data = [];
 
         $model = Order::findOne($id);
-        if (!$model){
-            echo '查不到此报价单信息';die;
+        if (!$model) {
+            echo '查不到此报价单信息';
+            die;
         }
         Yii::$app->session->set('order_inquiry_id', $id);
         $list = QuoteRecord::findAll(['order_id' => $id, 'order_type' => QuoteRecord::TYPE_INQUIRY]);
 
         $model->loadDefaultValues();
         $data['model'] = $model;
-        $data['list']  = $list;
+        $data['list'] = $list;
 
         return $this->render('detail', $data);
     }
@@ -210,10 +213,10 @@ class OrderInquiryController extends BaseController
         $data['orderInquiry'] = $orderInquiry;
         $inquiryGoods = InquiryGoods::find()->from('inquiry_goods as i')->select('i.*')
             ->where([
-            'i.inquiry_sn' => $orderInquiry->inquiry_sn,
-            'i.order_id'   => $orderInquiry->order_id,
-            'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
-            'g.is_deleted' => Goods::IS_DELETED_NO,
+                'i.inquiry_sn' => $orderInquiry->inquiry_sn,
+                'i.order_id' => $orderInquiry->order_id,
+                'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
+                'g.is_deleted' => Goods::IS_DELETED_NO,
             ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('i.serial asc')->all();
         $goods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
         $data['inquiryGoods'] = $inquiryGoods;
@@ -225,23 +228,23 @@ class OrderInquiryController extends BaseController
 
         //我的询价数
         $inquiryMyList = Inquiry::find()->where([
-            'good_id'           => $goods_ids,
-            'order_inquiry_id'  => $id,
-            'admin_id'          => Yii::$app->user->identity->id,
+            'good_id' => $goods_ids,
+            'order_inquiry_id' => $id,
+            'admin_id' => Yii::$app->user->identity->id,
         ])->asArray()->all();
 
         $inquiryMyList = ArrayHelper::index($inquiryMyList, null, 'good_id');
 
-        $data['inquiryList']    = $inquiryList;
-        $data['inquiryMyList']  = $inquiryMyList;
+        $data['inquiryList'] = $inquiryList;
+        $data['inquiryMyList'] = $inquiryMyList;
         // 获取当前询价单询价员
         $user_inquiry_count = Inquiry::find()->where([
-            'good_id'           => $goods_ids,
-            'order_inquiry_id'  => $id,
-            'admin_id'          => $orderInquiry->admin_id,
+            'good_id' => $goods_ids,
+            'order_inquiry_id' => $id,
+            'admin_id' => $orderInquiry->admin_id,
         ])->asArray()->all();
         $user_inquiry_count = ArrayHelper::index($user_inquiry_count, null, 'good_id');
-        $data['user_inquiry_count']    = $user_inquiry_count;
+        $data['user_inquiry_count'] = $user_inquiry_count;
         return $this->render('view', $data);
     }
 
@@ -259,15 +262,15 @@ class OrderInquiryController extends BaseController
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
 //        $info->reason     = '';
 //        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
-        $info->admin_id   = Yii::$app->user->identity->id;
+        $info->admin_id = Yii::$app->user->identity->id;
         $info->inquiry_at = date('Y-m-d H:i:s');
         if ($info->save()) {
             //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
             if ($super_user_id == Yii::$app->user->identity->id && $info->is_result) {
                 $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $orderInquiry->admin_id])->one();
                 $systemNotice = new SystemNotice();
-                $systemNotice->admin_id  = $stockAdmin->user_id;
-                $systemNotice->content   = '询不出的厂家号' . $info->goods->goods_number_b . '管理员已经确认询价';
+                $systemNotice->admin_id = $stockAdmin->user_id;
+                $systemNotice->content = '询不出的厂家号' . $info->goods->goods_number_b . '管理员已经确认询价';
                 $systemNotice->notice_at = date('Y-m-d H:i:s');
                 $systemNotice->save();
             }
@@ -277,7 +280,7 @@ class OrderInquiryController extends BaseController
             if (!$res) {
 
                 $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
-                $orderInquiry->final_at   = $info->inquiry_at;
+                $orderInquiry->final_at = $info->inquiry_at;
                 $orderInquiry->save();
             }
             //判断订单是否都确认询价
@@ -313,7 +316,7 @@ class OrderInquiryController extends BaseController
                     // 询价单号与零件ID对应表
                     foreach ($order->orderGoods as $goods) {
                         $inquiry_goods['goods_id'] = $goods->goods_id;
-                        $inquiry_goods['serial'] =  (string)($goods->goods_id);
+                        $inquiry_goods['serial'] = (string)($goods->goods_id);
                         unset($inquiry_goods['id']);
                         unset($inquiry_goods['belong_to']);
                         $inquiry_goods['tax_rate'] = $tax['value'];
@@ -348,35 +351,35 @@ class OrderInquiryController extends BaseController
         InquiryGoods::updateAll([
             'is_inquiry' => InquiryGoods::IS_INQUIRY_YES,
             'inquiry_at' => date('Y-m-d H:i:s'),
-        ], ['id' =>$ids]);
+        ], ['id' => $ids]);
 
         $inquiryNoResult = InquiryGoods::find()->where([
-            'id'          => $ids,
-            'is_deleted'  => InquiryGoods::IS_DELETED_NO,
-            'is_result'   => InquiryGoods::IS_RESULT_YES
+            'id' => $ids,
+            'is_deleted' => InquiryGoods::IS_DELETED_NO,
+            'is_result' => InquiryGoods::IS_RESULT_YES
         ])->one();
 
         //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
         if (in_array($user_id, $super_user_id) && $inquiryNoResult) {
             $inquiryAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $inquiryNoResult->admin_id])->one();
             $systemNotice = new SystemNotice();
-            $systemNotice->admin_id  = $inquiryAdmin->user_id;
-            $systemNotice->content   = '询不出的厂家号' . $inquiryNoResult->goods->goods_number_b . '管理员已经确认询价';
+            $systemNotice->admin_id = $inquiryAdmin->user_id;
+            $systemNotice->content = '询不出的厂家号' . $inquiryNoResult->goods->goods_number_b . '管理员已经确认询价';
             $systemNotice->notice_at = date('Y-m-d H:i:s');
             $systemNotice->save();
         }
 
         //如果都询价了，本订单和询价单就是已询价
         $info = InquiryGoods::findOne($ids[0]);
-        $orderInquiry   = OrderInquiry::findOne($info->order_inquiry_id);
+        $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
         $orderInquiry->is_inquiry = OrderInquiry::IS_INQUIRY_YES;
-        $orderInquiry->final_at   = $info->inquiry_at;
+        $orderInquiry->final_at = $info->inquiry_at;
         $orderInquiry->save();
 
         //判断订单是否都确认询价
         //订单改状态
         $orderInquiryNoInquiry = OrderInquiry::find()->where([
-            'order_id'   => $info->order_id,
+            'order_id' => $info->order_id,
             'is_inquiry' => OrderInquiry::IS_INQUIRY_NO
         ])->one();
         if (!$orderInquiryNoInquiry) {
@@ -393,19 +396,25 @@ class OrderInquiryController extends BaseController
     {
         $params = Yii::$app->request->post();
         $inquiryGoods = InquiryGoods::findOne($params['id']);
-        $inquiryGoods->reason        = $params['reason'];
-        $inquiryGoods->is_result     = InquiryGoods::IS_RESULT_YES;
+        $inquiryGoods->reason = $params['reason'];
+        $inquiryGoods->is_result = InquiryGoods::IS_RESULT_YES;
         $inquiryGoods->not_result_at = date('Y-m-d');
-        $inquiryGoods->admin_id      = Yii::$app->user->identity->id;
+        $inquiryGoods->admin_id = Yii::$app->user->identity->id;
         $inquiryGoods->is_result_tag = 1;
         if ($inquiryGoods->save()) {
+            $InquiryGoodsClarify = $inquiryGoods->toArray();
+            $InquiryGoodsClarify['inquiry_goods_id'] = $params['id'];
+            $clarify = new InquiryGoodsClarify();
+            if (!$clarify->load(['InquiryGoodsClarify' => $InquiryGoodsClarify]) || !$clarify->save()) {
+                return json_encode(['code' => 500, 'msg' => $clarify->getErrors()]);
+            }
             //超级管理员
             $user_super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
             $admin_name = Yii::$app->user->identity->username;
             //给超管通知
             $notice = new SystemNotice();
-            $notice->admin_id  = $user_super->user_id;
-            $notice->content   = $admin_name . '寻不出零件' . $inquiryGoods->goods->goods_number . '的价格,询价单号' . $inquiryGoods->inquiry_sn;
+            $notice->admin_id = $user_super->user_id;
+            $notice->content = $admin_name . '寻不出零件' . $inquiryGoods->goods->goods_number . '的价格,询价单号' . $inquiryGoods->inquiry_sn;
             $notice->notice_at = date('Y-m-d H:i:s');
             $notice->save();
             return json_encode(['code' => 200, 'msg' => '成功']);
@@ -426,7 +435,7 @@ class OrderInquiryController extends BaseController
         $inquiryGoods = InquiryGoods::find()->from('inquiry_goods as i')->select('i.*')
             ->where([
                 'i.inquiry_sn' => $orderInquiry->inquiry_sn,
-                'i.order_id'   => $orderInquiry->order_id,
+                'i.order_id' => $orderInquiry->order_id,
                 'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
                 'g.is_deleted' => Goods::IS_DELETED_NO,
             ])->leftJoin('goods as g', 'g.id = i.goods_id')->all();
@@ -448,51 +457,51 @@ class OrderInquiryController extends BaseController
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
         $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '技术备注', '中文描述', '英文描述', '询价数量*', '单位', '含税单价*（不带符号）',
             '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由', '特殊说明'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
         $tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
         $deliver = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_DELIVERY_TIME])->scalar();
         foreach ($inquiryGoods as $key => $inquiry) {
-            for($i = 0; $i < count($letter); $i++) {
+            for ($i = 0; $i < count($letter); $i++) {
                 //ID
                 $excel->setCellValue($letter[$i] . ($key + 2), $inquiry->id);
                 //询价单号
-                $excel->setCellValue($letter[$i+1] . ($key + 2), $inquiry->inquiry_sn);
+                $excel->setCellValue($letter[$i + 1] . ($key + 2), $inquiry->inquiry_sn);
                 if ($inquiry->goods) {
                     //原厂家
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $inquiry->goods->original_company);
+                    $excel->setCellValue($letter[$i + 2] . ($key + 2), $inquiry->goods->original_company);
                     //厂家号
-                    $excel->setCellValue($letter[$i+3] . ($key + 2), $inquiry->goods->goods_number_b);
+                    $excel->setCellValue($letter[$i + 3] . ($key + 2), $inquiry->goods->goods_number_b);
                     //技术备注
-                    $excel->setCellValue($letter[$i+4] . ($key + 2), $inquiry->goods->technique_remark);
+                    $excel->setCellValue($letter[$i + 4] . ($key + 2), $inquiry->goods->technique_remark);
                     //中文描述
-                    $excel->setCellValue($letter[$i+5] . ($key + 2), $inquiry->goods->description);
+                    $excel->setCellValue($letter[$i + 5] . ($key + 2), $inquiry->goods->description);
                     //英文描述
-                    $excel->setCellValue($letter[$i+6] . ($key + 2), $inquiry->goods->description_en);
+                    $excel->setCellValue($letter[$i + 6] . ($key + 2), $inquiry->goods->description_en);
                 }
                 //含税单价
                 //$excel->setCellValue($letter[$i+7] . ($key + 2), '');
                 //询价数量
-                $excel->setCellValue($letter[$i+7] . ($key + 2), $inquiry->number);
+                $excel->setCellValue($letter[$i + 7] . ($key + 2), $inquiry->number);
                 //单位
-                $excel->setCellValue($letter[$i+8] . ($key + 2), $inquiry->goods->unit);
+                $excel->setCellValue($letter[$i + 8] . ($key + 2), $inquiry->goods->unit);
                 //货期(周)
                 //$excel->setCellValue($letter[$i+10] . ($key + 2), $deliver);
                 //供应商
                 //$excel->setCellValue($letter[$i+11] . ($key + 2), '');
                 //税率
-                $excel->setCellValue($letter[$i+11] . ($key + 2), $tax);
+                $excel->setCellValue($letter[$i + 11] . ($key + 2), $tax);
                 //特殊说明
-                $excel->setCellValue($letter[$i+16] . ($key + 2), $inquiry->remark);
+                $excel->setCellValue($letter[$i + 16] . ($key + 2), $inquiry->remark);
                 break;
             }
         }
@@ -504,7 +513,7 @@ class OrderInquiryController extends BaseController
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -596,35 +605,35 @@ class OrderInquiryController extends BaseController
                             if ($goods) {
                                 if (isset($supplierList[trim($value['M'])])) {
                                     $is_inquiry = Inquiry::find()->where([
-                                        'admin_id'         => Yii::$app->user->identity->id,
+                                        'admin_id' => Yii::$app->user->identity->id,
                                         'order_inquiry_id' => $orderInquiry->id,
-                                        'good_id'          => $goods->id,
-                                        'tax_rate'         => trim($value['L']),
-                                        'supplier_id'      => $supplierList[trim($value['M'])]['id'],
+                                        'good_id' => $goods->id,
+                                        'tax_rate' => trim($value['L']),
+                                        'supplier_id' => $supplierList[trim($value['M'])]['id'],
                                     ])->one();
                                     if ($is_inquiry) {
                                         continue;
                                     }
-                                    $inquiry                    = new Inquiry();
-                                    $inquiry->inquiry_goods_id  = trim($value['A']);
-                                    $inquiry->order_inquiry_id  = $orderInquiry->id;
-                                    $inquiry->technique_remark  = trim($value['E']) ? trim($value['E']) : '';
-                                    $inquiry->tax_rate          = trim($value['L']);
-                                    $inquiry->price             = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
-                                    $inquiry->number            = trim($value['H']);
-                                    $inquiry->tax_price         = trim($value['J']);
-                                    $inquiry->good_id           = $goods->id;
-                                    $inquiry->supplier_id       = $supplierList[trim($value['M'])]['id'];
-                                    $inquiry->all_price         = $inquiry->price * $inquiry->number;
-                                    $inquiry->all_tax_price     = $inquiry->tax_price * $inquiry->number;
-                                    $inquiry->inquiry_datetime  = date('Y-m-d H:i:s');
-                                    $inquiry->remark            = trim($value['N']);
-                                    $inquiry->delivery_time     = trim($value['K']);
-                                    $inquiry->admin_id          = Yii::$app->user->identity->id;
-                                    $inquiry->order_id          = $orderInquiry->order_id;
-                                    $inquiry->is_upload         = Inquiry::IS_UPLOAD_YES;
+                                    $inquiry = new Inquiry();
+                                    $inquiry->inquiry_goods_id = trim($value['A']);
+                                    $inquiry->order_inquiry_id = $orderInquiry->id;
+                                    $inquiry->technique_remark = trim($value['E']) ? trim($value['E']) : '';
+                                    $inquiry->tax_rate = trim($value['L']);
+                                    $inquiry->price = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
+                                    $inquiry->number = trim($value['H']);
+                                    $inquiry->tax_price = trim($value['J']);
+                                    $inquiry->good_id = $goods->id;
+                                    $inquiry->supplier_id = $supplierList[trim($value['M'])]['id'];
+                                    $inquiry->all_price = $inquiry->price * $inquiry->number;
+                                    $inquiry->all_tax_price = $inquiry->tax_price * $inquiry->number;
+                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
+                                    $inquiry->remark = trim($value['N']);
+                                    $inquiry->delivery_time = trim($value['K']);
+                                    $inquiry->admin_id = Yii::$app->user->identity->id;
+                                    $inquiry->order_id = $orderInquiry->order_id;
+                                    $inquiry->is_upload = Inquiry::IS_UPLOAD_YES;
                                     if (trim($value['O']) && trim($value['O']) == '是') {
-                                        $inquiry->is_better     = Inquiry::IS_BETTER_YES;
+                                        $inquiry->is_better = Inquiry::IS_BETTER_YES;
                                     }
                                     if (trim($value['P'])) {
                                         $inquiry->better_reason = trim($value['P']);
@@ -647,8 +656,8 @@ class OrderInquiryController extends BaseController
     }
 
     /**
-    * 询价员从新分配
-    */
+     * 询价员从新分配
+     */
     public function actionRedistribution()
     {
         $id = Yii::$app->request->post('id');

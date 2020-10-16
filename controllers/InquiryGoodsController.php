@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\InquiryGoodsClarifySearch;
 use Yii;
 use app\models\InquiryGoods;
 use app\models\InquiryGoodsSearch;
@@ -35,10 +36,37 @@ class InquiryGoodsController extends Controller
      */
     public function actionIndex()
     {
+        return $this->redirect(['clarify']);
         $searchModel = new InquiryGoodsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all InquiryGoods models.
+     * @return mixed
+     */
+    public function actionClarify()
+    {
+        // 更新澄清记录
+        if (Yii::$app->request->isPost) {
+            $params = Yii::$app->request->post();
+            $InquiryGoodsClarify = InquiryGoodsClarifySearch::findOne($params['id']);
+            $InquiryGoodsClarify->clarify = $params['reason'];
+            if ($InquiryGoodsClarify->save()) {
+                return json_encode(['code' => 200, 'msg' => '成功']);
+            } else {
+                return json_encode(['code' => 500, 'msg' => $InquiryGoodsClarify->getErrors()]);
+            }
+        }
+        $searchModel = new InquiryGoodsClarifySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('clarify', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

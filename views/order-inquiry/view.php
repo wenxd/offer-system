@@ -83,7 +83,8 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>Ta的询价条目</th>
                 <?php endif;?>
-                <th>寻不出原因</th>
+                <th>澄清问题</th>
+                <th>澄清回复</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
@@ -131,7 +132,36 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <?php $inquiry_ta_number = isset($user_inquiry_count[$item->goods_id]) ? count($user_inquiry_count[$item->goods_id]) : 0;?>
                                 <td class="inquiry_ta_number"><?=$inquiry_ta_number?></td>
                             <?php endif;?>
-                            <td><?=$item->reason?></td>
+                            <td>
+                                <?php
+                                if($item->clarify) {
+                                    $text = '';
+                                    if (!empty($item->clarify)) {
+                                        foreach ($item->clarify as $device) {
+                                            $text .= $device->reason . '<br/>';
+                                        }
+                                    }
+                                    echo $text;
+                                } else {
+                                    echo $item->reason;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                if($item->clarify) {
+                                    $text = '';
+                                    if (!empty($item->clarify)) {
+                                        foreach ($item->clarify as $device) {
+                                            $text .= $device->clarify . '<br/>';
+                                        }
+                                    }
+                                    echo $text;
+                                } else {
+                                    echo '';
+                                }
+                                ?>
+                            </td>
                             <td>
                                 <a class="btn btn-success btn-xs btn-flat adminConfirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                 <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
@@ -190,7 +220,36 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                     <?php $inquiry_ta_number = isset($user_inquiry_count[$item->goods_id]) ? count($user_inquiry_count[$item->goods_id]) : 0;?>
                                     <td class="inquiry_ta_number"><?=$inquiry_ta_number?></td>
                                 <?php endif;?>
-                                <td><?=$item->reason?></td>
+                                <td>
+                                    <?php
+                                    if($item->clarify) {
+                                        $text = '';
+                                        if (!empty($item->clarify)) {
+                                            foreach ($item->clarify as $device) {
+                                                $text .= $device->reason . '<br/>';
+                                            }
+                                        }
+                                        echo $text;
+                                    } else {
+                                        echo $item->reason;
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    if($item->clarify) {
+                                        $text = '';
+                                        if (!empty($item->clarify)) {
+                                            foreach ($item->clarify as $device) {
+                                                $text .= $device->clarify . '<br/>';
+                                            }
+                                        }
+                                        echo $text;
+                                    } else {
+                                        echo '';
+                                    }
+                                    ?>
+                                </td>
                                 <td>
                                     <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                     <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>

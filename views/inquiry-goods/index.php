@@ -15,7 +15,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\InquiryGoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '询不出记录列表';
+$this->title = '澄清记录列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();

@@ -76,7 +76,7 @@ class InquiryGoods extends \yii\db\ActiveRecord
             'updated_at'    => '更新时间',
             'created_at'    => '创建时间',
             'not_result_at' => '未询出时间',
-            'reason'        => '询不出理由',
+            'reason'        => '澄清问题',
             'admin_id'      => '询价员',
             'is_inquiry'    => '是否询价',
             'inquiry_at'    => '确认询价时间',
@@ -102,5 +102,13 @@ class InquiryGoods extends \yii\db\ActiveRecord
     public function getSupplier()
     {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
+    }
+
+    /**
+     * 澄清
+     */
+    public function getClarify()
+    {
+        return $this->hasMany(InquiryGoodsClarify::className(), ['inquiry_goods_id' => 'id']);
     }
 }
