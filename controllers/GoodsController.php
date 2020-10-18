@@ -612,11 +612,15 @@ class GoodsController extends BaseController
         $goodsRelation = GoodsRelation::find()->where([
             'p_goods_id' => $pGoodsId,
             'goods_id' => $goodsId,
+            'is_deleted' => GoodsRelation::IS_DELETED_NO,
         ])->one();
-
         if ($goodsRelation) {
             $goodsRelation->is_deleted = GoodsRelation::IS_DELETED_YES;
             $goodsRelation->save();
+            // 计算是不是已经没有子零件了
+            if (GoodsRelation::find()->where(['p_goods_id' => $pGoodsId, 'is_deleted' => GoodsRelation::IS_DELETED_NO,])->count() == 0) {
+                Goods::updateAll(['is_assembly' => 0], ['id' => $pGoodsId]);
+            }
             return $this->success(200, '删除成功');
         } else {
             return $this->error(500, '没有此关联关系');
