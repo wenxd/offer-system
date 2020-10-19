@@ -246,7 +246,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                                     'onclick' => "del_goods($item->id)"
                                 ]);
                             }
-                            if ($item->after == 0) {
+                            if ($item->after == 0 && $open) {
                                 echo Html::button('回退', [
                                     'class' => 'btn btn-success btn-sm',
                                     'onclick' => "exit_goods($item->id)"
@@ -355,13 +355,14 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         <?php endif; ?>
 
     </div>
+    <div class="box-footer">
+        <?= Html::button('提交支出申请', [
+                'class' => 'btn btn-success payment_save',
+                'name' => 'submit-button']
+        ) ?>
+    </div>
     <?php if (!$model->is_complete): ?>
-        <div class="box-footer">
-            <?= Html::button('提交支出申请', [
-                    'class' => 'btn btn-success payment_save',
-                    'name' => 'submit-button']
-            ) ?>
-        </div>
+
     <?php endif; ?>
     <?php ActiveForm::end(); ?>
 </div>
@@ -602,6 +603,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         },
                         dataType: 'JSON',
                         success: function (res) {
+                            $(".payment_save").attr("disabled", false);
                             if (res && res.code == 200) {
                                 layer.msg(res.msg, {time: 2000});
                                 window.location.reload();
@@ -633,6 +635,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     },
                     dataType: 'JSON',
                     success: function (res) {
+                        $(".payment_save").attr("disabled", false);
                         if (res && res.code == 200) {
                             layer.msg(res.msg, {time: 2000});
                             window.location.reload();
