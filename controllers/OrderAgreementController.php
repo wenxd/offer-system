@@ -314,6 +314,7 @@ class OrderAgreementController extends Controller
                     if (!$model->save()) {
                         return json_encode(['code' => 500, 'msg' => 'Goods数据添加失败']);
                     }
+                    $item['agreement_goods_id'] = $model->id;
                     $model->id = 0;
                     $model_bak->isNewRecord = true;
                     $model_bak->setAttributes($item);
