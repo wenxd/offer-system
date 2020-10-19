@@ -266,7 +266,8 @@ class OrderAgreementController extends Controller
                     $item = $good->toArray();
                     unset($item['id']);
                     $item['number'] = $good['strategy_number'];
-                    $item['order_number'] = $good['strategy_number'];
+                    $item['order_number'] = $item['number'];
+                    $item['purchase_number'] = $item['number'];
                     $item['top_goods_number'] = isset($good->goods->goods_number) ? $good->goods->goods_number : '';
                     //需要拆分
                     if (in_array($item['goods_id'], $post)) {

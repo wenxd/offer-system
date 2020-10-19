@@ -129,11 +129,11 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 <th>采购货期</th>
                 <th>采购单号</th>
                 <th>合同货期</th>
-                <th>合同需求数量</th>
-                <th>采购数量</th>
+                <th>策略需求数量</th>
+                <th>策略采购数量</th>
                 <th>单位</th>
                 <th>使用库存数量</th>
-                <th>库存数量</th>
+                <th>临时库存数量</th>
                 <th>建议库存</th>
                 <th>高储</th>
                 <th>低储</th>
@@ -262,7 +262,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     </td>
                     <td><?= $item->goods->unit ?></td>
                     <td class="use_stock"></td>
-                    <td class="stock_number"><?= $item->stock ? $item->stock->number : 0 ?></td>
+                    <td class="stock_number">
+                        <?php
+                        $stock = $item->stock ? $item->stock->number : 0;
+                        $use_number = $item->orderstock->use_number ?? 0;
+                        echo $stock - $use_number;
+                        ?>
+                    </td>
                     <td><?= $item->stock ? $item->stock->suggest_number : 0 ?></td>
                     <td><?= $item->stock ? $item->stock->high_number : 0 ?></td>
                     <td><?= $item->stock ? $item->stock->low_number : 0 ?></td>
