@@ -352,6 +352,15 @@ class OrderController extends BaseController
      */
     public function actionCreateInquiry($id, $level = 1)
     {
+        // 选择采购员时判断同一个订单是否已经有过同一个人的采购单号
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post();
+            $inquiry = OrderInquiry::find()->where($post)->asArray()->one();
+            if ($inquiry) {
+                return json_encode(['code' => 200,  'msg' => '成功', 'data' => ['inquiry_sn' => $inquiry['inquiry_sn']]]);
+            }
+            return json_encode(['code' => 500,  'msg' => '数据未找到']);
+        }
         $request = Yii::$app->request->get();
         $order = Order::findOne($id);
         if (!$order) {
