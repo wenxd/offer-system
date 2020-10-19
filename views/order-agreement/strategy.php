@@ -48,6 +48,35 @@ $system_tax = SystemConfig::find()->select('value')->where([
 </style>
 <div class="box table-responsive">
     <?php $form = ActiveForm::begin(); ?>
+    <div class="box-header">
+
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <?=Html::button('一键走库存', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'exit_stock()'])?>
+                <script>
+                    function exit_stock() {
+                        var goods_info = [];
+                        $('.oldNumber').each(function (index, element) {
+                            // 合同需求数量
+                            var oldNumber = $(element).text();
+                            // 库存数量
+                            var stock_number = $(this).parent().find('.stock_number').text();
+                            // 库存数量 < 合同需求数量
+                            if (stock_number < oldNumber) {
+                                $(this).parent().find('.afterNumber').find('.number').val(oldNumber - stock_number);
+                                $(this).parent().find('.use_stock').text(stock_number);
+                            } else {
+                                $(this).parent().find('.afterNumber').find('.number').val(0);
+                                $(this).parent().find('.use_stock').text(oldNumber);
+                            }
+                        });
+
+                    }
+                </script>
+            </div>
+        </div>
+
+    </div>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover" style="table-layout: auto">
             <thead class="data" data-order_agreement_id="<?= $_GET['id'] ?>">
