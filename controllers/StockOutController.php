@@ -257,7 +257,8 @@ class StockOutController extends BaseController
     public function actionQuality()
     {
         $id = Yii::$app->request->post('agreement_goods_id');
-        $agreementGoods = AgreementGoods::findOne($id);
+//        $agreementGoods = AgreementGoods::findOne($id);
+        $agreementGoods = AgreementGoodsData::findOne($id);
         $agreementGoods->is_quality = AgreementGoods::IS_QUALITY_YES;
         if ($agreementGoods->save()) {
             return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
