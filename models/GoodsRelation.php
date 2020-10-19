@@ -328,7 +328,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 'number' => $item->number * $goods['number'],
             ];
             if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
-                $info = GoodsRelation::getGoodsSon($item, $info);
+                $info = self::getGoodsSonNumber($item, $info);
             } else {
                 if (isset($info[$goods_son['goods_id']])) {
                     $goods_son['number'] += $info[$goods_son['goods_id']]['number'];
