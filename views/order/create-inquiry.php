@@ -281,6 +281,26 @@ if ($model->isNewRecord) {
     var level = <?=$level?>;
     $(document).ready(function () {
         init();
+        //选择采购员时判断同一个订单是否已经有过同一个人的采购单号
+        $('#orderinquiry-admin_id').change(function (e) {
+            var admin_id = $(this).val();
+            var order_id = <?=$order->id?>;
+            var inquiry_sn = '<?=$model->inquiry_sn?>';
+            $.ajax({
+                type: "post",
+                url: "<?=$_SERVER['HTTP_REFERER']?>",
+                data: {order_id: order_id, admin_id: admin_id},
+                dataType: 'JSON',
+                success: function (res) {
+                    console.log(res);
+                    if (res && res.code == 200) {
+                        $('#orderinquiry-inquiry_sn').val(res.data.inquiry_sn);
+                    } else {
+                        $('#orderinquiry-inquiry_sn').val(inquiry_sn);
+                    }
+                }
+            });
+        });
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked",$(this).prop("checked"));

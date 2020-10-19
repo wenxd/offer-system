@@ -145,7 +145,11 @@ class OrderInquiryController extends BaseController
         }
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $orderInquiry = new OrderInquiry();
+            $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => $params['inquiry_sn'], 'order_id' => $params['order_id']])->one();
+            if (!$orderInquiry) {
+                $orderInquiry = new OrderInquiry();
+            }
+
             $orderInquiry->inquiry_sn = $params['inquiry_sn'];
             $orderInquiry->order_id = $params['order_id'];
             $orderInquiry->end_date = $params['end_date'];
