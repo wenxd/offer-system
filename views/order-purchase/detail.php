@@ -11,7 +11,7 @@ use \app\models\Supplier;
 use app\models\Admin;
 use app\models\AuthAssignment;
 
-$this->title = '采购单详情';
+$this->title = '提交支出申请';
 $this->params['breadcrumbs'][] = $this->title;
 
 if (!$model->agreement_date) {
@@ -585,6 +585,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     btn: ['重新选择', '确认'] //按钮
                 }, function (index) {
                     layer.close(index);
+                    $(".payment_save").removeAttr("disabled").removeClass("disabled");
                     return false;
                 }, function (index) {
                     //创建支出合同
@@ -607,7 +608,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         },
                         dataType: 'JSON',
                         success: function (res) {
-                            $(".payment_save").attr("disabled", false);
+                            $(".payment_save").removeAttr("disabled").removeClass("disabled");
                             if (res && res.code == 200) {
                                 layer.msg(res.msg, {time: 2000});
                                 window.location.reload();
