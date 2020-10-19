@@ -223,7 +223,11 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="tax"><?= $item->tax_rate ?></td>
                     <td class="agreement_number"><?= $item->number ?></td>
                     <td class="use_number"><?= ($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0 ?></td>
-                    <td class="stock_number"><?= $item->stock ? $item->stock->number : 0 ?></td>
+                    <td class="stock_number"><?php
+                        $stock = $item->stock ? $item->stock->number : 0;
+                        $use_number = $item->orderstock->use_number ?? 0;
+                        echo $stock - $use_number;
+                        ?></td>
                     <td><?php
                         if ($item->apply_status == 0) {
                             $status = '无';

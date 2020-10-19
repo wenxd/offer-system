@@ -149,4 +149,17 @@ class PurchaseGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(StockLog::className(), ['goods_id' => 'goods_id', 'order_id' => 'order_id', 'order_purchase_id' => 'order_purchase_id']);
     }
+
+    /**
+     * 关联使用库存
+     */
+    public function getOrderstock()
+    {
+        $where = [
+            'order_id' => 'order_id',
+            'order_agreement_id' => 'order_agreement_id',
+            'goods_id' => 'goods_id',
+        ];
+        return $this->hasOne(AgreementStock::className(), $where)->where(['is_confirm' => AgreementStock::IS_CONFIRM_YES]);
+    }
 }
