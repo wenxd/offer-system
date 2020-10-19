@@ -193,7 +193,7 @@ if ($model->isNewRecord) {
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= $item->goods->material_code?></td>
                     <td><?= Html::a($item->goods->goods_number,
-                            Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number]),
+                            Url::to(['goods/search-result', 'goods_id' => $item->goods->id]),
                             ['target' => 'blank'])?></td>
                     <td><?= $item->goods->goods_number_b?></td>
                     <td class="supplier">
