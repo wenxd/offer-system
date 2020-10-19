@@ -41,6 +41,8 @@ use yii\helpers\ArrayHelper;
  * @property string $expect_at
  * @property string $is_merge
  * @property string $is_all_stock
+ * @property string $is_strategy_number
+ * @property string $is_strategy
  */
 class OrderAgreement extends \yii\db\ActiveRecord
 {
@@ -127,7 +129,7 @@ class OrderAgreement extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_quote_id', 'is_agreement', 'admin_id', 'is_deleted', 'is_advancecharge', 'is_payment',
                 'is_bill', 'is_stock', 'is_complete', 'is_instock', 'customer_id', 'is_all_stock', 'is_purchase',
-                'stock_admin_id', 'financial_admin_id', 'is_merge'], 'integer'],
+                'stock_admin_id', 'financial_admin_id', 'is_merge', 'is_strategy_number', 'is_strategy'], 'integer'],
             [['agreement_date', 'updated_at', 'created_at', 'sign_date', 'expect_at', 'payment_at', 'advancecharge_at',
                 'stock_at', 'bill_at',], 'safe'],
             [['order_quote_sn', 'agreement_sn', 'order_sn'], 'string', 'max' => 255],

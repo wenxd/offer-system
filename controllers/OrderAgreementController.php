@@ -321,6 +321,8 @@ class OrderAgreementController extends Controller
                     }
                     $model_bak->id = 0;
                 }
+                $orderAgreement->is_strategy = 1;
+                $orderAgreement->save();
                 $transaction->commit();
                 return json_encode(['code' => 200, 'msg' => '修改策略成功']);
             } catch (\Exception $e) {
