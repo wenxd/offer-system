@@ -151,6 +151,6 @@ class AgreementGoods extends \yii\db\ActiveRecord
             'order_agreement_id' => 'order_agreement_id',
             'goods_id' => 'goods_id',
         ];
-        return $this->hasOne(AgreementStock::className(), $where)->where(['is_confirm' => AgreementStock::IS_CONFIRM_YES]);
+        return $this->hasOne(AgreementStock::className(), $where)->select('sum(use_number) as use_number')->where(['is_confirm' => AgreementStock::IS_CONFIRM_YES]);
     }
 }

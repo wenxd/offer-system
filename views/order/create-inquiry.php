@@ -288,7 +288,7 @@ if ($model->isNewRecord) {
             var inquiry_sn = '<?=$model->inquiry_sn?>';
             $.ajax({
                 type: "post",
-                url: "<?=$_SERVER['HTTP_REFERER']?>",
+                url: "<?=$_SERVER['REQUEST_URI']?>",
                 data: {order_id: order_id, admin_id: admin_id},
                 dataType: 'JSON',
                 success: function (res) {

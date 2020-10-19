@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementGoods;
 use app\models\AgreementGoodsData;
 use app\models\OrderAgreement;
 use Yii;
@@ -162,7 +163,7 @@ class AgreementStockController extends Controller
             'goods_id' => $agreementStock->goods_id, 'source' => $agreementStock->source
         ])->count();
         // 判断来源(采购策略)
-        if ($agreementStock->source == 'strategy') {
+        if ($agreementStock->source == AgreementStock::STRATEGY) {
             // 判断订单类型（项目订单）
             if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
                 // 恢复收入合同单号与零件ID对应表 采购数量
@@ -182,9 +183,29 @@ class AgreementStockController extends Controller
                     OrderAgreement::updateAll(['is_strategy_number' => 0], ['id' => $agreementStock->order_agreement_id]);
                 }
             }
+        } elseif ($agreementStock->source == AgreementStock::PURCHASE) {
+            // 判断订单类型（项目订单）
+            if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
+                // 恢复收入合同单号与零件ID对应表 采购数量
+                $agreementGoods = AgreementGoods::find()
+                    ->where(['order_id' => $agreementStock->order_id,
+                        'order_agreement_id' => $agreementStock->order_agreement_id,
+                        'order_agreement_sn' => $agreementStock->order_agreement_sn,
+                        'goods_id' => $agreementStock->goods_id])
+                    ->one();
+                $agreementGoods->purchase_number = $agreementGoods->purchase_number + $agreementStock->use_number;
+                if (!$agreementGoods->save()) {
+                    Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
+                    return "<script>history.go(-1);</script>";
+                }
+                // 如所有被驳回，更新成未点击报错使用库存
+                if (!$count) {
+                    OrderAgreement::updateAll(['is_purchase_number' => 0], ['id' => $agreementStock->order_agreement_id]);
+                }
+            }
         }
         $transaction->commit();
-        Yii::$app->getSession()->setFlash('error', '驳回成功');
+        Yii::$app->getSession()->setFlash('success', '驳回成功');
         return "<script>history.go(-1);</script>";
     }
 }

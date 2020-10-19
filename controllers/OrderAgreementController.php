@@ -365,6 +365,73 @@ class OrderAgreementController extends Controller
      */
     public function actionDetail($id, $type = 'order')
     {
+        if (Yii::$app->request->isPost) {
+            try {
+                $params = Yii::$app->request->post('goods_info', []);
+                $goods_info = [];
+                foreach ($params as $v) {
+                    $goods_info[$v['goods_id']] = $v['strategy_number'];
+                }
+                $transaction = Yii::$app->db->beginTransaction();
+                // 查询收入合同单号与零件ID对应表
+                $agreementGoods = AgreementGoods::find()->alias('ag')
+                    ->select('ag.*')->leftJoin('goods g', 'ag.goods_id=g.id')
+                    ->with('goodsRelation')->with('goods')
+                    ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
+                    ->orderBy('serial')->all();
+                foreach ($agreementGoods as $goods) {
+                    // 匹配零件号，更新采购策略采购数量
+                    if (isset($goods_info[$goods->goods_id])) {
+                        // 判断使用库存中是否已经存在
+                        $count = AgreementStock::find()->where([
+                            'order_id' => $goods->order_id,
+                            'order_agreement_id' => $goods->order_agreement_id,
+                            'goods_id' => $goods->goods_id, 'source' => AgreementStock::PURCHASE
+                        ])->count();
+                        if ($count) continue;
+                        $goods->purchase_number = $goods_info[$goods->goods_id];
+                        if (!$goods->save()) {
+                            $transaction->rollBack();
+                            return json_encode(['code' => 501, 'msg' => $goods->errors], JSON_UNESCAPED_UNICODE);
+                        }
+                        // 判断是否使用库存（策略采购数量 < 订单需求数量）
+                        if ($goods->purchase_number < $goods->number) {
+                            $use_number = $goods->number - $goods->purchase_number;
+                            // 加入使用库存列表
+                            $stock_model = new AgreementStock();
+                            $stock_data = [
+                                'order_id' => $goods->order_id,
+                                'order_agreement_id' => $goods->order_agreement_id,
+                                'order_agreement_sn' => $goods->order_agreement_sn,
+                                'goods_id' => $goods->goods_id,
+                                'serial' => $goods->serial,
+                                'price' => $goods->price,
+                                'tax_price' => $goods->tax_price,
+                                'use_number' => $use_number,
+                                'all_price' => $goods->price * $use_number,
+                                'all_tax_price' => $goods->tax_price * $use_number,
+                                'source' => AgreementStock::PURCHASE,
+                            ];
+                            if (!$stock_model->load(['AgreementStock' => $stock_data]) || !$stock_model->save()) {
+                                $transaction->rollBack();
+                                return json_encode(['code' => 502, 'msg' => $stock_model->errors], JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }
+                }
+                // 更新收入合同
+                $orderAgreement = OrderAgreement::findOne($id);
+                $orderAgreement->is_purchase_number = 1;
+                if (!$orderAgreement->save()) {
+                    $transaction->rollBack();
+                    return json_encode(['code' => 503, 'msg' => $orderAgreement->errors], JSON_UNESCAPED_UNICODE);
+                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '保存采购数量并生成使用库存记录成功'], JSON_UNESCAPED_UNICODE);
+            } catch (\Exception $e) {
+                return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+            }
+        }
         $request = Yii::$app->request->get();
         $orderAgreement = OrderAgreement::findOne($id);
         $agreementGoodsQuery = AgreementGoods::find()->alias('ag')

@@ -70,10 +70,11 @@ $system_tax = SystemConfig::find()->select('value')->where([
                             ]);
                         },
                         'stock' => function () {
-                            return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-flat',
-                            ]);
+//                            return Html::a('<i class="fa fa-reload"></i> 一键走库存', Url::to(['stock', 'id' => $_GET['id']]), [
+//                                'data-pjax' => '0',
+//                                'class' => 'btn btn-primary btn-flat',
+//                            ]);
+                            return Html::button('一键走库存', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'exit_stock()']);
                         },
                         'better' => function () {
                             return Html::a('<i class="fa fa-reload"></i> 一键优选', Url::to(['better', 'id' => $_GET['id']]), [
@@ -95,6 +96,26 @@ $system_tax = SystemConfig::find()->select('value')->where([
                         }
                     ]
                 ]) ?>
+                <script>
+                    function exit_stock() {
+                        var goods_info = [];
+                        $('.oldNumber').each(function (index, element) {
+                            // 合同需求数量
+                            var oldNumber = $(element).text();
+                            // 库存数量
+                            var stock_number = $(this).parent().find('.stock_number').text();
+                            // 库存数量 < 合同需求数量
+                            if (stock_number < oldNumber) {
+                                $(this).parent().find('.afterNumber').find('.number').val(oldNumber - stock_number);
+                                $(this).parent().find('.use_stock').text(stock_number);
+                            } else {
+                                $(this).parent().find('.afterNumber').find('.number').val(0);
+                                $(this).parent().find('.use_stock').text(oldNumber);
+                            }
+                        });
+
+                    }
+                </script>
             </div>
         </div>
 
@@ -257,7 +278,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td class="quote_delivery_time"><?= $item->quote_delivery_time ?></td>
                     <td class="oldNumber"><?= $item->order_number ?></td>
                     <td class="afterNumber">
-                        <input type="number" size="4" class="number" min="1" style="width: 50px;"
+                        <input type="number" size="4" goods_id="<?=$item->goods_id?>" class="number" min="1" style="width: 50px;"
                                value="<?= $item->purchase_number ?>">
                     </td>
                     <td><?= $item->goods->unit ?></td>
@@ -317,6 +338,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
         ])->label('收入合同交货时间'); ?>
     </div>
     <div class="box-footer">
+        <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary purchase_number_save', 'name' => 'submit-button']) ?>
         <?php
         // 查询是否有未确认使用库存列表
         $count = \app\models\AgreementStock::find()
@@ -324,13 +346,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             ->count();
         if (!$count) {
             // 没有保存采购策略不允许保存采购订单
-            if ($orderAgreement->is_strategy) {
+            if ($orderAgreement->is_purchase_number) {
                 echo Html::button('保存采购单', [
                         'class' => 'btn btn-success purchase_save',
                         'name' => 'submit-button']
                 );
             } else {
-                echo "<p class='text-danger'>没有保存采购策略</p>";
+                echo "<p class='text-danger'>没有保存采购单采购数量/使用库存</p>";
             }
 
         } else {
@@ -354,6 +376,33 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //保存采购数量/使用库存
+        $('.purchase_number_save').click(function (e) {
+            //防止双击
+            // $(".purchase_save").attr("disabled", true).addClass("disabled");
+            var goods_info = [];
+            $('.number').each(function (index, element) {
+                var goods_id = $(element).attr('goods_id');
+                var strategy_number = $(element).val();
+                goods_info.push({goods_id:goods_id,strategy_number:strategy_number});
+            });
+            console.log(goods_info);
+            $.ajax({
+                type:"post",
+                url:'<?=$_SERVER['REQUEST_URI']?>',
+                data:{goods_info:goods_info},
+                dataType:'JSON',
+                success:function(res){
+                    console.log(res);
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                    }
+                }
+            });
+        });
         init();
         var order_id = <?=$order->id?>;
         var temporary_purchase_sn = '<?=$model->purchase_sn?>';
