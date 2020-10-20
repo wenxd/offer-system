@@ -105,10 +105,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         } else {
                             if (!$model->is_agreement) {
-                                $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
-                                    'data-pjax' => '0',
-                                    'class' => 'btn btn-primary btn-xs btn-flat',
-                                ]);
+                                if ($model->is_contract) {
+                                    $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-primary btn-xs btn-flat',
+                                    ]);
+                                } else {
+                                    $html .= Html::a('<i class="fa fa-plus"></i> 单独保存支出合同', '#', [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-primary btn-xs btn-flat',
+                                        'onclick' => 'alert("单独保存支出合同未开发")',
+                                    ]);
+                                }
                             }
                         }
                     }
