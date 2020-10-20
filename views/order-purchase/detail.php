@@ -124,6 +124,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>库存数量</th>
                 <th>审核状态</th>
                 <th>驳回原因</th>
+                <th>生成支出合同</th>
                 <th>操作</th>
             </tr>
             <tr id="w3-filters" class="filters">
@@ -242,6 +243,15 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         ?>
                     </td>
                     <td><?= $item->reason ?></td>
+                    <!--勾选生成支出合同-->
+                    <td class="contract"><?php
+                        if ($item->after == 0 ) {
+                            echo '<input type="checkbox" onclick="return false;" checked="checked" />';
+                        } else {
+                            echo '<input type="checkbox" checked="checked" />';
+                        }
+                        ?>
+                    </td>
                     <td><?php
                         if (!in_array($item->apply_status, [1, 2])) {
                             if ($item->after == 1) {
@@ -508,7 +518,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         //保存支出合同
         $(".payment_save").click(function () {
             //防止双击
-            $(".payment_save").attr("disabled", true).addClass("disabled");
+            // $(".payment_save").attr("disabled", true).addClass("disabled");
             var select_length = $('.select_id:checked').length;
             if (!select_length) {
                 layer.msg('请最少选择一个零件', {time: 2000});
@@ -520,8 +530,21 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             var long_delivery_time = 0;
             var supplier_flag = false;
             var stock_flag = false;
+            var is_contract = -1;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
+                    // 判断是不是混合勾选
+                    var contract = $(element).parent().parent().find('.contract input').prop('checked');
+                    contract = contract ? 1 : 0;
+                    if (is_contract == -1) {
+                        is_contract = contract;
+                    } else {
+                        if (is_contract != contract) {
+                            layer.msg('杂项零件不生成支出合同不可混合', {time: 2000});
+                            $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                            return false;
+                        }
+                    }
                     var s_name = $(element).parent().parent().find('.supplier_name').text();
                     if (!supplier_name) {
                         supplier_name = s_name;
@@ -595,6 +618,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         data: {
                             order_purchase_id: order_purchase_id,
                             admin_id: admin_id,
+                            is_contract: is_contract,
                             end_date: end_date,
                             payment_sn: payment_sn,
                             goods_info: goods_info,
