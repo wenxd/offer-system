@@ -111,10 +111,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'class' => 'btn btn-primary btn-xs btn-flat',
                                     ]);
                                 } else {
-                                    $html .= Html::a('<i class="fa fa-plus"></i> 单独保存支出合同', '#', [
+                                    $html .= Html::a('<i class="fa fa-plus"></i> 单独保存支出合同', Url::to(['complete', 'id' => $model['id']]), [
                                         'data-pjax' => '0',
                                         'class' => 'btn btn-primary btn-xs btn-flat',
-                                        'onclick' => 'alert("单独保存支出合同未开发")',
                                     ]);
                                 }
                             }

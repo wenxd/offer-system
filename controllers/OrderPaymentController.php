@@ -48,6 +48,21 @@ class OrderPaymentController extends Controller
     }
 
     /**
+     * Lists all OrderPayment models.
+     * @return mixed
+     */
+    public function actionIndex2()
+    {
+        $searchModel = new OrderPaymentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, 0);
+
+        return $this->render('index2', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
      * Displays a single OrderPayment model.
      * @param integer $id
      * @return mixed

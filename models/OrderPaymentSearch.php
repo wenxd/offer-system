@@ -21,7 +21,7 @@ class OrderPaymentSearch extends OrderPayment
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill', 'supplier_id', 'stock_admin_id', 'financial_admin_id', 'is_complete'], 'integer'],
+                'is_advancecharge', 'is_bill', 'supplier_id', 'stock_admin_id', 'financial_admin_id', 'is_complete', 'is_contract'], 'integer'],
             [['payment_price'], 'number'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
                 'agreement_at', 'delivery_date'], 'safe'],
@@ -47,7 +47,7 @@ class OrderPaymentSearch extends OrderPayment
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $is_contract = 1)
     {
         $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
@@ -64,6 +64,7 @@ class OrderPaymentSearch extends OrderPayment
                 'is_agreement'    => self::IS_ADVANCECHARGE_YES,
             ]);
         }
+        $query->andWhere(['is_contract' => $is_contract]);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
