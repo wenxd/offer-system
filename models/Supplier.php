@@ -23,6 +23,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $admin_id
  * @property string $agree_at
  * @property string $is_confirm
+ * @property string $exit_info
  */
 class Supplier extends ActiveRecord
 {
@@ -76,8 +77,8 @@ class Supplier extends ActiveRecord
         return [
             [['sort', 'is_deleted', 'is_confirm', 'admin_id'], 'integer'],
             [['updated_at', 'created_at', 'agree_at'], 'safe'],
-            [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product',
-                'full_name', 'contacts'], 'string', 'max' => 255],
+            [['name', 'short_name', 'mobile', 'telephone', 'email', 'grade', 'grade_reason', 'advantage_product', 'full_name', 'contacts'], 'string', 'max' => 255],
+            [['exit_info'], 'string', 'max' => 1024],
             [
                 ['name', 'short_name', 'grade_reason', 'advantage_product'],
                 'required',

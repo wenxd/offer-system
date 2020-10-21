@@ -56,6 +56,9 @@ class SupplierSearch extends Supplier
         } else {
             $query = Supplier::find();
         }
+        if (Yii::$app->user->identity->username != 'admin') {
+            $query->andWhere(['admin_id' => $userId]);
+        }
 
         // add conditions that should always apply here
 

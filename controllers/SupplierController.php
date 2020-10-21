@@ -28,11 +28,11 @@ class SupplierController extends BaseController
                     ];
                 }
             ],
-            'update' => [
-                'class'      => actions\UpdateAction::className(),
-                'modelClass' => Supplier::className(),
-                'scenario'   => 'supplier',
-            ],
+//            'update' => [
+//                'class'      => actions\UpdateAction::className(),
+//                'modelClass' => Supplier::className(),
+//                'scenario'   => 'supplier',
+//            ],
             'delete' => [
                 'class'      => actions\DeleteAction::className(),
                 'modelClass' => Supplier::className(),
@@ -50,6 +50,27 @@ class SupplierController extends BaseController
                 'modelClass' => Supplier::className(),
             ],
         ];
+    }
+
+    public function actionUpdate()
+    {
+        $id = Yii::$app->request->get('id');
+        $model = Supplier::findOne($id);
+        $post = Yii::$app->request->post();
+        if ($post) {
+            // 判断是不是超管
+            if (Yii::$app->user->identity->username != 'admin') {
+                $post['Supplier'] = [
+                    'exit_info' => json_encode($post['Supplier'], JSON_UNESCAPED_UNICODE)
+                ];
+            }
+            if ($model->load($post) && $model->save()) {
+                yii::$app->getSession()->setFlash('success', 'success');
+            } else {
+                yii::$app->getSession()->setFlash('error', $model->errors);
+            }
+        }
+        return $this->render('update', ['model' => $model,]);
     }
 
     public function actionDetail()
@@ -88,5 +109,21 @@ class SupplierController extends BaseController
 
         yii::$app->getSession()->setFlash('success', yii::t('app', 'Success'));
         return $this->redirect(['index']);
+    }
+
+    /**
+     * 修改审批
+     */
+    public function actionUpdateConfirm($id)
+    {
+        $model = Supplier::findOne($id);
+        $exit_info = json_decode($model['exit_info'], true);
+        $exit_info['exit_info'] = null;
+        if ($model->load(['Supplier' => $exit_info]) && $model->save()) {
+            yii::$app->getSession()->setFlash('success', 'success');
+        } else {
+            yii::$app->getSession()->setFlash('error', $model->errors);
+        }
+        return "<script>history.go(-1);</script>";
     }
 }

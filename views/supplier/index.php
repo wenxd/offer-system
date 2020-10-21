@@ -13,6 +13,7 @@ use app\extend\widgets\Bar;
 use yii\grid\CheckboxColumn;
 use app\extend\grid\ActionColumn;
 use kartik\daterange\DateRangePicker;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SupplierSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -21,9 +22,9 @@ $this->title = '供应商列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
-$adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+$adminIds = ArrayHelper::getColumn($use_admin, 'user_id');
 
-$userId   = Yii::$app->user->identity->id;
+$userId = Yii::$app->user->identity->id;
 if (in_array($userId, $adminIds)) {
     $control = '{create} {index}';
 } else {
@@ -38,110 +39,122 @@ if (in_array($userId, $adminIds)) {
                 'index' => function () {
                     return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
                         'data-pjax' => '0',
-                        'class'     => 'btn btn-success btn-flat',
+                        'class' => 'btn btn-success btn-flat',
                     ]);
                 }
             ]
-        ])?>
+        ]) ?>
     </div>
     <div class="box-body">
-    <?php Pjax::begin(); ?>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'pager'        => [
-            'firstPageLabel' => '首页',
-            'prevPageLabel'  => '上一页',
-            'nextPageLabel'  => '下一页',
-            'lastPageLabel'  => '尾页',
-        ],
-        'columns' => [
-            [
-                'class' => CheckboxColumn::className(),
+        <?php Pjax::begin(); ?>
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'pager' => [
+                'firstPageLabel' => '首页',
+                'prevPageLabel' => '上一页',
+                'nextPageLabel' => '下一页',
+                'lastPageLabel' => '尾页',
             ],
-            'id',
-            'name',
-            'short_name',
-            'full_name',
-            'contacts',
-            'mobile',
-            'telephone',
-            'email',
-            [
-                'attribute' => 'grade',
-                'format'    => 'raw',
-                'contentOptions'=>['style'=>'min-width: 80px;'],
-                'filter'    => Supplier::$grade,
-                'value'     => function ($model, $key, $index, $column) {
-                    return $model->grade ? Supplier::$grade[$model->grade] : '';
-                }
-            ],
-            'grade_reason',
-            'advantage_product',
-            [
-                'attribute' => 'admin_id',
-                'label'     => '申请人',
-                'filter'    => in_array($userId, $adminIds) ? Helper::getAdminList(['询价员', '采购员']) : Helper::getAdminList(['系统管理员', '询价员', '采购员']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->admin) {
-                        return $model->admin->username;
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
-                'attribute' => 'is_confirm',
-                'format'    => 'raw',
-                'filter'    => Supplier::$confirm,
-                'value'     => function ($model, $key, $index, $column) {
-                    return Supplier::$confirm[$model->is_confirm];
-                }
-            ],
-            [
-                'attribute' => 'created_at',
-                'format'    => 'raw',
-                'label'     => '申请时间',
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'SupplierSearch[created_at]',
-                    'value' => Yii::$app->request->get('SupplierSearch')['created_at'],
-                ]),
-                'value'     => function($model) {
-                    return substr($model->created_at, 0, 10);
-                }
-            ],
-            [
-                'attribute' => 'agree_at',
-                'format'    => 'raw',
-                'label'     => '入库时间',
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'SupplierSearch[agree_at]',
-                    'value' => Yii::$app->request->get('SupplierSearch')['agree_at'],
-                ]),
-                'value'     => function($model) {
-                    return substr($model->agree_at, 0, 10);
-                }
-            ],
-            [
-                'class'         => ActionColumn::className(),
-//                'visible'       => !in_array($userId, $adminIds),
-                'contentOptions'=>['style'=>'min-width: 200px;'],
-                'header'        => '操作',
-                'template'      => '{confirm} {view} {update}',
-                'buttons' => [
-                    'confirm' => function ($url, $model, $key) {
-        if (Yii::$app->user->identity->username == 'admin') {
-            return Html::a('<i class="fa fa-reload"></i> 审批', Url::to(['confirm', 'id' => $model->id]), [
-                'data-pjax' => '0',
-                'class'     => 'btn btn-success btn-flat btn-xs',
-            ]);
-        }
-
+            'columns' => [
+                [
+                    'class' => CheckboxColumn::className(),
+                ],
+                'id',
+                'name',
+                'short_name',
+                'full_name',
+                'contacts',
+                'mobile',
+                'telephone',
+                'email',
+                [
+                    'attribute' => 'grade',
+                    'format' => 'raw',
+                    'contentOptions' => ['style' => 'min-width: 80px;'],
+                    'filter' => Supplier::$grade,
+                    'value' => function ($model, $key, $index, $column) {
+                        return $model->grade ? Supplier::$grade[$model->grade] : '';
                     }
                 ],
+                'grade_reason',
+                'advantage_product',
+                [
+                    'attribute' => 'admin_id',
+                    'label' => '申请人',
+                    'filter' => in_array($userId, $adminIds) ? Helper::getAdminList(['询价员', '采购员']) : Helper::getAdminList(['系统管理员', '询价员', '采购员']),
+                    'value' => function ($model, $key, $index, $column) {
+                        if ($model->admin) {
+                            return $model->admin->username;
+                        } else {
+                            return '';
+                        }
+                    }
+                ],
+                [
+                    'attribute' => 'is_confirm',
+                    'format' => 'raw',
+                    'contentOptions' => ['style' => 'min-width: 100px;'],
+                    'filter' => Supplier::$confirm,
+                    'value' => function ($model, $key, $index, $column) {
+                        $confirm = Supplier::$confirm[$model->is_confirm];
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $confirm .= "(等待修改审核)";
+                        }
+                        return $confirm;
+                    }
+                ],
+                [
+                    'attribute' => 'created_at',
+                    'format' => 'raw',
+                    'label' => '申请时间',
+                    'filter' => DateRangePicker::widget([
+                        'name' => 'SupplierSearch[created_at]',
+                        'value' => Yii::$app->request->get('SupplierSearch')['created_at'],
+                    ]),
+                    'value' => function ($model) {
+                        return substr($model->created_at, 0, 10);
+                    }
+                ],
+                [
+                    'attribute' => 'agree_at',
+                    'format' => 'raw',
+                    'label' => '入库时间',
+                    'filter' => DateRangePicker::widget([
+                        'name' => 'SupplierSearch[agree_at]',
+                        'value' => Yii::$app->request->get('SupplierSearch')['agree_at'],
+                    ]),
+                    'value' => function ($model) {
+                        return substr($model->agree_at, 0, 10);
+                    }
+                ],
+                [
+                    'class' => ActionColumn::className(),
+//                'visible'       => !in_array($userId, $adminIds),
+                    'contentOptions' => ['style' => 'min-width: 200px;'],
+                    'header' => '操作',
+                    'template' => '{confirm} {view} {update}',
+                    'buttons' => [
+                        'confirm' => function ($url, $model, $key) {
+                            if (Yii::$app->user->identity->username == 'admin') {
+                                if ($model->is_confirm == 0) {
+                                    return Html::a('<i class="fa fa-reload"></i> 创建审批', Url::to(['confirm', 'id' => $model->id]), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-success btn-flat btn-xs',
+                                    ]);
+                                } elseif ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                                    return Html::a('<i class="fa fa-reload"></i> 修改审核', Url::to(['update-confirm', 'id' => $model->id]), [
+                                        'data-pjax' => '0',
+                                        'class' => 'btn btn-success btn-flat btn-xs',
+                                    ]);
+                                }
+                            }
+
+                        }
+                    ],
+                ],
             ],
-        ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+        ]); ?>
+        <?php Pjax::end(); ?>
     </div>
 </div>
