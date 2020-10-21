@@ -286,6 +286,7 @@ class GoodsController extends BaseController
                 $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
                 //保存文件
                 move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                $err = [];
                 if (file_exists($saveName)) {
                     //获取excel对象
                     $spreadsheet = IOFactory::load($saveName);
@@ -311,7 +312,9 @@ class GoodsController extends BaseController
 
                             $brand = Brand::find()->where(['name' => trim($value['A'])])->one();
                             if (!$brand) {
-                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
+                                $err[] = $key;
+                                continue;
+//                                return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
                             }
                             if (trim($value['B'])) {
                                 $goods = Goods::find()->where([
@@ -333,6 +336,7 @@ class GoodsController extends BaseController
                             if (!in_array($value['AE'], ['是', '否'])) $value['AE'] = '否';
                             if ($value['AE'] == '否') {
                                 if (isset($goods->locking) && $goods->locking == 1) {
+                                    $err[] = $key;
                                     continue;
                                 }
                                 $goods->locking = 0;
@@ -491,6 +495,8 @@ class GoodsController extends BaseController
                             if ($goods->save()) {
                                 $num++;
                             } else {
+                                $err[] = $key;
+                                continue;
                                 return json_encode(['code' => 500, 'msg' => current($goods->getErrors())], JSON_UNESCAPED_UNICODE);
                             }
                             //建议库存
@@ -508,7 +514,11 @@ class GoodsController extends BaseController
                         }
                     }
                 }
+                $err_num = count($err);
+                $err_json = implode(',', $err);
+                $msg = "{$num}条成功, {$err_num}条失败,失败行号($err_json)";
                 unlink('./' . $saveName);
+                return json_encode(['code' => 200, 'msg' => $msg], JSON_UNESCAPED_UNICODE);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
             }
         }
