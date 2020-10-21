@@ -81,6 +81,7 @@ if (in_array($userId, $adminIds)) {
                 'advantage_product',
                 [
                     'attribute' => 'admin_id',
+                    'visible'   => Yii::$app->user->identity->username == 'admin',
                     'label' => '申请人',
                     'filter' => in_array($userId, $adminIds) ? Helper::getAdminList(['询价员', '采购员']) : Helper::getAdminList(['系统管理员', '询价员', '采购员']),
                     'value' => function ($model, $key, $index, $column) {
