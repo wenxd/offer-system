@@ -77,7 +77,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
     public static function goodsMutex($goods_id, $goods_mutex)
     {
         //查询子级
-        $data = self::find()->select(['goods_id'])->where(['is_deleted' => GoodsRelation::IS_DELETED_YES, 'p_goods_id' => $goods_id])->asArray()->all();
+        $data = self::find()->select(['goods_id'])->where(['is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $goods_id])->asArray()->all();
         if (empty($data)) {
             return false;
         }
