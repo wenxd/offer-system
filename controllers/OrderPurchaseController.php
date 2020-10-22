@@ -317,6 +317,65 @@ class OrderPurchaseController extends BaseController
 
     public function actionDetail($id)
     {
+        if (Yii::$app->request->isPost) {
+            try {
+//                $params = Yii::$app->request->post('goods_info', [['purchase_goods_id' => 342, 'number' => 0], ['purchase_goods_id' => 343, 'number' => 1]]);
+                $params = Yii::$app->request->post('goods_info', []);
+                $purchase_goods_id = [];
+                $numbers = [];
+                foreach ($params as $v) {
+                    $purchase_goods_id[] = $v['purchase_goods_id'];
+                    $numbers[$v['purchase_goods_id']] = $v['number'];
+                }
+                $transaction = Yii::$app->db->beginTransaction();
+                $purchaseQuery = PurchaseGoods::find()->where(['id' => $purchase_goods_id])->all();
+                foreach ($purchaseQuery as $purchase) {
+                    $id = $purchase->id;
+                    if ($numbers[$id] != $purchase->fixed_number) {
+                        //删除已有记录
+                        $where = [
+                            'order_id' => $purchase->order_id,
+                            'order_purchase_id' => $purchase->order_purchase_id,
+                            'goods_id' => $purchase->goods_id, 'source' => AgreementStock::PAYMENT
+                        ];
+                        $count = AgreementStock::find()->where($where)->one();
+                        if ($count) $count->delete();
+                        // 更新采购数据
+                        $purchase->fixed_number = $numbers[$id];
+                        if (!$purchase->save()) {
+                            $transaction->rollBack();
+                            return json_encode(['code' => 501, 'msg' => $purchase->errors], JSON_UNESCAPED_UNICODE);
+                        }
+                        $use_number = $purchase->number - $numbers[$id];
+                        if ($use_number >= 1) {
+                            // 加入使用库存列表
+                            $stock_model = new AgreementStock();
+                            $stock_data = [
+                                'order_id' => $purchase->order_id,
+                                'order_purchase_id' => $purchase->order_purchase_id,
+                                'order_purchase_sn' => $purchase->order_purchase_sn,
+                                'goods_id' => $purchase->goods_id,
+                                'serial' => $purchase->serial,
+                                'price' => $purchase->price,
+                                'tax_price' => $purchase->tax_price,
+                                'use_number' => $use_number,
+                                'all_price' => $purchase->price * $use_number,
+                                'all_tax_price' => $purchase->tax_price * $use_number,
+                                'source' => AgreementStock::PAYMENT,
+                            ];
+                            if (!$stock_model->load(['AgreementStock' => $stock_data]) || !$stock_model->save()) {
+                                return json_encode(['code' => 502, 'msg' => $stock_model->errors], JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }
+                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '保存采购数量并生成使用库存记录成功'], JSON_UNESCAPED_UNICODE);
+
+            } catch (\Exception $e) {
+                return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+            }
+        }
         $request = Yii::$app->request->get();
 
         $orderPurchase = OrderPurchase::findOne($id);

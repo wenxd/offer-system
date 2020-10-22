@@ -370,6 +370,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
     </div>
     <div class="box-footer">
+        <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary purchase_number_save', 'name' => 'submit-button']) ?>
         <?= Html::button('提交支出申请', [
                 'class' => 'btn btn-success payment_save',
                 'name' => 'submit-button']
@@ -385,6 +386,32 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //保存采购数量/使用库存
+        $('.purchase_number_save').click(function (e) {
+            var goods_info = [];
+            $('.select_id').each(function (index, element) {
+                var purchase_goods_id = $(element).parent().parent().find('.purchase_detail').data('purchase_goods_id');
+                var number = $(element).parent().parent().find('.afterNumber input').val();
+                goods_info.push({purchase_goods_id:purchase_goods_id,number:number});
+            });
+
+            console.log(goods_info);
+            $.ajax({
+                type:"post",
+                url:'<?=$_SERVER['REQUEST_URI']?>',
+                data:{goods_info:goods_info},
+                dataType:'JSON',
+                success:function(res){
+                    console.log(res);
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        // window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                    }
+                }
+            });
+        });
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked", $(this).prop("checked"));
