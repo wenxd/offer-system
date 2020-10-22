@@ -61,24 +61,140 @@ if (in_array($userId, $adminIds)) {
                     'class' => CheckboxColumn::className(),
                 ],
                 'id',
-                'name',
-                'short_name',
-                'full_name',
-                'contacts',
-                'mobile',
-                'telephone',
-                'email',
+                [
+                    'attribute' => 'name',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'name';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'short_name',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'short_name';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'full_name',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'full_name';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'contacts',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'contacts';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'mobile',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'mobile';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'telephone',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'telephone';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'email',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'email';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
                 [
                     'attribute' => 'grade',
                     'format' => 'raw',
-                    'contentOptions' => ['style' => 'min-width: 80px;'],
-                    'filter' => Supplier::$grade,
                     'value' => function ($model, $key, $index, $column) {
-                        return $model->grade ? Supplier::$grade[$model->grade] : '';
+                        $key = 'grade';
+                        $name = $model->$key;
+                        $grade = Supplier::$grade[$name];
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) {
+                                $exit_grade = Supplier::$grade[$exit_info[$key]];
+                                return "{$grade}->{$exit_grade}";
+                            }
+                        }
+                        return $grade;
                     }
                 ],
-                'grade_reason',
-                'advantage_product',
+                [
+                    'attribute' => 'grade_reason',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'grade_reason';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
+                [
+                    'attribute' => 'advantage_product',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        $key = 'advantage_product';
+                        $name = $model->$key;
+                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                            $exit_info = json_decode($model->exit_info, true);
+                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                        }
+                        return $name;
+                    }
+                ],
                 [
                     'attribute' => 'admin_id',
                     'visible'   => Yii::$app->user->identity->username == 'admin',
