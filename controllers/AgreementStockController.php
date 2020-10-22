@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\AgreementGoods;
 use app\models\AgreementGoodsData;
 use app\models\OrderAgreement;
+use app\models\PurchaseGoods;
 use Yii;
 use app\models\AgreementStock;
 use app\models\AgreementStockSearch;
@@ -202,6 +203,18 @@ class AgreementStockController extends Controller
                 if (!$count) {
                     OrderAgreement::updateAll(['is_purchase_number' => 0], ['id' => $agreementStock->order_agreement_id]);
                 }
+            }
+        } elseif ($agreementStock->source == AgreementStock::PAYMENT) {
+            // 支出合同
+            $PurchaseGoods = PurchaseGoods::find()
+                ->where(['order_id' => $agreementStock->order_id,
+                    'order_purchase_id' => $agreementStock->order_purchase_id,
+                    'goods_id' => $agreementStock->goods_id])
+                ->one();
+            $PurchaseGoods->fixed_number = $PurchaseGoods->fixed_number + $agreementStock->use_number;
+            if (!$PurchaseGoods->save()) {
+                Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
+                return "<script>history.go(-1);</script>";
             }
         }
         $transaction->commit();
