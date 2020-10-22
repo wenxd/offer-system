@@ -551,11 +551,12 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 use_number = 0;
             }
             var stock_number = parseFloat($(this).parent().parent().find('.stock_number').text());
-            // if (use_number > stock_number) {
-            //     layer.msg('使用库存数量不能比库存大', {time:2000});
-            //     $(this).val(agreement_number);
-            //     return false;
-            // }
+            if (use_number > stock_number) {
+                layer.msg('使用库存数量不能比库存大', {time:2000});
+                $(this).val(agreement_number);
+                $(this).parent().parent().find('.use_stock').text(0);
+                return false;
+            }
 
             $(this).parent().parent().find('.use_stock').text(use_number);
 
