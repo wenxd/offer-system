@@ -371,10 +371,26 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
     </div>
     <div class="box-footer">
         <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary purchase_number_save', 'name' => 'submit-button']) ?>
-        <?= Html::button('提交支出申请', [
-                'class' => 'btn btn-success payment_save',
-                'name' => 'submit-button']
-        ) ?>
+
+        <?php
+        if ($orderPurchase->is_purchase_number == 1) {
+            $count = \app\models\AgreementStock::find()
+                ->where(['order_id' => $orderPurchase->order_id, 'order_purchase_id' => $orderPurchase->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
+                ->count();
+            if (!$count) {
+                // 没有保存采购策略不允许保存采购订单
+                echo Html::button('提交支出申请', [
+                        'class' => 'btn btn-success payment_save',
+                        'name' => 'submit-button']
+                );
+            } else {
+                echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
+            }
+
+        } else {
+            echo "<p class='text-danger'>没有保存采购单采购数量/使用库存</p>";
+        }
+         ?>
     </div>
     <?php if (!$model->is_complete): ?>
 
@@ -395,7 +411,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 goods_info.push({purchase_goods_id:purchase_goods_id,number:number});
             });
 
-            console.log(goods_info);
             $.ajax({
                 type:"post",
                 url:'<?=$_SERVER['REQUEST_URI']?>',

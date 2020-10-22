@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\AgreementGoods;
 use app\models\AgreementGoodsData;
 use app\models\OrderAgreement;
+use app\models\OrderPurchase;
 use app\models\PurchaseGoods;
 use Yii;
 use app\models\AgreementStock;
@@ -215,6 +216,10 @@ class AgreementStockController extends Controller
             if (!$PurchaseGoods->save()) {
                 Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
                 return "<script>history.go(-1);</script>";
+            }
+            // 如所有被驳回，更新成未点击报错使用库存
+            if (!$count) {
+                OrderPurchase::updateAll(['is_purchase_number' => 0], ['id' => $agreementStock->order_purchase_id]);
             }
         }
         $transaction->commit();

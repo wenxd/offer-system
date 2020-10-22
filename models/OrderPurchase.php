@@ -24,6 +24,7 @@ use Yii;
  * @property string $is_agreement
  * @property string $supplier_id
  * @property string $apply_reason
+ * @property string $is_purchase_number
  */
 class OrderPurchase extends \yii\db\ActiveRecord
 {
@@ -100,7 +101,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_final_id', 'order_agreement_id', 'admin_id', 'is_purchase', 'is_stock',
-                'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted', 'is_agreement', 'supplier_id'], 'integer'],
+                'is_advancecharge', 'is_payment', 'is_bill', 'is_deleted', 'is_agreement', 'supplier_id', 'is_purchase_number'], 'integer'],
             [['end_date'], 'required'],
             [['end_date', 'updated_at', 'created_at', 'agreement_date', 'apply_reason', 'payment_ratio'], 'safe'],
             [['purchase_sn', 'financial_remark'], 'string', 'max' => 255],

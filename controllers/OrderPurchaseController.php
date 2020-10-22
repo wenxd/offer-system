@@ -317,9 +317,12 @@ class OrderPurchaseController extends BaseController
 
     public function actionDetail($id)
     {
+        $request = Yii::$app->request->get();
+
+        $orderPurchase = OrderPurchase::findOne($id);
+
         if (Yii::$app->request->isPost) {
             try {
-//                $params = Yii::$app->request->post('goods_info', [['purchase_goods_id' => 342, 'number' => 0], ['purchase_goods_id' => 343, 'number' => 1]]);
                 $params = Yii::$app->request->post('goods_info', []);
                 $purchase_goods_id = [];
                 $numbers = [];
@@ -344,7 +347,7 @@ class OrderPurchaseController extends BaseController
                         $purchase->fixed_number = $numbers[$id];
                         if (!$purchase->save()) {
                             $transaction->rollBack();
-                            return json_encode(['code' => 501, 'msg' => $purchase->errors], JSON_UNESCAPED_UNICODE);
+                            return json_encode(['code' => 501, 'msg' => $purchase->getErrors()], JSON_UNESCAPED_UNICODE);
                         }
                         $use_number = $purchase->number - $numbers[$id];
                         if ($use_number >= 1) {
@@ -364,21 +367,22 @@ class OrderPurchaseController extends BaseController
                                 'source' => AgreementStock::PAYMENT,
                             ];
                             if (!$stock_model->load(['AgreementStock' => $stock_data]) || !$stock_model->save()) {
-                                return json_encode(['code' => 502, 'msg' => $stock_model->errors], JSON_UNESCAPED_UNICODE);
+                                return json_encode(['code' => 502, 'msg' => $stock_model->getErrors()], JSON_UNESCAPED_UNICODE);
                             }
                         }
                     }
                 }
-                $transaction->commit();
-                return json_encode(['code' => 200, 'msg' => '保存采购数量并生成使用库存记录成功'], JSON_UNESCAPED_UNICODE);
+                $orderPurchase->is_purchase_number = 1;
+                if ($orderPurchase->save()) {
+                    $transaction->commit();
+                    return json_encode(['code' => 200, 'msg' => '保存采购数量并生成使用库存记录成功'], JSON_UNESCAPED_UNICODE);
+                }
+                return json_encode(['code' => 503, 'msg' => $orderPurchase->getErrors()], JSON_UNESCAPED_UNICODE);
 
             } catch (\Exception $e) {
                 return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
             }
         }
-        $request = Yii::$app->request->get();
-
-        $orderPurchase = OrderPurchase::findOne($id);
 
         $purchaseQuery = PurchaseGoods::find()->from('purchase_goods pg')->select('pg.*')
             ->leftJoin('goods g', 'pg.goods_id=g.id')
