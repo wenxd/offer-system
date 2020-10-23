@@ -40,7 +40,7 @@ $userId   = Yii::$app->user->identity->id;
 </style>
 <div class="box">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['autocomplete' => 'off']]); ?>
     <?php if (!in_array($userId, $adminIds)):?>
     <div class="box-header">
         <?= Html::a('下载模板', Url::to(['download-excel']), [
