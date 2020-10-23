@@ -162,7 +162,7 @@ class Supplier extends ActiveRecord
 
     public static function getCreateDropDown()
     {
-        $list = self::find()->where(['is_deleted' => static::IS_DELETED_NO])->all();
+        $list = self::find()->where(['is_deleted' => static::IS_DELETED_NO, 'is_confirm' => static::IS_CONFIRM_YES])->all();
 
         $return = [];
         foreach ($list as $row) {

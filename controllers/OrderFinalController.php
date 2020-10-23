@@ -64,13 +64,12 @@ class OrderFinalController extends BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id, $key = 0)
     {
         $orderFinal = $this->findModel($id);
-        $finalGoods = FinalGoods::find()->where([
-            'order_id'       => $orderFinal->order_id,
-            'order_final_id' => $orderFinal->id,
-        ])->orderBy('serial')->all();
+        $where = ['order_id'       => $orderFinal->order_id, 'order_final_id' => $orderFinal->id];
+        FinalGoods::updateAll(['key' => $key], $where);
+        $finalGoods = FinalGoods::find()->where($where)->orderBy('serial')->all();
 
 
         return $this->render('view2', [

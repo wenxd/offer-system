@@ -209,7 +209,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         <?php elseif(isset($_GET['final_goods_id'])):?>
             <div class="box-footer">
-                <?= Html::button('关联采购订单', [
+                <?= Html::button('关联成本订单', [
                         'class' => 'btn btn-success purchase_save_final',
                         'name'  => 'submit-button']
                 )?>
@@ -343,7 +343,8 @@ $this->params['breadcrumbs'][] = $this->title;
             success:function(res){
                 if (res && res.code == 200){
                     layer.msg(res.msg, {time:2000});
-                    location.replace("?r=order-final/create-purchase&id=" + order_final_id);
+                    window.history.back();
+                    // location.replace("?r=order-final/create-purchase&id=" + order_final_id);
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;

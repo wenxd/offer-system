@@ -71,6 +71,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= substr($item->goods->created_at, 0 , 10)?></td>
                         <td class="relevance"><?= $item->inquiry ? '是' : '否'?></td>
                         <td><?= Html::a($item->relevance_id, Url::to(['inquiry/view', 'id' => $item->relevance_id]))?></td>
+                        <td><?= Html::a('<i class="fa fa-paper-plane-o"></i> 关联询价记录',
+                                Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => $item->order_id, 'serial' => $item->serial, 'key' => $item->key, 'final_goods_id' => $item->id]),
+                                ['class' => 'btn btn-primary btn-xs btn-flat']
+                            );?></td>
                     </tr>
                 <?php endforeach;?>
                 <tr style="background-color: #acccb9">
