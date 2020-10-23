@@ -67,7 +67,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'name';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -80,7 +80,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'short_name';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -93,7 +93,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'full_name';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -106,7 +106,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'contacts';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -119,7 +119,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'mobile';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -132,7 +132,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'telephone';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -145,7 +145,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'email';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -159,7 +159,7 @@ if (in_array($userId, $adminIds)) {
                         $key = 'grade';
                         $name = $model->$key;
                         $grade = Supplier::$grade[$name];
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) {
                                 $exit_grade = Supplier::$grade[$exit_info[$key]];
@@ -175,7 +175,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'grade_reason';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -188,7 +188,7 @@ if (in_array($userId, $adminIds)) {
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'advantage_product';
                         $name = $model->$key;
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
                         }
@@ -214,8 +214,8 @@ if (in_array($userId, $adminIds)) {
                     'contentOptions' => ['style' => 'min-width: 100px;'],
                     'filter' => Supplier::$confirm,
                     'value' => function ($model, $key, $index, $column) {
-                        $confirm = Supplier::$confirm[$model->is_confirm];
-                        if ($model->is_confirm == 1 && !empty($model->exit_info)) {
+                        return Supplier::$confirm[$model->is_confirm];
+                        if (!empty($model->exit_info)) {
                             $confirm .= "(等待修改审核)";
                         }
                         return $confirm;
@@ -252,22 +252,22 @@ if (in_array($userId, $adminIds)) {
                     'header' => '操作',
                     'template' => '{confirm} {view} {update}',
                     'buttons' => [
-                        'confirm' => function ($url, $model, $key) {
-                            if (Yii::$app->user->identity->username == 'admin') {
-                                if ($model->is_confirm == 0) {
-                                    return Html::a('<i class="fa fa-reload"></i> 创建审批', Url::to(['confirm', 'id' => $model->id]), [
-                                        'data-pjax' => '0',
-                                        'class' => 'btn btn-success btn-flat btn-xs',
-                                    ]);
-                                } elseif ($model->is_confirm == 1 && !empty($model->exit_info)) {
-                                    return Html::a('<i class="fa fa-reload"></i> 修改审核', Url::to(['update-confirm', 'id' => $model->id]), [
-                                        'data-pjax' => '0',
-                                        'class' => 'btn btn-success btn-flat btn-xs',
-                                    ]);
-                                }
-                            }
-
-                        }
+//                        'confirm' => function ($url, $model, $key) {
+//                            if (Yii::$app->user->identity->username == 'admin') {
+//                                if ($model->is_confirm == 0) {
+//                                    return Html::a('<i class="fa fa-reload"></i> 创建审批', Url::to(['confirm', 'id' => $model->id]), [
+//                                        'data-pjax' => '0',
+//                                        'class' => 'btn btn-success btn-flat btn-xs',
+//                                    ]);
+//                                } elseif (!empty($model->exit_info)) {
+//                                    return Html::a('<i class="fa fa-reload"></i> 修改审核', Url::to(['update-confirm', 'id' => $model->id]), [
+//                                        'data-pjax' => '0',
+//                                        'class' => 'btn btn-success btn-flat btn-xs',
+//                                    ]);
+//                                }
+//                            }
+//
+//                        }
                     ],
                 ],
             ],

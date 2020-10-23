@@ -43,15 +43,15 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php if (!in_array($userId, $adminIds)):?>
             <?= $form->field($model, 'admin_id')->dropDownList(Helper::getAdminListAll()) ?>
-            <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php endif;?>
     </div>
 
     <div class="box-footer">
         <?= Html::submitButton($model->isNewRecord ? '创建' :  '更新', [
-                'class' => $model->isNewRecord? 'btn btn-success' : 'btn btn-primary',
+                'class' => $model->isNewRecord? 'btn btn-success submit_success' : 'btn btn-primary submit_success',
                 'name'  => 'submit-button']
         )?>
         <?php if (!in_array($userId, $adminIds)):?>
@@ -61,6 +61,26 @@ if ($model->isNewRecord) {
         <?php endif;?>
     </div>
 
+
     <?php ActiveForm::end(); ?>
+    <?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
+    <script>
+        var confirm = <?=$model->is_confirm?>;
+        function is_confirm() {
+            if (confirm == 1) {
+                $(".submit_success").show()
+            } else {
+                $(".submit_success").hide();
+            }
+        }
+        $(document).ready(function () {
+            // is_confirm();
+            $('#supplier-is_confirm').change(function (e) {
+                confirm = confirm ? 0 : 1;
+                is_confirm();
+            });
+        });
+
+    </script>
 
 </div>

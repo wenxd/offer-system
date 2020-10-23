@@ -61,13 +61,19 @@ class SupplierController extends BaseController
             // 判断是不是超管
             if (Yii::$app->user->identity->username != 'admin') {
                 $post['Supplier'] = [
-                    'exit_info' => json_encode($post['Supplier'], JSON_UNESCAPED_UNICODE)
+                    'exit_info' => json_encode($post['Supplier'], JSON_UNESCAPED_UNICODE),
+                    'is_confirm' => Supplier::IS_DELETED_NO
                 ];
             }
             if ($model->load($post) && $model->save()) {
                 yii::$app->getSession()->setFlash('success', 'success');
             } else {
                 yii::$app->getSession()->setFlash('error', $model->errors);
+            }
+        }
+        if ($model->exit_info ?? false) {
+            foreach (json_decode($model->exit_info) AS $k => $v) {
+                $model->$k = $v;
             }
         }
         return $this->render('update', ['model' => $model,]);
