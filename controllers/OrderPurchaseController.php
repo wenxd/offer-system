@@ -473,7 +473,6 @@ class OrderPurchaseController extends BaseController
         $data['number'] = 1;
         $data['fixed_number'] = 1;
         $data['serial'] = $goods['id'];
-        $data['order_final_id'] = 0;
         $data['is_purchase'] = 0;
         $data['after'] = 1;
         $data['updated_at'] = date("y-m-d H:i:s");
@@ -493,7 +492,9 @@ class OrderPurchaseController extends BaseController
         //成本单
         if (isset($goods->finallow) && !empty($goods->finallow)) {
             $finallow = $goods->finallow->toArray();
-            $data['order_final_id'] = !empty($finallow['final_sn']) ? $finallow['final_sn'] : 0;
+            if ($finallow['order_final_id'] ?? false) {
+                $data['order_final_id'] = $finallow['order_final_id'];
+            }
             $data['serial'] = !empty($finallow['serial']) ? $finallow['serial'] : $goods['id'];
             $data['is_purchase'] = $finallow['is_purchase'];
             $inquirylow = $goods->finallow->inquirylow->toArray();
