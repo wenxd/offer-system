@@ -55,6 +55,27 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <?= Html::button('选择', [
                     'class' => 'btn btn-success btn-flat select_ack',
                 ]) ?>
+                <?= Html::button('一键走库存', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'exit_stock()']) ?>
+                <script>
+                    function exit_stock() {
+                        $('.agreement_number').each(function (index, element) {
+                            // 合同需求数量
+                            var agreement_number = parseInt($(element).text());
+                            // // 库存数量
+                            var stock_number = parseInt($(this).parent().find('.stock_number').text());
+                            // 库存数量 < 合同需求数量
+                            if (stock_number < agreement_number) {
+                                console.log(agreement_number - stock_number);
+                                $(this).parent().find('.afterNumber').find('.number').val(agreement_number - stock_number);
+                                $(this).parent().find('.use_number').text(stock_number);
+                            } else {
+                                $(this).parent().find('.afterNumber').find('.number').val(0);
+                                $(this).parent().find('.use_number').text(agreement_number);
+                            }
+                        });
+
+                    }
+                </script>
             </div>
             <div class="col-md-2">
                 <?= $form->field($model, 'goods_info')->widget(\kartik\select2\Select2::className(), [
@@ -119,9 +140,9 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>货期(周)</th>
                 <th width="80px;">是否入库</th>
                 <th>税率</th>
-                <th>合同需求数量</th>
+                <th>采购单需求数量</th>
                 <th>使用库存数</th>
-                <th>库存数量</th>
+                <th>临时库存数量</th>
                 <th>审核状态</th>
                 <th>驳回原因</th>
                 <th>生成支出合同</th>
@@ -410,22 +431,26 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 var number = $(element).parent().parent().find('.afterNumber input').val();
                 goods_info.push({purchase_goods_id:purchase_goods_id,number:number});
             });
-
-            $.ajax({
-                type:"post",
-                url:'<?=$_SERVER['REQUEST_URI']?>',
-                data:{goods_info:goods_info},
-                dataType:'JSON',
-                success:function(res){
-                    console.log(res);
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
-                        window.location.reload();
-                    } else {
-                        layer.msg(res.msg, {time:2000});
+            if (goods_info.length) {
+                $.ajax({
+                    type:"post",
+                    url:'<?=$_SERVER['REQUEST_URI']?>',
+                    data:{goods_info:goods_info},
+                    dataType:'JSON',
+                    success:function(res){
+                        console.log(res);
+                        if (res && res.code == 200){
+                            layer.msg(res.msg, {time:2000});
+                            // window.location.reload();
+                        } else {
+                            layer.msg(res.msg, {time:2000});
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                layer.msg('无可勾选数据保存', {time: 2000});
+            }
+
         });
         //全选
         $('.select_all').click(function (e) {
