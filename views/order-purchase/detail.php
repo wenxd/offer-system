@@ -441,7 +441,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         console.log(res);
                         if (res && res.code == 200){
                             layer.msg(res.msg, {time:2000});
-                            // window.location.reload();
+                            window.location.reload();
                         } else {
                             layer.msg(res.msg, {time:2000});
                         }
