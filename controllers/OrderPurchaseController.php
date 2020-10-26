@@ -342,7 +342,13 @@ class OrderPurchaseController extends BaseController
                             'goods_id' => $purchase->goods_id, 'source' => AgreementStock::PAYMENT
                         ];
                         $count = AgreementStock::find()->where($where)->one();
-                        if ($count) $count->delete();
+                        if ($count) {
+                            //如果已经存在并确认则跳过
+                            if ($count->is_confirm == AgreementStock::IS_CONFIRM_YES) {
+                                continue;
+                            }
+                            $count->delete();
+                        }
                         // 更新采购数据
                         $purchase->fixed_number = $numbers[$id];
                         if (!$purchase->save()) {

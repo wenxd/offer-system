@@ -183,8 +183,14 @@ class OrderAgreementController extends Controller
                     'order_id' => $goods->order_id,
                     'order_agreement_id' => $goods->order_agreement_id,
                     'goods_id' => $goods->goods_id, 'source' => AgreementStock::STRATEGY
-                ])->count();
-                if ($count) continue;
+                ])->one();
+                if ($count) {
+                    //如果已经存在并确认则跳过
+                    if ($count->is_confirm == AgreementStock::IS_CONFIRM_YES) {
+                        continue;
+                    }
+                    $count->delete();
+                }
                 $goods->strategy_number = $goods_info[$goods->goods_id];
                 if (!$goods->save()) {
                     $transaction->rollBack();
@@ -387,8 +393,14 @@ class OrderAgreementController extends Controller
                             'order_id' => $goods->order_id,
                             'order_agreement_id' => $goods->order_agreement_id,
                             'goods_id' => $goods->goods_id, 'source' => AgreementStock::PURCHASE
-                        ])->count();
-                        if ($count) continue;
+                        ])->one();
+                        if ($count) {
+                            //如果已经存在并确认则跳过
+                            if ($count->is_confirm == AgreementStock::IS_CONFIRM_YES) {
+                                continue;
+                            }
+                            $count->delete();
+                        }
                         $goods->purchase_number = $goods_info[$goods->goods_id];
                         if (!$goods->save()) {
                             $transaction->rollBack();
