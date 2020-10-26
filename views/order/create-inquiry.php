@@ -280,6 +280,7 @@ if ($model->isNewRecord) {
 <script type="text/javascript">
     var level = <?=$level?>;
     $(document).ready(function () {
+        var level = '<?=$_GET['level'] ?? 1?>';
         init();
         //选择采购员时判断同一个订单是否已经有过同一个人的采购单号
         $('#orderinquiry-admin_id').change(function (e) {
@@ -289,7 +290,7 @@ if ($model->isNewRecord) {
             $.ajax({
                 type: "post",
                 url: "<?=$_SERVER['REQUEST_URI']?>",
-                data: {order_id: order_id, admin_id: admin_id},
+                data: {order_id: order_id, admin_id: admin_id,level: level},
                 dataType: 'JSON',
                 success: function (res) {
                     console.log(res);

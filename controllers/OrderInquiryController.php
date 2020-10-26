@@ -149,11 +149,12 @@ class OrderInquiryController extends BaseController
             if (!$orderInquiry) {
                 $orderInquiry = new OrderInquiry();
             }
-
+            $level = $params['level'] == 2 ? $params['level'] : 1;
             $orderInquiry->inquiry_sn = $params['inquiry_sn'];
             $orderInquiry->order_id = $params['order_id'];
             $orderInquiry->end_date = $params['end_date'];
             $orderInquiry->admin_id = $params['admin_id'];
+            $orderInquiry->level = $level;
 
             $json = $params['goods_info'] ? $params['goods_info'] : [];
 
@@ -172,7 +173,7 @@ class OrderInquiryController extends BaseController
                     $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
                     $row[] = $goods['remark'];
                     $row[] = $goods['belong_to'];
-                    $row[] = $params['level'] == 2 ? $params['level'] : 1;
+                    $row[] = $level;
                     $data[] = $row;
                 }
                 self::insertInquiryGoods($data);

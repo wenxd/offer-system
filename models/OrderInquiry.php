@@ -18,6 +18,7 @@ use Yii;
  * @property string $updated_at 更新时间
  * @property string $created_at 创建时间
  * @property string $final_at
+ * @property string $level
  */
 class OrderInquiry extends \yii\db\ActiveRecord
 {
@@ -42,7 +43,7 @@ class OrderInquiry extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_inquiry', 'admin_id', 'is_deleted'], 'integer'],
+            [['order_id', 'is_inquiry', 'admin_id', 'is_deleted', 'level'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'order_sn', 'final_at'], 'safe'],
             [['inquiry_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
