@@ -58,9 +58,9 @@ $system_tax = SystemConfig::find()->select('value')->where([
                         var goods_info = [];
                         $('.oldNumber').each(function (index, element) {
                             // 合同需求数量
-                            var oldNumber = $(element).text();
+                            var oldNumber = parseInt($(element).text());
                             // 库存数量
-                            var stock_number = $(this).parent().find('.stock_number').text();
+                            var stock_number = parseInt($(this).parent().find('.stock_number').text());
                             // 库存数量 < 合同需求数量
                             if (stock_number < oldNumber) {
                                 $(this).parent().find('.afterNumber').find('.number').val(oldNumber - stock_number);
