@@ -43,7 +43,9 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
+        <?php if (!$model->isNewRecord):?>
+            <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
+        <?php endif;?>
         <?php if (!in_array($userId, $adminIds)):?>
             <?= $form->field($model, 'admin_id')->dropDownList(Helper::getAdminListAll()) ?>
         <?php endif;?>
