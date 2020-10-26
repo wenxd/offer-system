@@ -65,7 +65,6 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                             var stock_number = parseInt($(this).parent().find('.stock_number').text());
                             // 库存数量 < 合同需求数量
                             if (stock_number < agreement_number) {
-                                console.log(agreement_number - stock_number);
                                 $(this).parent().find('.afterNumber').find('.number').val(agreement_number - stock_number);
                                 $(this).parent().find('.use_number').text(stock_number);
                             } else {
@@ -555,6 +554,17 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             if (use_number < 0) {
                 use_number = 0;
             }
+            console.log(parseInt(use_number));
+            // 合同需求数量
+
+            var stock_number = parseInt($(this).parent().parent().find('.stock_number').text());
+            // 如果输入的数量大于库存
+            if (stock_number < parseInt(use_number)) {
+                layer.msg('库存不足', {time: 2000});
+                $(this).val(parseInt(agreement_number));
+                use_number = 0;
+            }
+
             $(this).parent().parent().find('.use_number').text(parseInt(use_number));
             stat();
         });
