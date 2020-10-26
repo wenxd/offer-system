@@ -385,8 +385,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
 
+        <?= $form->field($model, 'payment_sn')->textInput(); ?>
         <?php if (!$model->is_complete): ?>
-            <?= $form->field($model, 'payment_sn')->textInput(); ?>
         <?php endif; ?>
 
     </div>
