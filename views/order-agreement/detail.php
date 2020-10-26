@@ -340,23 +340,25 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
     <div class="box-footer">
         <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary purchase_number_save', 'name' => 'submit-button']) ?>
         <?php
-        // 查询是否有未确认使用库存列表
-        $count = \app\models\AgreementStock::find()
-            ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $orderAgreement->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
-            ->count();
-        if (!$count) {
-            // 没有保存采购策略不允许保存采购订单
-            if ($orderAgreement->is_purchase_number) {
-                echo Html::button('保存采购单', [
-                        'class' => 'btn btn-success purchase_save',
-                        'name' => 'submit-button']
-                );
-            } else {
-                echo "<p class='text-danger'>没有保存采购单采购数量/使用库存</p>";
-            }
+        if ($orderAgreement->is_strategy == 1 && $orderAgreement->is_purchase_number == 1) {
+            // 查询是否有未确认使用库存列表
+            $count = \app\models\AgreementStock::find()
+                ->where(['order_id' => $orderAgreement->order_id, 'order_agreement_id' => $orderAgreement->id, 'is_confirm' => \app\models\AgreementStock::IS_CONFIRM_NO])
+                ->count();
+            if (!$count) {
+                // 没有保存采购策略不允许保存采购订单
+                if ($orderAgreement->is_purchase_number) {
+                    echo Html::button('保存采购单', [
+                            'class' => 'btn btn-success purchase_save',
+                            'name' => 'submit-button']
+                    );
+                } else {
+                    echo "<p class='text-danger'>没有保存采购单采购数量/使用库存</p>";
+                }
 
-        } else {
-            echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
+            } else {
+                echo "<p class='text-danger'>使用库存未确认 * {$count}</p>";
+            }
         }
         ?>
     </div>
