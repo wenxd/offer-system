@@ -356,8 +356,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             ],
         ])->label('供应商') ?>
 
+        <?= $form->field($model, 'payment_ratio')->textInput(['placeholder' => '例如0.3 就是百分之30 不用加%']); ?>
         <?php if (!$model->is_complete): ?>
-            <?= $form->field($model, 'payment_ratio')->textInput(['placeholder' => '例如0.3 就是百分之30 不用加%']); ?>
         <?php endif; ?>
 
         <?= $form->field($model, 'agreement_date')->widget(DateTimePicker::className(), [
@@ -730,6 +730,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         admin_id: admin_id,
                         end_date: end_date,
                         payment_sn: payment_sn,
+                        is_contract: is_contract,
                         goods_info: goods_info,
                         long_delivery_time: long_delivery_time,
                         supplier_id: supplier_id,
