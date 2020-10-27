@@ -43,6 +43,10 @@ class AgreementStock extends \yii\db\ActiveRecord
         self::IS_CONFIRM_YES => '是',
         self::IS_CONFIRM_REJECT => '驳回'
     ];
+    public static $stock = [
+        self::IS_CONFIRM_NO  => '否',
+        self::IS_CONFIRM_YES => '是',
+    ];
 
     // 来源source
     const STRATEGY = 'strategy';

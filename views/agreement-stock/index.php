@@ -131,9 +131,9 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute' => 'is_stock',
                 'format'    => 'raw',
-                'filter'    => AgreementStock::$confirm,
+                'filter'    => AgreementStock::$stock,
                 'value'     => function ($model, $key, $index, $column) {
-                    return AgreementStock::$confirm[$model->is_stock];
+                    return AgreementStock::$stock[$model->is_stock];
                 }
             ],
             [
