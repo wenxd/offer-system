@@ -207,7 +207,8 @@ class OrderPurchaseController extends BaseController
                                 $purchaseGoods->goods_id = $agreementGoods->goods_id;
                                 $purchaseGoods->type = $agreementGoods->type;
                                 $purchaseGoods->relevance_id = $agreementGoods->relevance_id;
-                                $purchaseGoods->number = $agreementGoods->order_number;
+//                                $purchaseGoods->number = $agreementGoods->order_number;
+                                $purchaseGoods->number = $item['number'];
                                 $purchaseGoods->tax_rate = $agreementGoods->tax_rate;
                                 $purchaseGoods->price = $agreementGoods->price;
                                 $purchaseGoods->tax_price = $agreementGoods->tax_price;

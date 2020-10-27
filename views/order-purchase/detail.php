@@ -142,6 +142,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>采购单需求数量</th>
                 <th>使用库存数</th>
                 <th>临时库存数量</th>
+                <th>库存数量</th>
                 <th>审核状态</th>
                 <th>驳回原因</th>
                 <th>生成支出合同</th>
@@ -199,6 +200,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             </thead>
             <tbody>
@@ -245,10 +247,12 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="agreement_number"><?= $item->number ?></td>
                     <td class="use_number"><?= ($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0 ?></td>
                     <td class="stock_number"><?php
-                        $stock = $item->stock ? $item->stock->number : 0;
-                        $use_number = $item->orderstock->use_number ?? 0;
-                        echo $stock - $use_number;
+//                        $stock = $item->stock ? $item->stock->number : 0;
+//                        $use_number = $item->orderstock->use_number ?? 0;
+//                        echo $stock - $use_number;
+                        echo $item->stock ? $item->stock->temp_number : 0;
                         ?></td>
+                    <td><?= $item->stock ? $item->stock->number : 0; ?></td>
                     <td><?php
                         if ($item->apply_status == 0) {
                             $status = '无';

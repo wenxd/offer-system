@@ -285,11 +285,13 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td class="use_stock"></td>
                     <td class="stock_number">
                         <?php
-                        $stock = $item->stock ? $item->stock->number : 0;
-                        $use_number = $item->orderstock->use_number ?? 0;
-                        echo $stock - $use_number;
+//                        $stock = $item->stock ? $item->stock->number : 0;
+//                        $use_number = $item->orderstock->use_number ?? 0;
+//                        echo $stock - $use_number;
+                        echo $item->stock ? $item->stock->temp_number : 0;
                         ?>
                     </td>
+                    <td><?= $item->stock ? $item->stock->number : 0;?></td>
                     <td><?= $item->stock ? $item->stock->suggest_number : 0 ?></td>
                     <td><?= $item->stock ? $item->stock->high_number : 0 ?></td>
                     <td><?= $item->stock ? $item->stock->low_number : 0 ?></td>
