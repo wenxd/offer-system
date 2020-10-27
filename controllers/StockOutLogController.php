@@ -169,6 +169,7 @@ class StockOutLogController extends Controller
         $stockLog->plat_name    = $params['plat_name'] ? $params['plat_name'] : '';
         if ($stockLog->save()) {
             $stock->number -= $params['number'];
+            $stock->temp_number -= $params['number'];
             $stock->save();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
