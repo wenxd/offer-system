@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\AgreementGoodsData;
+use app\models\AgreementStock;
 use app\models\GoodsRelation;
 use Yii;
 use app\models\Stock;
@@ -136,10 +137,14 @@ class StockOutController extends BaseController
                 $stock->number = $agreementGoods->order_number;
                 $stock->save();
             }
-            $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
+            // 减库存和临时库存
+            $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number, 'temp_number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
             if ($res) {
                 $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
                 $agreementGoods->save();
+
+                // 如果有使用库存记录则更新成已出库
+                AgreementStock::updateAll(['is_stock' => 1], ['order_id' => $agreementGoods->order_id, 'goods_id' => $agreementGoods->goods_id]);
 
                 //判断所有收入合同的零件都已近出库
                 $isHasAgreementGoods = AgreementGoods::find()->where([
@@ -225,10 +230,14 @@ class StockOutController extends BaseController
                     $stock->number = $agreementGood->order_number;
                     $stock->save();
                 }
-                $res = Stock::updateAllCounters(['number' => -$agreementGood->order_number], ['good_id' => $agreementGood->goods_id]);
+                // 减库存和临时库存
+                $res = Stock::updateAllCounters(['number' => -$agreementGood->order_number, 'temp_number' => -$agreementGoods->order_number], ['good_id' => $agreementGood->goods_id]);
+                // 判断是不是
                 if ($res) {
                     $agreementGood->is_out = AgreementGoods::IS_OUT_YES;
                     $agreementGood->save();
+                    // 如果有使用库存记录则更新成已出库
+                    AgreementStock::updateAll(['is_stock' => 1], ['order_id' => $agreementGood->order_id, 'goods_id' => $agreementGood->goods_id]);
                 }
             }
         }
