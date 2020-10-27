@@ -270,6 +270,8 @@ class OrderInquiryController extends BaseController
         $info->admin_id = Yii::$app->user->identity->id;
         $info->inquiry_at = date('Y-m-d H:i:s');
         if ($info->save()) {
+            // 确认询价完成以后更新澄清列表
+            InquiryGoodsClarify::updateAll(['is_inquiry' => 1], ['order_id' => $info->order_id, 'goods_id' => $info->goods_id]);
             //询价员询不出价的，超管确认询价，给询价员发确认询价的通知
             if ($super_user_id == Yii::$app->user->identity->id && $info->is_result) {
                 $stockAdmin = AuthAssignment::find()->where(['item_name' => '询价员', 'user_id' => $orderInquiry->admin_id])->one();
@@ -387,6 +389,8 @@ class OrderInquiryController extends BaseController
             'order_id' => $info->order_id,
             'is_inquiry' => OrderInquiry::IS_INQUIRY_NO
         ])->one();
+        // 确认询价完成以后更新澄清列表
+        InquiryGoodsClarify::updateAll(['is_inquiry' => 1], ['order_id' => $info->order_id]);
         if (!$orderInquiryNoInquiry) {
             $order = Order::findOne($info->order_id);
             $order->status = Order::STATUS_YES;
