@@ -145,7 +145,9 @@ class StockOutController extends BaseController
 
                 // 计算本订单临时占用库存数量，并添加到临时库存数量
                 $where = ['order_id' => $agreementGoods->order_id, 'goods_id' => $agreementGoods->goods_id];
-                $AgreementStock = AgreementStock::find()->select('SUM(use_number) as use_number')->where($where)->asArray()->one();
+                $AgreementStock = AgreementStock::find()->select('SUM(use_number) as use_number')
+                    ->andWhere(['is_confirm' => AgreementStock::IS_CONFIRM_YES])
+                    ->where($where)->asArray()->one();
                 if ($AgreementStock['use_number'] ?? false) {
                     Stock::updateAllCounters(['temp_number' => $AgreementStock['use_number']], ['good_id' => $agreementGoods->goods_id]);
                     // 如果有使用库存记录则更新成已出库
