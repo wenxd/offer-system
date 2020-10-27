@@ -130,7 +130,7 @@ class StockInController extends BaseController
                     //进行对收入合同的入库字段更改
                     //TODO $orderAgreement = OrderAgreement::findOne();
                 }
-                $res = Stock::updateAllCounters(['number' => $params['number']], ['good_id' => $params['goods_id']]);
+                $res = Stock::updateAllCounters(['number' => $params['number'], 'temp_number' => $params['number']], ['good_id' => $params['goods_id']]);
 
                 //对采购商品进行入库改变
                 $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
@@ -215,7 +215,7 @@ class StockInController extends BaseController
                             $stock->save();
                         }
                     }
-                    $res = Stock::updateAllCounters(['number' => $paymentGoods['fixed_number']], ['good_id' => $paymentGoods['goods_id']]);
+                    $res = Stock::updateAllCounters(['number' => $paymentGoods['fixed_number'], 'temp_number' => $paymentGoods['fixed_number']], ['good_id' => $paymentGoods['goods_id']]);
                     //对采购商品进行入库改变
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods['purchase_goods_id']);
                     $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
