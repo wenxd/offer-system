@@ -75,8 +75,24 @@ $userId   = Yii::$app->user->identity->id;
             ],
             'use_number',
             [
+                'attribute' => '临时库存数量',
+                'value'     => function ($model, $key, $index, $column) {
+                    if ($model->is_confirm) {
+                        return $model->temp_number;
+                    }
+                    if ($model->stock) {
+                        return $model->stock->temp_number;
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            [
                 'attribute' => '库存数量',
                 'value'     => function ($model, $key, $index, $column) {
+                    if ($model->is_confirm) {
+                        return $model->stock_number;
+                    }
                     if ($model->stock) {
                         return $model->stock->number;
                     } else {
@@ -112,6 +128,14 @@ $userId   = Yii::$app->user->identity->id;
             ],
             'order_purchase_sn',
             'order_payment_sn',
+            [
+                'attribute' => 'is_stock',
+                'format'    => 'raw',
+                'filter'    => AgreementStock::$confirm,
+                'value'     => function ($model, $key, $index, $column) {
+                    return AgreementStock::$confirm[$model->is_stock];
+                }
+            ],
             [
                 'attribute' => 'is_confirm',
                 'format'    => 'raw',
@@ -174,10 +198,12 @@ $userId   = Yii::$app->user->identity->id;
                 'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds) {
                     $html = '';
                     if (!$model->is_confirm) {
-                        $html .= Html::a('<i class="fa fa-heart"></i> 确认', Url::to(['confirm', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-success btn-xs btn-flat',
-                        ]);
+                        if ($model->stock && $model->stock->temp_number >= $model->use_number) {
+                            $html .= Html::a('<i class="fa fa-heart"></i> 确认', Url::to(['confirm', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-success btn-xs btn-flat',
+                            ]);
+                        }
                         if (in_array($model->source, ['strategy', 'purchase', 'payment'])) {
                             $html .= Html::a('<i class="fa fa-times"></i> 驳回', Url::to(['reject', 'id' => $model['id']]), [
                                 'data-pjax' => '0',

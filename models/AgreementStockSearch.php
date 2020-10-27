@@ -23,7 +23,7 @@ class AgreementStockSearch extends AgreementStock
     {
         return [
             [['id', 'order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number',
-                'is_confirm'], 'integer'],
+                'is_confirm', 'is_stock'], 'integer'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'order_sn', 'description', 'goods_number',
                 'admin_id', 'confirm_at', 'source'], 'safe'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],

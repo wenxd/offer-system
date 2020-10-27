@@ -133,12 +133,24 @@ class AgreementStockController extends Controller
     public function actionConfirm($id)
     {
         $agreementStock = AgreementStock::findOne($id);
+        $stock = $agreementStock->stock;
+
+        // 减去临时库存
+        $temp_number = $stock->temp_number - $agreementStock->use_number;
+        $agreementStock->temp_number = $temp_number;
+        $agreementStock->stock_number = $stock->number;
+        $stock->temp_number = $temp_number;
+        if (!$stock->save()) {
+            Yii::$app->getSession()->setFlash('error', $stock->getErrors());
+            return "<script>history.go(-1);</script>";
+        }
         $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_YES;
         $agreementStock->confirm_at = date('Y-m-d H:i:s');
         $agreementStock->admin_id   = Yii::$app->user->identity->id;
-        $agreementStock->save();
-
-        return $this->redirect(['index']);
+        if (!$agreementStock->save()) {
+            Yii::$app->getSession()->setFlash('error', $agreementStock->getErrors());
+        }
+        return "<script>history.go(-1);</script>";
     }
 
     /**

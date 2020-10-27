@@ -28,6 +28,9 @@ use yii\db\ActiveRecord;
  * @property string $is_confirm
  * @property string $confirm_at
  * @property string $admin_id
+ * @property string $is_stock
+ * @property string $temp_number
+ * @property string $stock_number
  */
 class AgreementStock extends \yii\db\ActiveRecord
 {
@@ -84,7 +87,7 @@ class AgreementStock extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'order_agreement_id', 'order_purchase_id', 'order_payment_id', 'goods_id', 'use_number',
-                'is_confirm'], 'integer'],
+                'is_confirm', 'is_stock', 'stock_number'], 'integer'],
             [['price', 'tax_price', 'all_price', 'all_tax_price'], 'number'],
             [['confirm_at', 'admin_id'], 'safe'],
             [['order_agreement_sn', 'order_purchase_sn', 'order_payment_sn', 'source'], 'string', 'max' => 255],
@@ -116,6 +119,7 @@ class AgreementStock extends \yii\db\ActiveRecord
             'is_confirm'            => '是否确认',
             'admin_id'              => '操作人',
             'source'              => '来源',
+            'is_stock'              => '是否出库',
         ];
     }
 
