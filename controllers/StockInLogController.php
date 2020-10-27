@@ -175,6 +175,7 @@ class StockInLogController extends Controller
                 $stock->tax_rate        = $tax;
                 $stock->tax_price       = $stock->price * (1 + $tax / 100);
                 $stock->number          = $params['number'];
+                $stock->temp_number     = $params['number'];
                 $stock->position        = $params['position'];
                 $stock->suggest_number  = 0;
                 $stock->high_number     = 0 * $highRatio;
@@ -185,6 +186,7 @@ class StockInLogController extends Controller
                     $stock->position = $params['position'];
                 }
                 $stock->number   += $params['number'];
+                $stock->temp_number   += $params['number'];
                 $stock->save();
             }
             return json_encode(['code' => 200, 'msg' => '保存成功']);

@@ -204,6 +204,7 @@ if ($isShow) {
                     }
                 }
             ],
+            'temp_number',
             'suggest_number',
             'high_number',
             'low_number',

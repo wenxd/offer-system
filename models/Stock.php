@@ -25,6 +25,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $suggest_number
  * @property string $high_number
  * @property string $low_number
+ * @property string $temp_number
  */
 class Stock extends ActiveRecord
 {
@@ -79,7 +80,7 @@ class Stock extends ActiveRecord
     public function rules()
     {
         return [
-            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero'], 'integer'],
+            [['good_id', 'supplier_id', 'number', 'sort', 'is_deleted', 'is_emerg', 'is_zero', 'temp_number'], 'integer'],
             [['price', 'tax_rate', 'tax_price'], 'number'],
             [['updated_at', 'created_at'], 'safe'],
             [['position', 'description', 'description_en'], 'string', 'max' => 255],
@@ -121,6 +122,7 @@ class Stock extends ActiveRecord
             'is_deleted'       => '是否删除：0未删除 1已删除',
             'updated_at'       => '更新时间',
             'created_at'       => '创建时间',
+            'temp_number'       => '临时库存数量',
         ];
     }
 
