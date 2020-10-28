@@ -268,9 +268,11 @@ class OrderController extends BaseController
                     $goods['info'] = '';
                     $goods['sum'] = $goods['number'];
                     $goods['id'] = $goods['goods_id'];
+                    $goods['top_goods_number'] = $goods['goods_number'];
                     $data = GoodsRelation::getGoodsSon($goods);
                     if ($data) {
                         foreach ($data as $k => $item) {
+                            $item['info'] = [$goods['goods_number'] => $item['sum']];
                             if (isset($OrderGoodsBak[$item['id']])) {
                                 $OrderGoodsBak[$item['id']]['number'] += $item['sum'];
                                 foreach ($item['info'] as $info_k => $info_v) {

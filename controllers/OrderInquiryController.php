@@ -260,7 +260,7 @@ class OrderInquiryController extends BaseController
         $super_user_id = $use_admin->user_id;
 
         $info = InquiryGoods::findOne($id);
-        $level = $info->level ? $info->level : 1;
+        $level = $info->level ?? 1;
         //询价单
         $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
 
@@ -300,6 +300,11 @@ class OrderInquiryController extends BaseController
                 $order->save();
                 //如果是多个零件组成
                 if ($level == 2) {
+                    // 查询是不是已经生成顶级询价
+                    if (InquiryGoods::find()->where(['order_id' => $info->order_id, 'level' => 1])->count()) {
+                        return json_encode(['code' => 200, 'msg' => '确认成功']);
+                    }
+
                     // 获取询价单号
 //                    $inquiry_sn = OrderInquiry::getInquirySn();
                     // 添加询价单
@@ -329,6 +334,7 @@ class OrderInquiryController extends BaseController
                         $inquiry_goods['tax_rate'] = $tax['value'];
                         $inquiry_goods['supplier_id'] = $supplier['id'];
                         $inquiry_goods['number'] = $goods->number;
+                        $inquiry_goods['level'] = 1;
                         $res = Inquiry::createTop($inquiry_goods, $inquiry_goods);
                         if ($res) {
                             $inquiry_goods_model->isNewRecord = true;

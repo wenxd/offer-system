@@ -106,13 +106,10 @@ class GoodsRelation extends \yii\db\ActiveRecord
             ->asArray()->all();
         foreach ($data as $item) {
             $item['sum'] = $item['number'] * $goods['sum'];
-            $item['info'][$goods['goods_number']] = $item['sum'];
             if ($item['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
                 $info = GoodsRelation::getGoodsSon($item, $info);
             } else {
                 if (isset($info[$item['id']])) {
-                    $item['info'] = $info[$item['id']]['info'];
-                    $item['info'][$goods['goods_number']] = $item['sum'];
                     $item['sum'] += $info[$item['id']]['sum'];
                 }
                 $info[$item['id']] = $item;
