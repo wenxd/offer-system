@@ -159,7 +159,7 @@ class OrderPurchaseVerifyController extends BaseController
                         $agreementStock->all_price = $agreementStock->price * $use_stock_number;
                         $agreementStock->all_tax_price = $agreementStock->tax_price * $use_stock_number;
                         $agreementStock->is_confirm = AgreementStock::IS_CONFIRM_NO;
-                        $agreementStock->save();
+//                        $agreementStock->save();
                     } else {
                         if ($agreementStock) {
                             $agreementStock->delete();
