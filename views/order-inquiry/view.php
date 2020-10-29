@@ -64,15 +64,10 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <?php endif;?>
                 <th>厂家号</th>
                 <th>原厂家</th>
-                <th>原厂家备注</th>
                 <th>技术备注</th>
-                <th>推荐供应商</th>
-                <th>特别说明</th>
                 <th>中文描述</th>
                 <th>英文描述</th>
                 <th>单位</th>
-                <th>铭牌照片</th>
-                <th>加工照片</th>
                 <th>数量</th>
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>主零件</th>
@@ -83,8 +78,13 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 <?php if(!in_array($userId, $adminIds)):?>
                     <th>Ta的询价条目</th>
                 <?php endif;?>
-                <th>澄清问题</th>
-                <th>澄清回复</th>
+                <th width="10%">澄清问题</th>
+                <th width="10%">澄清回复</th>
+                <th>原厂家备注</th>
+                <th>推荐供应商</th>
+                <th>特别说明</th>
+                <th>铭牌照片</th>
+                <th>加工照片</th>
                 <th width="300px">操作</th>
             </tr>
             </thead>
@@ -101,15 +101,10 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <?php endif;?>
                             <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                             <td><?=$item->goods->original_company?></td>
-                            <td><?=$item->goods->original_company_remark?></td>
                             <td><?=$item->goods->technique_remark?></td>
-                            <td><?=$item->supplier ? $item->supplier->name : ''?></td>
-                            <td><?=$item->remark?></td>
                             <td><?=$item->goods->description?></td>
                             <td><?=$item->goods->description_en?></td>
                             <td><?=$item->goods->unit?></td>
-                            <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
-                            <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                             <td><?=$item->number?></td>
                             <?php if(!in_array($userId, $adminIds)):?>
                                 <td><?php
@@ -162,6 +157,11 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 }
                                 ?>
                             </td>
+                            <td><?=$item->goods->original_company_remark?></td>
+                            <td><?=$item->supplier ? $item->supplier->name : ''?></td>
+                            <td><?=$item->remark?></td>
+                            <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
+                            <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                             <td>
                                 <a class="btn btn-success btn-xs btn-flat adminConfirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                 <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
@@ -190,15 +190,11 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                 <?php endif;?>
                                 <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
                                 <td><?=$item->goods->original_company?></td>
-                                <td><?=$item->goods->original_company_remark?></td>
                                 <td><?=$item->goods->technique_remark?></td>
-                                <td><?=$item->supplier ? $item->supplier->name : ''?></td>
-                                <td><?=$item->remark?></td>
                                 <td><?=$item->goods->description?></td>
                                 <td><?=$item->goods->description_en?></td>
                                 <td><?=$item->goods->unit?></td>
-                                <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
-                                <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
+
                                 <td><?=$item->number?></td>
                                 <?php if(!in_array($userId, $adminIds)):?>
                                     <td><?php
@@ -250,6 +246,11 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                     }
                                     ?>
                                 </td>
+                                <td><?=$item->goods->original_company_remark?></td>
+                                <td><?=$item->supplier ? $item->supplier->name : ''?></td>
+                                <td><?=$item->remark?></td>
+                                <td><a href="<?=$item->goods->nameplate_img_url?>" target="_blank"><?=Html::img($item->goods->nameplate_img_url, ['width' => '100px'])?></a></td>
+                                <td><a href="<?=$item->goods->img_url?>" target="_blank"><?=Html::img($item->goods->img_url, ['width' => '100px'])?></a></td>
                                 <td>
                                     <a class="btn btn-success btn-xs btn-flat confirm" data-id="<?=$item->id?>" href="javascript:void(0);" data-pjax="0"><i class="fa fa-hand-pointer-o"></i> 确认询价完成</a>
                                     <a class="btn btn-primary btn-xs btn-flat" href="?r=inquiry/add&goods_id=<?=$item->goods_id?>&inquiry_goods_id=<?=$item->id?>" target="_blank" data-pjax="0"><i class="fa fa-plus"></i> 添加询价记录</a>
