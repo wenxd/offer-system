@@ -298,7 +298,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     </td>
                     <td><?php
                         if (!in_array($item->apply_status, [1, 2])) {
-                            if ($item->after == 1) {
+                            if ($item->after == 1 && $open) {
                                 echo Html::button('删除', [
                                     'class' => 'btn btn-danger btn-sm',
                                     'onclick' => "del_goods($item->id)"
