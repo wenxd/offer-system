@@ -231,8 +231,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     </td>
                     <td><?= $item->serial ?></td>
                     <td><?= Html::a('关联询价记录', Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'agreement_goods_id' => $item->id, 'order_agreement_id' => $_GET['id']], ['class' => 'btn btn-primary btn-flat'])) ?></td>
-                    <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
-                    <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
+                    <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
+                    <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
                     <td>
                         <?php
                         $text = '';

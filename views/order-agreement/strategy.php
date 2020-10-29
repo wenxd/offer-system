@@ -142,8 +142,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td><?= $item->goods_id ?></td>
                     <td><?= $checkbox ? '是' : "否" ?></td>
                     <td><?= empty($item->belong_to) ? '是' : "否" ?></td>
-                    <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
-                    <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
+                    <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
+                    <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
                     <td><?= $item->goods->description ?></td>
                     <td><?= $item->goods->description_en ?></td>
                     <td><?= $item->goods->original_company ?></td>
