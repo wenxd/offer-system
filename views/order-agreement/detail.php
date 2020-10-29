@@ -155,6 +155,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 <th>单位</th>
                 <th>使用库存数量</th>
                 <th>临时库存数量</th>
+                <th>库存数量</th>
                 <th>建议库存</th>
                 <th>高储</th>
                 <th>低储</th>
