@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
 $this->title = '杂项支出合同管理';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务', '付款财务']])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['收款财务', '付款财务', '系统管理员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
@@ -57,90 +57,7 @@ $userId   = Yii::$app->user->identity->id;
                     }
                 }
             ],
-            [
-                'attribute' => 'is_stock',
-                'label'     => '完成入库',
-                'format'    => 'raw',
-                'filter'    => OrderPayment::$stock,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPayment::$stock[$model->is_stock];
-                }
-            ],
-            [
-                'attribute' => 'is_advancecharge',
-                'label'     => '预付款完成',
-                'format'    => 'raw',
-                'filter'    => OrderPayment::$advanceCharge,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPayment::$advanceCharge[$model->is_advancecharge];
-                }
-            ],
-            [
-                'attribute' => 'is_payment',
-                'label'     => '全单付款完成',
-                'format'    => 'raw',
-                'filter'    => OrderPayment::$payment,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPayment::$payment[$model->is_payment];
-                }
-            ],
-            [
-                'attribute' => 'is_bill',
-                'label'     => '收到发票',
-                'format'    => 'raw',
-                'filter'    => OrderPayment::$bill,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPayment::$bill[$model->is_bill];
-                }
-            ],
-            [
-                'attribute' => 'is_complete',
-                'label'     => '全流程',
-                'format'    => 'raw',
-                'filter'    => OrderPayment::$complete,
-                'value'     => function ($model, $key, $index, $column) {
-                    return OrderPayment::$complete[$model->is_complete];
-                }
-            ],
-            'payment_price',
-            [
-                'attribute' => 'order_sn',
-                'label'     => '订单编号',
-                'format'    => 'raw',
-                'visible'   => !in_array($userId, array_merge($adminIds, $purchaseAdminIds)),
-                'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->order) {
-                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
-                'attribute' => 'order_purchase_sn',
-                'format'    => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
-                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
-                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
-                        return $model->order_purchase_sn;
-                    } else {
-                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
-                    }
-                }
-            ],
-            [
-                'attribute' => 'order_agreement_date',
-                'format'    => 'raw',
-                'label'     => '收入合同交货日期',
-                'value'     => function ($model, $key, $index, $column) {
-                    if ($model->purchase && $model->purchase->agreement) {
-                        return substr($model->purchase->agreement->agreement_date, 0, 10);
-                    } else {
-                        return false;
-                    }
-                }
-            ],
+
             [
                 'attribute'     => 'agreement_at',
                 'contentOptions'=>['style'=>'min-width: 150px;'],
@@ -153,60 +70,42 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute'     => 'delivery_date',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'        => DateRangePicker::widget([
-                    'name'  => 'OrderPaymentSearch[delivery_date]',
-                    'value' => Yii::$app->request->get('OrderPaymentSearch')['delivery_date'],
-                ]),
+                'attribute' => 'is_reim',
+                'filter'    => OrderPayment::$complete,
                 'value'     => function ($model, $key, $index, $column) {
-                    return substr($model->delivery_date, 0, 10);
+                    return OrderPayment::$complete[$model['is_reim']] ?? '否';
                 }
             ],
+
+            'payment_price',
             [
+                'attribute' => 'order_sn',
+                'label'     => '订单编号',
                 'format'    => 'raw',
-                'label'     => '理论货期',
+//                'visible'   => !in_array($userId, array_merge($adminIds, $purchaseAdminIds)),
+                'visible'   => in_array($userId, $adminIds),
+                'filter'    => Html::activeTextInput($searchModel, 'order_sn', ['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
-                    $agreement_at  = substr($model->agreement_at, 0, 10);
-                    $delivery_date = substr($model->delivery_date, 0, 10);
-                    $theory_time = strtotime($delivery_date) - strtotime($agreement_at);
-                    if ($theory_time) {
-                        return $theory_time/3600/24 . '天';
+                    if ($model->order) {
+                        return Html::a($model->order->order_sn, Url::to(['order/detail', 'id' => $model->order_id]));
                     } else {
-                        return 0;
+                        return '';
                     }
                 }
             ],
             [
-                'attribute'     => 'stock_at',
-                'label'         => '合同实际交货日期',
-                'contentOptions'=>['style'=>'min-width: 150px;'],
-                'filter'    => DateRangePicker::widget([
-                    'name'  => 'OrderPaymentSearch[stock_at]',
-                    'value' => Yii::$app->request->get('OrderPaymentSearch')['stock_at'],
-                ]),
-                'value'     => function ($model, $key, $index, $column) {
-                    return substr($model->stock_at, 0, 10);
-                }
-            ],
-            [
+                'attribute' => 'order_purchase_sn',
                 'format'    => 'raw',
-                'label'     => '实际货期',
-                'value'     => function ($model, $key, $index, $column) {
-                    $agreement_at  = substr($model->agreement_at, 0, 10);
-                    if ($model->stock_at) {
-                        $stock_at = substr($model->stock_at, 0, 10);
-                        $reality_time = strtotime($stock_at) - strtotime($agreement_at);
-                        if ($reality_time) {
-                            return $reality_time/3600/24 . '天';
-                        } else {
-                            return 0;
-                        }
+                'visible'   => in_array($userId, $adminIds),
+                'value'     => function ($model, $key, $index, $column) use ($userId, $purchaseAdminIds) {
+                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
+                        return $model->order_purchase_sn;
                     } else {
-                        return 0;
+                        return Html::a($model->order_purchase_sn, Url::to(['order-purchase/detail', 'id' => $model->order_purchase_id]));
                     }
                 }
             ],
+
             [
                 'attribute'  => 'supplier_id',
                 'filter'     => Supplier::getAllDropDown(),
@@ -232,18 +131,6 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
-                'attribute' => 'stock_admin_id',
-                'label'     => '库管员',
-                'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B']),
-                'value'     => function ($model, $key, $index, $column) {
-                    if (isset(Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id])) {
-                        return Helper::getAdminList(['系统管理员', '订单管理员', '库管员', '库管员B'])[$model->stock_admin_id];
-                    } else {
-                        return '';
-                    }
-                }
-            ],
-            [
                 'attribute' => 'financial_admin_id',
                 'label'     => '财务',
                 'filter'    => Helper::getAdminList(['系统管理员', '订单管理员', '收款财务']),
@@ -258,11 +145,14 @@ $userId   = Yii::$app->user->identity->id;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'visible'        => !in_array($userId, $adminIds),
-                'value'          => function ($model, $key, $index, $column) use($userId, $purchaseAdminIds) {
+//                'visible'        => !in_array($userId, $adminIds),
+                'value'          => function ($model, $key, $index, $column) use($userId, $adminIds) {
                     $html = '';
-                    if (in_array($userId, $purchaseAdminIds) && $model->is_complete) {
-                        return $html;
+                    if (in_array($userId, $adminIds) && $model->is_reim == 0) {
+                        $html .= Html::a('<i class="fa fa-eye"></i> 报销', Url::to(['reim', 'id' => $model['id']]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-success btn-xs btn-flat',
+                        ]);
                     }
                     $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['detail', 'id' => $model['id']]), [
                         'data-pjax' => '0',

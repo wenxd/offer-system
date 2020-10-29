@@ -21,10 +21,10 @@ class OrderPaymentSearch extends OrderPayment
     {
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
-                'is_advancecharge', 'is_bill', 'supplier_id', 'stock_admin_id', 'financial_admin_id', 'is_complete', 'is_contract'], 'integer'],
+                'is_advancecharge', 'is_bill', 'supplier_id', 'stock_admin_id', 'financial_admin_id', 'is_complete', 'is_contract', 'is_reim'], 'integer'],
             [['payment_price'], 'number'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
-                'agreement_at', 'delivery_date'], 'safe'],
+                'agreement_at', 'delivery_date', 'reim_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
             [['order_sn'], 'trim'],
@@ -101,6 +101,7 @@ class OrderPaymentSearch extends OrderPayment
             'order_payment.is_advancecharge'    => $this->is_advancecharge,
             'order_payment.is_complete'         => $this->is_complete,
             'order_payment.stock_admin_id'      => $this->stock_admin_id,
+            'is_reim'      => $this->is_reim,
         ]);
 
         if ($this->order_sn) {

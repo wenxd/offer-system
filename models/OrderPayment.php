@@ -41,6 +41,8 @@ use Yii;
  * @property string $financial_admin_id
  * @property string $is_notice
  * @property string $is_contract
+ * @property string $is_reim
+ * @property string $reim_date
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -133,9 +135,9 @@ class OrderPayment extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_purchase_id', 'admin_id', 'purchase_status', 'is_payment', 'is_stock',
                 'is_advancecharge', 'is_bill', 'is_complete', 'is_agreement', 'supplier_id', 'stock_admin_id',
-                'financial_admin_id', 'is_notice', 'is_contract'], 'integer'],
+                'financial_admin_id', 'is_notice', 'is_contract', 'is_reim'], 'integer'],
             [['updated_at', 'created_at', 'payment_at', 'advancecharge_at', 'stock_at', 'bill_at', 'take_time',
-                'payment_ratio', 'payment_price', 'remain_price', 'delivery_date'], 'safe'],
+                'payment_ratio', 'payment_price', 'remain_price', 'delivery_date', 'reim_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
         ];
@@ -178,6 +180,8 @@ class OrderPayment extends \yii\db\ActiveRecord
             'delivery_date'     => '支出合同交货时间',
             'supplier_id'       => '供应商',
             'is_notice'         => '是否发通知',
+            'is_reim'         => '是否报销',
+            'reim_date'         => '报销时间',
         ];
     }
 

@@ -177,4 +177,20 @@ class OrderPaymentController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    /**
+     * 报销操作
+     */
+    public function actionReim($id)
+    {
+        $orderPayment = OrderPayment::findOne($id);
+        $orderPayment->is_reim = 1;
+        $orderPayment->reim_date = date('Y-m-d H:i:s');
+        if (!$orderPayment->save()) {
+            Yii::$app->getSession()->setFlash('error', $orderPayment->getErrors());
+        } else {
+            Yii::$app->getSession()->setFlash('success', '报销成功');
+        }
+        return "<script>history.go(-1);</script>";
+    }
 }
