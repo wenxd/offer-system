@@ -272,9 +272,29 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         if ($item->after == 0 ) {
                             echo '<input type="checkbox" onclick="return false;" checked="checked" />';
                         } else {
-                            echo '<input type="checkbox" checked="checked" />';
+                            echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)"/>';
                         }
                         ?>
+                        <script>
+                            function exit_contract(obj) {
+                                var checked_status = $(obj).prop('checked');
+                                if (checked_status) {
+                                    var checked_msg = '确认生成支出合同？';
+                                    checked_status = false;
+                                } else {
+                                    var checked_msg = '放弃生成支出合同？';
+                                    checked_status = 'checked';
+                                }
+
+                                layer.confirm(checked_msg, {
+                                    btn: ['确认','取消'] //按钮
+                                }, function(){
+                                    layer.msg('确认成功', {icon: 1});
+                                }, function(){
+                                    $(obj).prop('checked', checked_status);
+                                });
+                            }
+                        </script>
                     </td>
                     <td><?php
                         if (!in_array($item->apply_status, [1, 2])) {
