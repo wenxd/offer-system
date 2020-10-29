@@ -20,6 +20,7 @@ $this->title = '澄清记录列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+$admins = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
 $adminIds = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId = Yii::$app->user->identity->id;
@@ -123,6 +124,7 @@ $userId = Yii::$app->user->identity->id;
                 'attribute' => 'admin_id',
                 'label' => '询价员',
                 'filter' => Helper::getAdminList(['系统管理员', '询价员']),
+                'visible' => in_array($userId, $admins),
                 'filterType' => GridView::FILTER_SELECT2,
                 'value' => function ($model, $key, $index, $column) {
                     $adminList = Helper::getAdminList(['系统管理员', '询价员']);
