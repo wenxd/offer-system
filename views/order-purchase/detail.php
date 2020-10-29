@@ -226,7 +226,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <?php if (!in_array($userId, $adminIds)): ?>
                         <td><?= $item->goods->goods_number . ' ' . $item->goods->material_code ?></td>
                     <?php endif; ?>
-                    <td><?= $item->goods->goods_number_b ?><?= Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id])) ?></td>
+                    <td><?= $item->goods->goods_number_b ?><?= Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->goods_id])) ?></td>
                     <td><?= $item->goods->description ?></td>
                     <td><?= $item->goods->original_company ?></td>
                     <td class="supplier_name"><?= $item->inquiry->supplier->name ?></td>

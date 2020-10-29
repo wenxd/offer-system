@@ -132,8 +132,9 @@ class InquiryTempController extends Controller
     public function actionInquiry($id)
     {
         InquiryTemp::deleteAll();
-        $inquiry = InquiryGoods::findOne($id);
-        $goods_id = $inquiry->goods_id;
+//        $inquiry = InquiryGoods::findOne($id);
+//        $goods_id = $inquiry->goods_id;
+        $goods_id = $id;
 
         $keys = ['id', 'good_id', 'supplier_id', 'price', 'tax_price', 'tax_rate', 'all_tax_price', 'all_price',
             'number', 'inquiry_datetime', 'sort', 'is_better', 'is_newest', 'is_priority', 'is_deleted', 'offer_date',
