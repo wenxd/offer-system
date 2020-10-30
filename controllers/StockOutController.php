@@ -239,7 +239,8 @@ class StockOutController extends BaseController
                     $stock->save();
                 }
                 // 减库存和临时库存
-                $res = Stock::updateAllCounters(['number' => -$agreementGood->order_number, 'temp_number' => -$agreementGoods->order_number], ['good_id' => $agreementGood->goods_id]);
+                $number = $agreementGood->order_number;
+                $res = Stock::updateAllCounters(['number' => -$number, 'temp_number' => -$number], ['good_id' => $agreementGood->goods_id]);
                 // 判断是不是
                 if ($res) {
                     $agreementGood->is_out = AgreementGoods::IS_OUT_YES;
