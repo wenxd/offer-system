@@ -402,12 +402,12 @@ class OrderPurchaseVerifyController extends BaseController
         ])->one();
         //采购单是否全部生成支出申请
         $orderPurchase = OrderPurchase::findOne($orderPayment->order_purchase_id);
-
-        if (!$isNotOrderPayment && $orderPurchase->is_complete == OrderPurchase::IS_COMPLETE_YES) {
-            $orderPurchase->is_agreement = OrderPurchase::IS_AGREEMENT_YES;
-            $orderPurchase->save();
+        if ($orderPurchase) {
+            if (!$isNotOrderPayment && $orderPurchase->is_complete == OrderPurchase::IS_COMPLETE_YES) {
+                $orderPurchase->is_agreement = OrderPurchase::IS_AGREEMENT_YES;
+                $orderPurchase->save();
+            }
         }
-
         //获取采购零件列表保存为询价记录
         $paymentGoodsList = PaymentGoods::find()->where(['order_payment_id' => $id])->all();
         $data = [];
