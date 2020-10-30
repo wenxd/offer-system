@@ -10,6 +10,7 @@ use app\models\Goods;
 $goods_number = $agreementGoods->goods->goods_number;
 $this->title = "总成组装";
 $this->params['breadcrumbs'][] = $this->title;
+$number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
 ?>
 <div class="row">
     <div class="col-md-8">
@@ -74,6 +75,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>原厂家</th>
                         <th>单位</th>
                         <th>合同数量</th>
+                        <th>策略采购数量</th>
+                        <th>已总成数量</th>
                         <th>库存数量</th>
                     </tr>
                     </thead>
@@ -89,6 +92,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= $agreementGoods->goods->original_company ?></td>
                         <td><?= $agreementGoods->goods->unit ?></td>
                         <td><?= $agreementGoods->order_number ?></td>
+                        <td><?= $agreementGoods->strategy_number ?></td>
+                        <td><?= $agreementGoods->assemble_number ?></td>
                         <td><?= $agreementGoods->stock ? $agreementGoods->stock->number : 0 ?></td>
                     </tr>
                     </tbody>
@@ -103,8 +108,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tr>
                         <th>总成数量</th>
                         <td>
-                            <input type="number" size="4" class="number" min="0" max="<?= $mix_number ?>"
-                                   style="width: 100px;" value="0">
+                            <input type="number" size="4" class="number" min="0" max="<?= $mix_number ?>" style="width: 100px;display: none" value="0">
+                        <?= $number ?>
                         </td>
                     </tr>
                     <tr>
@@ -138,11 +143,17 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        var number = <?=$number?>;
         var mix_number = <?=$mix_number?>;
         // $(".assembly_save").attr("disabled", true);
         //计算数量
         function count_number() {
-            var number = $('.number').val();
+            if (number < 1) {
+                $(".assembly_save").attr("disabled", true);
+                layer.msg('总成数量 < 1,不允许组装', {time: 1000});
+                return false;
+            }
+            // var number = $('.number').val();
             if (number > mix_number) {
                 layer.msg('不能超过最大可总成数量：' + mix_number, {time: 1000});
                 $(this).val(mix_number);
@@ -171,7 +182,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         //保存
         $('.assembly_save').click(function (e) {
-            var number = $('.number').val();
+            // var number = $('.number').val();
             var goods_position = $('.goods_position').val();
             console.log(goods_position);
             if (!goods_position) {

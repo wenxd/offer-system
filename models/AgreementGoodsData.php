@@ -42,6 +42,7 @@ use Yii;
  * @property int $is_quality 是否质检 0否 1是
  * @property int $purchase_number 采购数量
  * @property int $purchase_is_show 生成采购单的时候合并数据后不显示 1默认显示 0为不显示
+ * @property int $assemble_number
  */
 class AgreementGoodsData extends AgreementGoods
 {
@@ -60,7 +61,7 @@ class AgreementGoodsData extends AgreementGoods
     {
         return [
             [['id'], 'required'],
-            [['id', 'order_id', 'order_agreement_id', 'order_quote_id', 'goods_id', 'type', 'relevance_id', 'number', 'order_number', 'is_agreement', 'is_deleted', 'inquiry_admin_id', 'is_out', 'is_quality', 'purchase_number', 'purchase_is_show'], 'integer'],
+            [['id', 'order_id', 'order_agreement_id', 'order_quote_id', 'goods_id', 'type', 'relevance_id', 'number', 'order_number', 'is_agreement', 'is_deleted', 'inquiry_admin_id', 'is_out', 'is_quality', 'purchase_number', 'purchase_is_show', 'assemble_number'], 'integer'],
             [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'quote_delivery_time', 'delivery_time'], 'number'],
             [['updated_at', 'created_at', 'strategy_number'], 'safe'],
             [['order_agreement_sn', 'order_quote_sn', 'serial', 'agreement_sn', 'purchase_date', 'agreement_date'], 'string', 'max' => 255],

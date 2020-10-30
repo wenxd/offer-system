@@ -400,11 +400,18 @@ class StockOutController extends BaseController
      */
     public function actionAssemble($id = false)
     {
+        //页面部分
+        $agreementGoods = AgreementGoodsData::findOne($id);
         // 子零件出库，顶级零件入库并增加减少库存
         if (Yii::$app->request->isPost) {
             try {
                 $transaction = Yii::$app->db->beginTransaction();
                 $post = Yii::$app->request->post('info', []);
+                // 更新已组装数量
+                $agreementGoods->assemble_number = $post['number'];
+                if (!$agreementGoods->save()) {
+                    return json_encode(['code' => 502, 'msg' => $agreementGoods->getErrors()]);
+                }
                 // 子零件出库 && 减库存
                 $stockLog = new StockLog();
                 foreach ($post['son_info'] as $son) {
@@ -475,8 +482,7 @@ class StockOutController extends BaseController
                 return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
             }
         }
-        //页面部分
-        $agreementGoods = AgreementGoodsData::findOne($id);
+
 
         // 获取最低级子零件
         $goods_son = GoodsRelation::getGoodsSonNumber(['goods_id' => $agreementGoods->goods_id, 'number' => 1]);
