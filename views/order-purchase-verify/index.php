@@ -80,14 +80,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'btn btn-info btn-xs btn-flat',
                         ]);
                     }
-                    if (in_array($userId, $adminIds)) {
-                        if ($model->purchase_status == 1 && !$model->is_agreement) {
-                            $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
-                                'data-pjax' => '0',
-                                'class' => 'btn btn-primary btn-xs btn-flat',
-                            ]);
-                        }
-                    } else {
+//                    if (in_array($userId, $adminIds)) {
+//                        if ($model->purchase_status == 1 && !$model->is_agreement) {
+//                            $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
+//                                'data-pjax' => '0',
+//                                'class' => 'btn btn-primary btn-xs btn-flat',
+//                            ]);
+//                        }
+//                    } else {
                         if (!$model->is_verify) {
                             if (!$model->order->order_type) {
                                 $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             }
                         }
-                    }
+//                    }
 
                     return $html;
                 }
