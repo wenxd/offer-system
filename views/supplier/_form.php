@@ -12,6 +12,7 @@ use app\models\{Supplier, AuthAssignment, Helper};
 $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $admins = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$admins_id  = ArrayHelper::getColumn($admins, 'user_id');
 $userId = Yii::$app->user->identity->id;
 
 if ($model->isNewRecord) {
@@ -44,7 +45,7 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
-        <?php if (!$model->isNewRecord && !in_array($userId, $admins)):?>
+        <?php if (!$model->isNewRecord && !in_array($userId, $admins_id)):?>
             <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php endif;?>
         <?php if (!in_array($userId, $adminIds)):?>
