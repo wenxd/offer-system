@@ -576,22 +576,30 @@ class OrderInquiryController extends BaseController
                     $num = 0;
                     $supplierList = Supplier::find()->select('id, name')
                         ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->asArray()->all();
-
+                    $msg = [];
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (!$value['A']) {
+                                $msg[] = '第' . $key . '行ID不能为空';
+                                continue;
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行ID不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['B']) {
+                                $msg[] = '第' . $key . '行询价单号不能为空';
+                                continue;
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价单号不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['D']) {
+                                $msg[] = '第' . $key . '行厂家号不能为空';
+                                continue;
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行厂家号不能为空'], JSON_UNESCAPED_UNICODE);
                             }
                             if (!$value['H']) {
+                                $msg[] = '第' . $key . '行询价数量不能为空';
+                                continue;
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行询价数量不能为空'], JSON_UNESCAPED_UNICODE);
                             }
@@ -604,60 +612,59 @@ class OrderInquiryController extends BaseController
 //                                return json_encode(['code' => 500, 'msg' => '第' . $key . '行货期(周)不能为空'], JSON_UNESCAPED_UNICODE);
 //                            }
                             if (!$value['L']) {
+                                $msg[] = '第' . $key . '行税率不能为空';
+                                continue;
                                 unlink('./' . $saveName);
                                 return json_encode(['code' => 500, 'msg' => '第' . $key . '行税率不能为空'], JSON_UNESCAPED_UNICODE);
                             }
-                        }
-                    }
+                            if ($key == 2) {
+                                $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
+                            }
+                            if ($key > 1 && trim($value['J']) && trim($value['K'])) {
+                                $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
+                                $goods = Goods::findOne($inquiryGoods->goods_id);
+                                if ($goods) {
+                                    if (isset($supplierList[trim($value['M'])])) {
+                                        $is_inquiry = Inquiry::find()->where([
+                                            'admin_id' => Yii::$app->user->identity->id,
+                                            'order_inquiry_id' => $orderInquiry->id,
+                                            'good_id' => $goods->id,
+                                            'tax_rate' => trim($value['L']),
+                                            'supplier_id' => $supplierList[trim($value['M'])]['id'],
+                                        ])->one();
+                                        if ($is_inquiry) {
+                                            continue;
+                                        }
+                                        $inquiry = new Inquiry();
+                                        $inquiry->inquiry_goods_id = trim($value['A']);
+                                        $inquiry->order_inquiry_id = $orderInquiry->id;
+                                        $inquiry->technique_remark = trim($value['E']) ? trim($value['E']) : '';
+                                        $inquiry->tax_rate = trim($value['L']);
+                                        $inquiry->price = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
+                                        $inquiry->number = trim($value['H']);
+                                        $inquiry->tax_price = trim($value['J']);
+                                        $inquiry->good_id = $goods->id;
+                                        $inquiry->supplier_id = $supplierList[trim($value['M'])]['id'];
+                                        $inquiry->all_price = $inquiry->price * $inquiry->number;
+                                        $inquiry->all_tax_price = $inquiry->tax_price * $inquiry->number;
+                                        $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
+                                        $inquiry->remark = trim($value['N']);
+                                        $inquiry->delivery_time = trim($value['K']);
+                                        $inquiry->admin_id = Yii::$app->user->identity->id;
+                                        $inquiry->order_id = $orderInquiry->order_id;
+                                        $inquiry->is_upload = Inquiry::IS_UPLOAD_YES;
+                                        if (trim($value['O']) && trim($value['O']) == '是') {
+                                            $inquiry->is_better = Inquiry::IS_BETTER_YES;
+                                        }
+                                        if (trim($value['P'])) {
+                                            $inquiry->better_reason = trim($value['P']);
+                                        }
 
-                    foreach ($sheetData as $key => $value) {
-                        if ($key == 2) {
-                            $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
-                        }
-                        if ($key > 1 && trim($value['J']) && trim($value['K'])) {
-                            $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
-                            $goods = Goods::findOne($inquiryGoods->goods_id);
-                            if ($goods) {
-                                if (isset($supplierList[trim($value['M'])])) {
-                                    $is_inquiry = Inquiry::find()->where([
-                                        'admin_id' => Yii::$app->user->identity->id,
-                                        'order_inquiry_id' => $orderInquiry->id,
-                                        'good_id' => $goods->id,
-                                        'tax_rate' => trim($value['L']),
-                                        'supplier_id' => $supplierList[trim($value['M'])]['id'],
-                                    ])->one();
-                                    if ($is_inquiry) {
-                                        continue;
-                                    }
-                                    $inquiry = new Inquiry();
-                                    $inquiry->inquiry_goods_id = trim($value['A']);
-                                    $inquiry->order_inquiry_id = $orderInquiry->id;
-                                    $inquiry->technique_remark = trim($value['E']) ? trim($value['E']) : '';
-                                    $inquiry->tax_rate = trim($value['L']);
-                                    $inquiry->price = trim($value['J']) / ((100 + $inquiry->tax_rate) / 100);
-                                    $inquiry->number = trim($value['H']);
-                                    $inquiry->tax_price = trim($value['J']);
-                                    $inquiry->good_id = $goods->id;
-                                    $inquiry->supplier_id = $supplierList[trim($value['M'])]['id'];
-                                    $inquiry->all_price = $inquiry->price * $inquiry->number;
-                                    $inquiry->all_tax_price = $inquiry->tax_price * $inquiry->number;
-                                    $inquiry->inquiry_datetime = date('Y-m-d H:i:s');
-                                    $inquiry->remark = trim($value['N']);
-                                    $inquiry->delivery_time = trim($value['K']);
-                                    $inquiry->admin_id = Yii::$app->user->identity->id;
-                                    $inquiry->order_id = $orderInquiry->order_id;
-                                    $inquiry->is_upload = Inquiry::IS_UPLOAD_YES;
-                                    if (trim($value['O']) && trim($value['O']) == '是') {
-                                        $inquiry->is_better = Inquiry::IS_BETTER_YES;
-                                    }
-                                    if (trim($value['P'])) {
-                                        $inquiry->better_reason = trim($value['P']);
-                                    }
-
-                                    if ($inquiry->save()) {
-                                        $num++;
-                                    } else {
-                                        return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
+                                        if ($inquiry->save()) {
+                                            $num++;
+                                        } else {
+                                            return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
+                                        }
                                     }
                                 }
                             }
@@ -665,7 +672,7 @@ class OrderInquiryController extends BaseController
                     }
                 }
                 unlink('./' . $saveName);
-                return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
+                return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条，失败信息:' . implode('; ', $msg)], JSON_UNESCAPED_UNICODE);
             }
         }
     }
