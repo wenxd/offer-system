@@ -452,25 +452,25 @@ class StockOutController extends BaseController
                 // 更新顶级零件库存
                 Stock::updateAllCounters(['number' => $post['number'], 'temp_number' => $post['number']], ['good_id' => $post['goods_id']]);
                 // 添加采购记录
-                $supplie = Supplier::find()->where(['name' => '总成'])->asArray()->one();
-                $item = [
-                    'order_id' => $post['order_id'],
-                    'goods_id' =>$post['goods_id'],
-                    'number' =>$post['number'],
-                    'fixed_number' =>$post['number'],
-                    'type' => 1,
-                    'is_quality' => 1,
-                    'operate_time' => date('Y-m-d H:i:s'),
-                    'inquiry_admin_id' => Yii::$app->user->identity->id,
-                    'position' => $son['position'],
-                    'supplier_id' => $supplie['id'] ?? 0,
-                    'is_payment' => PaymentGoods::IS_PAYMENT_YES,
-                ];
-                $PaymentGoods = new PaymentGoods();
-                if ($PaymentGoods->load(['PaymentGoods' => $item]) && $PaymentGoods->save()) {
-                    $transaction->commit();
-                    return json_encode(['code' => 200, 'msg' => '零件总成成功']);
-                }
+//                $supplie = Supplier::find()->where(['name' => '总成'])->asArray()->one();
+//                $item = [
+//                    'order_id' => $post['order_id'],
+//                    'goods_id' =>$post['goods_id'],
+//                    'number' =>$post['number'],
+//                    'fixed_number' =>$post['number'],
+//                    'type' => 1,
+//                    'is_quality' => 1,
+//                    'operate_time' => date('Y-m-d H:i:s'),
+//                    'inquiry_admin_id' => Yii::$app->user->identity->id,
+//                    'position' => $son['position'],
+//                    'supplier_id' => $supplie['id'] ?? 0,
+//                    'is_payment' => PaymentGoods::IS_PAYMENT_YES,
+//                ];
+//                $PaymentGoods = new PaymentGoods();
+//                if ($PaymentGoods->load(['PaymentGoods' => $item]) && $PaymentGoods->save()) {
+//                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '零件总成成功']);
             } catch (\Exception $e) {
                 return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
             }
