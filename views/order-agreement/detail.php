@@ -305,7 +305,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 <td rowspan="2"></td>
                 <td>货期最短含税总价</td>
                 <td>货期最短最长货期</td>
-                <td colspan="3" rowspan="2"></td>
+                <td colspan="4" rowspan="2"></td>
                 <td>采购含税总价</td>
                 <td>采购最长货期</td>
                 <td></td>
