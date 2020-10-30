@@ -304,6 +304,10 @@ class OrderPurchaseVerifyController extends BaseController
 
         $orderPayment = OrderPayment::findOne($params['order_payment_id']);
         $orderPayment->is_verify = OrderPayment::IS_VERIFY_YES;
+        $is_contract = $params['is_contract'] ?? 1;
+        if ($is_contract == 0) {
+            $orderPayment->is_contract = OrderPayment::IS_VERIFY_NO;
+        }
         $orderPayment->purchase_status = OrderPayment::PURCHASE_STATUS_PASS;
         try {
             $orderPayment->save();
@@ -312,8 +316,10 @@ class OrderPurchaseVerifyController extends BaseController
                 $paymentGoods = PaymentGoods::findOne($paymentGoodsId);
                 if ($paymentGoods) {
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
-                    $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
-                    $purchaseGoods->save();
+                    if ($purchaseGoods) {
+                        $purchaseGoods->apply_status = PurchaseGoods::APPLY_STATUS_PASS;
+                        $purchaseGoods->save();
+                    }
                     //更新采购单与零件ID对应表后添加零件状态
                     PurchaseGoods::updateAll(['after' => 9], ['order_id' => $paymentGoods->order_id, 'goods_id' => $paymentGoods->goods_id, 'after' => 1]);
                 }

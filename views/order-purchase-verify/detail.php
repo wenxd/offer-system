@@ -24,7 +24,7 @@ $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $admins = [];
 $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 $userId = Yii::$app->user->identity->id;
-
+$is_contract = 0;
 //收入合同交货日期
 $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : '';
 ?>
@@ -85,6 +85,12 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
+                    <!--判断是支出合同全为0，全为0则不生成支出合同 $is_contract-->
+                    <?php
+                        if ($item->fixed_number > 0) {
+                            $is_contract = 1;
+                        }
+                    ?>
                     <td><?=$item->purchaseGoods ? $item->purchaseGoods->number : 0?></td>
                     <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number <= 0) ? 0 : ($item->purchaseGoods->number - $item->fixed_number)) : 0?></td>
                 </tr>
@@ -232,17 +238,17 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             }
             urls = '?r=order-purchase-verify/verify-reject';
         }
-
+        var is_contract = <?=$is_contract?>;
         //ajax审核
         $.ajax({
             type:"post",
             url:urls,
-            data:{order_payment_id:order_payment_id, goods_info:goods_info, reason:reason},
+            data:{order_payment_id:order_payment_id, goods_info:goods_info, reason:reason, is_contract: is_contract},
             dataType:'JSON',
             success:function(res){
                 if (res && res.code == 200){
                     layer.msg(res.msg, {time:2000});
-                    window.location.href = '?r=order-purchase-verify';
+                    window.history.back();
                 } else {
                     layer.msg(res.msg, {time:2000});
                     return false;
