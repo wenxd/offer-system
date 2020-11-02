@@ -99,7 +99,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                             <td><?=$item->goods->material_code?></td>
                             <td><?=$item->goods->goods_number?><?=Html::a(' 询价记录', Url::to(['inquiry/index', 'InquirySearch[goods_number]' => $item->goods->goods_number]))?></td>
                             <?php endif;?>
-                            <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
+                            <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->goods_id]))?></td>
                             <td><?=$item->goods->original_company?></td>
                             <td><?=$item->goods->technique_remark?></td>
                             <td><?=$item->goods->description?></td>
@@ -188,7 +188,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                                     <td><?=$orderInquiry->order->order_sn?></td>
                                     <td><?=$item->goods->goods_number?><?=Html::a(' 询价记录', Url::to(['inquiry/index', 'InquirySearch[goods_number]' => $item->goods->goods_number]))?></td>
                                 <?php endif;?>
-                                <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->id]))?></td>
+                                <td><?=$item->goods->goods_number_b?><?=Html::a(' 询价记录', Url::to(['inquiry-temp/inquiry', 'id' => $item->goods_id]))?></td>
                                 <td><?=$item->goods->original_company?></td>
                                 <td><?=$item->goods->technique_remark?></td>
                                 <td><?=$item->goods->description?></td>
