@@ -97,6 +97,7 @@ class AgreementStockSearch extends AgreementStock
             'agreement_stock.all_tax_price'         => $this->all_tax_price,
             'agreement_stock.is_confirm'            => $this->is_confirm,
             'agreement_stock.source'            => $this->source,
+            'agreement_stock.is_stock'            => $this->is_stock,
         ]);
 
         $query->andFilterWhere(['like', 'agreement_stock.order_agreement_sn', $this->order_agreement_sn])
