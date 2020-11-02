@@ -84,7 +84,10 @@ if ($model->isNewRecord) {
                 confirm = confirm ? 0 : 1;
                 is_confirm();
             });
-            is_confirm();
+            if (!<?=$model->isNewRecord ?? false?>) {
+
+                is_confirm();
+            }
         });
 
     </script>
