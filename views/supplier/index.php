@@ -197,7 +197,8 @@ if (in_array($userId, $adminIds)) {
                 ],
                 [
                     'attribute' => 'admin_id',
-                    'visible'   => Yii::$app->user->identity->username == 'admin',
+//                    'visible'   => Yii::$app->user->identity->username == 'admin',
+                    'visible' => in_array($userId, $adminIds),
                     'label' => '申请人',
                     'filter' => in_array($userId, $adminIds) ? Helper::getAdminList(['询价员', '采购员']) : Helper::getAdminList(['系统管理员', '询价员', '采购员']),
                     'value' => function ($model, $key, $index, $column) {
@@ -252,22 +253,15 @@ if (in_array($userId, $adminIds)) {
                     'header' => '操作',
                     'template' => '{confirm} {view} {update}',
                     'buttons' => [
-//                        'confirm' => function ($url, $model, $key) {
-//                            if (Yii::$app->user->identity->username == 'admin') {
-//                                if ($model->is_confirm == 0) {
-//                                    return Html::a('<i class="fa fa-reload"></i> 创建审批', Url::to(['confirm', 'id' => $model->id]), [
-//                                        'data-pjax' => '0',
-//                                        'class' => 'btn btn-success btn-flat btn-xs',
-//                                    ]);
-//                                } elseif (!empty($model->exit_info)) {
-//                                    return Html::a('<i class="fa fa-reload"></i> 修改审核', Url::to(['update-confirm', 'id' => $model->id]), [
-//                                        'data-pjax' => '0',
-//                                        'class' => 'btn btn-success btn-flat btn-xs',
-//                                    ]);
-//                                }
-//                            }
-//
-//                        }
+                        'confirm' => function ($url, $model, $key) {
+                            if (Yii::$app->user->identity->username == 'admin') {
+                                return Html::a('<i class="fa fa-reload"></i> 审批', Url::to(['confirm', 'id' => $model->id]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-success btn-flat btn-xs',
+                                ]);
+                            }
+
+                        }
                     ],
                 ],
             ],

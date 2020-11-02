@@ -45,7 +45,8 @@ if ($model->isNewRecord) {
         <?= $form->field($model, 'grade_reason')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'advantage_product')->textInput(['maxlength' => true]) ?>
-        <?php if (!$model->isNewRecord && !in_array($userId, $admins_id)):?>
+
+        <?php if (!$model->isNewRecord && in_array($userId, $admins_id)):?>
             <?= $form->field($model, 'is_confirm')->radioList(Supplier::$confirm, ['class' => 'radio']) ?>
         <?php endif;?>
         <?php if (!in_array($userId, $adminIds)):?>
@@ -83,6 +84,7 @@ if ($model->isNewRecord) {
                 confirm = confirm ? 0 : 1;
                 is_confirm();
             });
+            is_confirm();
         });
 
     </script>

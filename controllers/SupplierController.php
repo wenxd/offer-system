@@ -59,7 +59,10 @@ class SupplierController extends BaseController
         $post = Yii::$app->request->post();
         if ($post) {
             // 判断是不是超管
-            if (Yii::$app->user->identity->username != 'admin') {
+            $admins = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+            $admins_id  = \yii\helpers\ArrayHelper::getColumn($admins, 'user_id');
+            $userId = Yii::$app->user->identity->id;
+            if (!in_array($userId, $admins_id)) {
                 $post['Supplier'] = [
                     'exit_info' => json_encode($post['Supplier'], JSON_UNESCAPED_UNICODE),
                     'is_confirm' => Supplier::IS_DELETED_NO
