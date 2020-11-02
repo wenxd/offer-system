@@ -46,6 +46,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
         <?php else:?>
             <?= Html::button('批量确认询价', [
                     'class' => 'btn btn-info all_confirm_inquiry',
+                    'style' => 'display: none',
                     'name'  => 'submit-button']
             )?>
         <?php endif;?>
