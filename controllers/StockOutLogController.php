@@ -62,6 +62,21 @@ class StockOutLogController extends Controller
     }
 
     /**
+     * 添加证书编号
+     */
+    public function actionAddsOutCert()
+    {
+        $params = Yii::$app->request->post();
+        $model = $this->findModel($params['id']);
+        $model->stock_out_cert = $params['reason'];
+        if ($model->save()) {
+            return json_encode(['code' => 200, 'msg' => '保存成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => $model->getErrors()]);
+        }
+    }
+
+    /**
      * Displays a single StockLog model.
      * @param integer $id
      * @return mixed

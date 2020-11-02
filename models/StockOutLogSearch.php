@@ -23,7 +23,7 @@ class StockOutLogSearch extends StockLog
         return [
             [['order_id', 'order_payment_id', 'goods_id', 'number', 'type', 'is_deleted', 'customer_id'], 'integer'],
             [['operate_time', 'updated_at', 'created_at', 'goods_number', 'remark', 'agreement_sn', 'admin_id',
-                'is_manual', 'order_type', 'direction', 'region', 'plat_name'], 'safe'],
+                'is_manual', 'order_type', 'direction', 'region', 'plat_name', 'stock_out_cert'], 'safe'],
             [['id', 'order_sn', 'goods_number', 'number', 'agreement_sn'], 'trim'],
         ];
     }
@@ -91,6 +91,7 @@ class StockOutLogSearch extends StockLog
         ]);
         $query->andFilterWhere(['like', 'stock_log.direction', $this->direction])
             ->andFilterWhere(['like', 'stock_log.region', $this->region])
+            ->andFilterWhere(['like', 'stock_log.stock_out_cert', $this->stock_out_cert])
             ->andFilterWhere(['like', 'stock_log.plat_name', $this->plat_name]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
