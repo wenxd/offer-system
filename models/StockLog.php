@@ -124,7 +124,7 @@ class StockLog extends ActiveRecord
             'suggest_number'        => '建议库存',
             'position'              => '库存位置',
             'source'                => '入库来源',
-            'stock_out_cert'        => '出库证书',
+            'stock_out_cert'        => '证书编号',
         ];
     }
 
