@@ -283,28 +283,28 @@ class Inquiry extends ActiveRecord
                 'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
                 'is_assembly' => 1,
             ],
-            'new' => [
-                'good_id' => $base_info['goods_id'],
-                'price' => 0,//未税价格
-                'delivery_time' => '',//货期（周）
-                'supplier_id' => $base_info['supplier_id'],//货期（周）
-                'admin_id' => $base_info['admin_id'],//询价员ID
-                'order_id' => $base_info['order_id'],//订单ID
-                'order_inquiry_id' => $base_info['order_inquiry_id'],//询价单ID
-                'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
-                'is_assembly' => 1,
-            ],
-            'time' => [
-                'good_id' => $base_info['goods_id'],
-                'price' => 0,//未税价格
-                'delivery_time' => '',//货期（周）
-                'supplier_id' => $base_info['supplier_id'],//货期（周）
-                'admin_id' => $base_info['admin_id'],//询价员ID
-                'order_id' => $base_info['order_id'],//订单ID
-                'order_inquiry_id' => $base_info['order_inquiry_id'],//询价单ID
-                'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
-                'is_assembly' => 1,
-            ],
+//            'new' => [
+//                'good_id' => $base_info['goods_id'],
+//                'price' => 0,//未税价格
+//                'delivery_time' => '',//货期（周）
+//                'supplier_id' => $base_info['supplier_id'],//货期（周）
+//                'admin_id' => $base_info['admin_id'],//询价员ID
+//                'order_id' => $base_info['order_id'],//订单ID
+//                'order_inquiry_id' => $base_info['order_inquiry_id'],//询价单ID
+//                'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
+//                'is_assembly' => 1,
+//            ],
+//            'time' => [
+//                'good_id' => $base_info['goods_id'],
+//                'price' => 0,//未税价格
+//                'delivery_time' => '',//货期（周）
+//                'supplier_id' => $base_info['supplier_id'],//货期（周）
+//                'admin_id' => $base_info['admin_id'],//询价员ID
+//                'order_id' => $base_info['order_id'],//订单ID
+//                'order_inquiry_id' => $base_info['order_inquiry_id'],//询价单ID
+//                'inquiry_datetime' => date('Y-m-d H:i:s'),//咨询时间
+//                'is_assembly' => 1,
+//            ],
         ];
         foreach ($orderGoods as $goods) {
             $goods_id = $goods['goods_id'];
@@ -316,17 +316,17 @@ class Inquiry extends ActiveRecord
                 $data['excellent']['delivery_time'] = $excellent['delivery_time'];
             }
             //最新报价
-            $new    = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
-            $data['new']['price'] += $excellent['price'] * $goods['number'];//未税价格
-            if ($new['delivery_time'] > $data['new']['delivery_time']) {
-                $data['new']['delivery_time'] = $new['delivery_time'];
-            }
+//            $new    = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
+//            $data['new']['price'] += $excellent['price'] * $goods['number'];//未税价格
+//            if ($new['delivery_time'] > $data['new']['delivery_time']) {
+//                $data['new']['delivery_time'] = $new['delivery_time'];
+//            }
             //同期最短(货期)
-            $time  = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
-            $data['time']['price'] += $excellent['price'] * $goods['number'];//未税价格
-            if ($time['delivery_time'] > $data['time']['delivery_time']) {
-                $data['time']['delivery_time'] = $time['delivery_time'];
-            }
+//            $time  = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
+//            $data['time']['price'] += $excellent['price'] * $goods['number'];//未税价格
+//            if ($time['delivery_time'] > $data['time']['delivery_time']) {
+//                $data['time']['delivery_time'] = $time['delivery_time'];
+//            }
         }
         $model = new Inquiry();
         foreach ($data as $item) {
