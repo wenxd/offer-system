@@ -69,7 +69,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+//                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -82,7 +83,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+//                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -95,7 +97,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -108,7 +111,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -121,7 +125,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -134,7 +139,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -147,7 +153,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -163,7 +170,8 @@ if (in_array($userId, $adminIds)) {
                             $exit_info = json_decode($model->exit_info, true);
                             if ($name != $exit_info[$key]) {
                                 $exit_grade = Supplier::$grade[$exit_info[$key]];
-                                return "{$grade}->{$exit_grade}";
+//                                return "{$grade}->{$exit_grade}";
+                                $grade = $exit_grade;
                             }
                         }
                         return $grade;
@@ -177,7 +185,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
@@ -190,7 +199,8 @@ if (in_array($userId, $adminIds)) {
                         $name = $model->$key;
                         if (!empty($model->exit_info)) {
                             $exit_info = json_decode($model->exit_info, true);
-                            if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            //if ($name != $exit_info[$key]) return "{$name}->{$exit_info[$key]}";
+                            $name = $exit_info[$key];
                         }
                         return $name;
                     }
