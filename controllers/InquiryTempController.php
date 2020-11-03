@@ -141,15 +141,24 @@ class InquiryTempController extends Controller
             'remark', 'better_reason', 'delivery_time', 'admin_id', 'order_id', 'order_inquiry_id', 'inquiry_goods_id',
             'updated_at', 'created_at', 'is_upload', 'is_confirm_better', 'is_purchase', 'technique_remark'];
 
-        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+//        $use_admin = AuthAssignment::find()->where(['item_name' => '询价员'])->all();
+//        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+//        $userId   = Yii::$app->user->identity->id;
+//
+//        if (in_array($userId, $adminIds)) {
+//            $inquiryList = Inquiry::find()->where(['good_id' => $goods_id, 'admin_id' => $userId])->asArray()->all();
+//        } else {
+//            $inquiryList = Inquiry::find()->where(['good_id' => $goods_id])->asArray()->all();
+//        }
+
+        $use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $userId   = Yii::$app->user->identity->id;
-
-        if (in_array($userId, $adminIds)) {
-            $inquiryList = Inquiry::find()->where(['good_id' => $goods_id, 'admin_id' => $userId])->asArray()->all();
-        } else {
-            $inquiryList = Inquiry::find()->where(['good_id' => $goods_id])->asArray()->all();
+        $Inquiry = Inquiry::find()->where(['good_id' => $goods_id]);
+        if (!in_array($userId, $adminIds)) {
+            $Inquiry->andWhere(['NOT IN', 'admin_id', $adminIds]);
         }
+        $inquiryList = $Inquiry->asArray()->all();
         if (!empty($inquiryList)) {
             $keys = [];
             foreach ($inquiryList[0] as $k => $v) {
