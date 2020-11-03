@@ -178,7 +178,7 @@ $userId = Yii::$app->user->identity->id;
                 [
                     'attribute' => '操作',
                     'format' => 'raw',
-                    'visible' => in_array($userId, $super_adminIds),
+                    'visible' => in_array($userId, array_merge($adminIds, $super_adminIds)),
                     'contentOptions' => ['style' => 'min-width: 80px;'],
                     'value' => function ($model, $key, $index, $column) use ($userId, $adminIds, $super_adminIds) {
                         $html = Html::a('<i class="fa fa-eidt"></i> 修改', Url::to(['update', 'id' => $model->id]), [
