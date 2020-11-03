@@ -342,6 +342,7 @@ class StockInLogController extends Controller
                                         $stock->tax_rate        = $tax;
                                         $stock->tax_price       = 0;
                                         $stock->number          = trim($value['C']);
+                                        $stock->temp_number          = trim($value['C']);
                                         $stock->position        = $value['D'] ? trim($value['D']) : '';
                                         $stock->suggest_number  = 0;
                                         $stock->high_number     = $stock->suggest_number * $highRatio;
@@ -352,6 +353,7 @@ class StockInLogController extends Controller
                                             $stock->position = $value['D'] ? trim($value['D']) : '';
                                         }
                                         $stock->number += trim($value['C']);
+                                        $stock->temp_number += trim($value['C']);
                                         $stock->save();
                                     }
                                     $num++;
