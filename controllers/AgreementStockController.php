@@ -174,7 +174,7 @@ class AgreementStockController extends Controller
         $count = AgreementStock::find()->where([
             'order_id' => $agreementStock->order_id,
             'order_agreement_id' => $agreementStock->order_agreement_id,
-            'goods_id' => $agreementStock->goods_id, 'source' => $agreementStock->source
+            'source' => $agreementStock->source
         ])->count();
         // 判断来源(采购策略)
         if ($agreementStock->source == AgreementStock::STRATEGY) {
