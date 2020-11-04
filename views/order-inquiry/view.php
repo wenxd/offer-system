@@ -442,7 +442,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 '  </div>\n' +
                 '  <div class="form-group">\n' +
                 '    <div class="col-sm-offset-2 col-sm-10">\n' +
-                '      <a class="btn btn-default" href="javascript:void(0)" onclick="sure(' + id + ')">确定</a>\n' +
+                '      <a class="btn btn-default btn_sure" href="javascript:void(0)" onclick="sure(' + id + ')">确定</a>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</form>'
@@ -473,6 +473,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
             layer.msg('请输入原因', {time: 2000});
             return false;
         }
+        $(".btn_sure").attr("disabled", true).addClass("disabled");
         $.ajax({
             type: "post",
             url: "?r=order-inquiry/add-reason",
@@ -482,6 +483,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                 if (res && res.code == 200) {
                     window.location.reload();
                 } else {
+                    $(".btn_sure").removeAttr("disabled").removeClass("disabled");
                     layer.msg(res.msg, {time: 2000});
                     return false;
                 }

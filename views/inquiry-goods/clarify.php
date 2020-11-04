@@ -216,7 +216,7 @@ $userId = Yii::$app->user->identity->id;
                 '  </div>\n' +
                 '  <div class="form-group">\n' +
                 '    <div class="col-sm-offset-2 col-sm-10">\n' +
-                '      <a class="btn btn-default" href="javascript:void(0)" onclick="sure(' + id + ')">确定</a>\n' +
+                '      <a class="btn btn-default btn_sure" href="javascript:void(0)" onclick="sure(' + id + ')">确定</a>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</form>'
@@ -228,6 +228,7 @@ $userId = Yii::$app->user->identity->id;
             layer.msg('请输入原因', {time:2000});
             return false;
         }
+        $(".btn_sure").attr("disabled", true).addClass("disabled");
         $.ajax({
             type:"post",
             url:"?r=inquiry-goods/index",
@@ -238,6 +239,7 @@ $userId = Yii::$app->user->identity->id;
                     layer.msg(res.msg, {time:2000});
                     window.location.reload();
                 } else {
+                    $(".btn_sure").removeAttr("disabled").removeClass("disabled");
                     layer.msg(res.msg, {time:2000});
                     return false;
                 }
