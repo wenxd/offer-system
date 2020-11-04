@@ -287,6 +287,7 @@ class OrderController extends BaseController
                                     'order_id' => $goods['order_id'],
                                     'goods_id' => $item['id'],
                                     'number' => $item['sum'],
+                                    'goods_number' => $item['goods_number'],
                                     'serial' => $item['id'],
                                     'is_out' => $goods['is_out'],
                                     'out_time' => $goods['out_time'],
@@ -298,7 +299,7 @@ class OrderController extends BaseController
                         }
                     }
                 } else {
-                    $goods['info'] = [];
+                    $goods['info'] = [$goods['goods_number'] => $goods['number']];
                     $OrderGoodsBak[] = $goods;
                 }
             }
@@ -311,7 +312,7 @@ class OrderController extends BaseController
                 continue;
             }
             $OrderGoodsBakInfo[$key]['number'] += $item['number'];
-            $OrderGoodsBakInfo[$key]['info'][$item['goods_number']] = (int)$item['number'];
+            $OrderGoodsBakInfo[$key]['info'] = array_merge($OrderGoodsBakInfo[$key]['info'], $item['info']);
         }
         $model = new OrderGoodsBak();
         foreach ($OrderGoodsBakInfo as $item) {
