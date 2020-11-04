@@ -77,6 +77,10 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->goods->goods_number_b?></td>
                     <td><?=$item->goods->description?></td>
                     <td><?=$item->goods->description_en?></td>
+                    <?php
+                        $number = $item->number;
+                        $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->number : 0;
+                    ?>
                     <?php if (!$isShow):?>
                         <td><?=$item->goods->original_company?></td>
                         <td class="tax"><?=$tax?></td>
@@ -90,15 +94,22 @@ $isShow = in_array($userId, $adminIds);
                         <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                         <td class="before_tax_price"><?=$item->tax_price?></td>
                         <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
-                        <td class="before_number"><?=$item->number?></td>
+                        <td class="before_number"><?=$number?></td>
                     <?php endif;?>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
-                    <td><?=$item->purchaseGoods ? $item->purchaseGoods->number : 0?></td>
-                    <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number) ? ($item->purchaseGoods->number - $item->fixed_number) : 0) : 0?></td>
+                    <td><?=$purchaseGoods_number?></td>
+
+                    <td><?php
+                        if ($purchaseGoods_number >= $number) {
+                            echo 0;
+                        } else {
+                            echo $number - $purchaseGoods_number;
+                        }
+                        ?></td>
                 </tr>
             <?php endforeach;?>
 
