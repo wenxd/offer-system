@@ -520,7 +520,7 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
             var data = JSON.parse(data);
             if (data.code == 200) {
                 //导入成功
-                layer.msg(data.msg, {time: 3000}, function () {
+                layer.msg(data.msg, {time: 6000}, function () {
                     window.location.reload();
                 });
             } else {
