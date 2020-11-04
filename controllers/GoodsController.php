@@ -230,10 +230,10 @@ class GoodsController extends BaseController
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE'];
+            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD'];
         $tableHeader = ['品牌', '零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
-            '总成', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
-            '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价', '锁定(是/否)'];
+            '锁定(是/否)', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
+            '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价'];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -333,8 +333,8 @@ class GoodsController extends BaseController
                                 $goods = new Goods();
                             }
                             // 判断上次数据中锁定状态，批量锁，以导入为准（要不导入就没意义了）。批量未锁，以线上为准。
-                            if (!in_array($value['AE'], ['是', '否'])) $value['AE'] = '否';
-                            if ($value['AE'] == '否') {
+                            if (!in_array($value['N'], ['是', '否'])) $value['N'] = '否';
+                            if ($value['N'] == '否') {
                                 if (isset($goods->locking) && $goods->locking == 1) {
                                     $err[] = $key;
                                     continue;
@@ -405,11 +405,11 @@ class GoodsController extends BaseController
                                 $goods->is_repair = Goods::IS_REPAIR_NO;
                             }
                             //总成
-                            if ($value['N'] && $value['N'] == '是') {
-                                $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
-                            } else {
-                                $goods->is_assembly = Goods::IS_ASSEMBLY_NO;
-                            }
+//                            if ($value['N'] && $value['N'] == '是') {
+//                                $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+//                            } else {
+//                                $goods->is_assembly = Goods::IS_ASSEMBLY_NO;
+//                            }
                             //特制
                             if ($value['O'] && $value['O'] == '是') {
                                 $goods->is_special = Goods::IS_SPECIAL_YES;
