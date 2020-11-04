@@ -680,11 +680,11 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             //     return false;
             // }
 
-            if (stock_flag) {
-                layer.msg('使用库存数量不能大于临时库存数量', {time: 2000});
-                $(".payment_save").removeAttr("disabled").removeClass("disabled");
-                return false;
-            }
+            // if (stock_flag) {
+            //     layer.msg('使用库存数量不能大于临时库存数量', {time: 2000});
+            //     $(".payment_save").removeAttr("disabled").removeClass("disabled");
+            //     return false;
+            // }
 
             var order_purchase_id = $('.data').data('order_purchase_id');
             var admin_id = $('#orderpurchase-admin_id').val();
