@@ -633,6 +633,7 @@ class OrderInquiryController extends BaseController
                                             'supplier_id' => $supplierList[trim($value['M'])]['id'],
                                         ])->one();
                                         if ($is_inquiry) {
+                                            $msg[] = '第' . $key . '行询价已存在';
                                             continue;
                                         }
                                         $inquiry = new Inquiry();
@@ -663,9 +664,17 @@ class OrderInquiryController extends BaseController
                                         if ($inquiry->save()) {
                                             $num++;
                                         } else {
+                                            $msg[] = '第' . $key . '行保存失败' . $inquiry->getErrors();
+                                            continue;
                                             return json_encode(['code' => 500, 'msg' => $inquiry->getErrors()], JSON_UNESCAPED_UNICODE);
                                         }
+                                    } else {
+                                        $msg[] = '第' . $key . '行供应商未找到';
+                                        continue;
                                     }
+                                }  else {
+                                    $msg[] = '第' . $key . '行零件未找到';
+                                    continue;
                                 }
                             }
                         }
