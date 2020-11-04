@@ -113,6 +113,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
         <?= $form->field($model, 'delivery_date')->textInput(['readonly' => true, 'value' => substr($model->delivery_date, 0, 10)])->label('支出合同交货日期'); ?>
 
         <?= $form->field($model, 'payment_sn')->textInput(['readonly' => true])->label('支出合同单号'); ?>
+        <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('申请备注'); ?>
 
         <?php if (!$model->is_verify):?>
             <?= $form->field($model, 'reason')->textInput(); ?>
