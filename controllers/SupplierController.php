@@ -67,6 +67,9 @@ class SupplierController extends BaseController
                     'exit_info' => json_encode($post['Supplier'], JSON_UNESCAPED_UNICODE),
                     'is_confirm' => Supplier::IS_DELETED_NO
                 ];
+            } else {
+                $post['Supplier']['exit_info'] = '';
+                $post['Supplier']['is_confirm'] = Supplier::IS_DELETED_YES;
             }
             if ($model->load($post) && $model->save()) {
                 yii::$app->getSession()->setFlash('success', 'success');
