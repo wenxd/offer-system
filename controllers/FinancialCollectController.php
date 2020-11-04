@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\AgreementGoods;
+use app\models\AgreementGoodsData;
 use app\models\OrderAgreement;
 use app\models\OrderAgreementSearch;
 use Yii;
@@ -34,7 +35,10 @@ class FinancialCollectController extends BaseController
     public function actionDetail($id)
     {
         $orderAgreement = OrderAgreement::findOne($id);
-        $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        $agreementGoods = AgreementGoodsData::findAll(['order_agreement_id' => $id]);
+        if (empty($agreementGoods)) {
+            $agreementGoods = AgreementGoods::findAll(['order_agreement_id' => $id]);
+        }
         $stockLog = StockLog::find()->where([
             'order_id'           => $orderAgreement->order_id,
             'order_agreement_id' => $id,
