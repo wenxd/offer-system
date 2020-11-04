@@ -60,7 +60,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>合同数量</th>
                 <th>采购数量</th>
                 <th>采购策略(拆分)</th>
-                <th>使用库存数量</th>
+                <th>使用库存</th>
                 <th>库存数量</th>
                 <th>库存位置</th>
                 <th>到齐</th>

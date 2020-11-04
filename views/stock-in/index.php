@@ -18,7 +18,7 @@ use app\models\AuthAssignment;
 $this->title = '入库管理列表';
 $this->params['breadcrumbs'][] = $this->title;
 
-$use_admin = AuthAssignment::find()->where(['item_name' => '库管员'])->all();
+$use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '系统管理员']])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 
 $userId   = Yii::$app->user->identity->id;
@@ -46,7 +46,7 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'order_sn',
                 'label'     => '订单号',
                 'format'    => 'raw',
-                'visible'   => !in_array($userId, $adminIds),
+                'visible'   => in_array($userId, $adminIds),
                 'filter'    => Html::activeTextInput($searchModel, 'order_sn',['class'=>'form-control']),
                 'value'     => function ($model, $key, $index, $column) {
                     if ($model->order) {
