@@ -79,7 +79,11 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="before_delivery_time"><?=$item->before_delivery_time?></td>
                     <td class="before_tax_price"><?=$item->tax_price?></td>
                     <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
-                    <td class="before_number"><?=$item->number?></td>
+                    <?php
+                    $number = $item->number;
+                    $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->number : 0;
+                    ?>
+                    <td class="before_number"><?=$number?></td>
                     <td class="supplier"><?=$item->supplier->name?></td>
                     <td class="delivery_time"><?=$item->delivery_time?></td>
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
@@ -91,8 +95,14 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                             $is_contract = 1;
                         }
                     ?>
-                    <td><?=$item->purchaseGoods ? $item->purchaseGoods->number : 0?></td>
-                    <td><?=$item->purchaseGoods ? (($item->purchaseGoods->number - $item->fixed_number <= 0) ? 0 : ($item->purchaseGoods->number - $item->fixed_number)) : 0?></td>
+                    <td><?=$purchaseGoods_number?></td>
+                    <td><?php
+                        if ($purchaseGoods_number >= $number) {
+                            echo 0;
+                        } else {
+                            echo $number - $purchaseGoods_number;
+                        }
+                        ?></td>
                 </tr>
             <?php endforeach;?>
 
