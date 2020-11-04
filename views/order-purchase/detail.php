@@ -681,7 +681,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             // }
 
             if (stock_flag) {
-                layer.msg('使用库存数不能大于库存数', {time: 2000});
+                layer.msg('使用库存数量不能大于临时库存数量', {time: 2000});
                 $(".payment_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }

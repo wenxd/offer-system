@@ -90,10 +90,12 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->strategy_number ?? 0?></td>
                     <td><?= empty($item->belong_to) ? '是' : "否" ?></td>
                     <td><?php
-                        if ($item->strategy_number ?? 0 == 0 ) {
-                            echo $item->order_number;
-                        } elseif ($item->strategy_number < $item->number) {
-                            echo $item->order_number - $item->strategy_number;
+                        $number = $item->order_number ?? 0;
+                        $strategy_number = $item->strategy_number ?? 0;
+                        if ($strategy_number == 0 ) {
+                            echo $number;
+                        } elseif ($strategy_number < $number) {
+                            echo $number - $strategy_number;
                         } else {
                             echo 0;
                         }

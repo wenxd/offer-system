@@ -238,10 +238,13 @@ $userId   = Yii::$app->user->identity->id;
                             'data-pjax' => '0',
                             'class' => 'btn btn-success btn-xs btn-flat',
                         ]);
-                        return $html . Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['detail', 'id' => $model['id']]), [
+                        if ($model->is_strategy) {
+                            $html .= Html::a('<i class="fa fa-plus"></i> 采购单', Url::to(['detail', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
+                        }
+                        return $html;
                         if (!$model->is_all_stock) {
                             $html = Html::a('<i class="fa fa-plus"></i> 采购策略', Url::to(['strategy', 'id' => $model['id']]), [
                                 'data-pjax' => '0',
