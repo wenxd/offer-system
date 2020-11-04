@@ -646,11 +646,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             //     return false;
             // }
 
-            if (purchase_number_flag) {
-                layer.msg('使用库存数量不能比库存大', {time: 2000});
-                $(".purchase_save").removeAttr("disabled").removeClass("disabled");
-                return false;
-            }
+            // if (purchase_number_flag) {
+            //     layer.msg('使用库存数量不能比库存大', {time: 2000});
+            //     $(".purchase_save").removeAttr("disabled").removeClass("disabled");
+            //     return false;
+            // }
 
             if (flag_stock) {
                 layer.msg('需求数量大于库存数量时，采购数量不能为0', {time: 2000});
