@@ -489,7 +489,7 @@ class StockOutController extends BaseController
         //计算最大组装数据
         $mix_number = 1000000;
         foreach ($goods_son as $item) {
-            $son_mix_number = intval($item['stock_number'] / $item['number']);
+            $son_mix_number = intval($item['temp_number'] / $item['number']);
             if ($son_mix_number > 0) {
                 if ($son_mix_number < $mix_number) $mix_number = $son_mix_number;
             } else {

@@ -321,6 +321,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 'original_company' => $item->goods->original_company,
                 'unit' => $item->goods->unit,
                 'stock_number' => $item->stock->number,
+                'temp_number' => $item->stock->temp_number,
                 'stock_position' => $item->stock->position,
                 'number' => $item->number * $goods['number'],
             ];

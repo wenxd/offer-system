@@ -28,6 +28,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
                         <th>原厂家</th>
                         <th>单位</th>
                         <th>库存数量</th>
+                        <th>临时库存数量</th>
                         <th>库存位置</th>
                         <th>总成需要数量(单)</th>
                         <th>总成需要数量(总)</th>
@@ -44,6 +45,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
                             <td><?= $item['original_company'] ?></td>
                             <td><?= $item['unit'] ?></td>
                             <td><?= $item['stock_number'] ?></td>
+                            <td><?= $item['temp_number'] ?></td>
                             <td class="position"><?= $item['stock_position'] ?></td>
                             <td class="min_number"><?= $item['number'] ?></td>
                             <td class="max_number">0</td>
@@ -78,6 +80,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
                         <th>策略采购数量</th>
                         <th>已总成数量</th>
                         <th>库存数量</th>
+                        <th>临时库存数量</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -95,6 +98,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
                         <td><?= $agreementGoods->strategy_number ?></td>
                         <td><?= $agreementGoods->assemble_number ?></td>
                         <td><?= $agreementGoods->stock ? $agreementGoods->stock->number : 0 ?></td>
+                        <td><?= $agreementGoods->stock ? $agreementGoods->stock->temp_number : 0 ?></td>
                     </tr>
                     </tbody>
                     <thead>
