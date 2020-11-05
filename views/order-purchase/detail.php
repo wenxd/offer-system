@@ -217,7 +217,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     }
                     ?>
                     <td>
-                        <?= $open ? $str : '' ?>
+                        <?= $open || $item->after == 1 || $item->after == 9 ? $str : '' ?>
                     </td>
                     <td class="purchase_detail" data-purchase_goods_id="<?= $item->id ?>"
                         data-serial="<?= $item->serial ?>">
