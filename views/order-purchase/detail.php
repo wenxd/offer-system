@@ -27,6 +27,11 @@ $admins[Yii::$app->user->identity->id] = Yii::$app->user->identity->username;
 
 $userId = Yii::$app->user->identity->id;
 
+// 查询所有已确定零件，隐藏回退按钮
+$where = ['order_id' => $orderPurchase->order_id, 'order_purchase_id' => $orderPurchase->id, 'source' => 'payment', 'is_confirm' => 1];
+$payment_confirm_goods = \app\models\AgreementStock::find()->where($where)->asArray()->all();
+$confirm_goods_id = ArrayHelper::getColumn($payment_confirm_goods, 'goods_id');
+
 //显示按钮开关
 $i = 0;
 
@@ -305,13 +310,14 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                                 ]);
                             }
                             if ($item->after == 0 && $open) {
-                                echo Html::button('回退', [
-                                    'class' => 'btn btn-success btn-sm',
-                                    'onclick' => "exit_goods($item->id)"
-                                ]);
+                                if (!in_array($item->goods_id, $confirm_goods_id)) {
+                                    echo Html::button('回退', [
+                                        'class' => 'btn btn-success btn-sm',
+                                        'onclick' => "exit_goods($item->id)"
+                                    ]);
+                                }
                             }
                         }
-
                          ?>
                     </td>
                     <script>
