@@ -63,8 +63,8 @@ $isShow = in_array($userId, $adminIds);
                 <th style="background-color: darkgrey">支出合同含税单价</th>
                 <th style="background-color: darkgrey">支出合同含税总价</th>
                 <th style="background-color: darkgrey">支出合同数量</th>
-                <th>采购单需求数量</th>
-                <th>使用库存数量</th>
+<!--                <th>采购单需求数量</th>-->
+<!--                <th>使用库存数量</th>-->
             </tr>
             </thead>
             <tbody>
@@ -79,7 +79,8 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->goods->description_en?></td>
                     <?php
                         $number = $item->number;
-                        $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->number : 0;
+                        $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_number : 0;
+                        $fixed_stock_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_stock_number : 0;
                     ?>
                     <?php if (!$isShow):?>
                         <td><?=$item->goods->original_company?></td>
@@ -101,15 +102,6 @@ $isShow = in_array($userId, $adminIds);
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
-                    <td><?=$purchaseGoods_number?></td>
-
-                    <td><?php
-                        if ($purchaseGoods_number >= $number) {
-                            echo 0;
-                        } else {
-                            echo $number - $purchaseGoods_number;
-                        }
-                        ?></td>
                 </tr>
             <?php endforeach;?>
 
@@ -134,8 +126,6 @@ $isShow = in_array($userId, $adminIds);
 
             </tbody>
         </table>
-
-        <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('采购申请备注'); ?>
 
         <?= $form->field($model, 'income_deliver_time')->textInput(['readonly' => true])->label('收入合同交货日期'); ?>
 

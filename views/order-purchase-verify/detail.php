@@ -55,8 +55,8 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <th style="background-color: darkgrey">支出合同含税单价</th>
                     <th style="background-color: darkgrey">支出合同含税总价</th>
                     <th style="background-color: darkgrey">支出合同数量</th>
-                    <th>采购单需求数量</th>
-                    <th>使用库存数量</th>
+<!--                    <th>采购单需求数量</th>-->
+<!--                    <th>使用库存数量</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -81,7 +81,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
                     <?php
                     $number = $item->number;
-                    $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->number : 0;
+                    $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_number : 0;
                     ?>
                     <td class="before_number"><?=$number?></td>
                     <td class="supplier"><?=$item->supplier->name?></td>
@@ -95,14 +95,6 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                             $is_contract = 1;
                         }
                     ?>
-                    <td><?=$purchaseGoods_number?></td>
-                    <td><?php
-                        if ($purchaseGoods_number >= $number) {
-                            echo 0;
-                        } else {
-                            echo $number - $purchaseGoods_number;
-                        }
-                        ?></td>
                 </tr>
             <?php endforeach;?>
 
@@ -124,7 +116,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
             </tbody>
         </table>
 
-        <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('采购申请备注'); ?>
+        <?= $form->field($model, 'apply_reason')->textInput(['readonly' => true])->label('支出申请备注'); ?>
 
         <?= $form->field($model, 'income_deliver_time')->textInput(['readonly' => true])->label('收入合同交货日期'); ?>
 

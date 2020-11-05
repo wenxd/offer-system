@@ -136,7 +136,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>原厂家</th>
                 <th>供应商</th>
                 <th>单位</th>
-                <th>采购数量</th>
+                <th>支出合同数量</th>
                 <th>未税单价</th>
                 <th>含税单价</th>
                 <th>未税总价</th>
@@ -145,7 +145,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th width="80px;">是否入库</th>
                 <th>税率</th>
                 <th>采购单需求数量</th>
-                <th>使用库存数</th>
+                <th>使用库存数量</th>
+                <th>使用库存状态</th>
                 <th>临时库存数量</th>
                 <th>库存数量</th>
                 <th>审核状态</th>
@@ -206,6 +207,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             </thead>
             <tbody>
@@ -250,7 +252,21 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td><?= $item::$stock[$item->is_stock] ?></td>
                     <td class="tax"><?= $item->tax_rate ?></td>
                     <td class="agreement_number"><?= $item->number ?></td>
-                    <td class="use_number"><?= ($item->number - $item->fixed_number) >= 0 ? $item->number - $item->fixed_number : 0 ?></td>
+                    <td class="use_number"><?= $item->fixed_stock_number ?></td>
+                    <td><?php
+                        $stock_status = $item->is_fixed_stock ?? 0;
+                        switch ($stock_status) {
+                            case 1:
+                                echo '待审核';
+                                break;
+                            case 9:
+                                echo '确认';
+                                break;
+                            case 4:
+                                echo '驳回';
+                                break;
+                        }
+                        ?></td>
                     <td class="stock_number"><?php
 //                        $stock = $item->stock ? $item->stock->number : 0;
 //                        $use_number = $item->orderstock->use_number ?? 0;

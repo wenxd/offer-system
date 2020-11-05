@@ -154,6 +154,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 <th>策略采购数量</th>
                 <th>单位</th>
                 <th>使用库存数量</th>
+                <th>使用库存状态</th>
                 <th>临时库存数量</th>
                 <th>库存数量</th>
                 <th>建议库存</th>
@@ -188,6 +189,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                         <?php endforeach; ?>
                     </select>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -283,7 +285,21 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                                value="<?= $item->purchase_number ?>">
                     </td>
                     <td><?= $item->goods->unit ?></td>
-                    <td class="use_stock"></td>
+                    <td class="use_stock"><?= $item->purchase_stock_number ?? 0 ?></td>
+                    <td><?php
+                        $stock_status = $item->is_purchase_stock ?? 0;
+                        switch ($stock_status) {
+                            case 1:
+                                echo '待审核';
+                                break;
+                            case 9:
+                                echo '确认';
+                                break;
+                            case 4:
+                                echo '驳回';
+                                break;
+                        }
+                        ?></td>
                     <td class="stock_number">
                         <?php
 //                        $stock = $item->stock ? $item->stock->number : 0;

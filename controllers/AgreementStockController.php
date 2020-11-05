@@ -132,6 +132,7 @@ class AgreementStockController extends Controller
 
     public function actionConfirm($id)
     {
+        $transaction = Yii::$app->db->beginTransaction();
         $agreementStock = AgreementStock::findOne($id);
         $stock = $agreementStock->stock;
 
@@ -150,6 +151,54 @@ class AgreementStockController extends Controller
         if (!$agreementStock->save()) {
             Yii::$app->getSession()->setFlash('error', $agreementStock->getErrors());
         }
+        // 判断来源(采购策略)
+        if ($agreementStock->source == AgreementStock::STRATEGY) {
+            // 判断订单类型（项目订单）
+            if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
+                // 恢复收入合同单号与零件ID对应表 采购数量
+                $agreementGoods = AgreementGoodsData::find()
+                    ->where(['order_id' => $agreementStock->order_id,
+                        'order_agreement_id' => $agreementStock->order_agreement_id,
+                        'order_agreement_sn' => $agreementStock->order_agreement_sn,
+                        'goods_id' => $agreementStock->goods_id])
+                    ->one();
+                $agreementGoods->is_strategy_stoker = 9;
+                if (!$agreementGoods->save()) {
+                    Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
+                    return "<script>history.go(-1);</script>";
+                }
+            }
+        } elseif ($agreementStock->source == AgreementStock::PURCHASE) {
+            // 判断订单类型（项目订单）
+            if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
+                // 恢复收入合同单号与零件ID对应表 采购数量
+                $agreementGoods = AgreementGoods::find()
+                    ->where(['order_id' => $agreementStock->order_id,
+                        'order_agreement_id' => $agreementStock->order_agreement_id,
+                        'order_agreement_sn' => $agreementStock->order_agreement_sn,
+                        'goods_id' => $agreementStock->goods_id])
+                    ->one();
+                $agreementGoods->is_purchase_stock = 9;
+                if (!$agreementGoods->save()) {
+                    Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
+                    return "<script>history.go(-1);</script>";
+                }
+            }
+        } elseif ($agreementStock->source == AgreementStock::PAYMENT) {
+            // 支出合同
+            $PurchaseGoods = PurchaseGoods::find()
+                ->where(['order_id' => $agreementStock->order_id,
+                    'order_purchase_id' => $agreementStock->order_purchase_id,
+                    'goods_id' => $agreementStock->goods_id])
+                ->one();
+//            $PurchaseGoods->fixed_number = $PurchaseGoods->fixed_number + $agreementStock->use_number;
+            $PurchaseGoods->is_fixed_stock = 4;
+            if (!$PurchaseGoods->save()) {
+                Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
+                return "<script>history.go(-1);</script>";
+            }
+        }
+        $transaction->commit();
         return "<script>history.go(-1);</script>";
     }
 
@@ -188,6 +237,8 @@ class AgreementStockController extends Controller
                         'goods_id' => $agreementStock->goods_id])
                     ->one();
                 $agreementGoods->strategy_number = $agreementGoods->strategy_number + $agreementStock->use_number;
+                $agreementGoods->strategy_stoker_number = $agreementGoods->strategy_stoker_number - $agreementStock->use_number;
+                $agreementGoods->is_strategy_stoker = 4;
                 if (!$agreementGoods->save()) {
                     Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
                     return "<script>history.go(-1);</script>";
@@ -198,7 +249,7 @@ class AgreementStockController extends Controller
                 }
             }
         } elseif ($agreementStock->source == AgreementStock::PURCHASE) {
-            // 判断订单类型（项目订单）
+            // 采购
             if (isset($agreementStock->order->order_type) && $agreementStock->order->order_type == 1) {
                 // 恢复收入合同单号与零件ID对应表 采购数量
                 $agreementGoods = AgreementGoods::find()
@@ -208,6 +259,8 @@ class AgreementStockController extends Controller
                         'goods_id' => $agreementStock->goods_id])
                     ->one();
                 $agreementGoods->purchase_number = $agreementGoods->purchase_number + $agreementStock->use_number;
+                $agreementGoods->purchase_stock_number = $agreementGoods->purchase_stock_number - $agreementStock->use_number;
+                $agreementGoods->is_purchase_stock = 4;
                 if (!$agreementGoods->save()) {
                     Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
                     return "<script>history.go(-1);</script>";
@@ -225,6 +278,8 @@ class AgreementStockController extends Controller
                     'goods_id' => $agreementStock->goods_id])
                 ->one();
             $PurchaseGoods->fixed_number = $PurchaseGoods->fixed_number + $agreementStock->use_number;
+            $PurchaseGoods->fixed_stock_number = $PurchaseGoods->fixed_stock_number - $agreementStock->use_number;
+            $PurchaseGoods->is_fixed_stock = 4;
             if (!$PurchaseGoods->save()) {
                 Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
                 return "<script>history.go(-1);</script>";

@@ -52,7 +52,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
 
         <div class="col-md-12">
             <div class="col-md-6">
-                <?=Html::button('一键走库存', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'exit_stock()'])?>
+                <?= Html::button('一键走库存', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'exit_stock()']) ?>
                 <script>
                     function exit_stock() {
                         var goods_info = [];
@@ -111,6 +111,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                 <th>采购数量</th>
                 <th>单位</th>
                 <th>使用库存数量</th>
+                <th>使用库存状态</th>
                 <th>临时库存数量</th>
                 <th>库存数量</th>
             </tr>
@@ -169,32 +170,49 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td><?= $order_purchase_sn ?></td>
                     <td class="quote_delivery_time"><?= $item->quote_delivery_time ?></td>
                     <td class="oldNumber"><?= $item->order_number ?></td>
-                    <?php if ($orderAgreement->is_strategy_number == 1) :?>
+                    <?php if ($orderAgreement->is_strategy_number == 1) : ?>
                         <td class="afterNumber">
-                            <input goods_id="<?=$item->goods_id?>" type="number" size="4" class="number" min="1" style="width: 50px;"
+                            <input goods_id="<?= $item->goods_id ?>" type="number" size="4" class="number" min="1"
+                                   style="width: 50px;"
                                    value="<?= $item->strategy_number ?>">
                         </td>
                         <td><?= $item->goods->unit ?></td>
                         <td class="use_stock">
                             <!--计算库存-->
                             <?php
-                                if ($item->strategy_number == 0 ) {
-                                    echo $item->number;
-                                } elseif ($item->strategy_number < $item->number) {
-                                    echo $item->number - $item->strategy_number;
-                                } else {
-                                    echo 0;
-                                }
+                            echo $item->strategy_stock_number ?? 0;
+//                            if ($item->strategy_number == 0) {
+//                                echo $item->number;
+//                            } elseif ($item->strategy_number < $item->number) {
+//                                echo $item->number - $item->strategy_number;
+//                            } else {
+//                                echo 0;
+//                            }
                             ?>
                         </td>
-                    <?php else:;?>
+                    <?php else:; ?>
                         <td class="afterNumber">
-                            <input goods_id="<?=$item->goods_id?>" type="number" size="4" class="number" min="1" style="width: 50px;"
+                            <input goods_id="<?= $item->goods_id ?>" type="number" size="4" class="number" min="1"
+                                   style="width: 50px;"
                                    value="<?= $item->number ?>">
                         </td>
                         <td><?= $item->goods->unit ?></td>
-                        <td class="use_stock">0</td>
-                    <?php endif;?>
+                        <td class="use_stock"><?= $item->strategy_stock_number ?? 0 ?></td>
+                    <?php endif; ?>
+                    <td><?php
+                        $stock_status = $item->is_strategy_stock ?? 0;
+                        switch ($stock_status) {
+                            case 1:
+                                echo '待审核';
+                                break;
+                            case 9:
+                                echo '确认';
+                                break;
+                            case 4:
+                                echo '驳回';
+                                break;
+                        }
+                        ?></td>
                     <td class="stock_number"><?= $item->stock ? $item->stock->temp_number : 0 ?></td>
                     <td><?= $item->stock ? $item->stock->number : 0 ?></td>
                 </tr>
@@ -282,22 +300,22 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 var goods_id = $(element).attr('goods_id');
                 var strategy_number = $(element).val();
                 var goods = [];
-                goods_info.push({goods_id:goods_id,strategy_number:strategy_number});
+                goods_info.push({goods_id: goods_id, strategy_number: strategy_number});
             });
             console.log(goods_info);
             $.ajax({
-               type:"post",
-               url:'<?=Url::to(['save-strategy-number', 'id' => $id])?>',
-               data:{goods_info:goods_info},
-               dataType:'JSON',
-               success:function(res){
-                   if (res && res.code == 200){
-                       layer.msg(res.msg, {time:2000});
-                       window.location.reload();
-                   } else {
-                       layer.msg(res.msg, {time:2000});
-                   }
-               }
+                type: "post",
+                url: '<?=Url::to(['save-strategy-number', 'id' => $id])?>',
+                data: {goods_info: goods_info},
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res && res.code == 200) {
+                        layer.msg(res.msg, {time: 2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time: 2000});
+                    }
+                }
             });
         });
 
@@ -313,16 +331,16 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             });
             console.log(goods_info);
             $.ajax({
-                type:"post",
-                url:'<?=$_SERVER['REQUEST_URI']?>',
-                data:{goods_info:goods_info},
-                dataType:'JSON',
-                success:function(res){
-                    if (res && res.code == 200){
-                        layer.msg(res.msg, {time:2000});
+                type: "post",
+                url: '<?=$_SERVER['REQUEST_URI']?>',
+                data: {goods_info: goods_info},
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res && res.code == 200) {
+                        layer.msg(res.msg, {time: 2000});
                         window.history.back();
                     } else {
-                        layer.msg(res.msg, {time:2000});
+                        layer.msg(res.msg, {time: 2000});
                     }
                 }
             });

@@ -352,11 +352,13 @@ class OrderPurchaseController extends BaseController
                         }
                         // 更新采购数据
                         $purchase->fixed_number = $numbers[$id];
+                        $use_number = $purchase->number - $numbers[$id];
+                        $purchase->fixed_stock_number = $use_number;
+                        $purchase->is_fixed_stock = 1;
                         if (!$purchase->save()) {
                             $transaction->rollBack();
                             return json_encode(['code' => 501, 'msg' => $purchase->getErrors()], JSON_UNESCAPED_UNICODE);
                         }
-                        $use_number = $purchase->number - $numbers[$id];
                         if ($use_number >= 1) {
                             // 加入使用库存列表
                             $stock_model = new AgreementStock();

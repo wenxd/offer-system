@@ -192,13 +192,15 @@ class OrderAgreementController extends Controller
                     $count->delete();
                 }
                 $goods->strategy_number = $goods_info[$goods->goods_id];
+                $use_number = $goods->number - $goods->strategy_number;
+                $goods->strategy_stoker_number = $use_number;
+                $goods->is_strategy_stoker = $use_number > 0 ? 1 : 0;
                 if (!$goods->save()) {
                     $transaction->rollBack();
                     return json_encode(['code' => 501, 'msg' => $goods->errors], JSON_UNESCAPED_UNICODE);
                 }
                 // 判断是否使用库存（策略采购数量 < 订单需求数量）
                 if ($goods->strategy_number < $goods->number) {
-                    $use_number = $goods->number - $goods->strategy_number;
                     // 加入使用库存列表
                     $stock_model = new AgreementStock();
                     $stock_data = [
@@ -402,13 +404,15 @@ class OrderAgreementController extends Controller
                             $count->delete();
                         }
                         $goods->purchase_number = $goods_info[$goods->goods_id];
+                        $use_number = $goods->number - $goods->purchase_number;
+                        $goods->purchase_stock_number = $use_number;
+                        $goods->is_purchase_stock = $use_number > 0 ? 1 : 0;
                         if (!$goods->save()) {
                             $transaction->rollBack();
                             return json_encode(['code' => 501, 'msg' => $goods->errors], JSON_UNESCAPED_UNICODE);
                         }
                         // 判断是否使用库存（策略采购数量 < 订单需求数量）
                         if ($goods->purchase_number < $goods->number) {
-                            $use_number = $goods->number - $goods->purchase_number;
                             // 加入使用库存列表
                             $stock_model = new AgreementStock();
                             $stock_data = [
