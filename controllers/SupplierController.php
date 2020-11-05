@@ -109,6 +109,13 @@ class SupplierController extends BaseController
     public function actionConfirm($id)
     {
         $supplier = Supplier::findOne($id);
+        $exit_info = $supplier->exit_info ?? false;
+        if ($exit_info) {
+            foreach (json_decode($exit_info, true) AS $k => $v) {
+                $supplier->$k = $v;
+            }
+            $supplier->exit_info = '';
+        }
         $supplier->is_confirm = Supplier::IS_CONFIRM_YES;
         $supplier->save();
 

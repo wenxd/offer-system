@@ -139,6 +139,23 @@ class SearchController extends BaseController
         return json_encode(['code' => 200, 'data' => $supplier_name_list]);
     }
 
+    /**
+     * 去重供应商
+     * @return string
+     */
+    public function actionGetSupplierName()
+    {
+        $name = (string)trim(Yii::$app->request->post('name'));
+        $supplierList       = Supplier::find()
+            ->orWhere(['name' => $name])
+            ->orWhere(['short_name' => $name])
+            ->andWhere(['is_deleted' => Supplier::IS_DELETED_NO])->asArray()->one();
+        if ($supplierList) {
+            return json_encode(['code' => 500, 'msg' => '供应商已存在']);
+        }
+        return json_encode(['code' => 200, 'msg' => '供应商不存在']);
+    }
+
     /*
      * 搜索结果
      */
