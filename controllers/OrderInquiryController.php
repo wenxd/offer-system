@@ -620,7 +620,7 @@ class OrderInquiryController extends BaseController
                             if ($key == 2) {
                                 $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                             }
-                            if ($key > 1 && trim($value['J']) && trim($value['K'])) {
+                            if (trim($value['J']) && trim($value['K'])) {
                                 $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
                                 $goods = Goods::findOne($inquiryGoods->goods_id);
                                 if ($goods) {
@@ -631,6 +631,8 @@ class OrderInquiryController extends BaseController
                                             'good_id' => $goods->id,
                                             'tax_rate' => trim($value['L']),
                                             'supplier_id' => $supplierList[trim($value['M'])]['id'],
+                                            'delivery_time' => trim($value['K']),
+                                            'tax_price' => trim($value['J']),
                                         ])->one();
                                         if ($is_inquiry) {
                                             $num++;
