@@ -566,6 +566,8 @@ class OrderInquiryController extends BaseController
                 $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
                 //保存文件
                 move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                $num = 0;
+                $msg = [];
                 if (file_exists($saveName)) {
                     //获取excel对象
                     $spreadsheet = IOFactory::load($saveName);
@@ -573,10 +575,8 @@ class OrderInquiryController extends BaseController
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
                     //总数
                     $total = count($sheetData);
-                    $num = 0;
                     $supplierList = Supplier::find()->select('id, name')
                         ->where(['is_deleted' => Supplier::IS_DELETED_NO])->indexBy('name')->asArray()->all();
-                    $msg = [];
                     foreach ($sheetData as $key => $value) {
                         if ($key > 1) {
                             if (!$value['A']) {
@@ -633,7 +633,8 @@ class OrderInquiryController extends BaseController
                                             'supplier_id' => $supplierList[trim($value['M'])]['id'],
                                         ])->one();
                                         if ($is_inquiry) {
-                                            $msg[] = '第' . $key . '行询价已存在';
+                                            $num++;
+//                                            $msg[] = '第' . $key . '行询价已存在';
                                             continue;
                                         }
                                         $inquiry = new Inquiry();
@@ -676,6 +677,8 @@ class OrderInquiryController extends BaseController
                                     $msg[] = '第' . $key . '行零件未找到';
                                     continue;
                                 }
+                            } else {
+                                $msg[] = '第' . $key . '行单价/货期为空';
                             }
                         }
                     }
