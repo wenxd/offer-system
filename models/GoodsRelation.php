@@ -320,9 +320,9 @@ class GoodsRelation extends \yii\db\ActiveRecord
                 'description_en' => $item->goods->description_en,
                 'original_company' => $item->goods->original_company,
                 'unit' => $item->goods->unit,
-                'stock_number' => $item->stock->number,
-                'temp_number' => $item->stock->temp_number,
-                'stock_position' => $item->stock->position,
+                'stock_number' => $item->stock->number ?? 0,
+                'temp_number' => $item->stock->temp_number ?? 0,
+                'stock_position' => $item->stock->position ?? '',
                 'number' => $item->number * $goods['number'],
             ];
             if ($item->goods->is_assembly == Goods::IS_ASSEMBLY_YES) {
