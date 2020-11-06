@@ -56,7 +56,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>货期(周)</th>
                 <th>含税单价</th>
                 <th>含税总价</th>
-                <th>数量</th>
+                <th>采购单需求数量</th>
                 <?php endif;?>
                 <th style="background-color: darkgrey">支出合同供应商</th>
                 <th style="background-color: darkgrey">支出合同货期(周)</th>
@@ -64,7 +64,7 @@ $isShow = in_array($userId, $adminIds);
                 <th style="background-color: darkgrey">支出合同含税总价</th>
                 <th style="background-color: darkgrey">支出合同数量</th>
 <!--                <th>采购单需求数量</th>-->
-<!--                <th>使用库存数量</th>-->
+                <th>使用库存数量</th>
             </tr>
             </thead>
             <tbody>
@@ -79,8 +79,13 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=$item->goods->description_en?></td>
                     <?php
                         $number = $item->number;
-                        $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_number : 0;
-                        $fixed_stock_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_stock_number : 0;
+                        $purchaseGoods_number = 0;
+                        $fixed_stock_number = 0;
+                        if ($item->purchaseGoods ?? false) {
+                            $purchaseGoods_number = $item->purchaseGoods->fixed_number;
+                            $fixed_stock_number = $item->purchaseGoods->fixed_stock_number;
+                            $number = $item->purchaseGoods->number;
+                        }
                     ?>
                     <?php if (!$isShow):?>
                         <td><?=$item->goods->original_company?></td>
@@ -102,6 +107,7 @@ $isShow = in_array($userId, $adminIds);
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
+                    <td><?=$fixed_stock_number?></td>
                 </tr>
             <?php endforeach;?>
 

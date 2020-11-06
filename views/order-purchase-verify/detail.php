@@ -49,7 +49,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <th>货期(周)</th>
                     <th>含税单价</th>
                     <th>含税总价</th>
-                    <th>数量</th>
+                    <th>采购单需求数量</th>
                     <th style="background-color: darkgrey">支出合同供应商</th>
                     <th style="background-color: darkgrey">支出合同货期(周)</th>
                     <th style="background-color: darkgrey">支出合同含税单价</th>
