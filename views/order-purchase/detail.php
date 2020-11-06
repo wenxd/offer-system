@@ -143,6 +143,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 <th>含税总价</th>
                 <th>货期(周)</th>
                 <th width="80px;">是否入库</th>
+                <th width="80px;">是否新增</th>
                 <th>税率</th>
                 <th>采购单需求数量</th>
                 <th>使用库存数量</th>
@@ -199,6 +200,19 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         </option>
                     </select>
                 </td>
+                <td>
+                    <select class="form-control" name="after">
+                        <option value="0"></option>
+                        <option value="1"
+                                <?= isset($_GET['after']) ? ($_GET['after'] == 1 ? 'selected' : '') : '' ?>>
+                            否
+                        </option>
+                        <option value="2"
+                                <?= isset($_GET['after']) ? ($_GET['after'] == 2 ? 'selected' : '') : '' ?>>
+                            是
+                        </option>
+                    </select>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -250,6 +264,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td class="delivery_time"><input type="text" value="<?= $item->delivery_time ?>"
                                                      style="width: 100px;"></td>
                     <td><?= $item::$stock[$item->is_stock] ?></td>
+                    <td><?= $item->after ? '是' : "否" ?></td>
                     <td class="tax"><?= $item->tax_rate ?></td>
                     <td class="agreement_number"><?= $item->number ?></td>
                     <td class="use_number"><?= $item->fixed_stock_number ?></td>
@@ -552,6 +567,9 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         break;
                     case 'is_stock':
                         parameter += '&is_stock=' + $(e).find("option:selected").val();
+                        break;
+                    case 'after':
+                        parameter += '&after=' + $(e).find("option:selected").val();
                         break;
                     default:
                         break;

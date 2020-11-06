@@ -398,6 +398,14 @@ class OrderPurchaseController extends BaseController
             ->leftJoin('goods g', 'pg.goods_id=g.id')
             ->leftJoin('inquiry i', 'pg.relevance_id=i.id')
             ->where(['pg.order_purchase_id' => $id]);
+        // 判断新增选项
+        if (isset($request['after'])) {
+            if ($request['after'] == 1) {
+                $purchaseQuery->andWhere(['after' => 0]);
+            } elseif ($request['after'] == 2) {
+                $purchaseQuery->andWhere(['>', 'after', 0]);
+            }
+        }
         if (isset($request['original_company']) && $request['original_company']) {
             $purchaseQuery->andWhere(['like', 'original_company', $request['original_company']]);
         }
