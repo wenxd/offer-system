@@ -193,8 +193,8 @@ class OrderAgreementController extends Controller
                 }
                 $goods->strategy_number = $goods_info[$goods->goods_id];
                 $use_number = $goods->number - $goods->strategy_number;
-                $goods->strategy_stoker_number = $use_number;
-                $goods->is_strategy_stoker = $use_number > 0 ? 1 : 0;
+                $goods->strategy_stock_number = $use_number;
+                $goods->is_strategy_stock = $use_number > 0 ? 1 : 0;
                 if (!$goods->save()) {
                     $transaction->rollBack();
                     return json_encode(['code' => 501, 'msg' => $goods->errors], JSON_UNESCAPED_UNICODE);
