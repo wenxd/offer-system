@@ -56,7 +56,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <th style="background-color: darkgrey">支出合同含税总价</th>
                     <th style="background-color: darkgrey">支出合同数量</th>
 <!--                    <th>采购单需求数量</th>-->
-<!--                    <th>使用库存数量</th>-->
+                    <th>使用库存数量</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,7 +81,13 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="before_all_tax_price"><?=$item->tax_price * $item->fixed_number?></td>
                     <?php
                     $number = $item->number;
-                    $purchaseGoods_number = $item->purchaseGoods ? $item->purchaseGoods->fixed_number : 0;
+                    $purchaseGoods_number = 0;
+                    $fixed_stock_number = 0;
+                    if ($item->purchaseGoods ?? false) {
+                        $purchaseGoods_number = $item->purchaseGoods->fixed_number;
+                        $fixed_stock_number = $item->purchaseGoods->fixed_stock_number;
+                        $number = $item->purchaseGoods->number;
+                    }
                     ?>
                     <td class="before_number"><?=$number?></td>
                     <td class="supplier"><?=$item->supplier->name?></td>
@@ -89,6 +95,7 @@ $model->income_deliver_time = $model->purchase ? $model->purchase->end_date : ''
                     <td class="tax_price"><?=$item->fixed_tax_price?></td>
                     <td class="all_tax_price"><?=$item->fixed_all_tax_price?></td>
                     <td class="afterNumber"><?=$item->fixed_number?></td>
+                    <td><?=$fixed_stock_number?></td>
                     <!--判断是支出合同全为0，全为0则不生成支出合同 $is_contract-->
                     <?php
                         if ($item->fixed_number > 0) {
