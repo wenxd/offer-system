@@ -162,7 +162,7 @@ class AgreementStockController extends Controller
                         'order_agreement_sn' => $agreementStock->order_agreement_sn,
                         'goods_id' => $agreementStock->goods_id])
                     ->one();
-                $agreementGoods->is_strategy_stoker = 9;
+                $agreementGoods->is_strategy_stock = 9;
                 if (!$agreementGoods->save()) {
                     Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
                     return "<script>history.go(-1);</script>";
@@ -237,8 +237,8 @@ class AgreementStockController extends Controller
                         'goods_id' => $agreementStock->goods_id])
                     ->one();
                 $agreementGoods->strategy_number = $agreementGoods->strategy_number + $agreementStock->use_number;
-                $agreementGoods->strategy_stoker_number = $agreementGoods->strategy_stoker_number - $agreementStock->use_number;
-                $agreementGoods->is_strategy_stoker = 4;
+                $agreementGoods->strategy_stock_number = $agreementGoods->strategy_stock_number - $agreementStock->use_number;
+                $agreementGoods->is_strategy_stock = 4;
                 if (!$agreementGoods->save()) {
                     Yii::$app->getSession()->setFlash('error', $agreementGoods->errors);
                     return "<script>history.go(-1);</script>";
