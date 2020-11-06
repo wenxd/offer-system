@@ -353,8 +353,9 @@ class OrderPurchaseController extends BaseController
                         // 更新采购数据
                         $purchase->fixed_number = $numbers[$id];
                         $use_number = $purchase->number - $numbers[$id];
+                        if ($use_number < 0) $use_number = 0;
                         $purchase->fixed_stock_number = $use_number;
-                        $purchase->is_fixed_stock = 1;
+                        $purchase->is_fixed_stock = $use_number > 0 ? 1 : 0;
                         if (!$purchase->save()) {
                             $transaction->rollBack();
                             return json_encode(['code' => 501, 'msg' => $purchase->getErrors()], JSON_UNESCAPED_UNICODE);

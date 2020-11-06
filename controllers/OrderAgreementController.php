@@ -193,6 +193,7 @@ class OrderAgreementController extends Controller
                 }
                 $goods->strategy_number = $goods_info[$goods->goods_id];
                 $use_number = $goods->number - $goods->strategy_number;
+                if ($use_number < 0) $use_number = 0;
                 $goods->strategy_stock_number = $use_number;
                 $goods->is_strategy_stock = $use_number > 0 ? 1 : 0;
                 if (!$goods->save()) {
@@ -405,6 +406,7 @@ class OrderAgreementController extends Controller
                         }
                         $goods->purchase_number = $goods_info[$goods->goods_id];
                         $use_number = $goods->number - $goods->purchase_number;
+                        if ($use_number < 0) $use_number = 0;
                         $goods->purchase_stock_number = $use_number;
                         $goods->is_purchase_stock = $use_number > 0 ? 1 : 0;
                         if (!$goods->save()) {
