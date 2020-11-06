@@ -16,7 +16,7 @@ $admins_id = ArrayHelper::getColumn($admins, 'user_id');
 $userId = Yii::$app->user->identity->id;
 
 if ($model->isNewRecord) {
-    $model->is_confirm = Supplier::IS_CONFIRM_NO;
+    $model->is_confirm = Supplier::IS_CONFIRM_YES;
     $model->name = '';
     $model->short_name = '';
 }

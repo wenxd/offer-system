@@ -606,6 +606,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         $(".number").bind('input propertychange', function (e) {
             var number = $(this).val();
             var a = number.replace(/[^\d]/g, '');
+            if (a == '') a = 0;
             $(this).val(a);
 
             var agreement_number = $(this).parent().parent().find('.agreement_number').text();
