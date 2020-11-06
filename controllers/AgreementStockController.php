@@ -191,8 +191,7 @@ class AgreementStockController extends Controller
                     'order_purchase_id' => $agreementStock->order_purchase_id,
                     'goods_id' => $agreementStock->goods_id])
                 ->one();
-//            $PurchaseGoods->fixed_number = $PurchaseGoods->fixed_number + $agreementStock->use_number;
-            $PurchaseGoods->is_fixed_stock = 4;
+            $PurchaseGoods->is_fixed_stock = 9;
             if (!$PurchaseGoods->save()) {
                 Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
                 return "<script>history.go(-1);</script>";
