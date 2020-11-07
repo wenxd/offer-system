@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
 ?>
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-9">
         <div class="goods-view box">
             <div class="box-body">
                 <h3>子零件</h3>
@@ -45,7 +45,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
                             <td><?= $item['original_company'] ?></td>
                             <td><?= $item['unit'] ?></td>
                             <td><?= $item['stock_number'] ?></td>
-                            <td><?= $item['temp_number'] ?></td>
+                            <td><?= $item['temp_number'] . $item['occupy'] ?></td>
                             <td class="position"><?= $item['stock_position'] ?></td>
                             <td class="min_number"><?= $item['number'] ?></td>
                             <td class="max_number">0</td>
@@ -61,7 +61,7 @@ $number = $agreementGoods->strategy_number - $agreementGoods->assemble_number;
 </div>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-9">
         <div class="goods-view box">
             <div class="box-body">
                 <h3>总成信息</h3>

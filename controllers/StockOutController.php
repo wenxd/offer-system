@@ -494,9 +494,11 @@ class StockOutController extends BaseController
         $mix_number = 1000000;
         foreach ($goods_son as $key => $item) {
             // 判断是不是有自身占用库存
+            $item['occupy'] = '';
             foreach ($agreement_stock ?? [] as $k => $v) {
                 if ($item['goods_id'] == $v['goods_id']) {
                     $item['temp_number'] += $v['use_number'];
+                    $item['occupy'] = "【自占*{$v['use_number']}】";
                 }
             }
             $son_mix_number = intval($item['temp_number'] / $item['number']);
