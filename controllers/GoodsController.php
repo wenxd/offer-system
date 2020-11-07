@@ -511,14 +511,27 @@ class GoodsController extends BaseController
                                 $Y = trim($value['Y']) ?? 0;
                                 $AA = trim($value['AA']) ?? 0;
                                 $AD = trim($value['AD']) ?? 0;
+                                $publish = $goods->toArray();
+                                $publish['publish_type'] = trim($value['AE']);
+                                $publish['is_publish_accuracy'] = trim($value['AF']) == '是' ? 1 : 0;
+                                $is_price = trim($value['AG']) ?? '是';
+                                $publish['is_price'] = $is_price == '否' ? 0 : 1;
+                                $publish['updated_at'] = date('Y-m-d H:i:s');
+                                $publish['created_at'] = date('Y-m-d H:i:s');
+                                $publish_status = false;
+                                //正常情况，三个价格都为否，不录入。则有一个不为空则录入
                                 if ($Y || $AA || $AD) {
-                                    $publish = $goods->toArray();
-                                    $publish['publish_type'] = trim($value['AE']);
-                                    $publish['is_publish_accuracy'] = trim($value['AF']) == '是' ? 1 : 0;
-                                    $is_price = trim($value['AG']) ?? '是';
-                                    $publish['is_price'] = $is_price == '否' ? 0 : 1;
-                                    $publish['updated_at'] = date('Y-m-d H:i:s');
-                                    $publish['created_at'] = date('Y-m-d H:i:s');
+                                    $publish_status = true;
+                                } else {
+                                    // 如果三个价格都为否，有价写了否，则需要生成一条三条为0的发行价记录。
+                                    if ($publish['is_price']) {
+                                        $publish['publish_tax_price'] = 0;
+                                        $publish['estimate_publish_price'] = 0;
+                                        $publish['publish_price'] = 0;
+                                        $publish['factory_price'] = 0;
+                                    }
+                                }
+                                if ($publish_status) {
                                     $publish_model = new GoodsPublish();
                                     if ($publish['is_publish_accuracy']) {
                                         GoodsPublish::updateAll(['is_publish_accuracy' => 0], ['id' => $publish['id']]);

@@ -459,4 +459,17 @@ class Goods extends ActiveRecord
         return $this->hasMany(GoodsRelation::className(), ['p_goods_id' => 'id'])
             ->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO]);
     }
+
+    /**
+     * 获取导入类别
+     */
+    public function getImportmark()
+    {
+        $data = $this->hasMany(GoodsPublish::className(), ['id' => 'id'])->select(['import_mark'])->all();
+        if (empty($data)) {
+            return false;
+        }
+        return array_column($data, 'import_mark');
+
+    }
 }
