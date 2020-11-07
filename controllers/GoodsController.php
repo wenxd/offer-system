@@ -7,6 +7,7 @@ use app\actions;
 use app\models\{Admin,
     AgreementGoods,
     Brand,
+    GoodsPublish,
     GoodsRelation,
     PaymentGoods,
     Stock,
@@ -17,8 +18,7 @@ use app\models\{Admin,
     OrderGoods,
     OrderInquiry,
     SystemConfig,
-    TempOrderInquiry
-};
+    TempOrderInquiry};
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -72,6 +72,19 @@ class GoodsController extends BaseController
                 'modelClass' => Goods::className(),
             ],
         ];
+    }
+
+    /**
+     * 生成采购策略
+     */
+    public function actionIndex2()
+    {
+        $searchModel = new GoodsPublish();
+        $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
+        return $this->render('index2', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
     }
 
     /**
@@ -230,10 +243,10 @@ class GoodsController extends BaseController
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD'];
+            'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG'];
         $tableHeader = ['品牌', '零件号', '中文描述', '英文描述', '原厂家', '厂家号', '材质', 'TZ', '加工', '标准', '进口', '紧急', '大修',
             '锁定(是/否)', '特制', '铭牌', '所属设备', '所属部位', '建议库存', '设备用量', '单位', '技术', '原厂家备注', '零件备注', '发行含税单价',
-            '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价'];
+            '发行货期', '预估发行价', '导入类别', '发行税率', '美金出厂价', '发行价类别', '准确(是/否)', '有价(是/否)'];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -494,6 +507,28 @@ class GoodsController extends BaseController
                             }
                             if ($goods->save()) {
                                 $num++;
+                                //发行价记录(发行含税单价、预估发行价、美金出厂价，不填的导入。不做发行价记录)
+                                $Y = trim($value['Y']);
+                                $AA = trim($value['AA']);
+                                $AD = trim($value['AD']);
+                                if ($Y && $AA && $AD) {
+                                    //'publish_type' => '发行价类别',
+                                    //            'is_publish_accuracy' => '是否准确',
+                                    //            'is_price' => '是否有价',
+                                    $publish = $goods->toArray();
+                                    $publish['publish_type'] = trim($value['AE']);
+                                    $publish['is_publish_accuracy'] = trim($value['AF']) == '是' ? 1 : 0;
+                                    $publish['is_price'] = trim($value['AG']) == '是' ? 1 : 0;
+                                    $publish['updated_at'] = date('Y-m-d H:i:s');
+                                    $publish['created_at'] = date('Y-m-d H:i:s');
+                                    $publish_model = new GoodsPublish();
+                                    if ($publish['is_publish_accuracy']) {
+                                        GoodsPublish::updateAll(['is_publish_accuracy' => 0], ['id' => $publish['id']]);
+                                    }
+                                    if (!$publish_model->load(['GoodsPublish' => $publish]) || !$publish_model->save()) {
+                                        $err[] = $key;
+                                    }
+                                }
                             } else {
                                 $err[] = $key;
                                 continue;
