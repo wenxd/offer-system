@@ -508,17 +508,15 @@ class GoodsController extends BaseController
                             if ($goods->save()) {
                                 $num++;
                                 //发行价记录(发行含税单价、预估发行价、美金出厂价，不填的导入。不做发行价记录)
-                                $Y = trim($value['Y']);
-                                $AA = trim($value['AA']);
-                                $AD = trim($value['AD']);
-                                if ($Y && $AA && $AD) {
-                                    //'publish_type' => '发行价类别',
-                                    //            'is_publish_accuracy' => '是否准确',
-                                    //            'is_price' => '是否有价',
+                                $Y = trim($value['Y']) ?? 0;
+                                $AA = trim($value['AA']) ?? 0;
+                                $AD = trim($value['AD']) ?? 0;
+                                if ($Y || $AA || $AD) {
                                     $publish = $goods->toArray();
                                     $publish['publish_type'] = trim($value['AE']);
                                     $publish['is_publish_accuracy'] = trim($value['AF']) == '是' ? 1 : 0;
-                                    $publish['is_price'] = trim($value['AG']) == '是' ? 1 : 0;
+                                    $is_price = trim($value['AG']) ?? '是';
+                                    $publish['is_price'] = $is_price == '否' ? 0 : 1;
                                     $publish['updated_at'] = date('Y-m-d H:i:s');
                                     $publish['created_at'] = date('Y-m-d H:i:s');
                                     $publish_model = new GoodsPublish();
