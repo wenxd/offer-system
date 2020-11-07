@@ -145,4 +145,33 @@ class Stock extends ActiveRecord
         }
         return $allMoney;
     }
+
+    /**
+     * 根据goods_id计算临时库存
+     */
+    public static function countTempNumber($goods_ids)
+    {
+        $models = self::find()->where(['good_id' => $goods_ids, 'is_deleted' => self::IS_DELETED_NO])->all();
+        foreach ($models as $model) {
+            $occupy_number = $model->occupy['number'] ?? 0;
+            $temp_number = $model->number - $occupy_number;
+            if ($temp_number != $model->temp_number) {
+                if ($temp_number >= 0) {
+                    $model->temp_number = $temp_number;
+                    $model->save();
+                }
+            }
+        }
+    }
+
+    /**
+     * 关联订单使用库存表查询已占用库存
+     */
+    public function getOccupy()
+    {
+        return $this->hasOne(AgreementStock::className(), ['goods_id' => 'good_id'])
+            ->select('SUM(use_number) AS number')
+            ->where(['is_stock' => 0, 'is_confirm' => 1])
+            ->andWhere(['>', 'stock_number', 0])->asArray()->one();
+    }
 }

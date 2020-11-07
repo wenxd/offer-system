@@ -168,24 +168,24 @@ class StockOutLogController extends Controller
             return json_encode(['code' => 500, 'msg' => '没有此库存记录，不能出库']);
         }
         if ($params['number'] > $stock->temp_number) {
-            return json_encode(['code' => 500, 'msg' => '库存数量不够，剩下' . $stock->number]);
+            return json_encode(['code' => 500, 'msg' => '临时库存数量不够，剩下' . $stock->temp_number]);
         }
         $stockLog = new StockLog();
-        $stockLog->goods_id     = $params['goods_id'];
-        $stockLog->number       = $params['number'];
-        $stockLog->type         = StockLog::TYPE_OUT;
-        $stockLog->remark       = $params['remark'];
+        $stockLog->goods_id = $params['goods_id'];
+        $stockLog->number = $params['number'];
+        $stockLog->type = StockLog::TYPE_OUT;
+        $stockLog->remark = $params['remark'];
         $stockLog->operate_time = date('Y-m-d H:i:s');
-        $stockLog->admin_id     = Yii::$app->user->identity->id;
-        $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
-        $stockLog->direction    = $params['direction'] ? $params['direction'] : '';
-        $stockLog->customer_id  = $params['customer_id'] ? $params['customer_id'] : 0;
-        $stockLog->region       = $params['region'] ? $params['region'] : '';
-        $stockLog->plat_name    = $params['plat_name'] ? $params['plat_name'] : '';
+        $stockLog->admin_id = Yii::$app->user->identity->id;
+        $stockLog->is_manual = StockLog::IS_MANUAL_YES;
+        $stockLog->direction = $params['direction'] ? $params['direction'] : '';
+        $stockLog->customer_id = $params['customer_id'] ? $params['customer_id'] : 0;
+        $stockLog->region = $params['region'] ? $params['region'] : '';
+        $stockLog->plat_name = $params['plat_name'] ? $params['plat_name'] : '';
         if ($stockLog->save()) {
             $stock->number -= $params['number'];
-            $stock->temp_number -= $params['number'];
             $stock->save();
+            Stock::countTempNumber([$stock->good_id]);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()]);
@@ -199,7 +199,7 @@ class StockOutLogController extends Controller
     public function actionDownload()
     {
         $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管员B', '系统管理员']])->all();
-        $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        $adminIds = ArrayHelper::getColumn($use_admin, 'user_id');
 
         $adminList = Admin::find()->where(['id' => $adminIds])->all();
         $admins = [];
@@ -223,16 +223,16 @@ class StockOutLogController extends Controller
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
         $tableHeader = ['订单号', '收入合同单号', '零件号', '出库数量', '价格', '总价', '采购员', '出库时间', '手动',
             '订单类型', '客户', '区块', '平台名称', '去向', '备注'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         //获取数据
@@ -264,43 +264,43 @@ class StockOutLogController extends Controller
         }
         // grid filtering conditions
         $query->andFilterWhere([
-            'stock_log.id'                => $params['id'],
-            'stock_log.number'            => $params['number'],
-            'stock_log.is_manual'         => $params['is_manual'],
-            'stock_log.customer_id'       => $params['customer_id'],
+            'stock_log.id' => $params['id'],
+            'stock_log.number' => $params['number'],
+            'stock_log.is_manual' => $params['is_manual'],
+            'stock_log.customer_id' => $params['customer_id'],
         ]);
         $stockLogList = $query->all();
 
         foreach ($stockLogList as $key => $stockLog) {
-            for($i = 0; $i < count($letter); $i++) {
+            for ($i = 0; $i < count($letter); $i++) {
                 if ($stockLog->order) {
                     $excel->setCellValue($letter[$i] . ($key + 2), $stockLog->order->order_sn);
                 } else {
                     $excel->setCellValue($letter[$i] . ($key + 2), '');
                 }
-                $excel->setCellValue($letter[$i+1] . ($key + 2), $stockLog->agreement_sn);
+                $excel->setCellValue($letter[$i + 1] . ($key + 2), $stockLog->agreement_sn);
                 if ($stockLog->goods) {
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), $stockLog->goods->goods_number . ' ' . $stockLog->goods->material_code);
+                    $excel->setCellValue($letter[$i + 2] . ($key + 2), $stockLog->goods->goods_number . ' ' . $stockLog->goods->material_code);
                 } else {
-                    $excel->setCellValue($letter[$i+2] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 2] . ($key + 2), '');
                 }
-                $excel->setCellValue($letter[$i+3] . ($key + 2), $stockLog->number);
-                $excel->setCellValue($letter[$i+4] . ($key + 2), $stockLog->stock->price);
-                $excel->setCellValue($letter[$i+5] . ($key + 2), $stockLog->number * $stockLog->stock->price);
-                $excel->setCellValue($letter[$i+6] . ($key + 2), $admins[$stockLog->admin_id]);
-                $excel->setCellValue($letter[$i+7] . ($key + 2), $stockLog->operate_time);
-                $excel->setCellValue($letter[$i+8] . ($key + 2), StockLog::$manual[$stockLog->is_manual]);
+                $excel->setCellValue($letter[$i + 3] . ($key + 2), $stockLog->number);
+                $excel->setCellValue($letter[$i + 4] . ($key + 2), $stockLog->stock->price);
+                $excel->setCellValue($letter[$i + 5] . ($key + 2), $stockLog->number * $stockLog->stock->price);
+                $excel->setCellValue($letter[$i + 6] . ($key + 2), $admins[$stockLog->admin_id]);
+                $excel->setCellValue($letter[$i + 7] . ($key + 2), $stockLog->operate_time);
+                $excel->setCellValue($letter[$i + 8] . ($key + 2), StockLog::$manual[$stockLog->is_manual]);
                 if ($stockLog->order) {
-                    $excel->setCellValue($letter[$i+9] . ($key + 2), Order::$orderType[$stockLog->order->order_type]);
+                    $excel->setCellValue($letter[$i + 9] . ($key + 2), Order::$orderType[$stockLog->order->order_type]);
                 } else {
-                    $excel->setCellValue($letter[$i+9] . ($key + 2), '');
+                    $excel->setCellValue($letter[$i + 9] . ($key + 2), '');
                 }
 
-                $excel->setCellValue($letter[$i+10] . ($key + 2), $stockLog->customer_id);
-                $excel->setCellValue($letter[$i+11] . ($key + 2), $stockLog->region);
-                $excel->setCellValue($letter[$i+12] . ($key + 2), $stockLog->plat_name);
-                $excel->setCellValue($letter[$i+13] . ($key + 2), $stockLog->direction);
-                $excel->setCellValue($letter[$i+14] . ($key + 2), $stockLog->remark);
+                $excel->setCellValue($letter[$i + 10] . ($key + 2), $stockLog->customer_id);
+                $excel->setCellValue($letter[$i + 11] . ($key + 2), $stockLog->region);
+                $excel->setCellValue($letter[$i + 12] . ($key + 2), $stockLog->plat_name);
+                $excel->setCellValue($letter[$i + 13] . ($key + 2), $stockLog->direction);
+                $excel->setCellValue($letter[$i + 14] . ($key + 2), $stockLog->remark);
                 break;
             }
         }
@@ -312,7 +312,7 @@ class StockOutLogController extends Controller
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -350,15 +350,15 @@ class StockOutLogController extends Controller
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
-        $excel=$spreadsheet->setActiveSheetIndex(0);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
 
         $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
         $tableHeader = ['品牌', '零件号', '出库数量', '客户', '区块', '平台名称', '去向', '备注'];
-        for($i = 0; $i < count($tableHeader); $i++) {
+        for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
             $excel->getColumnDimension($letter[$i])->setWidth(18);
-            $excel->setCellValue($letter[$i].'1',$tableHeader[$i]);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
         }
 
         $title = '手动出库上传模板' . date('ymd-His');
@@ -368,7 +368,7 @@ class StockOutLogController extends Controller
         $spreadsheet->setActiveSheetIndex(0);
         // Redirect output to a client’s web browser (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
@@ -424,20 +424,20 @@ class StockOutLogController extends Controller
                                 return json_encode(['code' => 500, 'msg' => '品牌' . trim($value['A']) . '不存在，清先添加此品牌'], JSON_UNESCAPED_UNICODE);
                             }
                             $goods = Goods::find()->where([
-                                'is_deleted'   => Goods::IS_DELETED_NO,
+                                'is_deleted' => Goods::IS_DELETED_NO,
                                 'goods_number' => trim($value['B']),
-                                'brand_id'     => $brand->id,
+                                'brand_id' => $brand->id,
                             ])->one();
                             $customer = Customer::find()->where(['name' => trim($value['D'])])->one();
                             if (!$goods) {
                                 $temp = TempNotGoods::findOne([
-                                    'brand_name'   => trim($value['A']),
+                                    'brand_name' => trim($value['A']),
                                     'goods_number' => trim($value['B'])
                                 ]);
                                 if (!$temp) {
                                     $temp = new TempNotGoods();
                                 }
-                                $temp->brand_name   = trim($value['A']);
+                                $temp->brand_name = trim($value['A']);
                                 $temp->goods_number = trim($value['B']);
                                 $temp->save();
                             } else {
@@ -448,22 +448,22 @@ class StockOutLogController extends Controller
                                     $notStock->save();
                                 } else {
                                     $stockLog = new StockLog();
-                                    $stockLog->goods_id     = $goods->id;
-                                    $stockLog->number       = $value['C'] ? trim($value['C']) : 0;
-                                    $stockLog->type         = StockLog::TYPE_OUT;
-                                    $stockLog->customer_id  = $customer ? $customer->id : 0;
-                                    $stockLog->region       = $value['E'] ? trim($value['E']) : '';
-                                    $stockLog->plat_name    = $value['F'] ? trim($value['F']) : '';
-                                    $stockLog->direction    = $value['G'] ? trim($value['G']) : '';
-                                    $stockLog->admin_id     = Yii::$app->user->identity->id;
-                                    $stockLog->is_manual    = StockLog::IS_MANUAL_YES;
-                                    $stockLog->remark       = $value['H'] ? trim($value['H']) : '';
+                                    $stockLog->goods_id = $goods->id;
+                                    $stockLog->number = $value['C'] ? trim($value['C']) : 0;
+                                    $stockLog->type = StockLog::TYPE_OUT;
+                                    $stockLog->customer_id = $customer ? $customer->id : 0;
+                                    $stockLog->region = $value['E'] ? trim($value['E']) : '';
+                                    $stockLog->plat_name = $value['F'] ? trim($value['F']) : '';
+                                    $stockLog->direction = $value['G'] ? trim($value['G']) : '';
+                                    $stockLog->admin_id = Yii::$app->user->identity->id;
+                                    $stockLog->is_manual = StockLog::IS_MANUAL_YES;
+                                    $stockLog->remark = $value['H'] ? trim($value['H']) : '';
                                     $stockLog->operate_time = date('Y-m-d H:i:s');
                                     $stockLog->save();
                                     $num++;
                                     $stock->number -= $stockLog->number;
-                                    $stock->temp_number -= $stockLog->number;
                                     $stock->save();
+                                    Stock::countTempNumber([$stock->good_id]);
                                 }
                             }
                         }
