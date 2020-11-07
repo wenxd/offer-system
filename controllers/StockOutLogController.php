@@ -167,7 +167,7 @@ class StockOutLogController extends Controller
         if (!$stock) {
             return json_encode(['code' => 500, 'msg' => '没有此库存记录，不能出库']);
         }
-        if ($params['number'] > $stock->number) {
+        if ($params['number'] > $stock->temp_number) {
             return json_encode(['code' => 500, 'msg' => '库存数量不够，剩下' . $stock->number]);
         }
         $stockLog = new StockLog();
@@ -442,7 +442,7 @@ class StockOutLogController extends Controller
                                 $temp->save();
                             } else {
                                 $stock = Stock::find()->where(['good_id' => $goods->id])->one();
-                                if (!$stock || $stock->number < trim($value['C'])) {
+                                if (!$stock || $stock->temp_number < trim($value['C'])) {
                                     $notStock = new TempNotStock();
                                     $notStock->goods_id = $goods->id;
                                     $notStock->save();
@@ -462,6 +462,7 @@ class StockOutLogController extends Controller
                                     $stockLog->save();
                                     $num++;
                                     $stock->number -= $stockLog->number;
+                                    $stock->temp_number -= $stockLog->number;
                                     $stock->save();
                                 }
                             }
