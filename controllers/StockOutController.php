@@ -486,15 +486,26 @@ class StockOutController extends BaseController
 
         // 获取最低级子零件
         $goods_son = GoodsRelation::getGoodsSonNumber(['goods_id' => $agreementGoods->goods_id, 'number' => 1]);
+        // 查询本订单临时占用的零件
+        $agreement_stock = AgreementStock::find()
+            ->where(['goods_id' => array_column($goods_son, 'goods_id'), 'order_id' => $agreementGoods->order_id,
+                'is_stock' => 0, 'is_confirm' => 1])->asArray()->all();
         //计算最大组装数据
         $mix_number = 1000000;
-        foreach ($goods_son as $item) {
+        foreach ($goods_son as $key => $item) {
+            // 判断是不是有自身占用库存
+            foreach ($agreement_stock ?? [] as $k => $v) {
+                if ($item['goods_id'] == $v['goods_id']) {
+                    $item['temp_number'] += $v['use_number'];
+                }
+            }
             $son_mix_number = intval($item['temp_number'] / $item['number']);
             if ($son_mix_number > 0) {
                 if ($son_mix_number < $mix_number) $mix_number = $son_mix_number;
             } else {
                 $mix_number = 0;
             }
+            $goods_son[$key] = $item;
         }
         return $this->render('assemble', [
             'agreementGoods' => $agreementGoods,
