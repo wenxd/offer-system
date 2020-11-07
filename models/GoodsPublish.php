@@ -141,9 +141,8 @@ class GoodsPublish extends ActiveRecord
             'query' => $query,
             'sort'  => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'created_at' => SORT_DESC,
                 ],
-                'attributes' => ['id', 'updated_at', 'created_at']
             ],
             'pagination' => ['pageSize' => 30]
         ]);
