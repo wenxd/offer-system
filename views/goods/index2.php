@@ -14,7 +14,7 @@ use app\models\Goods;
 /* @var $searchModel app\models\GoodsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '发行记录列表';
+$this->title = '零件列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box table-responsive">
@@ -45,7 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'original_company',
                 'goods_number_b',
                 'publish_price',
-                'estimate_publish_price',
                 'factory_price',
                 [
                     'attribute' => 'publish_type',

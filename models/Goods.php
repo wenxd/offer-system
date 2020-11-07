@@ -465,7 +465,7 @@ class Goods extends ActiveRecord
      */
     public function getImportmark()
     {
-        $data = $this->hasMany(GoodsPublish::className(), ['id' => 'id'])->select(['import_mark'])->groupBy('import_mark')->all();
+        $data = $this->hasMany(GoodsPublish::className(), ['id' => 'id'])->select(['import_mark'])->all();
         if (empty($data)) {
             return false;
         }
