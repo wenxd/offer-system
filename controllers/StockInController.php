@@ -131,7 +131,7 @@ class StockInController extends BaseController
                     //TODO $orderAgreement = OrderAgreement::findOne();
                 }
                 $res = Stock::updateAllCounters(['number' => $params['number'], 'temp_number' => $params['number']], ['good_id' => $params['goods_id']]);
-
+                Stock::countTempNumber([$stock->good_id]);
                 //对采购商品进行入库改变
                 $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
                 $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;
@@ -216,6 +216,7 @@ class StockInController extends BaseController
                         }
                     }
                     $res = Stock::updateAllCounters(['number' => $paymentGoods['fixed_number'], 'temp_number' => $paymentGoods['fixed_number']], ['good_id' => $paymentGoods['goods_id']]);
+                    Stock::countTempNumber([$stock->good_id]);
                     //对采购商品进行入库改变
                     $purchaseGoods = PurchaseGoods::findOne($paymentGoods['purchase_goods_id']);
                     $purchaseGoods->is_stock = PurchaseGoods::IS_STOCK_YES;

@@ -77,16 +77,18 @@ class StockOutController extends BaseController
      */
     public function actionOut()
     {
+        $transaction = Yii::$app->db->beginTransaction();
         $params = Yii::$app->request->post();
 
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
         $orderAgreement->save();
         if ($orderAgreement->is_strategy_number == 1) {
-            $agreementGoods = AgreementGoodsData::findOne($params['id']);
+            $model = AgreementGoodsData::find();
         } else {
-            $agreementGoods = AgreementGoods::findOne($params['id']);
+            $model = AgreementGoods::find();
         }
+        $agreementGoods = $model->where(['id' => $params['id']])->one();
 
         $order_id = $orderAgreement->order_id;
 
@@ -139,26 +141,20 @@ class StockOutController extends BaseController
                 $stock->save();
             }
             // 减库存和临时库存
-            $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number, 'temp_number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
+            $res = Stock::updateAllCounters(['number' => -$agreementGoods->order_number], ['good_id' => $agreementGoods->goods_id]);
             if ($res) {
                 $agreementGoods->is_out = AgreementGoods::IS_OUT_YES;
                 $agreementGoods->save();
-
-                // 计算本订单临时占用库存数量，并添加到临时库存数量
+                // 如果有使用库存记录则更新成已出库
                 $where = ['order_id' => $agreementGoods->order_id, 'goods_id' => $agreementGoods->goods_id];
-                $AgreementStock = AgreementStock::find()->select('SUM(use_number) as use_number')
-                    ->andWhere(['is_confirm' => AgreementStock::IS_CONFIRM_YES])
-                    ->where($where)->asArray()->one();
-                if ($AgreementStock['use_number'] ?? false) {
-                    Stock::updateAllCounters(['temp_number' => $AgreementStock['use_number']], ['good_id' => $agreementGoods->goods_id]);
-                    // 如果有使用库存记录则更新成已出库
-                    AgreementStock::updateAll(['is_stock' => 1], $where);
-                }
+                AgreementStock::updateAll(['is_stock' => 1], $where);
+
+                // 从新计算临时库存
+                Stock::countTempNumber([$stock->good_id]);
                 //判断所有收入合同的零件都已近出库
-                $isHasAgreementGoods = AgreementGoods::find()->where([
+                $isHasAgreementGoods = $model->where([
                     'order_agreement_id' => $params['order_agreement_id'],
-                    'is_out' => AgreementGoods::IS_OUT_NO,
-                    'purchase_is_show' => AgreementGoods::IS_SHOW_YES
+                    'is_out' => AgreementGoods::IS_OUT_NO
                 ])->one();
                 if (!$isHasAgreementGoods) {
                     $orderAgreement->is_stock = OrderAgreement::IS_STOCK_YES;
@@ -167,8 +163,18 @@ class StockOutController extends BaseController
                         $orderAgreement->is_complete = OrderAgreement::IS_COMPLETE_YES;
                     }
                     $orderAgreement->save();
+                    // 查询使用库存中所有未出库零件，更新已出库，并更新
+                    $agreementStocks = AgreementStock::find()->where(['order_id' => $agreementGoods->order_id, 'is_stock' => Stock::IS_DELETED_NO])->all();
+                    foreach ($agreementStocks as $agreementStock) {
+                        $agreementStock->is_stock = AgreementGoods::IS_OUT_YES;
+                        if ($agreementStock->save()) {
+                            Stock::countTempNumber([$agreementStock->goods_id]);
+                        } else {
+                            return json_encode(['code' => 500, 'msg' => $agreementStock->getErrors()], JSON_UNESCAPED_UNICODE);
+                        }
+                    }
                 }
-
+                $transaction->commit();
                 return json_encode(['code' => 200, 'msg' => '出库成功']);
             }
         } else {
@@ -433,7 +439,8 @@ class StockOutController extends BaseController
                         return json_encode(['code' => 501, 'msg' => $stockLog->errors]);
                     }
                     // 更新子零件库存
-                    Stock::updateAllCounters(['number' => -$item['number'], 'temp_number' => -$item['number']], ['good_id' => $item['goods_id']]);
+                    Stock::updateAllCounters(['number' => -$item['number']], ['good_id' => $item['goods_id']]);
+                    Stock::countTempNumber([$item['goods_id']]);
                     $stockLog->id = 0;
                 }
                 // 顶级零件入库 && 加库存
@@ -457,7 +464,17 @@ class StockOutController extends BaseController
                 }
                 $stockLog->id = 0;
                 // 更新顶级零件库存
-                Stock::updateAllCounters(['number' => $post['number'], 'temp_number' => $post['number']], ['good_id' => $post['goods_id']]);
+                $stock = Stock::findOne(['good_id' => $post['goods_id']]);
+                if (!$stock) {
+                    $stock = new Stock();
+                    $stock->good_id = $post['goods_id'];
+                    $stock->number = $post['number'];
+                    $stock->position = $post['goods_position'];
+                } else {
+                    $stock->number += $post['number'];
+                }
+                $stock->save();
+                Stock::countTempNumber([$post['goods_id']]);
                 // 添加采购记录
 //                $supplie = Supplier::find()->where(['name' => '总成'])->asArray()->one();
 //                $item = [

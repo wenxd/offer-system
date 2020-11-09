@@ -189,6 +189,7 @@ class StockInLogController extends Controller
                 $stock->temp_number   += $params['number'];
                 $stock->save();
             }
+            Stock::countTempNumber([$stock->good_id]);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()]);
@@ -356,6 +357,7 @@ class StockInLogController extends Controller
                                         $stock->temp_number += trim($value['C']);
                                         $stock->save();
                                     }
+                                    Stock::countTempNumber([$stock->good_id]);
                                     $num++;
                                 }
                             }
