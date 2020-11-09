@@ -519,6 +519,11 @@ class GoodsController extends BaseController
                                 $publish['updated_at'] = date('Y-m-d H:i:s');
                                 $publish['created_at'] = date('Y-m-d H:i:s');
                                 $publish_status = false;
+                                // 价格属性
+                                if (!$value['AA']) {
+                                    $publish['publish_price'] = 0;
+                                    $publish['factory_price'] = 0;
+                                }
                                 //正常情况，三个价格都为否，不录入。则有一个不为空则录入
                                 if ($Y || $AA || $AD) {
                                     $publish_status = true;
@@ -532,12 +537,21 @@ class GoodsController extends BaseController
                                     }
                                 }
                                 if ($publish_status) {
-                                    $publish_model = new GoodsPublish();
-                                    if ($publish['is_publish_accuracy']) {
-                                        GoodsPublish::updateAll(['is_publish_accuracy' => 0], ['id' => $publish['id']]);
-                                    }
-                                    if (!$publish_model->load(['GoodsPublish' => $publish]) || !$publish_model->save()) {
-                                        $err[] = $key;
+                                    // 去重：零件号，三个价格，发行价类别
+                                    $status = GoodsPublish::find()->where([
+                                        'id' => $publish['id'],
+                                        'publish_price' => $publish['publish_price'],
+                                        'factory_price' => $publish['factory_price'],
+                                        'publish_type' => $publish['publish_type'],
+                                    ])->one();
+                                    if (empty($status)) {
+                                        $publish_model = new GoodsPublish();
+                                        if ($publish['is_publish_accuracy']) {
+                                            GoodsPublish::updateAll(['is_publish_accuracy' => 0], ['id' => $publish['id']]);
+                                        }
+                                        if (!$publish_model->load(['GoodsPublish' => $publish]) || !$publish_model->save()) {
+                                            $err[] = $key;
+                                        }
                                     }
                                 }
                             } else {
