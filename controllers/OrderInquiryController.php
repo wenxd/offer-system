@@ -411,6 +411,7 @@ class OrderInquiryController extends BaseController
     {
         $params = Yii::$app->request->post();
         $inquiryGoods = InquiryGoods::findOne($params['id']);
+        $inquiryGoods->serial = (string)($inquiryGoods->serial);
         $inquiryGoods->reason = $params['reason'];
         $inquiryGoods->is_result = InquiryGoods::IS_RESULT_YES;
         $inquiryGoods->not_result_at = date('Y-m-d');
