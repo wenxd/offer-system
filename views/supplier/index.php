@@ -23,6 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $use_admin = AuthAssignment::find()->where(['item_name' => ['询价员', '采购员']])->all();
 $adminIds = ArrayHelper::getColumn($use_admin, 'user_id');
+$admins = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$admins_id = ArrayHelper::getColumn($admins, 'user_id');
 
 $userId = Yii::$app->user->identity->id;
 if (in_array($userId, $adminIds)) {
@@ -263,8 +265,8 @@ if (in_array($userId, $adminIds)) {
                     'header' => '操作',
                     'template' => '{confirm} {view} {update}',
                     'buttons' => [
-                        'confirm' => function ($url, $model, $key) {
-                            if (Yii::$app->user->identity->username == 'admin') {
+                        'confirm' => function ($url, $model, $key) use ($userId, $admins_id) {
+                            if (in_array($userId, $admins_id)) {
                                 return Html::a('<i class="fa fa-reload"></i> 审批', Url::to(['confirm', 'id' => $model->id]), [
                                     'data-pjax' => '0',
                                     'class' => 'btn btn-success btn-flat btn-xs',
