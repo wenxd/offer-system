@@ -505,8 +505,9 @@ class StockOutController extends BaseController
         $goods_son = GoodsRelation::getGoodsSonNumber(['goods_id' => $agreementGoods->goods_id, 'number' => 1]);
         // 查询本订单临时占用的零件
         $agreement_stock = AgreementStock::find()
+            ->select(['goods_id', "SUM(use_number) AS use_number"])
             ->where(['goods_id' => array_column($goods_son, 'goods_id'), 'order_id' => $agreementGoods->order_id,
-                'is_stock' => 0, 'is_confirm' => 1])->asArray()->all();
+                'is_stock' => 0, 'is_confirm' => 1])->groupBy('goods_id')->asArray()->all();
         //计算最大组装数据
         $mix_number = 1000000;
         foreach ($goods_son as $key => $item) {
