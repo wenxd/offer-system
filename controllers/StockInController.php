@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AgreementStock;
 use app\models\Inquiry;
 use app\models\InquiryGoods;
 use app\models\OrderAgreement;
@@ -131,6 +132,31 @@ class StockInController extends BaseController
                     //TODO $orderAgreement = OrderAgreement::findOne();
                 }
                 $res = Stock::updateAllCounters(['number' => $params['number'], 'temp_number' => $params['number']], ['good_id' => $params['goods_id']]);
+                // 计算库存前，添加使用库存(项目入库)，不用确认和驳回，直接默认是已确认未出库状态
+                // 加入使用库存列表
+                $stock_model = new AgreementStock();
+                $tax_price = (1 + $system_tax / 100) * $paymentGoods->fixed_price;
+                $stock_data = [
+                    'order_id' => $orderPayment->order_id,
+                    'order_purchase_id' => $orderPayment->order_purchase_id,
+                    'order_purchase_sn' => $orderPayment->order_purchase_sn,
+                    'goods_id' => $stock->good_id,
+                    'price' => $paymentGoods->fixed_price,
+                    'tax_price' => $tax_price,
+                    'use_number' => $params['number'],
+                    'all_price' => $paymentGoods->fixed_price * $params['number'],
+                    'all_tax_price' => $tax_price * $params['number'],
+                    'source' => AgreementStock::PROJECT,
+                    'confirm_at' => date('Y-m-d H:i:s'),
+                    'admin_id' => Yii::$app->user->identity->id,
+                    'is_confirm' => AgreementStock::IS_CONFIRM_YES,
+                    'stock_number' => $stock->number,
+                    'temp_number' => $stock->temp_number,
+                ];
+                if (!$stock_model->load(['AgreementStock' => $stock_data]) || !$stock_model->save()) {
+                    $transaction->rollBack();
+                    return json_encode(['code' => 502, 'msg' => $stock_model->getErrors()], JSON_UNESCAPED_UNICODE);
+                }
                 Stock::countTempNumber([$stock->good_id]);
                 //对采购商品进行入库改变
                 $purchaseGoods = PurchaseGoods::findOne($paymentGoods->purchase_goods_id);
@@ -149,7 +175,7 @@ class StockInController extends BaseController
             }
         } catch (\Exception $e) {
             $transaction->rollBack();
-            return json_encode(['code' => 500, 'msg' => $stockLog->getErrors()], JSON_UNESCAPED_UNICODE);
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     }
 

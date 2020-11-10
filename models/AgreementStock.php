@@ -52,11 +52,13 @@ class AgreementStock extends \yii\db\ActiveRecord
     const STRATEGY = 'strategy';
     const PURCHASE = 'purchase';
     const PAYMENT = 'payment';
+    const PROJECT = 'project';
 
     public static $source = [
         self::STRATEGY  => '采购策略',
         self::PURCHASE  => '采购订单',
-        self::PAYMENT => '支出合同'
+        self::PAYMENT => '支出合同',
+        self::PROJECT => '项目入库',
     ];
 
     public function behaviors()
