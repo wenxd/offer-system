@@ -64,8 +64,15 @@ class InquiryGoodsController extends Controller
             }
         }
         $searchModel = new InquiryGoodsClarifySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $download = Yii::$app->request->get('download', false);
+        $params = Yii::$app->request->queryParams;
+        if ($download) {
+            $params = json_decode(Yii::$app->session['clarify_sql'], true);
+            $params['download'] = true;
+        } else {
+            Yii::$app->session['clarify_sql'] = json_encode($params);
+        }
+        $dataProvider = $searchModel->search($params);
         return $this->render('clarify', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

@@ -24,7 +24,7 @@ class InquiryGoodsClarifySearch extends InquiryGoodsClarify
         return [
             [['inquiry_goods_id', 'order_id', 'order_inquiry_id', 'goods_id', 'is_inquiry', 'is_result', 'is_deleted', 'admin_id', 'is_result_tag'], 'integer'],
             [['updated_at', 'created_at', 'not_result_at'], 'safe'],
-            [['inquiry_sn', 'reason', 'remark', 'clarify'], 'string', 'max' => 255],
+            [['inquiry_sn', 'reason', 'remark', 'clarify', 'goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'order_sn'], 'string', 'max' => 255],
         ];
     }
 
@@ -95,15 +95,15 @@ class InquiryGoodsClarifySearch extends InquiryGoodsClarify
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'inquiry_goods_clarify.inquiry_goods_id'      => $this->inquiry_goods_id,
-            'inquiry_goods_clarify.order_id'      => $this->order_id,
-            'inquiry_goods_clarify.goods_id'      => $this->goods_id,
-            'inquiry_goods_clarify.is_inquiry'    => $this->is_inquiry,
-            'inquiry_goods_clarify.is_result'     => $this->is_result,
-            'inquiry_goods_clarify.is_deleted'    => $this->is_deleted,
-            'inquiry_goods_clarify.updated_at'    => $this->updated_at,
-            'inquiry_goods_clarify.created_at'    => $this->created_at,
-            'inquiry_goods_clarify.admin_id'      => $this->admin_id,
+            'inquiry_goods_clarify.inquiry_goods_id' => $this->inquiry_goods_id,
+            'inquiry_goods_clarify.order_id' => $this->order_id,
+            'inquiry_goods_clarify.goods_id' => $this->goods_id,
+            'inquiry_goods_clarify.is_inquiry' => $this->is_inquiry,
+            'inquiry_goods_clarify.is_result' => $this->is_result,
+            'inquiry_goods_clarify.is_deleted' => $this->is_deleted,
+            'inquiry_goods_clarify.updated_at' => $this->updated_at,
+            'inquiry_goods_clarify.created_at' => $this->created_at,
+            'inquiry_goods_clarify.admin_id' => $this->admin_id,
         ]);
 
         $query->andFilterWhere(['like', 'inquiry_sn', $this->inquiry_sn])
@@ -112,10 +112,55 @@ class InquiryGoodsClarifySearch extends InquiryGoodsClarify
         if ($this->not_result_at && strpos($this->not_result_at, ' - ')) {
             list($not_result_at_start, $not_result_at_end) = explode(' - ', $this->not_result_at);
             $not_result_at_start .= ' 00:00:00';
-            $not_result_at_end   .= ' 23::59:59';
+            $not_result_at_end .= ' 23::59:59';
             $query->andFilterWhere(['between', 'inquiry_goods_clarify.created_at', $not_result_at_start, $not_result_at_end]);
         }
-
+        // 导出
+        if ($params['download'] ?? false) {
+            return self::download($query->each(200));
+            die;
+        }
         return $dataProvider;
+    }
+
+    //下载
+    public static function download($res)
+    {
+        $adminList = Helper::getAdminList(['系统管理员', '询价员']);
+        $fileName = '澄清记录列表.csv';
+        $columns = ['id', '零件号', '厂家号', '中文描述', '英文描述', '原厂家', '询价员', '询价单号', '订单号', '澄清问题', '澄清回复', '是否询价 0否 1是', '寻不出时间'];
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        $fp = fopen('php://output', 'a');//打开output流
+        mb_convert_variables('GBK', 'UTF-8', $columns);
+        fputcsv($fp, $columns);
+        foreach ($res as $value) {
+            $data = [
+                $value->clarify_id,
+                $value->goods->goods_number . ' ' . $value->goods->material_code,
+                $value->goods->goods_number_b . ' ' . $value->goods->material_code,
+                $value->goods->description,
+                $value->goods->description_en,
+                $value->goods->original_company,
+                $adminList[$value->admin_id] ?? '',
+                $value->inquiry_sn,
+                $value->order->order_sn ?? '',
+                $value->reason,
+                $value->clarify,
+                InquiryGoods::$Inquiry[$value->is_inquiry],
+                substr($value->not_result_at, 0, 10),
+            ];
+            mb_convert_variables('GBK', 'UTF-8', $data);
+            fputcsv($fp, $data);
+            unset($data);
+            ob_flush();
+            flush();
+        }
+        fclose($fp);
+        exit();
     }
 }

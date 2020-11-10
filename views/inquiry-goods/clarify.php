@@ -29,13 +29,20 @@ $userId = Yii::$app->user->identity->id;
 <div class="box">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{index}',
+            'template' => '{index}{download}',
             'buttons' => [
                 'index' => function () {
-                    return Html::a('<i class="fa fa-reload"></i> 复位', Url::to(['index']), [
+                    return Html::a('<i class="fa fa-reload"></i>复位', Url::to(['index']), [
                         'data-pjax' => '0',
                         'class' => 'btn btn-success btn-flat',
                     ]);
+                }, 'download' => function () use ($userId, $admins_id) {
+                    if (in_array($userId, $admins_id)) {
+                        return Html::a('<i class="fa fa-download"></i>导出', Url::to(['index', 'download' => true]), [
+                            'data-pjax' => '0',
+                            'class' => 'btn btn-primary btn-flat',
+                        ]);
+                    }
                 }
             ]
         ]) ?>
@@ -196,7 +203,7 @@ $userId = Yii::$app->user->identity->id;
     ]); ?>
     <?php Pjax::end(); ?>
 </div>
-<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script>
@@ -222,25 +229,26 @@ $userId = Yii::$app->user->identity->id;
                 '</form>'
         });
     }
+
     function sure(id) {
         var reason = $('#reason').val();
         if (!reason) {
-            layer.msg('请输入原因', {time:2000});
+            layer.msg('请输入原因', {time: 2000});
             return false;
         }
         $(".btn_sure").attr("disabled", true).addClass("disabled");
         $.ajax({
-            type:"post",
-            url:"?r=inquiry-goods/index",
-            data:{id:id, reason:reason},
-            dataType:'JSON',
-            success:function(res){
+            type: "post",
+            url: "?r=inquiry-goods/index",
+            data: {id: id, reason: reason},
+            dataType: 'JSON',
+            success: function (res) {
                 if (res && res.code == 200) {
-                    layer.msg(res.msg, {time:2000});
+                    layer.msg(res.msg, {time: 2000});
                     window.location.reload();
                 } else {
                     $(".btn_sure").removeAttr("disabled").removeClass("disabled");
-                    layer.msg(res.msg, {time:2000});
+                    layer.msg(res.msg, {time: 2000});
                     return false;
                 }
             }
