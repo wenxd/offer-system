@@ -511,19 +511,21 @@ class GoodsController extends BaseController
                                 $Y = trim($value['Y']) ?? 0;
                                 $AA = trim($value['AA']) ?? 0;
                                 $AD = trim($value['AD']) ?? 0;
+                                $AC = trim($value['AC']) ?? 0;
                                 $publish = $goods->toArray();
+                                $publish['publish_tax_price'] = $Y ? $Y : 0;
+                                $publish['estimate_publish_price'] = $AA ? $AA : 0;
+                                $publish['factory_price'] = $AD ? $AD : 0;
+                                $publish['publish_tax'] = $AC ? $AC : 0;
                                 $publish['publish_type'] = trim($value['AE']);
                                 $publish['is_publish_accuracy'] = trim($value['AF']) == '是' ? 1 : 0;
                                 $is_price = trim($value['AG']) ?? '是';
                                 $publish['is_price'] = $is_price == '否' ? 0 : 1;
+                                $publish['original_company'] = (string)trim($value['E']);
+                                $publish['goods_number_b'] = (string)trim($value['F']);
                                 $publish['updated_at'] = date('Y-m-d H:i:s');
                                 $publish['created_at'] = date('Y-m-d H:i:s');
                                 $publish_status = false;
-                                // 价格属性
-                                if (!$value['AA']) {
-                                    $publish['publish_price'] = 0;
-                                    $publish['factory_price'] = 0;
-                                }
                                 //正常情况，三个价格都为否，不录入。则有一个不为空则录入
                                 if ($Y || $AA || $AD) {
                                     $publish_status = true;
@@ -532,15 +534,16 @@ class GoodsController extends BaseController
                                     if ($publish['is_price']) {
                                         $publish['publish_tax_price'] = 0;
                                         $publish['estimate_publish_price'] = 0;
-                                        $publish['publish_price'] = 0;
                                         $publish['factory_price'] = 0;
+                                        $publish_status = true;
                                     }
                                 }
                                 if ($publish_status) {
                                     // 去重：零件号，三个价格，发行价类别
                                     $status = GoodsPublish::find()->where([
                                         'id' => $publish['id'],
-                                        'publish_price' => $publish['publish_price'],
+                                        'publish_tax_price' => $publish['publish_tax_price'],
+                                        'estimate_publish_price' => $publish['estimate_publish_price'],
                                         'factory_price' => $publish['factory_price'],
                                         'publish_type' => $publish['publish_type'],
                                     ])->one();

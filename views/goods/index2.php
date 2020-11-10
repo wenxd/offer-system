@@ -44,9 +44,30 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'original_company',
                 'goods_number_b',
-                'publish_price',
-                'estimate_publish_price',
-                'factory_price',
+                [
+                    'attribute' => 'publish_tax_price',
+                    'value' => function ($model) {
+                        return $model->publish_tax_price != 0 ? $model->publish_tax_price : '';
+                    }
+                ],
+                [
+                    'attribute' => 'estimate_publish_price',
+                    'value' => function ($model) {
+                        return $model->estimate_publish_price != 0 ? $model->estimate_publish_price : '';
+                    }
+                ],
+                [
+                    'attribute' => 'factory_price',
+                    'value' => function ($model) {
+                        return $model->factory_price != 0 ? $model->factory_price : '';
+                    }
+                ],
+                [
+                    'attribute' => 'publish_tax',
+                    'value' => function ($model) {
+                        return $model->publish_tax != 0 ? $model->publish_tax : '';
+                    }
+                ],
                 [
                     'attribute' => 'publish_type',
                     'value' => function ($model) {
@@ -67,13 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Goods::$standard[$model->is_price];
                     }
                 ],
-                [
-                    'attribute' => 'updated_at',
-                    'format' => 'raw',
-                    'value' => function ($model) {
-                        return substr($model->updated_at, 0, 10);
-                    }
-                ],
+//                [
+//                    'attribute' => 'updated_at',
+//                    'format' => 'raw',
+//                    'value' => function ($model) {
+//                        return substr($model->updated_at, 0, 10);
+//                    }
+//                ],
                 [
                     'attribute' => 'created_at',
                     'format' => 'raw',

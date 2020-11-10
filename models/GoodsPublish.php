@@ -160,10 +160,13 @@ class GoodsPublish extends ActiveRecord
             ->andFilterWhere(['like', 'goods_number', $this->goods_number])
             ->andFilterWhere(['like', 'original_company', $this->original_company])
             ->andFilterWhere(['like', 'goods_number_b', $this->goods_number_b])
-            ->andFilterWhere(['like', 'publish_price', $this->publish_price])
+            ->andFilterWhere(['like', 'publish_tax_price', $this->publish_tax_price])
+            ->andFilterWhere(['like', 'estimate_publish_price', $this->estimate_publish_price])
             ->andFilterWhere(['like', 'factory_price', $this->factory_price])
+            ->andFilterWhere(['like', 'publish_tax', $this->publish_tax])
             ->andFilterWhere(['like', 'publish_type', $this->publish_type])
-            ->andFilterWhere(['like', 'is_publish_accuracy', $this->is_publish_accuracy]);
+            ->andFilterWhere(['is_price' => $this->is_price])
+            ->andFilterWhere(['is_publish_accuracy' => $this->is_publish_accuracy]);
         return $dataProvider;
     }
 }

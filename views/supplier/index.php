@@ -164,6 +164,7 @@ if (in_array($userId, $adminIds)) {
                 [
                     'attribute' => 'grade',
                     'format' => 'raw',
+                    'filter' => Supplier::$grade,
                     'value' => function ($model, $key, $index, $column) {
                         $key = 'grade';
                         $name = $model->$key;

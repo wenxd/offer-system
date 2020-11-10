@@ -156,10 +156,8 @@ class Stock extends ActiveRecord
             $occupy_number = $model->occupy['number'] ?? 0;
             $temp_number = $model->number - $occupy_number;
             if ($temp_number != $model->temp_number) {
-                if ($temp_number >= 0) {
-                    $model->temp_number = $temp_number;
-                    $model->save();
-                }
+                $model->temp_number = $temp_number >= 0 ? $temp_number : 0;
+                $model->save();
             }
         }
     }
