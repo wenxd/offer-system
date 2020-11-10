@@ -531,7 +531,7 @@ class GoodsController extends BaseController
                                     $publish_status = true;
                                 } else {
                                     // 如果三个价格都为否，有价写了否，则需要生成一条三条为0的发行价记录。
-                                    if ($publish['is_price']) {
+                                    if (!$publish['is_price']) {
                                         $publish['publish_tax_price'] = 0;
                                         $publish['estimate_publish_price'] = 0;
                                         $publish['factory_price'] = 0;
