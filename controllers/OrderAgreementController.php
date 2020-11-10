@@ -318,6 +318,10 @@ class OrderAgreementController extends Controller
                 $model = new AgreementGoods();
                 $model_bak = new AgreementGoodsBak();
                 foreach ($goodsNews as $item) {
+                    if (empty($item['inquiry_admin_id'])) {
+                        $top_goods_number = $item['top_goods_number'] ?? '';
+                        return json_encode(['code' => 500, 'msg' => "{$top_goods_number} 子零件询价信息不足"]);
+                    }
                     $model->isNewRecord = true;
                     $model->setAttributes($item);
                     if (!$model->save()) {
