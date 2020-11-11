@@ -56,4 +56,9 @@ class AuthAssignment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
     }
+
+    public function getName()
+    {
+        return $this->hasOne(Admin::className(), ['id' => 'user_id']);
+    }
 }

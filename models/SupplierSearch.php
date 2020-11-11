@@ -53,7 +53,7 @@ class SupplierSearch extends Supplier
         $super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
         if (!in_array($userId, $adminIds)) {
             $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES])
-            ->andWhere(['NOT IN', 'admin_id', $adminIds]);
+            ->andWhere(['admin_id' => $userId]);
         } else {
             $query = Supplier::find();
         }

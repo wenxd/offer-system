@@ -30,12 +30,32 @@ foreach ($adminList as $key => $admin) {
     $admins[$admin->id] = $admin->username;
 }
 $userId   = Yii::$app->user->identity->id;
+$Supertube = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$Supertube_ids = ArrayHelper::getColumn($Supertube, 'user_id');
+if (in_array($userId, $Supertube_ids)) {
+    $control = '{create} {delete} {index} {updateall}';
+} else {
+    $control = '{create} {delete} {index}';
+}
+$html = '<form class="form-horizontal"><div class="form-group"><label for="reason" class="col-sm-2 control-label"></label><div class="col-sm-8"><select class="form-control" id="exit_admin" name="SupplierSearch[grade]"><option value="">请选择询价员</option>';
+$ids = [];
+foreach ($use_admin as $item) {
+    if (isset($item->name)) {
+        $id = $item->name->id;
+        if (!in_array($id, $ids)) {
+            $username = $item->name->username;
+            $html .= "<option value={$id}>{$username}</option>";
+            $ids[] = $id;
+        }
 
+    }
+}
+$html .= '</select></div></div><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><a class="btn btn-default btn_sure" href="javascript:void(0)" onclick="sure()">确定</a></div></div></form>';
 ?>
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {index}',
+            'template' => $control,
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -54,6 +74,9 @@ $userId   = Yii::$app->user->identity->id;
                         'data-pjax' => '0',
                         'class'     => 'btn btn-info btn-flat',
                     ]);
+                },
+                'updateall' => function () {
+                    return Html::button('批量修改', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'updateall()', ]);
                 }
             ]
         ])?>
@@ -61,6 +84,7 @@ $userId   = Yii::$app->user->identity->id;
     <div class="box-body">
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
+        'id' => 'griditems',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -317,6 +341,54 @@ $userId   = Yii::$app->user->identity->id;
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
+    var ids = [];
+    var content = '<?=$html?>';
+
+    function updateall() {
+        ids = $('#griditems').yiiGridView('getSelectedRows');
+        if (ids.length == 0) {
+            layer.msg('请勾选', {time: 2000});
+            return false;
+        }
+        layer.open({
+            type: 1,
+            title: '修改询价员',
+            skin: 'layui-layer-rim', //加上边框
+            area: ['500px', '240px'], //宽高
+            content: content
+        });
+    }
+
+    function sure(id) {
+        var admin_id = $('#exit_admin').val();
+
+        if (!admin_id) {
+            layer.msg('请选择询价员', {time: 2000});
+            return false;
+        }
+        layer.confirm('确定要修改吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "post",
+                url: "?r=search/update-all-inquiry-admin",
+                data: {ids: ids, admin_id: admin_id},
+                dataType: 'JSON',
+                success: function (res) {
+                    layer.msg(res.msg, {time: 2000});
+                    if (res && res.code == 200) {
+                        window.location.reload();
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        }, function(){
+            layer.closeAll();
+        });
+
+    }
+
     //上传导入逻辑
     //加载动画索引
     var index;

@@ -715,7 +715,18 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     }
                 }
             });
-
+            // 数量为0不能和有数量的同时生成合同
+            var status = 2;
+            for (var i in goods_info) {
+                var temp_status = goods_info[i].fix_number == 0 ? 0 : 1;
+                if (status == 2) {
+                    status = temp_status;
+                } else if (temp_status != status) {
+                    layer.msg('数量为0不能和有数量的同时生成合同', {time: 2000});
+                    $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                    return false;
+                }
+            }
             // if (supplier_flag) {
             //     layer.msg('一个支出合同不能有多个供应商', {time:2000});
             //     return false;

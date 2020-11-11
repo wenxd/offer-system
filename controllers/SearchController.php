@@ -208,13 +208,31 @@ class SearchController extends BaseController
         return json_encode(['code' => 200,  'msg' => '成功', 'data' => ['purchase_sn' => $data['purchase_sn']]]);
     }
 
-
-
     public function actionGet()
     {
         $session = Yii::$app->session;
         $name = $session->get('name');
 
         echo $name;
+    }
+
+    public function actionUpdateAllSupplierAdmin()
+    {
+        $post = Yii::$app->request->post();
+        $res = Supplier::updateAll(['admin_id' => $post['admin_id']], ['id' => $post['ids']]);
+        if ($res) {
+            return json_encode(['code' => 200, 'msg' => '更新申请人成功']);
+        }
+        return json_encode(['code' => 200, 'msg' => '失败']);
+    }
+
+    public function actionUpdateAllInquiryAdmin()
+    {
+        $post = Yii::$app->request->post();
+        $res = Inquiry::updateAll(['admin_id' => $post['admin_id']], ['id' => $post['ids']]);
+        if ($res) {
+            return json_encode(['code' => 200, 'msg' => '更新询价员成功']);
+        }
+        return json_encode(['code' => 500, 'msg' => '失败']);
     }
 }
