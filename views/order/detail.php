@@ -205,19 +205,47 @@ $userId   = Yii::$app->user->identity->id;
             </tr>
             <?php $orderPaymentPrice = 0;?>
             <?php foreach ($orderPayment as $payment):?>
-                <tr>
-                    <td><?=$payment->order_id?></td>
-                    <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
-                    <td><?=$payment->admin ? $payment->admin->username : ''?></td>
-                    <td><?=$payment->payment_price?></td>
-                </tr>
-                <?php $orderPaymentPrice += $payment->payment_price?>
+                <?php if ($payment->is_contract == 1) :?>
+                    <tr>
+                        <td><?=$payment->order_id?></td>
+                        <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
+                        <td><?=$payment->admin ? $payment->admin->username : ''?></td>
+                        <td><?=$payment->payment_price?></td>
+                    </tr>
+                    <?php $orderPaymentPrice += $payment->payment_price?>
+                <?php endif;?>
             <?php endforeach;?>
                 <tr>
                     <td colspan="2"></td>
                     <td>汇总</td>
                     <td><?=$orderPaymentPrice?></td>
                 </tr>
+            </thead>
+
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>杂项支出合同单号</th>
+                <th>负责人</th>
+                <th>支出合同金额</th>
+            </tr>
+            <?php $mix_orderPaymentPrice = 0;?>
+            <?php foreach ($orderPayment as $payment):?>
+                <?php if ($payment->is_contract == 0) :?>
+                    <tr>
+                        <td><?=$payment->order_id?></td>
+                        <td><?=Html::a($payment->payment_sn, Url::to(['order-payment/detail', 'id' => $payment->id]))?></td>
+                        <td><?=$payment->admin ? $payment->admin->username : ''?></td>
+                        <td><?=$payment->payment_price?></td>
+                    </tr>
+                    <?php $mix_orderPaymentPrice += $payment->payment_price?>
+                <?php endif;?>
+            <?php endforeach;?>
+            <tr>
+                <td colspan="2"></td>
+                <td>汇总</td>
+                <td><?=$mix_orderPaymentPrice?></td>
+            </tr>
             </thead>
 
             <thead>
@@ -247,8 +275,18 @@ $userId   = Yii::$app->user->identity->id;
             </tr>
             <tr>
                 <th colspan="2"></th>
+                <td>（收入-支出）/ 收入</td>
+                <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
+            </tr>
+            <tr>
+                <th colspan="2"></th>
                 <td>（收入-支出-库存）/ 收入</td>
                 <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice - $stockPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
+            </tr>
+            <tr>
+                <th colspan="2"></th>
+                <td>（收入-支出-杂项-库存）/ 收入</td>
+                <td><?=$orderAgreementPrice ? number_format((($orderAgreementPrice - $orderPaymentPrice - $mix_orderPaymentPrice - $stockPrice) / $orderAgreementPrice) * 100, 2, '.', '') . '%' : 0?></td>
             </tr>
             </thead>
         </table>
