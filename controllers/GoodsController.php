@@ -347,10 +347,10 @@ class GoodsController extends BaseController
                             }
                             // 判断上次数据中锁定状态，批量锁，以导入为准（要不导入就没意义了）。批量未锁，以线上为准。
                             if (!in_array($value['N'], ['是', '否'])) $value['N'] = '否';
+                            $locking = true;
                             if ($value['N'] == '否') {
                                 if (isset($goods->locking) && $goods->locking == 1) {
-                                    $err[] = $key;
-                                    continue;
+                                    $locking = false;
                                 }
                                 $goods->locking = 0;
                             } else {
@@ -370,11 +370,11 @@ class GoodsController extends BaseController
                                 $goods->description_en = (string)trim($value['D']);
                             }
                             //原厂家
-                            if ($value['E']) {
+                            if ($value['E'] && $locking) {
                                 $goods->original_company = (string)trim($value['E']);
                             }
                             //厂家号
-                            if ($value['F']) {
+                            if ($value['F'] && $locking) {
                                 $goods->goods_number_b = (string)trim($value['F']);
                             }
                             //材质
