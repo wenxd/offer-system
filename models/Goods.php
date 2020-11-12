@@ -231,7 +231,8 @@ class Goods extends ActiveRecord
     public static function getGoodsCode()
     {
         $model = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO]);
-        if (Yii::$app->user->identity->username != 'admin') {
+        $use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+        if (!in_array(Yii::$app->user->identity->getId(), array_column($use_admin, 'user_id'))) {
             $model->andWhere(['like', 'goods_number', "杂项-"]);
         }
         $res = $model->asArray()->all();
