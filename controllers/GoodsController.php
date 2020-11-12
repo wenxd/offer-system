@@ -351,8 +351,9 @@ class GoodsController extends BaseController
                             if ($value['N'] == '否') {
                                 if (isset($goods->locking) && $goods->locking == 1) {
                                     $locking = false;
+                                } else {
+                                    $goods->locking = 0;
                                 }
-                                $goods->locking = 0;
                             } else {
                                 $goods->locking = 1;
                             }
