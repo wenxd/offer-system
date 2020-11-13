@@ -62,9 +62,11 @@ $brandList = Brand::getList();
         <?= $form->field($model, 'brand_id')->dropDownList($brandList)->label('品牌') ?>
 
         <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'goods_number_b')->textInput(['maxlength' => true]) ?>
-
+        <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
@@ -81,7 +83,6 @@ $brandList = Brand::getList();
 
         <?= $form->field($model, 'material')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'original_company')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'original_company_remark')->textInput(['maxlength' => true]) ?>
 
@@ -126,8 +127,6 @@ $brandList = Brand::getList();
             ]
         ]); ?>
 
-        <?= $form->field($model, 'technique_remark')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'suggest_number')->textInput(['maxlength' => true]) ?>
 
         <button type="button" class="glyphicon glyphicon-plus btn btn-primary btn-sm add-device" name="button">添加设备信息</button>

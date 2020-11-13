@@ -195,7 +195,7 @@ class Goods extends ActiveRecord
             'original_company'        => '厂家',
             'original_company_remark' => '厂家备注',
             'unit'                    => '单位',
-            'technique_remark'        => '技术',
+            'technique_remark'        => '技术备注',
             'img_id'                  => '图纸',
             'is_process'              => '加工',
             'is_special'              => '特制',
