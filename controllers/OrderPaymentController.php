@@ -181,16 +181,39 @@ class OrderPaymentController extends Controller
     /**
      * 报销操作
      */
-    public function actionReim($id)
+    public function actionReim()
     {
-        $orderPayment = OrderPayment::findOne($id);
-        $orderPayment->is_reim = 1;
-        $orderPayment->reim_date = date('Y-m-d H:i:s');
-        if (!$orderPayment->save()) {
-            Yii::$app->getSession()->setFlash('error', $orderPayment->getErrors());
-        } else {
-            Yii::$app->getSession()->setFlash('success', '报销成功');
+        $post = Yii::$app->request->post();
+        $orderPayment = OrderPayment::findOne($post['order_id']);
+        if (empty($orderPayment)) {
+            return json_encode(['code' => 404, 'msg' => '数据未找到']);
         }
-        return "<script>history.go(-1);</script>";
+        if ($orderPayment->is_reim == 1) {
+            return json_encode(['code' => 500, 'msg' => '已报销成功']);
+        }
+        $payment_price = $post['payment_price'];
+        $data = [
+            'reim_price' => $post['reim_price'],
+            'reim_ratio' => $post['reim_ratio'],
+            'reim_time' => time(),
+        ];
+        $reim_info = [];
+        if (!empty($orderPayment->reim_info)) {
+            $reim_info = json_decode($orderPayment->reim_info, true);
+        }
+        $reim_info[] = $data;
+        foreach ($reim_info as $item) {
+            $payment_price = bcsub($payment_price, $item['reim_price'], 2);
+        }
+        if ($payment_price <= 0) {
+            $orderPayment->is_reim = 1;
+            $orderPayment->reim_date = date('Y-m-d H:i:s');
+        }
+        $orderPayment->reim_info = json_encode($reim_info, JSON_UNESCAPED_UNICODE);
+        if (!$orderPayment->save()) {
+            return json_encode(['code' => 500, 'msg' => $orderPayment->getErrors()]);
+        } else {
+            return json_encode(['code' => 200, 'msg' => '报销成功']);
+        }
     }
 }

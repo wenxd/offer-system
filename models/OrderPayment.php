@@ -43,6 +43,7 @@ use Yii;
  * @property string $is_contract
  * @property string $is_reim
  * @property string $reim_date
+ * @property string $reim_info
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {
@@ -140,6 +141,7 @@ class OrderPayment extends \yii\db\ActiveRecord
                 'payment_ratio', 'payment_price', 'remain_price', 'delivery_date', 'reim_date'], 'safe'],
             [['payment_sn', 'order_purchase_sn', 'apply_reason'], 'string', 'max' => 255],
             [['goods_info'], 'string', 'max' => 512],
+            [['reim_info'], 'string', 'max' => 1024],
         ];
     }
 
@@ -182,6 +184,10 @@ class OrderPayment extends \yii\db\ActiveRecord
             'is_notice'         => '是否发通知',
             'is_reim'         => '是否报销',
             'reim_date'         => '报销时间',
+            'reim_info'         => '报销信息',
+            'reim_price'         => '报销金额',
+            'reim_ratio'         => '报销比例',
+            'reim_time'         => '报销时间',
         ];
     }
 

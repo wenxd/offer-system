@@ -14,6 +14,9 @@ use yii\helpers\ArrayHelper;
 class OrderPaymentSearch extends OrderPayment
 {
     public $order_sn;
+    public $reim_price;
+    public $reim_ratio;
+    public $reim_time;
     /**
      * {@inheritdoc}
      */
