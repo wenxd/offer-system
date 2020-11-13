@@ -35,10 +35,10 @@ $userId   = Yii::$app->user->identity->id;
                 'attribute' => 'payment_sn',
                 'format'    => 'raw',
                 'value'     => function ($model, $key, $index, $column) use($userId, $adminIds) {
+                    return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
                     if (in_array($userId, $adminIds)) {
                         return $model->payment_sn;
                     } else {
-                        return Html::a($model->payment_sn, Url::to(['order-payment/detail', 'id' => $model->id]));
                     }
                 }
             ],
