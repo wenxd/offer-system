@@ -18,7 +18,8 @@ use app\models\{Admin,
     OrderGoods,
     OrderInquiry,
     SystemConfig,
-    TempOrderInquiry};
+    TempOrderInquiry
+};
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -451,8 +452,22 @@ class GoodsController extends BaseController
                                 $goods->original_company_remark = (string)trim($value['W']);
                             }
                             //零件备注
-                            if ($value['X']) {
-                                $goods->remark = (string)trim($value['X']);
+                            if (trim($value['X'])) {
+                                $remark = $goods->remark ?? false;
+                                $remark_arr = [];
+                                if ($remark) {
+                                    $remark_arr = explode(';', $remark ?? '');
+                                }
+                                $x = trim($value['X']);
+                                // 符号转换
+                                $x = str_replace('；', ';', $x);
+                                $x_arr = explode(';', $x ?? '');
+                                foreach ($x_arr as $item) {
+                                    if (trim($item) && !in_array($item, $remark_arr)) {
+                                        $remark_arr[] = $item;
+                                    }
+                                }
+                                $goods->remark = implode(';', $remark_arr);
                             }
                             if ($value['Q'] && $value['T']) {
                                 $deviceName = strtoupper(trim($value['Q']));
