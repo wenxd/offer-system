@@ -29,6 +29,7 @@ use Yii;
  * @property string $quote_all_tax_price
  * @property string $all_tax_price
  * @property string $profit_rate
+ * @property string $is_mark
  */
 class OrderQuote extends \yii\db\ActiveRecord
 {
@@ -63,7 +64,7 @@ class OrderQuote extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one'], 'integer'],
+            [['order_id', 'is_quote', 'admin_id', 'is_deleted', 'quote_only_one', 'is_mark'], 'integer'],
             [['end_date', 'updated_at', 'created_at', 'quote_at', 'quote_ratio', 'delivery_ratio', 'customer_id',
                 'competitor_ratio', 'publish_ratio', 'quote_all_tax_price', 'all_tax_price', 'profit_rate'], 'safe'],
             [['quote_sn'], 'string', 'max' => 255],
@@ -99,6 +100,7 @@ class OrderQuote extends \yii\db\ActiveRecord
             'quote_all_tax_price'   => '报价含税总价',
             'all_tax_price'         => '成本含税总价',
             'profit_rate'           => '报价利润率',
+            'is_mark'           => '中标',
         ];
     }
 

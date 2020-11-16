@@ -10,6 +10,7 @@ namespace app\controllers;
 
 use app\models\Goods;
 use app\models\OrderPurchase;
+use app\models\OrderQuote;
 use app\models\PaymentGoods;
 use app\models\Supplier;
 use Yii;
@@ -232,6 +233,19 @@ class SearchController extends BaseController
         $res = Inquiry::updateAll(['admin_id' => $post['admin_id']], ['id' => $post['ids']]);
         if ($res) {
             return json_encode(['code' => 200, 'msg' => '更新询价员成功']);
+        }
+        return json_encode(['code' => 500, 'msg' => '失败']);
+    }
+
+    /**
+     * 中标
+     */
+    public function actionExitMark()
+    {
+        $post = Yii::$app->request->post();
+        $res = OrderQuote::updateAll(['is_mark' => $post['is_mark']], ['id' => $post['id']]);
+        if ($res) {
+            return json_encode(['code' => 200, 'msg' => '成功']);
         }
         return json_encode(['code' => 500, 'msg' => '失败']);
     }
