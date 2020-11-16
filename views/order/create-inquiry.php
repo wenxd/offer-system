@@ -210,7 +210,7 @@ if ($model->isNewRecord) {
                     <td class="number"><?= $item->number?></td>
                     <td><?php
                         $text = '';
-                        foreach (json_decode($item->belong_to, true) as $key => $device) {
+                        foreach (json_decode($item->belong_to, true) ?? [] as $key => $device) {
                             $text .= $key . ':' . $device . '<br/>';
                         }
                         echo $text;
@@ -433,7 +433,7 @@ if ($model->isNewRecord) {
                         break;
                 }
             });
-            location.replace("?r=order/create-inquiry&id=<?=$_GET['id']?>" + encodeURI(parameter));
+            location.replace("?r=order/create-inquiry&id=<?=$_GET['id']?>&level=<?=$_GET['level']?>" + encodeURI(parameter));
         });
     });
 </script>

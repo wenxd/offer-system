@@ -370,16 +370,20 @@ class OrderController extends BaseController
             return json_encode(['code' => 500, 'msg' => '此订单不存在']);
         }
 
-        $goods_ids = json_decode($order->goods_ids, true);
+//        $goods_ids = json_decode($order->goods_ids, true);
         $orderInquiry = OrderInquiry::find()->where(['order_id' => $order->id])->all();
 
         //询价记录
-        $inquiryListOld = Inquiry::find()->where(['good_id' => $goods_ids])->all();
-        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
+//        $inquiryListOld = Inquiry::find()->where(['good_id' => $goods_ids])->all();
+//        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
 
         $orderGoodsQuery = OrderGoodsBak::find()->from('order_goods_bak og')
             ->select('og.*')->leftJoin('goods g', 'og.goods_id=g.id')
             ->where(['order_id' => $order->id]);
+        $goods_ids = $orderGoodsQuery->all();
+        //询价记录
+        $inquiryListOld = Inquiry::find()->where(['good_id' => array_column($goods_ids, 'goods_id')])->all();
+        $inquiryList = ArrayHelper::index($inquiryListOld, null, 'good_id');
         if (isset($request['goods_number']) && $request['goods_number']) {
             $orderGoodsQuery->andWhere(['like', 'goods_number', $request['goods_number']]);
         }
