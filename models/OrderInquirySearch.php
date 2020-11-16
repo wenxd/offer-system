@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
 class OrderInquirySearch extends OrderInquiry
 {
     public $order_sn;
+    public $order_end_date;
     /**
      * {@inheritdoc}
      */

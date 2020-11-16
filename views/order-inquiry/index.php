@@ -70,6 +70,14 @@ $userId   = Yii::$app->user->identity->id;
                 }
             ],
             [
+                'attribute' => 'order_end_date',
+                'label'     => '截标时间',
+                'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'end_date'],
+                'value'     => function($model) {
+                    return substr($model->order->created_at, 0, 10);
+                }
+            ],
+            [
                 'attribute' => 'final_at',
                 'contentOptions'=>['style'=>'min-width: 150px', 'class' => 'final_at'],
                 'filter'    => DateRangePicker::widget([

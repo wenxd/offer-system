@@ -132,7 +132,7 @@ class Order extends ActiveRecord
             'is_deleted'      => '是否删除：0未删除 1已删除',
             'provide_date'    => '报价截止日期',
             'updated_at'      => '更新时间',
-            'created_at'      => '创建时间',
+            'created_at'      => '截标时间',
             'order_type'      => '订单来源',
             'is_final'        => '是否生成成本单',
             'is_dispatch'     => '是否全部派送询价员',

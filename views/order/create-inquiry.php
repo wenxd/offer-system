@@ -248,7 +248,9 @@ if ($model->isNewRecord) {
         </table>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins)->label('选择询价员') ?>
-
+        <?php
+        $model->end_date = date('Y-m-d',strtotime('-2 day', strtotime($order->created_at)));
+        ?>
         <?= $form->field($model, 'end_date')->widget(DateTimePicker::className(), [
             'removeButton'  => false,
             'pluginOptions' => [
