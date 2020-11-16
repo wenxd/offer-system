@@ -265,6 +265,7 @@ class OrderInquiryController extends BaseController
         $orderInquiry = OrderInquiry::findOne($info->order_inquiry_id);
 
         $info->is_inquiry = InquiryGoods::IS_INQUIRY_YES;
+        $info->serial = (string)$info->serial;
 //        $info->reason     = '';
 //        $info->is_result  = InquiryGoods::IS_INQUIRY_NO;
         $info->admin_id = Yii::$app->user->identity->id;
