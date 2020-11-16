@@ -177,10 +177,11 @@ $userId = Yii::$app->user->identity->id;
                             }
                         }
                         if ($model->is_mark === null) {
-                            $html .= ' ' . Html::button('中标', [
-                                        'class' => 'btn btn-primary btn-xs', 'onclick' => "mark({$model->id})"]
-                                );
+
                         }
+                        $html .= ' ' . Html::button('中标', [
+                                    'class' => 'btn btn-primary btn-xs', 'onclick' => "mark({$model->id})"]
+                            );
                         return $html;
                     }
                 ],
