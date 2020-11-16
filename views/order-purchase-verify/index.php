@@ -16,7 +16,9 @@ use app\models\OrderPayment;
 $use_admin = AuthAssignment::find()->where(['item_name' => '采购员'])->all();
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
-
+// 获取超管
+$admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$admins  = ArrayHelper::getColumn($admin, 'user_id');
 $this->title = '采购审核列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -72,14 +74,15 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'      => '操作',
                 'format'         => 'raw',
-                'value'          => function ($model, $key, $index, $column) use ($userId, $adminIds){
+                'value'          => function ($model, $key, $index, $column) use ($userId, $admins){
                     $html = '';
-                    if (!in_array($userId, $adminIds)) {
-                        $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
-                            'data-pjax' => '0',
-                            'class' => 'btn btn-info btn-xs btn-flat',
-                        ]);
-                    }
+//                    if (!in_array($userId, $adminIds)) {
+//
+//                    }
+                    $html .= Html::a('<i class="fa fa-eye"></i> 查看', Url::to(['view', 'id' => $model['id']]), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-xs btn-flat',
+                    ]);
 //                    if (in_array($userId, $adminIds)) {
 //                        if ($model->purchase_status == 1 && !$model->is_agreement) {
 //                            $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
@@ -88,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                            ]);
 //                        }
 //                    } else {
-                        if (!$model->is_verify) {
+                        if (!$model->is_verify && in_array($userId, $admins)) {
                             if (!$model->order->order_type) {
                                 $html .= Html::a('<i class="fa fa-eye"></i> 审核', Url::to(['detail', 'id' => $model['id']]), [
                                     'data-pjax' => '0',
@@ -104,20 +107,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             }
                         } else {
-                            if (!$model->is_agreement) {
-                                if ($model->is_contract) {
-                                    $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
-                                        'data-pjax' => '0',
-                                        'class' => 'btn btn-primary btn-xs btn-flat',
-                                    ]);
-                                } else {
-                                    $html .= Html::a('<i class="fa fa-plus"></i> 生成杂项支出合同', Url::to(['complete', 'id' => $model['id']]), [
-                                        'data-pjax' => '0',
-                                        'class' => 'btn btn-primary btn-xs btn-flat',
-                                    ]);
-                                }
-                            }
+
                         }
+                    if (!$model->is_agreement && $model->is_verify) {
+                        if ($model->is_contract) {
+                            $html .= Html::a('<i class="fa fa-plus"></i> 生成支出合同', Url::to(['complete', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        } else {
+                            $html .= Html::a('<i class="fa fa-plus"></i> 生成杂项支出合同', Url::to(['complete', 'id' => $model['id']]), [
+                                'data-pjax' => '0',
+                                'class' => 'btn btn-primary btn-xs btn-flat',
+                            ]);
+                        }
+                    }
 //                    }
 
                     return $html;
