@@ -70,6 +70,12 @@ class StockSearch extends Stock
                 'attributes' => ['id', 'price', 'tax_price', 'number', 'updated_at', 'created_at']
             ],
         ]);
+        $userId    = Yii::$app->user->identity->id;
+        $use_admin = AuthAssignment::find()->where(['item_name' => '库管员B'])->all();
+        $stock_b_adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
+        if (in_array($userId, $stock_b_adminIds)) {
+            $query->andWhere("number > 0");
+        }
 
         $this->load($params);
 
