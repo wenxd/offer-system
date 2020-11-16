@@ -164,7 +164,7 @@ class GoodsSearch extends Goods
             'goods.factory_price'           => $this->factory_price,
         ]);
 
-        $query->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
+        $query->andFilterWhere(['OR', ['like', 'goods.goods_number', $this->goods_number], ['like', 'goods.remark', $this->goods_number]])
               ->andFilterWhere(['like', 'goods.goods_number_b', $this->goods_number_b])
               ->andFilterWhere(['like', 'goods.description', $this->description])
               ->andFilterWhere(['like', 'goods.description_en', $this->description_en])
