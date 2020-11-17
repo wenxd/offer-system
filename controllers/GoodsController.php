@@ -507,17 +507,17 @@ class GoodsController extends BaseController
                                 $goods->brand_id = $brand->id;
                             }
                             //导入类别
-                            if ($value['AB']) {
+                            if (trim($value['AB'])) {
                                 $goods->import_mark = (string)trim($value['AB']);
                             }
                             //发行税率
-                            if ($value['AC']) {
+                            if (trim($value['AC'])) {
                                 $goods->publish_tax = trim($value['AC']);
                             } else {
                                 $goods->publish_tax = $tax;
                             }
                             //美金出厂价
-                            if ($value['AD']) {
+                            if (trim($value['AD'])) {
                                 $goods->factory_price = trim($value['AD']);
                                 $goods->publish_tax_price = $goods->factory_price * $rate * $arrivalRatio * (1 + $goods->publish_tax / 100);
                             }
