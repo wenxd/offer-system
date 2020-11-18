@@ -16,6 +16,7 @@ use app\models\OrderInquiry;
 use app\models\OrderPayment;
 use app\models\OrderPurchase;
 use app\models\OrderQuote;
+use app\models\PaymentGoods;
 use app\models\Stock;
 use app\models\Supplier;
 use app\models\TempNotGoods;
@@ -1015,4 +1016,71 @@ class OrderController extends BaseController
         $writer->save('php://output');
         exit;
     }
+
+    // 创建订单后添加零件
+    public function actionAddOrderGoods()
+    {
+        $get = Yii::$app->request->get();
+        $order_id = $get['order_id'];
+        $goods_id = $get['goods_id'];
+        $number = $get['number'];
+        $serial = $get['serial'];
+        $model = Order::findOne($order_id);
+        if (!$model) {
+            Yii::$app->getSession()->setFlash('error', '订单不存在');
+            return "<script>history.go(-1);</script>";
+        }
+        // 去重
+        $order_goods = OrderGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
+        if ($order_goods) {
+            Yii::$app->getSession()->setFlash('error', '零件已存在');
+            return "<script>history.go(-1);</script>";
+        }
+
+        $goods = Goods::find()->where(['id' => $goods_id])->one();
+        if (empty($goods)) {
+            Yii::$app->getSession()->setFlash('error', '零件未找到');
+            return "<script>history.go(-1);</script>";
+        }
+        $inquiry = $goods->inquiry ?? false;
+        if (!$inquiry) {
+            Yii::$app->getSession()->setFlash('error', '零件未询价');
+            return "<script>history.go(-1);</script>";
+        }
+        //库存记录
+        $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
+
+        //询价记录 价格最优
+        $inquiryPriceQuery  = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc, Created_at Desc')->one();
+        //同期最短(货期)
+        $inquiryTimeQuery   = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
+        //最新报价
+        $inquiryNewQuery    = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
+        //优选记录
+        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES, 'is_confirm_better' => 1])->orderBy('updated_at Desc')->one();
+
+        //采购记录  最新采购
+        $paymentNew   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
+        //价格最低采购
+        $paymentPrice = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('fixed_price asc')->one();
+        //货期采购
+        $paymentDay   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
+
+        $data = [];
+        $data['goods']         = $goods ? $goods : [];
+
+        $data['inquiryPrice']  = $inquiryPriceQuery;
+        $data['inquiryTime']   = $inquiryTimeQuery;
+        $data['inquiryNew']    = $inquiryNewQuery;
+        $data['inquiryBetter'] = $inquiryBetterQuery;
+
+        $data['stock']         = $stockQuery;
+
+        $data['paymentNew']    = $paymentNew;
+        $data['paymentPrice']  = $paymentPrice;
+        $data['paymentDay']    = $paymentDay;
+        $data['model']    = $model;
+        return $this->render('add-order-goods', $data);
+    }
+
 }

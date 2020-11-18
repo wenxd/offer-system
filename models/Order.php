@@ -29,6 +29,9 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends ActiveRecord
 {
+    public $number;
+    public $goods_id;
+    public $serial;
     const TYPE_QUOTE    = '1';
     const TYPE_INQUIRY  = '2';
     const TYPE_FINAL    = '10';
