@@ -302,9 +302,12 @@ class OrderInquiryController extends BaseController
                 //如果是多个零件组成
                 if ($level == 2) {
                     // 查询是不是已经生成顶级询价
-                    if (InquiryGoods::find()->where(['order_id' => $info->order_id, 'level' => 1])->count()) {
+                    if (Inquiry::find()->where(['order_id' => $info->order_id, 'order_inquiry_id' => $info->order_inquiry_id, 'is_assembly' => 1])->count()) {
                         return json_encode(['code' => 200, 'msg' => '确认成功']);
                     }
+//                    if (InquiryGoods::find()->where(['order_id' => $info->order_id, 'level' => 1])->count()) {
+//                        return json_encode(['code' => 200, 'msg' => '确认成功']);
+//                    }
 
                     // 获取询价单号
 //                    $inquiry_sn = OrderInquiry::getInquirySn();
