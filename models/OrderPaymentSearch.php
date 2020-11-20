@@ -55,7 +55,9 @@ class OrderPaymentSearch extends OrderPayment
         $use_admin = AuthAssignment::find()->where(['item_name' => ['采购员']])->all();
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $userId   = Yii::$app->user->identity->id;
-        if (in_array($userId, $adminIds)) {
+        $stock_admin = AuthAssignment::find()->where(['item_name' => ['库管员']])->all();
+        $stock_admin_ids  = ArrayHelper::getColumn($stock_admin, 'user_id');
+        if (in_array($userId, $adminIds) && !in_array($userId, $stock_admin_ids) ) {
             $query = OrderPayment::find()->where([
                 'purchase_status' => self::PURCHASE_STATUS_PASS,
                 'is_agreement'    => self::IS_ADVANCECHARGE_YES,
