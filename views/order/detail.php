@@ -163,10 +163,9 @@ $is_order_agreement = count($orderAgreement);
                         <td><?= $item->goods->technique_remark ?></td>
                         <td>
                         <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
-                            <?= Html::a('删除', Url::to(['goods/create']), [
+                            <?= Html::a('删除', Url::to(['order/del-order-goods', 'id' => $item->id]), [
                                     'class' => 'btn btn-danger',
-                                    'name' => 'submit-button',
-                                    'target' => 'blank',
+                                    'name' => 'submit-button'
                                 ]) ?>
                         <?php endif; ?>
                         </td>

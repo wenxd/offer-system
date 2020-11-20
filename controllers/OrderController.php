@@ -1017,7 +1017,9 @@ class OrderController extends BaseController
         exit;
     }
 
-    // 创建订单后添加零件
+    /**
+     * 创建订单后添加零件
+     */
     public function actionAddOrderGoods()
     {
         // 接收post请求
@@ -1068,11 +1070,11 @@ class OrderController extends BaseController
                 $final_goods->all_price = $final_goods->price * $final_goods->number;
                 $final_goods->all_tax_price = $final_goods->tax_price * $final_goods->number;
                 if (!$final_goods->save()) {
-                    return json_encode(['code' => 400, 'msg' => '零件失败'], JSON_UNESCAPED_UNICODE);
+                    return json_encode(['code' => 400, 'msg' => '保存成本单失败'], JSON_UNESCAPED_UNICODE);
                 }
                 $final->goods_info = $model->goods_ids;
                 if (!$final->save()) {
-                    return json_encode(['code' => 400, 'msg' => '零件失败'], JSON_UNESCAPED_UNICODE);
+                    return json_encode(['code' => 400, 'msg' => '保存成本单失败'], JSON_UNESCAPED_UNICODE);
                 }
                 $transaction->commit();
                 return json_encode(['code' => 200, 'msg' => '零件添加成功,保存成本单成功'], JSON_UNESCAPED_UNICODE);
@@ -1147,6 +1149,65 @@ class OrderController extends BaseController
         $data['paymentDay']    = $paymentDay;
         $data['model']    = $model;
         return $this->render('add-order-goods', $data);
+    }
+
+    /**
+     * 创建订单后删除零件
+     */
+    public function actionDelOrderGoods($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        $order_goods = OrderGoods::findOne($id);
+        if (!$order_goods) {
+            Yii::$app->getSession()->setFlash('error', '零件未找到');
+            return "<script>history.go(-1);</script>";
+        }
+        $order = Order::findOne($order_goods->order_id);
+        if (!$order_goods) {
+            Yii::$app->getSession()->setFlash('error', '订单未找到');
+            return "<script>history.go(-1);</script>";
+        }
+        $goods_ids = json_decode($order->goods_ids, true);
+        if (count($goods_ids) <= 1) {
+            Yii::$app->getSession()->setFlash('error', '订单太少了');
+            return "<script>history.go(-1);</script>";
+        }
+        foreach ($goods_ids as $k => $v) {
+            if ($v == $order_goods->goods_id) {
+                unset($goods_ids[$k]);
+            }
+        }
+        $order->goods_ids = json_encode($goods_ids);
+        $order->save();
+        // 判断还剩几个零件
+        if (!$order_goods->delete()) {
+            Yii::$app->getSession()->setFlash('error', '删除失败:' . json_encode($order_goods->getErrors()));
+            return "<script>history.go(-1);</script>";
+        }
+
+        if (!$order->is_final) {
+            $transaction->commit();
+            Yii::$app->getSession()->setFlash('error', '删除零件成功');
+            return "<script>history.go(-1);</script>";
+        }
+        $final = OrderFinal::find()->where(['order_id' => $order_goods->order_id])->one();
+        $final->goods_info = $order->goods_ids;
+        if (!$final->save()) {
+            Yii::$app->getSession()->setFlash('error', '删除失败:' . json_encode($final->getErrors()));
+            return "<script>history.go(-1);</script>";
+        }
+        $final_goods = FinalGoods::find()->where(['goods_id' => $order_goods->goods_id, 'order_id' => $order_goods->order_id])->one();
+        if (empty($final_goods)) {
+            Yii::$app->getSession()->setFlash('error', '成本单零件未找到');
+            return "<script>history.go(-1);</script>";
+        }
+        if (!$final_goods->delete()) {
+            Yii::$app->getSession()->setFlash('error', '成本单零件删除失败:' . json_encode($final_goods->getErrors()));
+            return "<script>history.go(-1);</script>";
+        }
+        $transaction->commit();
+        Yii::$app->getSession()->setFlash('success', '删除成功');
+        return "<script>history.go(-1);</script>";
     }
 
 }
