@@ -141,13 +141,7 @@ $is_order_agreement = count($orderAgreement);
                     <th>特制</th>
                     <th>铭牌</th>
                     <th>技术备注</th>
-                    <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
-                        <th><?= Html::a('添加', Url::to(['order/add-order-goods', 'id' => $model->id]), [
-                                'class' => 'btn btn-success',
-                                'name' => 'submit-button',
-                                'target' => 'blank',
-                            ]) ?></th>
-                    <?php endif; ?>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -167,13 +161,15 @@ $is_order_agreement = count($orderAgreement);
                         <td class="addColor"><?= Goods::$special[$item->goods->is_special] ?></td>
                         <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate] ?></td>
                         <td><?= $item->goods->technique_remark ?></td>
+                        <td>
                         <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
-                            <td><?= Html::a('删除', Url::to(['goods/create']), [
+                            <?= Html::a('删除', Url::to(['goods/create']), [
                                     'class' => 'btn btn-danger',
                                     'name' => 'submit-button',
                                     'target' => 'blank',
-                                ]) ?></td>
+                                ]) ?>
                         <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

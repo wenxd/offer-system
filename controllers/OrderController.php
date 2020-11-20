@@ -1020,6 +1020,67 @@ class OrderController extends BaseController
     // 创建订单后添加零件
     public function actionAddOrderGoods()
     {
+        // 接收post请求
+        if (Yii::$app->request->getIsPost()) {
+            $post = Yii::$app->request->post();
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $order_id = $post['order_id'];
+                $goods_id = $post['goods_id'];
+                $number = $post['number'];
+                $serial = $post['serial'];
+                $select_id = $post['select_id'];
+                $model = Order::findOne($order_id);
+                $goods_ids = json_decode($model->goods_ids, true);
+                if (in_array($goods_id, $goods_ids)) {
+                    return json_encode(['code' => 500, 'msg' => '零件已存在'], JSON_UNESCAPED_UNICODE);
+                }
+                // 添加订单
+                $order_goods_model = new OrderGoods();
+                $order_goods_model->order_id = $order_id;
+                $order_goods_model->goods_id = $goods_id;
+                $order_goods_model->number = $number;
+                $order_goods_model->serial = $serial;
+                $order_goods_model->save();
+                // 更新订单表零件
+                $goods_ids[] = (string)$goods_id;
+                $model->goods_ids = json_encode($goods_ids);
+                $model->save();
+                // 判断是否生成成本单(没有成本单，只添加零件)
+                if (!$model->is_final) {
+                    $transaction->commit();
+                    return json_encode(['code' => 200, 'msg' => '零件添加成功'], JSON_UNESCAPED_UNICODE);
+                }
+                $final = OrderFinal::find()->where(['order_id' => $order_id])->one();
+                $inquiry = Inquiry::findOne($select_id);
+                // 添加到成本单
+                $final_goods = new FinalGoods();
+                $final_goods->order_id = $order_id;
+                $final_goods->order_final_id = $final->id;
+                $final_goods->final_sn = $final->final_sn;
+                $final_goods->goods_id = $goods_id;
+                $final_goods->serial = $serial;
+                $final_goods->relevance_id = $select_id;
+                $final_goods->number = $number;
+                $final_goods->tax = $inquiry->tax_rate;
+                $final_goods->price = $inquiry->price;
+                $final_goods->tax_price = $inquiry->tax_price;
+                $final_goods->all_price = $final_goods->price * $final_goods->number;
+                $final_goods->all_tax_price = $final_goods->tax_price * $final_goods->number;
+                if (!$final_goods->save()) {
+                    return json_encode(['code' => 400, 'msg' => '零件失败'], JSON_UNESCAPED_UNICODE);
+                }
+                $final->goods_info = $model->goods_ids;
+                if (!$final->save()) {
+                    return json_encode(['code' => 400, 'msg' => '零件失败'], JSON_UNESCAPED_UNICODE);
+                }
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '零件添加成功,保存成本单成功'], JSON_UNESCAPED_UNICODE);
+            } catch (\Exception $e) {
+                return json_encode(['code' => 400, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+            }
+
+        }
         $get = Yii::$app->request->get();
         $order_id = $get['order_id'];
         $goods_id = $get['goods_id'];
@@ -1066,7 +1127,12 @@ class OrderController extends BaseController
         //货期采购
         $paymentDay   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('delivery_time asc')->one();
 
-        $data = [];
+        $data = [
+            'order_id' => $order_id,
+            'goods_id' => $goods_id,
+            'number' => $number,
+            'serial' => $serial,
+        ];
         $data['goods']         = $goods ? $goods : [];
 
         $data['inquiryPrice']  = $inquiryPriceQuery;
