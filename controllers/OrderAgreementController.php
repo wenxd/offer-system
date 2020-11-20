@@ -254,6 +254,7 @@ class OrderAgreementController extends Controller
                 $AgreementGoodsDataModel->isNewRecord = true;
                 $item_arr = $item->toArray();
                 $item_arr['strategy_number'] = $item_arr['number'];
+                $item_arr['serial'] = (string)$item_arr['serial'];
                 $AgreementGoodsDataModel->setAttributes($item_arr);
                 $AgreementGoodsDataModel->save() && $AgreementGoodsDataModel->id = 0;
             }
