@@ -1057,9 +1057,8 @@ class OrderController extends BaseController
                 $final = OrderFinal::find()->where(['order_id' => $order_id])->one();
                 $inquiry = Inquiry::findOne($select_id);
                 // 添加到成本单
-                if (in_array($goods_id, $goods_ids)) {
-                    $final_goods = FinalGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
-                } else {
+                $final_goods = FinalGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
+                if (empty($final_goods)) {
                     $final_goods = new FinalGoods();
                 }
                 $final_goods->order_id = $order_id;
