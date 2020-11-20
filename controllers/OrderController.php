@@ -1035,19 +1035,20 @@ class OrderController extends BaseController
                 $model = Order::findOne($order_id);
                 $goods_ids = json_decode($model->goods_ids, true);
                 if (in_array($goods_id, $goods_ids)) {
-                    return json_encode(['code' => 500, 'msg' => '零件已存在'], JSON_UNESCAPED_UNICODE);
+                    $order_goods_model = OrderGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
+                } else {
+                    $goods_ids[] = (string)$goods_id;
+                    // 更新订单表零件
+                    $model->goods_ids = json_encode($goods_ids);
+                    $model->save();
+                    $order_goods_model = new OrderGoods();
                 }
                 // 添加订单
-                $order_goods_model = new OrderGoods();
                 $order_goods_model->order_id = $order_id;
                 $order_goods_model->goods_id = $goods_id;
                 $order_goods_model->number = $number;
                 $order_goods_model->serial = $serial;
                 $order_goods_model->save();
-                // 更新订单表零件
-                $goods_ids[] = (string)$goods_id;
-                $model->goods_ids = json_encode($goods_ids);
-                $model->save();
                 // 判断是否生成成本单(没有成本单，只添加零件)
                 if (!$model->is_final) {
                     $transaction->commit();
@@ -1056,7 +1057,11 @@ class OrderController extends BaseController
                 $final = OrderFinal::find()->where(['order_id' => $order_id])->one();
                 $inquiry = Inquiry::findOne($select_id);
                 // 添加到成本单
-                $final_goods = new FinalGoods();
+                if (in_array($goods_id, $goods_ids)) {
+                    $final_goods = FinalGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
+                } else {
+                    $final_goods = new FinalGoods();
+                }
                 $final_goods->order_id = $order_id;
                 $final_goods->order_final_id = $final->id;
                 $final_goods->final_sn = $final->final_sn;
@@ -1094,11 +1099,11 @@ class OrderController extends BaseController
             return "<script>history.go(-1);</script>";
         }
         // 去重
-        $order_goods = OrderGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
-        if ($order_goods) {
-            Yii::$app->getSession()->setFlash('error', '零件已存在');
-            return "<script>history.go(-1);</script>";
-        }
+//        $order_goods = OrderGoods::find()->where(['order_id' => $order_id, 'goods_id' => $goods_id])->one();
+//        if ($order_goods) {
+//            Yii::$app->getSession()->setFlash('error', '零件已存在');
+//            return "<script>history.go(-1);</script>";
+//        }
 
         $goods = Goods::find()->where(['id' => $goods_id])->one();
         if (empty($goods)) {
