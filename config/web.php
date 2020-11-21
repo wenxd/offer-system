@@ -40,7 +40,8 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\Admin',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+            'loginUrl' => ['site/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -74,6 +75,10 @@ $config = [
                 ],
             ],
         ],
+        'session'=>array(
+            'class' => 'yii\web\Session',
+            'cookieParams' => ['lifetime' => 60 * 60]
+        ),
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
