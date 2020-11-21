@@ -77,6 +77,20 @@ class OrderQuoteController extends Controller
         ]);
     }
 
+    public function actionView1($id)
+    {
+        $orderQuote = $this->findModel($id);
+        $quoteGoods = QuoteGoods::find()->where(['order_quote_id' => $orderQuote->id])->orderBy('serial')->all();
+        $inquiryGoods = InquiryGoods::find()->where(['order_id' => $orderQuote->order_id])->all();
+
+        return $this->render('view1', [
+            'model'        => $orderQuote,
+            'orderQuote'   => $orderQuote,
+            'quoteGoods'   => $quoteGoods,
+            'inquiryGoods' => $inquiryGoods
+        ]);
+    }
+
     /**
      * Creates a new OrderQuote model.
      * If creation is successful, the browser will be redirected to the 'view' page.
