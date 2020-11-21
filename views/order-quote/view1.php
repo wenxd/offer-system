@@ -90,7 +90,7 @@ $is_show = in_array($userId, $adminIds);
                         <td><?=$item->goods->original_company_remark?></td>
                     <?php endif;?>
                     <!--订单需求数量-->
-                    <td class="afterNumber"><input type="text" value="<?=$item->number?>" style="width: 120px;"></td>
+                    <td class="afterNumber"><input type="text" class="number" value="<?=$item->number?>" style="width: 120px;"></td>
                     <td><?=$item->stockNumber ? $item->stockNumber->number : 0?></td>
                     <td><?=$item->goods->unit?></td>
                     <?php if (!$is_show) :?>
@@ -287,6 +287,37 @@ $is_show = in_array($userId, $adminIds);
             $(this).parent().parent().find('.quote_all_price').text(quote_all_price);
             var quote_all_tax_price = (quote_tax_price * number).toFixed(2);
             $(this).parent().parent().find('.quote_all_tax_price').text(quote_all_tax_price);
+            init();
+            compute();
+        });
+
+        //输入数量
+        $(".number").bind('input propertychange', function (e) {
+            var number = $(this).val();
+            if (number == 0) {
+                layer.msg('数量最少为1', {time:2000});
+                return false;
+            }
+            var a = number.replace(/[\D]/g,'');
+            $(this).val(a);
+
+            var publish_price               = $(this).parent().parent().find('.publish_tax_price').text();
+            var price                       = $(this).parent().parent().find('.price').text();
+            var tax_price                   = $(this).parent().parent().find('.tax_price').text();
+            var quote_price                 = $(this).parent().parent().find('.quote_price input').val();
+            var quote_tax_price             = $(this).parent().parent().find('.quote_tax_price input').val();
+            var competitor_tax_price        = parseFloat($(this).parent().parent().find('.competitor_tax_price').text());
+            var competitor_public_tax_price = parseFloat($(this).parent().parent().find('.competitor_public_tax_price input').val());
+
+            $(this).parent().parent().find('.all_publish_tax_price').text(parseFloat(publish_price * number).toFixed(2));
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+
+            $(this).parent().parent().find('.competitor_tax_price_all').text(parseFloat(competitor_tax_price * number).toFixed(2));
+            $(this).parent().parent().find('.competitor_public_tax_price_all').text(parseFloat(competitor_public_tax_price * number).toFixed(2));
+
+            $(this).parent().parent().find('.quote_all_price').text(parseFloat(quote_price * number).toFixed(2));
+            $(this).parent().parent().find('.quote_all_tax_price').text(parseFloat(quote_tax_price * number).toFixed(2));
             init();
             compute();
         });
