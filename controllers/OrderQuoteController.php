@@ -344,7 +344,7 @@ class OrderQuoteController extends Controller
                 $agreementGoods->order_agreement_sn  = $orderAgreement->agreement_sn;
                 $agreementGoods->order_quote_id      = $orderQuote->primaryKey;
                 $agreementGoods->order_quote_sn      = $orderQuote->quote_sn;
-                $agreementGoods->serial              = $quoteGoods->serial;
+                $agreementGoods->serial              = (string)($quoteGoods->serial);
                 $agreementGoods->goods_id            = $quoteGoods->goods_id;
                 $agreementGoods->type                = $quoteGoods->type;
                 $agreementGoods->relevance_id        = $quoteGoods->relevance_id;
@@ -365,7 +365,6 @@ class OrderQuoteController extends Controller
                 $agreementGoods->order_number        = $item['number'];
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->purchase_number     = $item['purchase_number'];
-                $agreementGoods->save();
                 if (!$agreementGoods->save()) {
                     return json_encode(['code' => 502, 'msg' => $agreementGoods->getErrors()]);
                 }
@@ -382,7 +381,6 @@ class OrderQuoteController extends Controller
                 $agreementGoodsBak->all_tax_price      = $quoteGoods->all_tax_price;
                 $agreementGoodsBak->purchase_number    = $item['purchase_number'];
                 $agreementGoodsBak->delivery_time      = $quoteGoods->delivery_time;
-                $agreementGoodsBak->save();
                 if (!$agreementGoodsBak->save()) {
                     return json_encode(['code' => 503, 'msg' => $agreementGoodsBak->getErrors()]);
                 }
@@ -391,7 +389,9 @@ class OrderQuoteController extends Controller
 
             $orderAgreement->payment_price = $money;
             $orderAgreement->remain_price  = $money;
-            $orderAgreement->save();
+            if (!$orderAgreement->save()) {
+                return json_encode(['code' => 502, 'msg' => $orderAgreement->getErrors()]);
+            }
 
             //改变生成了收入合同的成本单
             $orderFinal = OrderFinal::findOne($orderQuote->order_final_id);
