@@ -78,6 +78,7 @@ $is_show = in_array($userId, $adminIds);
             <tbody>
             <?php foreach ($quoteGoods as $item): ?>
                 <tr class="order_final_list">
+                    <td class="quote_id" style="display: none"><?= $item->id ?></td>
                     <td class="serial"><?= $item->serial ?></td>
                     <td><?= $item->goods->material_code ?></td>
                     <td><?= $is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
@@ -189,6 +190,12 @@ $is_show = in_array($userId, $adminIds);
 
             <?= $form->field($model, 'competitor_ratio')->textInput(['readonly' => true]) ?>
         <?php endif; ?>
+        <div class="box-footer">
+            <?= Html::button('保存报价单', [
+                    'class' => 'btn btn-success quote_save',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -279,7 +286,7 @@ $is_show = in_array($userId, $adminIds);
             var sta_all_tax_price = $('.sta_all_tax_price').text();
             var sta_quote_all_tax_price = $('.sta_quote_all_tax_price').text();
             var profit_rate = (sta_quote_all_tax_price - sta_all_tax_price) / sta_quote_all_tax_price;
-            $('#orderquote-profit_rate').val(profit_rate.toFixed(2));
+            $('#orderquote-profit_rate').val(profit_rate.toFixed(2) * 100);
             //
         }
 
@@ -376,7 +383,126 @@ $is_show = in_array($userId, $adminIds);
             }
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
         });
+        //保存
+        $('.quote_save').click(function (e) {
+            //防止双击
+            // $(".quote_save").attr("disabled", true).addClass("disabled");
+            var goods_info = [];
+            var number_flag = false;
+            $('.quote_id').each(function (index, element) {
+                var item = {};
+                var elements = $(element).parent();
+                item.quote_id = $(this).text();
+                item.goods_id    = $(element).val();
+                if (!elements.find('.number').val()){
+                    number_flag  = true;
+                }
+                item.number              = elements.find('.number').val();
+                item.type                = $(element).data('type');
+                item.relevance_id        = $(element).data('relevance_id');
 
+                item.serial              = elements.find('.serial').text();
+                item.tax_rate            = elements.find('.ratio').text();
+                item.delivery_time       = elements.find('.delivery_time').text();
+                item.price               = elements.find('.price').text();
+                item.tax_price           = elements.find('.tax_price').text();
+                item.all_price           = elements.find('.all_price').text();
+                item.all_tax_price       = elements.find('.all_tax_price').text();
+                item.quote_price         = elements.find('.quote_price input').val();
+                item.quote_tax_price     = elements.find('.quote_tax_price input').val();
+                item.quote_all_price     = elements.find('.quote_all_price').text();
+                item.quote_all_tax_price = elements.find('.quote_all_tax_price').text();
+                item.quote_delivery_time = elements.find('.quote_delivery_time input').val();
+
+                item.competitor_goods_id                    = elements.find('.competitor_tax_price').data('competitor_goods_id');
+                item.competitor_goods_tax_price             = parseFloat(elements.find('.competitor_tax_price').text());
+                item.competitor_goods_tax_price_all         = parseFloat(elements.find('.competitor_tax_price_all').text());
+                item.competitor_goods_quote_tax_price       = parseFloat(elements.find('.competitor_public_tax_price').text());
+                item.competitor_goods_quote_tax_price_all   = parseFloat(elements.find('.competitor_public_tax_price_all').text());
+                item.publish_tax_price       = parseFloat(elements.find('.publish_tax_price').text());
+                item.all_publish_tax_price   = parseFloat(elements.find('.all_publish_tax_price').text());
+
+                goods_info.push(item);
+            });
+            console.log(goods_info);
+            if (number_flag) {
+                layer.msg('请给选中的行输入数量', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+            var admin_id = $('#orderquote-admin_id').val();
+            if (!admin_id) {
+                layer.msg('请选择采购员', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+            var quote_sn = $('#orderquote-quote_sn').val();
+            if (!quote_sn) {
+                layer.msg('请填写报价单号', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+            var quote_ratio = $('#orderquote-quote_ratio').val();
+            if (!quote_ratio) {
+                layer.msg('请填写报价系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+            var delivery_ratio = $('#orderquote-delivery_ratio').val();
+            if (!delivery_ratio) {
+                layer.msg('请填写货期系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+
+            var competitor_ratio = $('#orderquote-competitor_ratio').val();
+            if (!competitor_ratio) {
+                layer.msg('请填写竞报价系数', {time:2000});
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
+
+            var order_final_id = $('.data').data('order_final_id');
+
+            var sta_quote_all_tax_price  = parseFloat($('.sta_quote_all_tax_price').text());
+            var sta_all_tax_price        = parseFloat($('.sta_all_tax_price').text());
+            var most_quote_delivery_time = parseFloat($('.most_quote_delivery_time').text());
+            var mostLongTime             = parseFloat($('.mostLongTime').text());
+            var publish_ratio            = parseFloat($('#orderquote-publish_ratio').val());
+
+            //两个总价
+            var sta_all_publish_tax_price           = parseFloat($('.sta_all_publish_tax_price').text());
+            var sta_competitor_public_tax_price_all = parseFloat($('.sta_competitor_public_tax_price_all').text());
+
+            //报价利润率
+            var profit_rate = $('#orderquote-profit_rate').val();
+            console.log({order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
+                delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio,
+                sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
+                most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime,
+                publish_ratio:publish_ratio, sta_all_publish_tax_price:sta_all_publish_tax_price,
+                sta_competitor_public_tax_price_all:sta_competitor_public_tax_price_all, profit_rate:profit_rate});
+            $.ajax({
+                type:"post",
+                url:'?r=order-quote/save-order1',
+                data:{order_final_id:order_final_id, admin_id:admin_id, quote_sn:quote_sn, quote_ratio:quote_ratio,
+                    delivery_ratio:delivery_ratio, goods_info:goods_info, competitor_ratio:competitor_ratio,
+                    sta_quote_all_tax_price:sta_quote_all_tax_price, sta_all_tax_price:sta_all_tax_price,
+                    most_quote_delivery_time:most_quote_delivery_time, mostLongTime:mostLongTime,
+                    publish_ratio:publish_ratio, sta_all_publish_tax_price:sta_all_publish_tax_price,
+                    sta_competitor_public_tax_price_all:sta_competitor_public_tax_price_all, profit_rate:profit_rate},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        // location.replace("?r=order-quote/index");
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
 
     });
 </script>
