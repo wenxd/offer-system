@@ -302,12 +302,14 @@ class OrderQuoteController extends Controller
     public function actionCreateAgreement()
     {
         $params = Yii::$app->request->post();
-
+        $transaction = Yii::$app->db->beginTransaction();
         //首先保存报价单
         $orderQuote = OrderQuote::findOne($params['id']);
         $orderQuote->is_quote       = OrderQuote::IS_QUOTE_YES;
         $orderQuote->quote_only_one = OrderQuote::QUOTE_ONLY;
-        $orderQuote->save();
+        if (!$orderQuote->save()) {
+            return json_encode(['code' => 501, 'msg' => $orderQuote->getErrors()]);
+        }
 
         //创建合同单
         $orderAgreement = new OrderAgreement();
@@ -364,6 +366,9 @@ class OrderQuoteController extends Controller
                 $agreementGoods->inquiry_admin_id    = $quoteGoods->type ? 0 : $quoteGoods->inquiry->admin_id;
                 $agreementGoods->purchase_number     = $item['purchase_number'];
                 $agreementGoods->save();
+                if (!$agreementGoods->save()) {
+                    return json_encode(['code' => 502, 'msg' => $agreementGoods->getErrors()]);
+                }
 
                 //用于一键恢复
                 $agreementGoodsBak = new AgreementGoodsBak();
@@ -378,7 +383,9 @@ class OrderQuoteController extends Controller
                 $agreementGoodsBak->purchase_number    = $item['purchase_number'];
                 $agreementGoodsBak->delivery_time      = $quoteGoods->delivery_time;
                 $agreementGoodsBak->save();
-
+                if (!$agreementGoodsBak->save()) {
+                    return json_encode(['code' => 503, 'msg' => $agreementGoodsBak->getErrors()]);
+                }
                 $money += $agreementGoods->quote_all_tax_price;
             }
 
@@ -389,7 +396,9 @@ class OrderQuoteController extends Controller
             //改变生成了收入合同的成本单
             $orderFinal = OrderFinal::findOne($orderQuote->order_final_id);
             $orderFinal->is_agreement = OrderFinal::IS_AGREEMENT_YES;
-            $orderFinal->save();
+            if (!$orderFinal->save()) {
+                return json_encode(['code' => 504, 'msg' => $orderFinal->getErrors()]);
+            }
 
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
