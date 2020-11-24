@@ -399,7 +399,7 @@ class OrderQuoteController extends Controller
             if (!$orderFinal->save()) {
                 return json_encode(['code' => 504, 'msg' => $orderFinal->getErrors()]);
             }
-
+            $transaction->commit();
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         } else {
             return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
