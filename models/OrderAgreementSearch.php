@@ -48,7 +48,7 @@ class OrderAgreementSearch extends OrderAgreement
      */
     public function search($params)
     {
-        $query = OrderAgreement::find();
+        $query = OrderAgreement::find()->where(['is_deleted' => self::IS_BILL_NO]);
 
         // add conditions that should always apply here
 
