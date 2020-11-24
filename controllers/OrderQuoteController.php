@@ -390,7 +390,7 @@ class OrderQuoteController extends Controller
             $orderAgreement->payment_price = $money;
             $orderAgreement->remain_price  = $money;
             if (!$orderAgreement->save()) {
-                return json_encode(['code' => 502, 'msg' => $orderAgreement->getErrors()]);
+                return json_encode(['code' => 505, 'msg' => $orderAgreement->getErrors()]);
             }
 
             //改变生成了收入合同的成本单
