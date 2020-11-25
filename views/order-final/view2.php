@@ -128,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 sta_all_publish_tax_price += publish_tax_price;
             }
         });
-        $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price);
+        $('.sta_all_publish_tax_price').text(sta_all_publish_tax_price.toFixed(2));
         $('.sta_all_price').text(sta_all_price.toFixed(2));
         $('.sta_all_tax_price').text(sta_all_tax_price.toFixed(2));
         $('.mostLongTime').text(mostLongTime);

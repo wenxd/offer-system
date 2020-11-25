@@ -164,7 +164,8 @@ class GoodsSearch extends Goods
             'goods.factory_price'           => $this->factory_price,
         ]);
 
-        $query->andFilterWhere(['OR', ['like', 'goods.goods_number', $this->goods_number], ['like', 'goods.remark', $this->goods_number]])
+        $query->andFilterWhere(['OR', ['like', 'goods.goods_number', $this->remark], ['like', 'goods.remark', $this->remark]])
+              ->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
               ->andFilterWhere(['like', 'goods.goods_number_b', $this->goods_number_b])
               ->andFilterWhere(['like', 'goods.description', $this->description])
               ->andFilterWhere(['like', 'goods.description_en', $this->description_en])
@@ -177,8 +178,7 @@ class GoodsSearch extends Goods
               ->andFilterWhere(['like', 'goods.part', $this->part])
               ->andFilterWhere(['like', 'goods.material_code', $this->material_code])
               ->andFilterWhere(['like', 'goods.device_info', $this->device_info])
-              ->andFilterWhere(['like', 'goods.import_mark', $this->import_mark])
-              ->andFilterWhere(['like', 'goods.remark', $this->remark]);
+              ->andFilterWhere(['like', 'goods.import_mark', $this->import_mark]);
 
         if ($this->updated_at && strpos($this->updated_at, ' - ')) {
             list($updated_at_start, $updated_at_end) = explode(' - ', $this->updated_at);

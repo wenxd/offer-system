@@ -852,12 +852,12 @@ class GoodsController extends BaseController
     public function actionUploadCheck()
     {
         $cache = Yii::$app->cache;
-        $spu_name = 'goods_number_check';
+        $key_name = 'goods_number_check';
         //判断导入文件
         if (!isset($_FILES["FileName"])) {
-            if ($cache->exists($spu_name)) {
-                $data = json_decode($cache->get($spu_name), true);
-                $cache->delete($spu_name);
+            if ($cache->exists($key_name)) {
+                $data = json_decode($cache->get($key_name), true);
+                $cache->delete($key_name);
                 $fileName = '检测结果.csv';
                 header('Content-Description: File Transfer');
                 header('Content-Type: application/vnd.ms-excel');
@@ -926,7 +926,118 @@ class GoodsController extends BaseController
                         }
                     }
                     if (count($data) > 1) {
-                        $cache->set($spu_name, json_encode($data), 60);
+                        $cache->set($key_name, json_encode($data), 60);
+                    }
+                    unlink('./' . $saveName);
+                    return json_encode(['code' => 200, 'msg' => '数据生成成功'], JSON_UNESCAPED_UNICODE);
+                }
+                return json_encode(['code' => 500, 'msg' => "数据生成失败"], JSON_UNESCAPED_UNICODE);
+            }
+        }
+    }
+
+    /**
+     * 下载零件校验模板
+     */
+    public function actionDownloadCheck02()
+    {
+        $fileName = '检测模板02.csv';
+        $columns = ["随意号码", "是否存在", "零件号第几行", "零件号备注第几行", "厂家号第几行"];
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        $fp = fopen('php://output', 'a');//打开output流
+        mb_convert_variables('GBK', 'UTF-8', $columns);
+        fputcsv($fp, $columns);
+        ob_flush();
+        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+        fclose($fp);
+        exit();
+    }
+
+    /**
+     * 上传校验模板
+     */
+    public function actionUploadCheck02()
+    {
+        $cache = Yii::$app->cache;
+        $key_name = 'goods_number_check02';
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            if ($cache->exists($key_name)) {
+                $data = json_decode($cache->get($key_name), true);
+                $cache->delete($key_name);
+                $fileName = '检测结果02.csv';
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                $fp = fopen('php://output', 'a');//打开output流
+                foreach ($data as $rowData) {
+                    mb_convert_variables('GBK', 'UTF-8', $rowData);
+                    fputcsv($fp, $rowData);
+                }
+                unset($data);//释放变量的内存
+                ob_flush();
+                flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+                fclose($fp);
+                exit();
+            }
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件'], JSON_UNESCAPED_UNICODE);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' || $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['FileName']['type'] == 'application/octet-stream') {
+                //获取文件名称
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+                //保存文件
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    //组装数据
+                    $data = [
+                        ["随意号码", "是否存在", "零件号第几行", "零件号备注第几行", "厂家号第几行"]
+                    ];
+                    foreach ($sheetData as $k => $v) {
+                        if ($k > 1) {
+                            $goods = trim($v['A']);
+                            $is_exist = '否';
+                            // 零件号第几行
+                            $goods_number_str = '';
+                            $goods_number = Goods::find()->select(['id'])->where(['like', 'goods_number', $goods])->asArray()->all();
+                            if (!empty($goods_number)) {
+                                $is_exist = '是';
+                                $goods_number_str = implode('，', array_column($goods_number, 'id'));
+                            }
+                            //零件号备注第几行
+                            $remark_str = '';
+                            $remark = Goods::find()->select(['id'])->where(['like', 'remark', $goods])->asArray()->all();
+                            if (!empty($remark)) {
+                                $is_exist = '是';
+                                $remark_str = implode('，', array_column($remark, 'id'));
+                            }
+                            //厂家号第几行
+                            $original_company_str = '';
+                            $original_company = Goods::find()->select(['id'])->where(['like', 'original_company', $goods])->asArray()->all();
+                            if (!empty($original_company)) {
+                                $is_exist = '是';
+                                $original_company_str = implode('，', array_column($original_company, 'id'));
+                            }
+                            $data[] = [$goods, $is_exist, $goods_number_str, $remark_str, $original_company_str];
+                        }
+                    }
+                    if (count($data) > 1) {
+                        $cache->set($key_name, json_encode($data), 60);
                     }
                     unlink('./' . $saveName);
                     return json_encode(['code' => 200, 'msg' => '数据生成成功'], JSON_UNESCAPED_UNICODE);
