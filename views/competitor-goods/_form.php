@@ -152,7 +152,9 @@ if (!$model->isNewRecord) {
                 if (res && res.code == 200){
                     var li = '';
                     for (var i in res.data) {
-                        li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                        // li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
+                        li += '<li onclick="select($(this))" data-goods_id="' + res.data[i].id + '">' +
+                            res.data[i].goods_number + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul').append(li);
