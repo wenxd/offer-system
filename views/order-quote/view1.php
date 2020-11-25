@@ -191,10 +191,18 @@ $is_show = in_array($userId, $adminIds);
             <?= $form->field($model, 'competitor_ratio')->textInput(['readonly' => true]) ?>
         <?php endif; ?>
         <div class="box-footer">
-            <?= Html::button('保存报价单', [
-                    'class' => 'btn btn-success quote_save',
-                    'name'  => 'submit-button']
-            )?>
+            <?php
+            if ($model->quote_only_one == 1) {
+                // 超管
+                $use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员', 'user_id' => $userId])->all();
+                if (!empty($use_admin)) {
+                    echo Html::button('保存报价单', [
+                            'class' => 'btn btn-success quote_save',
+                            'name'  => 'submit-button']
+                    );
+                }
+            }
+            ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>
@@ -393,7 +401,6 @@ $is_show = in_array($userId, $adminIds);
                 var item = {};
                 var elements = $(element).parent();
                 item.quote_id = $(this).text();
-                item.goods_id    = $(element).val();
                 if (!elements.find('.number').val()){
                     number_flag  = true;
                 }
@@ -495,6 +502,7 @@ $is_show = in_array($userId, $adminIds);
                 success:function(res){
                     if (res && res.code == 200){
                         layer.msg(res.msg, {time:2000});
+                        location.reload();
                         // location.replace("?r=order-quote/index");
                     } else {
                         layer.msg(res.msg, {time:2000});

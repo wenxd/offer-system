@@ -251,106 +251,50 @@ class OrderQuoteController extends Controller
     public function actionSaveOrder1()
     {
         $params = Yii::$app->request->post();
-        $params = array (
-            'order_final_id' => '198',
-            'admin_id' => '10',
-            'quote_sn' => 'Q201124_上海医疗_01',
-            'quote_ratio' => '1.20',
-            'delivery_ratio' => '1.33',
-            'goods_info' =>
-                array (
-                    0 =>
-                        array (
-                            'quote_id' => '477',
-                            'goods_id' => '',
-                            'number' => '1111',
-                            'serial' => '1',
-                            'tax_rate' => '13.00',
-                            'delivery_time' => '1.5',
-                            'price' => '2.00',
-                            'tax_price' => '2.26',
-                            'all_price' => '2222.00',
-                            'all_tax_price' => '2510.86',
-                            'quote_price' => '10',
-                            'quote_tax_price' => '11.30',
-                            'quote_all_price' => '11110.00',
-                            'quote_all_tax_price' => '12554.30',
-                            'quote_delivery_time' => '10',
-                            'competitor_goods_id' => '0',
-                            'competitor_goods_tax_price' => '0',
-                            'competitor_goods_tax_price_all' => '0',
-                            'competitor_goods_quote_tax_price' => '276.5',
-                            'competitor_goods_quote_tax_price_all' => '307191.5',
-                            'publish_tax_price' => '460.83',
-                            'all_publish_tax_price' => '511982.13',
-                        ),
-                    1 =>
-                        array (
-                            'quote_id' => '478',
-                            'goods_id' => '',
-                            'number' => '2222',
-                            'serial' => '2',
-                            'tax_rate' => '13.00',
-                            'delivery_time' => '1.5',
-                            'price' => '6.00',
-                            'tax_price' => '6.78',
-                            'all_price' => '13332.00',
-                            'all_tax_price' => '15065.16',
-                            'quote_price' => '20',
-                            'quote_tax_price' => '22.60',
-                            'quote_all_price' => '44440.00',
-                            'quote_all_tax_price' => '50217.20',
-                            'quote_delivery_time' => '20',
-                            'competitor_goods_id' => '0',
-                            'competitor_goods_tax_price' => '0',
-                            'competitor_goods_tax_price_all' => '0',
-                            'competitor_goods_quote_tax_price' => '0',
-                            'competitor_goods_quote_tax_price_all' => '0',
-                            'publish_tax_price' => '0',
-                            'all_publish_tax_price' => '0',
-                        ),
-                ),
-            'competitor_ratio' => '0.60',
-            'sta_quote_all_tax_price' => '62771.5',
-            'sta_all_tax_price' => '17576.02',
-            'most_quote_delivery_time' => '20',
-            'mostLongTime' => '1.5',
-            'publish_ratio' => '1',
-            'sta_all_publish_tax_price' => '511982.13',
-            'sta_competitor_public_tax_price_all' => '307191.5',
-            'profit_rate' => '72',
-        );
-        $orderQuote = OrderQuote::find()->where(['id' => $params['order_final_id'], 'quote_sn' => $params['quote_sn']])->one();
-        if (empty($orderQuote)) {
-            return json_encode(['code' => 500, 'msg' => $orderQuote->getErrors()]);
-        }
-        $orderQuote->quote_sn = $params['quote_sn'];
-        $orderQuote->order_final_id = $params['order_final_id'];
-        $orderQuote->goods_info = json_encode([]);
-        $orderQuote->admin_id   = $params['admin_id'];
-        $orderQuote->profit_rate = $params['profit_rate'];
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $orderQuote = OrderQuote::find()->where(['id' => $params['order_final_id'], 'quote_sn' => $params['quote_sn']])->one();
+            if (empty($orderQuote)) {
+                return json_encode(['code' => 501, 'msg' => $orderQuote->getErrors()]);
+            }
+            $orderQuote->goods_info = json_encode([]);
+            $orderQuote->admin_id   = $params['admin_id'];
+            $orderQuote->profit_rate = $params['profit_rate'];
+            $orderQuote->is_send = QuoteGoods::IS_QUOTE_NO;
 
-        if ($params['sta_all_tax_price']) {
-            $orderQuote->quote_ratio = number_format($params['sta_quote_all_tax_price'] / $params['sta_all_tax_price'], 2, '.', '');
-        }
-        if ($params['mostLongTime']) {
-            $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time'] / $params['mostLongTime'], 2, '.', '');
-        }
-        if ($params['publish_ratio'] == 0) {
-            return json_encode(['code' => 500, 'msg' => '不能为0']);
-        }
-        $competitor_ratio = 0;
-        if ($params['publish_ratio'] && $params['sta_all_publish_tax_price']) {
-            $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
-        }
+            if ($params['sta_all_tax_price']) {
+                $orderQuote->quote_ratio = number_format($params['sta_quote_all_tax_price'] / $params['sta_all_tax_price'], 2, '.', '');
+            }
+            if ($params['mostLongTime']) {
+                $orderQuote->delivery_ratio = number_format($params['most_quote_delivery_time'] / $params['mostLongTime'], 2, '.', '');
+            }
+            if ($params['publish_ratio'] == 0) {
+                return json_encode(['code' => 502, 'msg' => '不能为0']);
+            }
+            $competitor_ratio = 0;
+            if ($params['publish_ratio'] && $params['sta_all_publish_tax_price']) {
+                $competitor_ratio = $params['sta_competitor_public_tax_price_all'] / ($params['sta_all_publish_tax_price'] / $params['publish_ratio']);
+            }
 
-        $orderQuote->competitor_ratio = $competitor_ratio;
-        $orderQuote->publish_ratio = $params['publish_ratio'];
-        $orderQuote->quote_all_tax_price = $params['sta_quote_all_tax_price'];
-        $orderQuote->all_tax_price = $params['sta_all_tax_price'];
-
-        var_dump($orderQuote->save());
-        die;
+            $orderQuote->competitor_ratio = $competitor_ratio;
+            $orderQuote->publish_ratio = $params['publish_ratio'];
+            $orderQuote->quote_all_tax_price = $params['sta_quote_all_tax_price'];
+            $orderQuote->all_tax_price = $params['sta_all_tax_price'];
+            if (!$orderQuote->save()) {
+                return json_encode(['code' => 503, 'msg' => '更新订单失败']);
+            }
+            foreach ($params['goods_info'] as $item) {
+                $quote_goods = QuoteGoods::findOne($item['quote_id']);
+                if (!$quote_goods->load(['QuoteGoods' => $item]) || !$quote_goods->save()) {
+                    return json_encode(['code' => 503, 'msg' => '更新零件失败']);
+                }
+            }
+            $transaction->commit();
+            return json_encode(['code' => 200, 'msg' => '成功']);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => $e->getMessage()]);
+        }
     }
 
     //批量插入

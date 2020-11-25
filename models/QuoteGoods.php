@@ -54,10 +54,10 @@ class QuoteGoods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted'], 'integer'],
-            [['updated_at', 'created_at', 'quote_delivery_time', 'competitor_goods_id', 'competitor_goods_tax_price',
-                'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price', 'competitor_goods_quote_tax_price_all'], 'safe'],
-            [['order_final_sn', 'order_quote_id', 'order_quote_sn'], 'string', 'max' => 255],
+            [['order_id', 'order_final_id', 'goods_id', 'type', 'relevance_id', 'number', 'is_quote', 'is_deleted', 'competitor_goods_id'], 'integer'],
+            [['updated_at', 'created_at'], 'safe'],
+            [['tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price', 'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time', 'competitor_goods_tax_price', 'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price', 'competitor_goods_quote_tax_price_all', 'publish_tax_price', 'publish_tax_price_all'], 'number'],
+            [['order_final_sn', 'order_quote_id', 'order_quote_sn', 'serial'], 'string', 'max' => 255],
         ];
     }
 
