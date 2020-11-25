@@ -47,7 +47,7 @@ if (!$model->isNewRecord) {
 
     <div class="box-body">
 
-    <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true])->label('零件号') ?>
+    <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true,'autocomplete' => 'off'])->label('零件号') ?>
     <div class="box-search cancel">
         <ul class="box-search-ul">
 
@@ -153,8 +153,8 @@ if (!$model->isNewRecord) {
                     var li = '';
                     for (var i in res.data) {
                         // li += '<li onclick="select($(this))">' + res.data[i] + '</li>';
-                        li += '<li onclick="select($(this))" data-goods_id="' + res.data[i].id + '">' +
-                            res.data[i].goods_number + '</li>';
+                        li += '<li onclick="select($(this))" goods_id="' + res.data[i].goods_number + '">' +
+                            res.data[i].goods_number + ' ' + res.data[i].material_code + '</li>';
                     }
                     if (li) {
                         $('.box-search-ul').append(li);

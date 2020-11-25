@@ -119,6 +119,12 @@ class CompetitorGoods extends ActiveRecord
         }
         $goods = Goods::findOne(['goods_number' => $this->goods_number, 'is_deleted' => Goods::IS_DELETED_NO]);
         if (!$goods) {
+            $goods_number = explode(' ', $this->goods_number);
+            if (count($goods_number) > 1) {
+                $goods = Goods::findOne(['goods_number' => $goods_number[0], 'is_deleted' => Goods::IS_DELETED_NO]);
+            }
+        }
+        if (!$goods) {
             $this->addError('id', '没有此厂家号');
             return false;
         }
