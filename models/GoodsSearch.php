@@ -29,7 +29,7 @@ class GoodsSearch extends Goods
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'unit', 'technique_remark', 'img_id', 'nameplate_img_id', 'updated_at', 'created_at', 'device_info',
                 'material', 'part', 'remark', 'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price',
-                'material_code', 'import_mark', 'publish_price', 'factory_price'], 'safe'],
+                'material_code', 'import_mark', 'publish_price', 'factory_price', 'self_number'], 'safe'],
             [['goods_number', 'goods_number_b', 'description', 'description_en', 'original_company', 'original_company_remark',
                 'technique_remark', 'device_info', 'material', 'part', 'remark', 'publish_price', 'publish_tax_price',
                 'estimate_publish_price', 'material_code', 'import_mark'], 'trim'],
@@ -166,6 +166,7 @@ class GoodsSearch extends Goods
 
         $query->andFilterWhere(['OR', ['like', 'goods.goods_number', $this->remark], ['like', 'goods.remark', $this->remark]])
               ->andFilterWhere(['like', 'goods.goods_number', $this->goods_number])
+              ->andFilterWhere(['like', 'goods.self_number', $this->self_number])
               ->andFilterWhere(['like', 'goods.goods_number_b', $this->goods_number_b])
               ->andFilterWhere(['like', 'goods.description', $this->description])
               ->andFilterWhere(['like', 'goods.description_en', $this->description_en])

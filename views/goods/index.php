@@ -196,6 +196,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'contentOptions' => ['style' => 'min-width: 100px;'],
                 ],
                 [
+                    'attribute' => 'self_number',
+                    'contentOptions' => ['style' => 'min-width: 100px;'],
+                    'value' => function ($model, $key, $index, $column) {
+                        return $model->self_number ?? '';
+                    }
+                ],
+                [
                     'attribute' => 'material',
                     'contentOptions' => ['style' => 'min-width: 100px;'],
                 ],

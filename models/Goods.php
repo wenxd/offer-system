@@ -49,6 +49,7 @@ use app\extend\tencent\Cos;
  * @property string $brand_id
  * @property string $factory_price
  * @property string $locking
+ * @property string $self_number
  */
 class Goods extends ActiveRecord
 {
@@ -166,7 +167,7 @@ class Goods extends ActiveRecord
             [['is_process', 'is_deleted', 'is_special', 'is_nameplate', 'is_emerg', 'is_assembly', 'is_inquiry',
                 'is_tz', 'is_standard', 'is_import', 'is_repair', 'suggest_number', 'brand_id', 'locking'], 'integer'],
             [['offer_date', 'updated_at', 'created_at', 'img_url', 'nameplate_img_url', 'device_info',
-                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax'], 'safe'],
+                'publish_tax_price', 'publish_delivery_time', 'estimate_publish_price', 'publish_price', 'publish_tax', 'self_number'], 'safe'],
             [['goods_number', 'goods_number_b', 'original_company', 'original_company_remark', 'unit', 'technique_remark',
                 'img_id', 'nameplate_img_id', 'description', 'description_en', 'material', 'part', 'remark', 'material_code',
                 'import_mark'], 'safe'],
@@ -225,6 +226,7 @@ class Goods extends ActiveRecord
             'publish_price'           => '发行未税单价',
             'publish_tax'             => '发行税率',
             'factory_price'           => '美金出厂价',
+            'self_number'           => '零件自编号',
         ];
     }
 
@@ -284,6 +286,7 @@ class Goods extends ActiveRecord
         $this->import_mark              = strtoupper($this->import_mark);
         $this->part                     = strtoupper($this->part);
         $this->remark                   = strtoupper($this->remark);
+        $this->self_number              = time() . '-' . rand(100, 999);
 
         //设备信息处理
         if ($this->device_info != $this->getOldAttribute('device_info')) {
