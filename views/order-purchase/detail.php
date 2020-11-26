@@ -265,7 +265,10 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                                                      style="width: 100px;"></td>
                     <td><?= $item::$stock[$item->is_stock] ?></td>
                     <td><?= $item->after ? '是' : "否" ?></td>
-                    <td class="tax"><?= $item->tax_rate ?></td>
+                    <!--税率$open-->
+                    <td class="tax">
+                        <input type="number" purchase_id="<?= $item->id ?>" size="4" min="0" tax_rate="<?= $item->tax_rate ?>"  style="width: 100px;" <?= !$open ? "disabled='disabled'" : '' ?>  value="<?= $item->tax_rate ?>">
+                    </td>
                     <td class="agreement_number"><?= $item->number ?></td>
                     <td class="use_number"><?= $item->fixed_stock_number ?></td>
                     <td><?php
@@ -452,6 +455,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
     </div>
     <div class="box-footer">
         <?= Html::button('保存采购数量/使用库存', ['class' => 'btn btn-primary purchase_number_save', 'name' => 'submit-button']) ?>
+        <?= Html::button('保存税率', ['class' => 'btn btn-primary tax_save', 'name' => 'submit-button']) ?>
 
         <?php
         if ($orderPurchase->is_purchase_number == 1) {
@@ -512,6 +516,47 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             }
 
         });
+
+        //保存采购数量/使用库存
+        $('.tax_save').click(function (e) {
+            var goods_info = [];
+            var status = false;
+            $('.tax input').each(function (index, element) {
+                var disabled = $(element).attr('disabled');
+                if (disabled != 'disabled') {
+                    var tax = parseFloat($(element).val()).toFixed(2);
+                    var tax_rate = $(element).attr('tax_rate');
+                    if (tax != tax_rate) {
+                        status = true;
+                        var tax_price = $(element).parent().parent().find('.tax_price input').val();
+                        var all_tax_price = $(element).parent().parent().find('.all_tax_price').text();
+                        var purchase_goods_id = $(element).attr('purchase_id');
+                        goods_info.push({purchase_goods_id:purchase_goods_id,tax:tax,tax_price:tax_price,all_tax_price:all_tax_price});
+
+                    }
+                }
+            });
+            if (!status) {
+                layer.msg('没有税率更新', {time: 2000});
+                return false;
+            }
+            $.ajax({
+                type:"post",
+                url:'?r=search/order-purchase-tax-save',
+                data:{goods_info:goods_info},
+                dataType:'JSON',
+                success:function(res){
+                    console.log(res);
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                    }
+                }
+            });
+        });
+
         //全选
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked", $(this).prop("checked"));
@@ -580,7 +625,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         //输入未税单价
         $(".price input").bind('input propertychange', function (e) {
-            var tax = parseFloat($(this).parent().parent().find('.tax').text());
+            var tax = parseFloat($(this).parent().parent().find('.tax input').val()).toFixed(2);
             var price = parseFloat($(this).val());
             var tax_price = (price * (1 + tax / 100)).toFixed(2);
             var number = $(this).parent().parent().find('.number').val();
@@ -592,11 +637,27 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         //输入含税单价
         $(".tax_price input").bind('input propertychange', function (e) {
-            var tax = parseFloat($(this).parent().parent().find('.tax').text());
+            var tax = parseFloat($(this).parent().parent().find('.tax input').val()).toFixed(2);
             var tax_price = parseFloat($(this).val());
             var price = (tax_price / (1 + tax / 100)).toFixed(2);
             var number = $(this).parent().parent().find('.number').val();
             $(this).parent().parent().find('.price input').val(price);
+            $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
+            $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+            stat();
+        });
+
+        //输入税率
+        $(".tax input").bind('input propertychange', function (e) {
+            var tax = parseFloat($(this).val()).toFixed(2);
+            console.log(tax);
+            if (tax < 0 || tax == 'NaN') {
+                $(this).val('0');
+            }
+            var price = parseFloat($(this).parent().parent().find('.price input').val());
+            var tax_price = (price * (1 + tax / 100)).toFixed(2);
+            var number = $(this).parent().parent().find('.number').val();
+            $(this).parent().parent().find('.tax_price input').val(tax_price);
             $(this).parent().parent().find('.all_price').text(parseFloat(price * number).toFixed(2));
             $(this).parent().parent().find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
             stat();

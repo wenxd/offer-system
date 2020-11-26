@@ -12,6 +12,7 @@ use app\models\Goods;
 use app\models\OrderPurchase;
 use app\models\OrderQuote;
 use app\models\PaymentGoods;
+use app\models\PurchaseGoods;
 use app\models\Supplier;
 use Yii;
 use yii\data\Pagination;
@@ -248,5 +249,26 @@ class SearchController extends BaseController
             return json_encode(['code' => 200, 'msg' => '成功']);
         }
         return json_encode(['code' => 500, 'msg' => '失败']);
+    }
+
+    /**
+     * 中标
+     */
+    public function actionOrderPurchaseTaxSave()
+    {
+        $goods_info = Yii::$app->request->post('goods_info', []);
+        foreach ($goods_info as $item) {
+            $model = PurchaseGoods::findOne($item['purchase_goods_id']);
+            $model->tax_rate = $item['tax'];
+//            $model->tax_price = $model->price * ($model->tax_rate / 100 + 1);
+//            $model->all_tax_price = $model->tax_price * $model->fixed_number;
+//            $model->tax_price = $item['tax_price'];
+            $model->fixed_tax_price = $item['tax_price'];
+            $model->all_tax_price = $item['all_tax_price'];
+            if (!$model->save()) {
+                return json_encode(['code' => 500, 'msg' => $model->getErrors()]);
+            }
+        }
+        return json_encode(['code' => 200, 'msg' => '成功']);
     }
 }
