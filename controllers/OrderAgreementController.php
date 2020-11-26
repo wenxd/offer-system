@@ -176,6 +176,13 @@ class OrderAgreementController extends Controller
             ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
             ->orderBy('serial')->all();
         foreach ($agreementGoods as $goods) {
+            // 是否有多个
+            $is_count = AgreementGoodsData::find()
+                ->where(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1, 'goods_id' => $goods->goods_id])
+                ->orderBy('serial')->count();
+            if ($is_count != 1) {
+                continue;
+            }
             // 匹配零件号，更新采购策略采购数量
             if (isset($goods_info[$goods->goods_id])) {
                 // 判断使用库存中是否已经存在
