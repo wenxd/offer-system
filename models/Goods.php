@@ -286,7 +286,10 @@ class Goods extends ActiveRecord
         $this->import_mark              = strtoupper($this->import_mark);
         $this->part                     = strtoupper($this->part);
         $this->remark                   = strtoupper($this->remark);
-        $this->self_number              = 'G' . time() . '-' . rand(10, 99);
+        if (!$this->self_number) {
+            $this->self_number              = 'G' . time() . '-' . rand(10, 99);
+        }
+
 
         //设备信息处理
         if ($this->device_info != $this->getOldAttribute('device_info')) {

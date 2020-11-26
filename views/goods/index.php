@@ -218,7 +218,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'import_mark',
                     'contentOptions' => ['style' => 'min-width: 100px;'],
                     'value' => function ($model, $key, $index, $column) {
-                        return $model->importmark ? implode(',', $model->importmark) : $model->import_mark;
+                        return $model->import_mark ?? '';
                     }
                 ],
                 [

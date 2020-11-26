@@ -508,7 +508,21 @@ class GoodsController extends BaseController
                             }
                             //导入类别
                             if (trim($value['AB'])) {
-                                $goods->import_mark = (string)trim($value['AB']);
+                                $import_mark = $goods->import_mark ?? false;
+                                $import_mark_arr = [];
+                                if ($import_mark) {
+                                    $import_mark_arr = explode(';', $import_mark ?? '');
+                                }
+                                $x = (string)trim($value['AB']);
+                                // 符号转换
+                                $x = str_replace('；', ';', $x);
+                                $x_arr = explode(';', $x ?? '');
+                                foreach ($x_arr as $item) {
+                                    if (trim($item) && !in_array($item, $import_mark_arr)) {
+                                        $import_mark_arr[] = $item;
+                                    }
+                                }
+                                $goods->import_mark = implode(';', $import_mark_arr);
                             }
                             //发行税率
                             if (trim($value['AC'])) {
