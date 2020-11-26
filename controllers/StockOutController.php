@@ -52,11 +52,13 @@ class StockOutController extends BaseController
                 'order_agreement_id' => $id,
                 'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
             ])->all();
+            $type = 'AgreementGoodsData';
         } else {
             $agreementGoods = AgreementGoods::find()->where([
                 'order_agreement_id' => $id,
                 'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
             ])->all();
+            $type = 'AgreementGoods';
         }
 
         $stockLog = StockLog::find()->where([
@@ -67,7 +69,7 @@ class StockOutController extends BaseController
         $data['model'] = $orderAgreement;
         $data['agreementGoods'] = $agreementGoods;
         $data['stockLog'] = $stockLog;
-
+        $data['type'] = $type;
         return $this->render('detail', $data);
     }
 
@@ -278,17 +280,28 @@ class StockOutController extends BaseController
     /**
      * 质检
      */
-    public function actionQuality()
+    public function actionQuality($type = 'check')
     {
         $id = Yii::$app->request->post('agreement_goods_id');
-//        $agreementGoods = AgreementGoods::findOne($id);
-        $agreementGoods = AgreementGoodsData::findOne($id);
-        $agreementGoods->is_quality = AgreementGoods::IS_QUALITY_YES;
+        $goods_type = Yii::$app->request->post('goods_type', 'AgreementGoods');
+        if ($goods_type == 'AgreementGoods') {
+            $agreementGoods = AgreementGoods::findOne($id);
+        } else {
+            $agreementGoods = AgreementGoodsData::findOne($id);
+        }
+        // 鉴定
+        if ($type == 'check') {
+            $agreementGoods->is_quality = AgreementGoods::IS_QUALITY_YES;
+        } elseif ($type == 'cert') {
+            // 是否有证书
+            $agreementGoods->is_cert = $agreementGoods->is_cert ? 0 : 1;
+        }
         if ($agreementGoods->save()) {
-            return json_encode(['code' => 200, 'msg' => '质检成功'], JSON_UNESCAPED_UNICODE);
+            return json_encode(['code' => 200, 'msg' => '成功'], JSON_UNESCAPED_UNICODE);
         } else {
             return json_encode(['code' => 500, 'msg' => $agreementGoods->getErrors()], JSON_UNESCAPED_UNICODE);
         }
+
     }
 
     /**

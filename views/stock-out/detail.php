@@ -18,7 +18,8 @@ $use_admin = AuthAssignment::find()->where(['item_name' => ['库管员', '库管
 $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
 $userId   = Yii::$app->user->identity->id;
 $isShow = in_array($userId, $adminIds);
-
+$admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
+$admins  = ArrayHelper::getColumn($admin, 'user_id');
 ?>
 
 <div class="box table-responsive">
@@ -64,6 +65,7 @@ $isShow = in_array($userId, $adminIds);
                 <th>库存数量</th>
                 <th>库存位置</th>
                 <th>到齐</th>
+                <th>证书</th>
                 <th>出库</th>
                 <th>质检</th>
                 <th>操作</th>
@@ -103,9 +105,17 @@ $isShow = in_array($userId, $adminIds);
                     <td class="stock_number"><?=$item->stock ? $item->stock->number : 0?></td>
                     <td><?=$item->stock ? $item->stock->position : ''?></td>
                     <td class="is_enough"></td>
+                    <td><?=$item->is_cert ? '是' : '否'?></td>
                     <td><?=$item->is_out ? '是' : '否'?></td>
                     <td class="is_quality"><?=$item->is_quality ? '是' : '否'?></td>
                     <td>
+                        <?php if (in_array($userId, $admins)):?>
+                            <a class="btn btn-warning btn-xs btn-flat cert" href="javascript:void(0);" data-id="<?=$item->id?>">证书</a>
+                        <?php else:?>
+                            <?php if (!$item->is_cert):?>
+                                <a class="btn btn-warning btn-xs btn-flat cert" href="javascript:void(0);" data-id="<?=$item->id?>">证书</a>
+                            <?php endif;?>
+                        <?php endif;?>
                         <?php if (!$item->is_quality):?>
                             <a class="btn btn-success btn-xs btn-flat quality" href="javascript:void(0);" data-id="<?=$item->id?>">质检</a>
                         <?php endif;?>
@@ -132,6 +142,8 @@ $isShow = in_array($userId, $adminIds);
 <script type="text/javascript">
     $(document).ready(function () {
         init();
+        var goods_type = "<?=$type?>";
+        console.log(goods_type);
         function init()
         {
             $('.order_agreement_list').each(function (i, e) {
@@ -254,7 +266,28 @@ $isShow = in_array($userId, $adminIds);
             $.ajax({
                 type:"post",
                 url:'?r=stock-out/quality',
-                data:{agreement_goods_id:agreement_goods_id},
+                data:{agreement_goods_id:agreement_goods_id, goods_type:goods_type},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        });
+        //修改证书
+        $('.cert').click(function (e) {
+            //防止双击
+            // $(".cert").attr("disabled", true).addClass("disabled");
+            var agreement_goods_id = $(this).data('id');
+            $.ajax({
+                type:"post",
+                url:'?r=stock-out/quality&type=cert',
+                data:{agreement_goods_id:agreement_goods_id, goods_type:goods_type},
                 dataType:'JSON',
                 success:function(res){
                     if (res && res.code == 200){
