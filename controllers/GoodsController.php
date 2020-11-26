@@ -721,21 +721,70 @@ class GoodsController extends BaseController
      */
     public function actionDownloadSon()
     {
-        $fileName = '零件模板(子).csv';
-        $columns = ["品牌", "零件号", "品牌(子)", "零件号(子)", "数量(子)",];
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        $fp = fopen('php://output', 'a');//打开output流
-        mb_convert_variables('GBK', 'UTF-8', $columns);
-        fputcsv($fp, $columns);
-        ob_flush();
-        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
-        fclose($fp);
-        exit();
+//        $fileName = '零件模板(子).csv';
+//        $columns = ["品牌", "零件号", "品牌(子)", "零件号(子)", "数量(子)",];
+//        header('Content-Description: File Transfer');
+//        header('Content-Type: application/vnd.ms-excel');
+//        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+//        header('Expires: 0');
+//        header('Cache-Control: must-revalidate');
+//        header('Pragma: public');
+//        $fp = fopen('php://output', 'a');//打开output流
+//        mb_convert_variables('GBK', 'UTF-8', $columns);
+//        fputcsv($fp, $columns);
+//        ob_flush();
+//        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+//        fclose($fp);
+//        exit();
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E'];
+        $tableHeader = ["品牌", "零件号", "品牌(子)", "零件号(子)", "数量(子)",];
+        for ($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
+        }
+
+        $title = '零件模板(子)' . date('ymd-His');
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
     }
 
     /**
@@ -829,21 +878,70 @@ class GoodsController extends BaseController
      */
     public function actionDownloadCheck()
     {
-        $fileName = '检测模板.csv';
-        $columns = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存",];
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        $fp = fopen('php://output', 'a');//打开output流
-        mb_convert_variables('GBK', 'UTF-8', $columns);
-        fputcsv($fp, $columns);
-        ob_flush();
-        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
-        fclose($fp);
-        exit();
+//        $fileName = '检测模板.csv';
+//        $columns = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存",];
+//        header('Content-Description: File Transfer');
+//        header('Content-Type: application/vnd.ms-excel');
+//        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+//        header('Expires: 0');
+//        header('Cache-Control: must-revalidate');
+//        header('Pragma: public');
+//        $fp = fopen('php://output', 'a');//打开output流
+//        mb_convert_variables('GBK', 'UTF-8', $columns);
+//        fputcsv($fp, $columns);
+//        ob_flush();
+//        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+//        fclose($fp);
+//        exit();
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+            return;
+        }
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $tableHeader = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存",];
+        for ($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
+        }
+
+        $title = '检测模板' . date('ymd-His');
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
     }
 
     /**
@@ -937,29 +1035,58 @@ class GoodsController extends BaseController
     }
 
     /**
-     * 下载零件校验模板
+     * 下载零件校验模板02
      */
     public function actionDownloadCheck02()
     {
-        $fileName = '检测模板02.csv';
-        $columns = ["随意号码", "是否存在", "零件号第几行", "零件号备注第几行", "厂家号第几行"];
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        $fp = fopen('php://output', 'a');//打开output流
-        mb_convert_variables('GBK', 'UTF-8', $columns);
-        fputcsv($fp, $columns);
-        ob_flush();
-        flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
-        fclose($fp);
-        exit();
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        // Set document properties
+        $spreadsheet->getProperties()
+            ->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
+        $excel = $spreadsheet->setActiveSheetIndex(0);
+
+        $letter = ['A', 'B', 'C', 'D', 'E'];
+        $tableHeader = ["随意号码", "是否存在", "零件号第几行", "零件号备注第几行", "厂家号第几行"];
+        for ($i = 0; $i < count($tableHeader); $i++) {
+            $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
+            $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
+            $excel->getColumnDimension($letter[$i])->setWidth(18);
+            $excel->setCellValue($letter[$i] . '1', $tableHeader[$i]);
+        }
+
+        $title = '检测模板02' . date('ymd-His');
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $title . '.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        $writer->save('php://output');
+        exit;
     }
 
     /**
-     * 上传校验模板
+     * 上传校验模板02
      */
     public function actionUploadCheck02()
     {
@@ -1039,7 +1166,7 @@ class GoodsController extends BaseController
                     if (count($data) > 1) {
                         $cache->set($key_name, json_encode($data), 60);
                     }
-                    unlink('./' . $saveName);
+//                    unlink('./' . $saveName);
                     return json_encode(['code' => 200, 'msg' => '数据生成成功'], JSON_UNESCAPED_UNICODE);
                 }
                 return json_encode(['code' => 500, 'msg' => "数据生成失败"], JSON_UNESCAPED_UNICODE);
