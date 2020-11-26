@@ -145,6 +145,14 @@ $userId = Yii::$app->user->identity->id;
                     }
                 ],
                 [
+                    'attribute' => 'is_cert',
+                    'label' => '证书',
+                    'filter' => Order::$orderType,
+                    'value' => function ($model, $key, $index, $column) {
+                        return $model->iscert;
+                    }
+                ],
+                [
                     'attribute' => 'customer_id',
                     'filter' => Customer::getSelectDropDown(),
                     'value' => function ($model, $key, $index, $column) {

@@ -47,20 +47,18 @@ class StockOutController extends BaseController
             yii::$app->getSession()->setFlash('error', '查不到此订单信息');
             return $this->redirect(yii::$app->request->headers['referer']);
         }
-        if ($orderAgreement->is_strategy_number == 1) {
-            $agreementGoods = AgreementGoodsData::find()->where([
-                'order_agreement_id' => $id,
-                'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
-            ])->all();
-            $type = 'AgreementGoodsData';
-        } else {
+        $agreementGoods = AgreementGoodsData::find()->where([
+            'order_agreement_id' => $id,
+            'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
+        ])->all();
+        $type = 'AgreementGoodsData';
+        if (empty($agreementGoods)) {
             $agreementGoods = AgreementGoods::find()->where([
                 'order_agreement_id' => $id,
                 'purchase_is_show' => AgreementGoods::IS_SHOW_YES,
             ])->all();
             $type = 'AgreementGoods';
         }
-
         $stockLog = StockLog::find()->where([
             'order_id' => $orderAgreement->order_id,
             'type' => StockLog::TYPE_OUT,
@@ -85,12 +83,12 @@ class StockOutController extends BaseController
         $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
         $orderAgreement->stock_admin_id = Yii::$app->user->identity->id;
         $orderAgreement->save();
-        if ($orderAgreement->is_strategy_number == 1) {
-            $model = AgreementGoodsData::find();
-        } else {
+        $agreementGoods = AgreementGoodsData::find()->where(['id' => $params['id']])->one();
+        $model = AgreementGoodsData::find();
+        if (empty($agreementGoods)) {
+            $agreementGoods = AgreementGoods::find()->where(['id' => $params['id']])->one();
             $model = AgreementGoods::find();
         }
-        $agreementGoods = $model->where(['id' => $params['id']])->one();
 
         $order_id = $orderAgreement->order_id;
 

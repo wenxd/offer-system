@@ -225,9 +225,9 @@ class StockOutLogController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
         $tableHeader = ['订单号', '收入合同单号', '零件号', '出库数量', '价格', '总价', '采购员', '出库时间', '手动',
-            '订单类型', '客户', '区块', '平台名称', '去向', '备注'];
+            '订单类型', '客户', '区块', '平台名称', '去向', '备注', '证书'];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -301,6 +301,7 @@ class StockOutLogController extends Controller
                 $excel->setCellValue($letter[$i + 12] . ($key + 2), $stockLog->plat_name);
                 $excel->setCellValue($letter[$i + 13] . ($key + 2), $stockLog->direction);
                 $excel->setCellValue($letter[$i + 14] . ($key + 2), $stockLog->remark);
+                $excel->setCellValue($letter[$i + 15] . ($key + 2), $stockLog->iscert);
                 break;
             }
         }

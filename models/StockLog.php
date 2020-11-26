@@ -40,6 +40,7 @@ class StockLog extends ActiveRecord
     public $price;
     public $goods_number;
     public $suggest_number;
+    public $is_cert;
 
     const TYPE_IN    = '1';
     const TYPE_OUT   = '2';
@@ -161,5 +162,22 @@ class StockLog extends ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    // 关联获取是否证书
+    public function getIscert()
+    {
+        if (!$this->order_agreement_id) {
+            return '';
+        }
+        $where = ['order_agreement_id' => $this->order_agreement_id, 'goods_id' => $this->goods_id];
+        $agreementGoods = AgreementGoodsData::findOne($where);
+        if (empty($agreementGoods)) {
+            $agreementGoods = AgreementGoods::findOne($where);
+        }
+        if (empty($agreementGoods)) {
+            return '';
+        }
+        return $agreementGoods->is_cert ? '是' : '否';
     }
 }
