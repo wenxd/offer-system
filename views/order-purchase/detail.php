@@ -309,7 +309,8 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <!--勾选生成支出合同-->
                     <td class="contract"><?php
                         if ($item->after == 0 ) {
-                            echo '<input type="checkbox" onclick="return false;" checked="checked" />';
+                            /*onclick="return false;"*/
+                            echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)" />';
                         } else {
                             echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)"/>';
                         }
