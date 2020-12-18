@@ -140,7 +140,7 @@ $system_tax = SystemConfig::find()->select('value')->where([
                         <?= $checkbox ? "<input type='checkbox' number={$item->purchase_number} name='select_id' 
 data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_goods_id={$item->id} value={$item->goods_id} class='select_id'>" : "" ?>
                     </td>
-                    <td><?= $item->goods_id ?></td>
+                    <td><?= $item->serial ?></td>
                     <td><?= $checkbox ? '是' : "否" ?></td>
                     <td><?= empty($item->belong_to) ? '是' : "否" ?></td>
                     <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
@@ -172,7 +172,8 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                     <td class="oldNumber"><?= $item->order_number ?></td>
                     <?php if ($orderAgreement->is_strategy_number == 1) : ?>
                         <td class="afterNumber">
-                            <input goods_id="<?= $item->goods_id ?>" type="number" size="4" class="number" min="1"
+                            <input goods_id="<?= $item->goods_id ?>" agreement_id="<?= $item->id ?>" type="number"
+                                   size="4" class="number" min="1"
                                    style="width: 50px;"
                                    value="<?= $item->strategy_number ?>">
                         </td>
@@ -181,18 +182,19 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                             <!--计算库存-->
                             <?php
                             echo $item->strategy_stock_number ?? 0;
-//                            if ($item->strategy_number == 0) {
-//                                echo $item->number;
-//                            } elseif ($item->strategy_number < $item->number) {
-//                                echo $item->number - $item->strategy_number;
-//                            } else {
-//                                echo 0;
-//                            }
+                            //                            if ($item->strategy_number == 0) {
+                            //                                echo $item->number;
+                            //                            } elseif ($item->strategy_number < $item->number) {
+                            //                                echo $item->number - $item->strategy_number;
+                            //                            } else {
+                            //                                echo 0;
+                            //                            }
                             ?>
                         </td>
                     <?php else:; ?>
                         <td class="afterNumber">
-                            <input goods_id="<?= $item->goods_id ?>" type="number" size="4" class="number" min="1"
+                            <input goods_id="<?= $item->goods_id ?>" agreement_id="<?= $item->id ?>" type="number"
+                                   size="4" class="number" min="1"
                                    style="width: 50px;"
                                    value="<?= $item->number ?>">
                         </td>
@@ -298,9 +300,10 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
             var goods_info = [];
             $('.number').each(function (index, element) {
                 var goods_id = $(element).attr('goods_id');
+                var agreement_id = $(element).attr('agreement_id');
                 var strategy_number = $(element).val();
                 var goods = [];
-                goods_info.push({goods_id: goods_id, strategy_number: strategy_number});
+                goods_info.push({goods_id: goods_id, strategy_number: strategy_number, agreement_id: agreement_id});
             });
             console.log(goods_info);
             $.ajax({

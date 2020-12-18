@@ -166,7 +166,7 @@ class OrderAgreementController extends Controller
         $params = Yii::$app->request->post('goods_info', []);
         $goods_info = [];
         foreach ($params as $v) {
-            $goods_info[$v['goods_id']] = $v['strategy_number'];
+            $goods_info[$v['agreement_id']] = $v['strategy_number'];
         }
         $transaction = Yii::$app->db->beginTransaction();
         // 查询收入合同单号与零件ID对应表
@@ -176,18 +176,11 @@ class OrderAgreementController extends Controller
             ->where(['order_agreement_id' => $id, 'ag.is_deleted' => 0, 'ag.purchase_is_show' => 1])
             ->orderBy('serial')->all();
         foreach ($agreementGoods as $goods) {
-            // 是否有多个
-            $is_count = AgreementGoodsData::find()
-                ->where(['order_agreement_id' => $id, 'is_deleted' => 0, 'purchase_is_show' => 1, 'goods_id' => $goods->goods_id])
-                ->orderBy('serial')->count();
-            if ($is_count != 1) {
-                continue;
-            }
-            // 匹配零件号，更新采购策略采购数量
-            if (isset($goods_info[$goods->goods_id])) {
+            if (isset($goods_info[$goods->id])) {
                 // 判断使用库存中是否已经存在
                 $count = AgreementStock::find()->where([
                     'order_id' => $goods->order_id,
+                    'serial' => $goods->serial,
                     'order_agreement_id' => $goods->order_agreement_id,
                     'goods_id' => $goods->goods_id, 'source' => AgreementStock::STRATEGY
                 ])->one();
@@ -198,7 +191,7 @@ class OrderAgreementController extends Controller
                     }
                     $count->delete();
                 }
-                $goods->strategy_number = $goods_info[$goods->goods_id];
+                $goods->strategy_number = $goods_info[$goods->id];
                 $use_number = $goods->number - $goods->strategy_number;
                 if ($use_number < 0) $use_number = 0;
                 $goods->strategy_stock_number = $use_number;

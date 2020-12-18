@@ -233,6 +233,7 @@ class AgreementStockController extends Controller
                     ->where(['order_id' => $agreementStock->order_id,
                         'order_agreement_id' => $agreementStock->order_agreement_id,
                         'order_agreement_sn' => $agreementStock->order_agreement_sn,
+                        'serial' => $agreementStock->serial,
                         'goods_id' => $agreementStock->goods_id])
                     ->one();
                 $agreementGoods->strategy_number = $agreementGoods->strategy_number + $agreementStock->use_number;
