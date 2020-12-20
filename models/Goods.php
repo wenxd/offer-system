@@ -232,6 +232,9 @@ class Goods extends ActiveRecord
 
     public static function getGoodsCode()
     {
+        $key_name = "zaxiang_key";
+        $cache = Yii::$app->cache;
+        if ($cache->exists($key_name)) return json_decode($cache->get($key_name), true);
         $model = Goods::find()->where(['is_deleted' => Goods::IS_DELETED_NO]);
         $use_admin = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
         if (!in_array(Yii::$app->user->identity->getId(), array_column($use_admin, 'user_id'))) {
@@ -245,6 +248,7 @@ class Goods extends ActiveRecord
                 'info' => "{$item['goods_number']} {$item['material_code']}",
             ];
         }
+        $cache->set($key_name, json_encode($data), 600);
         return $data;
     }
 
