@@ -30,6 +30,12 @@ class OrderPurchase extends \yii\db\ActiveRecord
 {
     public $delivery_date;
     public $payment_ratio;
+    public $pay_type;
+
+    const PAYTYPE = [
+        1 => '生成支出合同(对公)',
+        2 => '生成杂项支出合同(报销)'
+    ];
 
     const IS_PURCHASE_NO  = '0';
     const IS_PURCHASE_YES = '1';

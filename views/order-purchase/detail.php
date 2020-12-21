@@ -308,11 +308,11 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td><?= $item->reason ?></td>
                     <!--勾选生成支出合同-->
                     <td class="contract"><?php
+                        echo '<input type="checkbox" checked="checked" onclick="return false;" />';
                         if ($item->after == 0 ) {
                             /*onclick="return false;"*/
-                            echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)" />';
                         } else {
-                            echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)"/>';
+//                            echo '<input type="checkbox" checked="checked" onclick="exit_contract(this)"/>';
                         }
                         ?>
                         <script>
@@ -408,6 +408,12 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             </tr>
             </tbody>
         </table>
+        <?= $form->field($model, 'pay_type')->widget(Select2::classname(), [
+            'data' => \app\models\OrderPurchase::PAYTYPE,
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('付款流程') ?>
 
         <?= $form->field($model, 'admin_id')->dropDownList($admins, ['disabled' => true])->label('采购员') ?>
 
@@ -487,7 +493,22 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 <?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    // 修改是否生成支出合同
+    function exit_pay(){
+        $('.select_id').each(function (index, element) {
+            var pay_type = $('#orderpurchase-pay_type').val();
+            var checked_status = true;
+            if (pay_type == 2) {
+                checked_status = false;
+            }
+            if ($(element).prop("checked")) {
+                console.log($(element).parent().parent().find('.contract input').prop('checked', checked_status));
+                // $(element).parent().parent().find('.contract input').prop('checked', checked_status)
+            }
+        });
+    }
     $(document).ready(function () {
+
         //保存采购数量/使用库存
         $('.purchase_number_save').click(function (e) {
             var goods_info = [];
@@ -562,6 +583,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         $('.select_all').click(function (e) {
             $('.select_id').prop("checked", $(this).prop("checked"));
             stat();
+            exit_pay();
         });
 
         //子选择
@@ -572,6 +594,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 $('.select_all').prop("checked", false);
             }
             stat();
+            exit_pay();
         });
 
         init();
@@ -696,6 +719,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             stat();
         });
 
+        // 修改供应商
         $('#orderpurchase-supplier_id').change(function (e) {
             var supplier_id = $(this).val();
             $.ajax({
@@ -710,6 +734,10 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         var first = payment_sn[0];
                         var end = payment_sn[2];
                         var after_payment_sn = first + '_' + res.data.short_name + '_' + end;
+                        var pay_type = $('#orderpurchase-pay_type').val();
+                        if (pay_type == 2) {
+                            after_payment_sn += '_杂项';
+                        }
                         $('#orderpurchase-payment_sn').val(after_payment_sn);
                     } else {
                         layer.msg(res.msg, {time: 2000});
@@ -717,6 +745,11 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     }
                 }
             });
+        });
+
+        // 修改付款流程
+        $('#orderpurchase-pay_type').change(function (e) {
+            exit_pay();
         });
 
         //保存支出合同
