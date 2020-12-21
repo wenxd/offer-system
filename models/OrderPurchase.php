@@ -31,6 +31,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
     public $delivery_date;
     public $payment_ratio;
     public $pay_type;
+    public $tax_rate;
 
     const PAYTYPE = [
         1 => '生成支出合同(对公)',
@@ -145,6 +146,7 @@ class OrderPurchase extends \yii\db\ActiveRecord
             'payment_sn'               => '支出合同号',
             'supplier_id'              => '供应商',
             'payment_ratio'            => '预付款比例%',
+            'tax_rate'            => '税率',
         ];
     }
 

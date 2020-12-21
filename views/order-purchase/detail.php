@@ -40,6 +40,10 @@ $model->delivery_date = date('Y-m-d');
 //收入合同交货日期
 $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr($orderPurchase->orderAgreement->agreement_date, 0, 10) : $orderPurchase->end_date;
 
+// 获取税率
+$tax_arr = \app\models\SystemConfig::find()->select('value')->where(['title' => 'tax'])->asArray()->one();
+$tax = $tax_arr['value'] ?? 13;
+$model->tax_rate = $tax;
 ?>
 
 <div class="box table-responsive">
@@ -267,7 +271,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                     <td><?= $item->after ? '是' : "否" ?></td>
                     <!--税率$open-->
                     <td class="tax">
-                        <input type="number" purchase_id="<?= $item->id ?>" size="4" min="0" tax_rate="<?= $item->tax_rate ?>"  style="width: 100px;" <?= !$open ? "disabled='disabled'" : '' ?>  value="<?= $item->tax_rate ?>">
+                        <input type="number" disabled='disabled' purchase_id="<?= $item->id ?>" size="4" min="0" tax_rate="<?= $item->tax_rate ?>"  style="width: 100px;" <?= !$open ? "disabled='disabled'" : '' ?>  value="<?= $item->tax_rate ?>">
                     </td>
                     <td class="agreement_number"><?= $item->number ?></td>
                     <td class="use_number"><?= $item->fixed_stock_number ?></td>
@@ -454,7 +458,10 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
         ])->label('支出合同交货时间'); ?>
 
         <?= $form->field($model, 'apply_reason')->textInput()->label('申请备注'); ?>
-
+        <?= $form->field($model, 'tax_rate')->textInput([
+                'placeholder' => '税率必须为整数', 'type' => 'number',
+                'onkeyup' => "this.value=this.value.replace(/\D/g,'')", 'onafterpaste' => "this.value=this.value.replace(/\D/g,'')",
+        ]); ?>
         <?= $form->field($model, 'payment_sn')->textInput(); ?>
         <?php if (!$model->is_complete): ?>
         <?php endif; ?>
@@ -493,6 +500,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 <?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
+    var base_tax = "<?=$tax?>"
     // 修改是否生成支出合同
     function exit_pay(){
         $('.select_id').each(function (index, element) {
@@ -502,8 +510,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                 checked_status = false;
             }
             if ($(element).prop("checked")) {
-                console.log($(element).parent().parent().find('.contract input').prop('checked', checked_status));
-                // $(element).parent().parent().find('.contract input').prop('checked', checked_status)
+                $(element).parent().parent().find('.contract input').prop('checked', checked_status);
             }
         });
     }
@@ -539,13 +546,13 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
 
         });
 
-        //保存采购数量/使用库存
+        //保存税率
         $('.tax_save').click(function (e) {
             var goods_info = [];
             var status = false;
             $('.tax input').each(function (index, element) {
                 var disabled = $(element).attr('disabled');
-                if (disabled != 'disabled') {
+                // if (disabled != 'disabled') {
                     var tax = parseFloat($(element).val()).toFixed(2);
                     var tax_rate = $(element).attr('tax_rate');
                     if (tax != tax_rate) {
@@ -556,7 +563,7 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
                         goods_info.push({purchase_goods_id:purchase_goods_id,tax:tax,tax_price:tax_price,all_tax_price:all_tax_price});
 
                     }
-                }
+                // }
             });
             if (!status) {
                 layer.msg('没有税率更新', {time: 2000});
@@ -671,6 +678,28 @@ $model->end_date = $order_agreement_at = $orderPurchase->orderAgreement ? substr
             stat();
         });
 
+        //输入整体税率
+        $("#orderpurchase-tax_rate").bind('input propertychange', function (e) {
+            var tax = parseInt($(this).val());
+            if (tax < 0 || tax == 'NaN') {
+                $(this).val(0);
+                tax = 0;
+            }
+            $('.select_id').each(function (index, element) {
+                console.log(tax);
+                var parent_obj = $(element).parent().parent();
+                if ($(element).prop("checked")) {
+                    parent_obj.find('.tax input').val(tax)
+                    var price = parseFloat(parent_obj.find('.price input').val());
+                    var tax_price = (price * (1 + tax / 100)).toFixed(2);
+                    var number = parent_obj.find('.number').val();
+                    parent_obj.find('.tax_price input').val(tax_price);
+                    parent_obj.find('.all_price').text(parseFloat(price * number).toFixed(2));
+                    parent_obj.find('.all_tax_price').text(parseFloat(tax_price * number).toFixed(2));
+                    stat();
+                }
+            });
+        });
         //输入税率
         $(".tax input").bind('input propertychange', function (e) {
             var tax = parseFloat($(this).val()).toFixed(2);
