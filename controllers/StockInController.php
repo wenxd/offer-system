@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\AgreementStock;
+use app\models\Goods;
 use app\models\Inquiry;
 use app\models\InquiryGoods;
 use app\models\OrderAgreement;
@@ -119,7 +120,11 @@ class StockInController extends BaseController
                     $stock->save();
                 }
                 //判断是否全部入库
-                $paymentCount = PaymentGoods::find()->where(['order_payment_id' => $orderPayment->id])->count();
+//                $paymentCount = PaymentGoods::find()->where(['order_payment_id' => $orderPayment->id])->andWhere([['like', 'order_payment.payment_sn', $this->payment_sn]])->count();
+                $paymentCount = PaymentGoods::find()->where(['order_payment_id' => 286])
+                    ->join('LEFT JOIN', Goods::tableName(), "payment_goods.goods_id=goods.id")
+                    ->andWhere('goods_number NOT LIKE "%杂项%"')
+                    ->count();
                 $stockCount = StockLog::find()->where(['order_payment_id' => $orderPayment->id])->count();
                 if ($paymentCount == $stockCount) {
                     $orderPayment->is_stock = OrderPayment::IS_STOCK_YES;
