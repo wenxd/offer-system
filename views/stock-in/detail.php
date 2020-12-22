@@ -72,6 +72,12 @@ $isShow = in_array($userId, $adminIds);
                 <tr class="order_payment_list">
                     <?php
                         $str = "<input type='checkbox' class='select_id' value={$item->id}>";
+                    // 判断是不是有杂项
+                    $status = true;
+                    if (strstr($item->goods->goods_number, '杂项')) {
+                        $status = false;
+                        $str = '';
+                    }
                     ?>
                     <td class="id"><?=in_array($item->goods_id, $stock_goods_ids) ? '' : $str?></td>
                     <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
@@ -94,7 +100,7 @@ $isShow = in_array($userId, $adminIds);
                     <td><?=in_array($item->goods_id, $stock_goods_ids) ? '是' : '否'?></td>
                     <td class="quality_text"><?=PaymentGoods::$quality[$item->is_quality]?></td>
                     <td>
-                        <?php if (!in_array($item->goods_id, $stock_goods_ids)):?>
+                        <?php if (!in_array($item->goods_id, $stock_goods_ids) && $status):?>
                             <?php if(!$item->is_quality):?>
                                 <a class="btn btn-success btn-xs btn-flat quality" href="javascript:void(0);" data-id="<?=$item->id?>">质检</a>
                             <?php endif;?>

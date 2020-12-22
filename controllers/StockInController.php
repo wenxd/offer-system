@@ -32,7 +32,7 @@ class StockInController extends BaseController
     public function actionIndex()
     {
         $searchModel = new OrderPaymentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, [0, 1]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
