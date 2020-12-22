@@ -797,6 +797,8 @@ $model->tax_rate = $tax;
             var supplier_flag = false;
             var stock_flag = false;
             var is_contract = -1;
+            var temp_tax = -1;
+            var result = false;
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {
                     // 判断是不是混合勾选
@@ -808,6 +810,20 @@ $model->tax_rate = $tax;
                         if (is_contract != contract) {
                             layer.msg('杂项零件不生成支出合同不可混合', {time: 2000});
                             $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                            result = true;
+                            return false;
+                        }
+                    }
+                    // 判断是不是税率不一样
+
+                    var tax = parseInt($(element).parent().parent().find('.tax input').val());
+                    if (temp_tax == -1) {
+                        temp_tax = tax;
+                    } else {
+                        if (temp_tax != tax) {
+                            layer.msg('税率必须统一', {time: 2000});
+                            $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                            result = true;
                             return false;
                         }
                     }
@@ -839,6 +855,9 @@ $model->tax_rate = $tax;
                     }
                 }
             });
+            if (result) {
+                return false;
+            }
             // 数量为0不能和有数量的同时生成合同
             var status = 2;
             for (var i in goods_info) {
@@ -879,7 +898,109 @@ $model->tax_rate = $tax;
             //收入合同交货日期
             var order_agreement_date = '<?=$order_agreement_at?>';
             var payment_ratio = $('#orderpurchase-payment_ratio').val();
+            var pay_type = $('#orderpurchase-pay_type option:selected').text();
+            var stat_all_tax_price = $('.stat_all_tax_price').text()
+            var supplier_name = $('#orderpurchase-supplier_id option:selected').text();
+            // console.log(pay_type,supplier_name,temp_tax,payment_ratio,agreement_date,delivery_date,stat_all_tax_price);return false;
+            layer.confirm('<table class="table table-bordered table-hover" style="width: 260px;">\n'+
+                '            <tr><td>付款流程</td><td>\n'+
+                pay_type
+                + '            </td></tr><tr><td>供应商</td><td>\n'+
+                supplier_name
+                + '            </td></tr><tr><td>税率</td><td>\n'+
+                temp_tax
+                + '            </td></tr><tr><td>预付款比例%</td><td>\n'+
+                payment_ratio
+                + '            </td></tr><tr><td>合同签订时间</td><td>\n'+
+                agreement_date
+                + '            </td></tr><tr><td>交货时间</td><td>\n'+
+                delivery_date
+                + '            </td></tr><tr><td>供应商</td><td>\n'+
+                stat_all_tax_price
+                + '            </td></tr></table>', {
+                title: ['确认信息'],
+                area: ['300', '70%'],
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                if ((new Date(delivery_date.replace('/-/g', '\/'))) > (new Date(order_agreement_date.replace('/-/g', '\/')))) {
+                    layer.confirm('支出交货时间晚于收入', {
+                        btn: ['重新选择', '确认'] //按钮
+                    }, function (index) {
+                        layer.close(index);
+                        $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                        return false;
+                    }, function (index) {
+                        //创建支出合同
+                        $.ajax({
+                            type: "post",
+                            url: '?r=order-purchase-verify/save-order',
+                            data: {
+                                order_purchase_id: order_purchase_id,
+                                admin_id: admin_id,
+                                is_contract: is_contract,
+                                end_date: end_date,
+                                payment_sn: payment_sn,
+                                goods_info: goods_info,
+                                long_delivery_time: long_delivery_time,
+                                supplier_id: supplier_id,
+                                apply_reason: apply_reason,
+                                agreement_date: agreement_date,
+                                delivery_date: delivery_date,
+                                order_agreement_date: order_agreement_date,
+                                payment_ratio: payment_ratio
+                            },
+                            dataType: 'JSON',
+                            success: function (res) {
+                                $(".payment_save").removeAttr("disabled").removeClass("disabled");
+                                if (res && res.code == 200) {
+                                    layer.msg(res.msg, {time: 2000});
+                                    window.location.reload();
+                                } else {
+                                    layer.msg(res.msg, {time: 2000});
+                                    return false;
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    //创建支出合同
+                    $.ajax({
+                        type: "post",
+                        url: '?r=order-purchase-verify/save-order',
+                        data: {
+                            order_purchase_id: order_purchase_id,
+                            admin_id: admin_id,
+                            end_date: end_date,
+                            payment_sn: payment_sn,
+                            is_contract: is_contract,
+                            goods_info: goods_info,
+                            long_delivery_time: long_delivery_time,
+                            supplier_id: supplier_id,
+                            apply_reason: apply_reason,
+                            agreement_date: agreement_date,
+                            delivery_date: delivery_date,
+                            order_agreement_date: order_agreement_date,
+                            payment_ratio: payment_ratio
+                        },
+                        dataType: 'JSON',
+                        success: function (res) {
+                            $(".payment_save").attr("disabled", false);
+                            if (res && res.code == 200) {
+                                layer.msg(res.msg, {time: 2000});
+                                window.location.reload();
+                            } else {
+                                layer.msg(res.msg, {time: 2000});
+                                return false;
+                            }
+                        }
+                    });
+                }
+            }, function(){
+                layer.msg('取消');
+            });
 
+
+            return false;
             if ((new Date(delivery_date.replace('/-/g', '\/'))) > (new Date(order_agreement_date.replace('/-/g', '\/')))) {
                 layer.confirm('支出交货时间晚于收入', {
                     btn: ['重新选择', '确认'] //按钮
