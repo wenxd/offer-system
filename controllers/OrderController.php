@@ -231,7 +231,7 @@ class OrderController extends BaseController
         $orderPurchase = OrderPurchase::findAll(['order_id' => $id]);
         $orderAgreement = OrderAgreement::findAll(['order_id' => $id]);
         $orderPayment = OrderPayment::findAll(['order_id' => $id]);
-        $orderUseStock = AgreementStock::find()->where(['order_id' => $id])->all();
+        $orderUseStock = AgreementStock::find()->where(['order_id' => $id])->andWhere("source != 'project'")->all();
 
         $data['model'] = $order;
         $data['orderGoods'] = $orderGoods;

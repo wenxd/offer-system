@@ -94,7 +94,7 @@ $userId = Yii::$app->user->identity->id;
                 [
                     'attribute' => 'number',
                     'label' => '出库数量',
-                    'visible' => !in_array($userId, $adminIds),
+//                    'visible' => !in_array($userId, $adminIds),
                 ],
                 [
                     'attribute' => 'price',
