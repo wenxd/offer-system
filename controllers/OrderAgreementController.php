@@ -68,9 +68,9 @@ class OrderAgreementController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $agreementGoods = AgreementGoodsData::find()->where(['order_agreement_id' => $id])->orderBy('serial')->all();
+        $agreementGoods = AgreementGoodsData::find()->where(['order_agreement_id' => $id])->orderBy('serial ASC')->all();
         if (empty($agreementGoods)) {
-            $agreementGoods = AgreementGoods::find()->where(['order_agreement_id' => $id])->orderBy('serial')->all();
+            $agreementGoods = AgreementGoods::find()->where(['order_agreement_id' => $id])->orderBy('serial ASC')->all();
         }
 
         $date = date('ymd_');
