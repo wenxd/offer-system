@@ -926,7 +926,7 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
         $tableHeader = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存", "发行未税单价", "设备信息"];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
