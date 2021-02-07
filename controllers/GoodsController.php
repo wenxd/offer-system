@@ -1033,9 +1033,9 @@ class GoodsController extends BaseController
                                 $info[] = !empty($goods['stock']) && $goods['stock']['number'] > 0 ? '是' : '否';
                                 $info[] = $goods['publish_price'];
                                 $text = '';
-                                if ($goods['publish_price']) {
-                                    foreach (json_decode($goods['publish_price'], true) as $key => $device) {
-                                        $text .= $key . ':' . $device . '<br/>';
+                                if ($goods['device_info']) {
+                                    foreach (json_decode($goods['device_info'], true) as $key => $device) {
+                                        $text .= $key . ':' . $device . ';';
                                     }
                                 }
                                 $info[] = $text;
