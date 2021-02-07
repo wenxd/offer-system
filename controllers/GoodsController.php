@@ -1034,8 +1034,15 @@ class GoodsController extends BaseController
                                 $info[] = $goods['publish_price'];
                                 $text = '';
                                 if ($goods['device_info']) {
+                                    $device_info = trim($v['N']) ?? false;
                                     foreach (json_decode($goods['device_info'], true) as $key => $device) {
-                                        $text .= $key . ':' . $device . ';';
+                                        if ($device_info) {
+                                            if ($device_info == $key) {
+                                                $text = $key . ':' . $device;
+                                            }
+                                        } else {
+                                            $text .= $key . ':' . $device . ';';
+                                        }
                                     }
                                 }
                                 $info[] = $text;
