@@ -926,8 +926,8 @@ class GoodsController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
-        $tableHeader = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存", "发行未税单价", "设备信息"];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', "O", "P"];
+        $tableHeader = ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存", "发行未税单价", "设备信息", "中文描述", "英文描述"];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -1006,7 +1006,7 @@ class GoodsController extends BaseController
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
                     //组装数据
                     $data = [
-                        ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存", "发行未税单价", "设备信息"]
+                        ["品牌", "零件号", "是否有零件号", "是否有厂家号", "是否锁定", "是否有发行未税单价", "是否TZ", "是否总成", "是否加工", "是否标准", "是否询价", "是否有库存", "发行未税单价", "设备信息", "中文描述", "英文描述"]
                     ];
                     foreach ($sheetData as $k => $v) {
                         if ($k > 1) {
@@ -1046,6 +1046,8 @@ class GoodsController extends BaseController
                                     }
                                 }
                                 $info[] = $text;
+                                $info[] = $goods['description'];
+                                $info[] = $goods['description_en'];
 
 
                             }
