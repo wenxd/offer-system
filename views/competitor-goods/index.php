@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {index}',
+            'template' => '{create} {delete} {download} {upload} {index} {download-comp-temp} {comp-temp-check}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -41,7 +41,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-pjax' => '0',
                         'class'     => 'btn btn-success btn-flat',
                     ]);
-                }
+                },
+                'download-comp-temp' => function () {
+                    return Html::a('<i class="fa fa-download"></i> 竞争对手价格记录模板', Url::to(['download-comp-temp']), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'comp-temp-check' => function () {
+                    return Html::a('<i class="fa fa-upload"></i> 检测', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-flat comp-temp-check',
+                    ]);
+                },
             ]
         ])?>
     </div>
@@ -209,6 +221,42 @@ $this->params['breadcrumbs'][] = $this->title;
             }else{
                 //失败提示
                 layer.msg(data.msg,{icon:2});
+            }
+        }
+    });
+
+    // 竞争对手价格记录模板
+    var comp_temp_check_url = '?r=competitor-goods/upload-comp-temp-check';
+    $('.comp-temp-check').ajaxUploadPrompt({
+        //上传地址
+        url: comp_temp_check_url,
+        //上传文件类型
+        accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
+        //上传前加载动画
+        beforeSend: function () {
+            layer.msg('上传中。。。', {
+                icon: 16, shade: 0.01
+            });
+        },
+        onprogress: function (e) {
+        },
+        error: function () {
+        },
+        success: function (data) {
+            console.log(data);
+            //关闭动画
+            window.top.layer.close(index);
+            //字符串转换json
+            var data = JSON.parse(data);
+            if (data.code == 200) {
+                window.location.href = comp_temp_check_url;
+                //导入成功
+                layer.msg(data.msg, {time: 5000}, function () {
+                    window.location.reload();
+                });
+            } else {
+                //失败提示
+                layer.msg(data.msg, {icon: 1});
             }
         }
     });

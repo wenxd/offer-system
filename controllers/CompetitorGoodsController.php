@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\Competitor;
 use app\models\Customer;
 use Yii;
@@ -225,6 +226,122 @@ class CompetitorGoodsController extends BaseController
                 }
                 unlink('./' . $saveName);
                 return json_encode(['code' => 200, 'msg' => '总共' . ($total - 1) . '条,' . '成功' . $num . '条'], JSON_UNESCAPED_UNICODE);
+            }
+        }
+    }
+
+    /**
+     * 竞争对手价格记录模板:根据品牌，零件号，竞争对手名称  导出未税单价
+     */
+    public function actionDownloadCompTemp()
+    {
+        // 品牌，零件号，竞争对手名称  导出未税单价
+        $letter = ['A', 'B', 'C', 'D'];
+        $tableHeader = self::ComTemp;
+        $fileName = '竞争对手价格记录模板' . date('ymd-His');
+        Common::DownloadTemp($letter, $tableHeader, $fileName);
+    }   
+    const ComTemp = ['品牌', '零件号', '竞争对手名称', '未税单价'];
+    /**
+     * 上传竞争对手价格记录模板
+     */
+    public function actionUploadCompTempCheck()
+    {
+        $cache = Yii::$app->cache;
+        $key_name = 'upload_comp_temp_check';
+        //判断导入文件
+        if (!isset($_FILES["FileName"])) {
+            if ($cache->exists($key_name)) {
+                $data = json_decode($cache->get($key_name), true);
+                $cache->delete($key_name);
+                $fileName = '竞争对手价格记录检测结果.csv';
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                $fp = fopen('php://output', 'a');//打开output流
+                foreach ($data as $rowData) {
+                    mb_convert_variables('GBK', 'UTF-8', $rowData);
+                    fputcsv($fp, $rowData);
+                }
+                unset($data);//释放变量的内存
+                ob_flush();
+                flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+                fclose($fp);
+                exit();
+            }
+            return json_encode(['code' => 500, 'msg' => '没有检测到上传文件'], JSON_UNESCAPED_UNICODE);
+        } else {
+            //导入文件是否正确
+            if ($_FILES["FileName"]["error"] > 0) {
+                return json_encode(['code' => 500, 'msg' => $_FILES["FileName"]["error"]]);
+            } else if ($_FILES['FileName']['type'] == 'application/vnd.ms-excel' || $_FILES['FileName']['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['FileName']['type'] == 'application/octet-stream') {
+                //获取文件名称
+                $ext = explode('.', $_FILES["FileName"]["name"]);
+                $saveName = date('YmdHis') . rand(1000, 9999) . '.' . end($ext);
+                //保存文件
+                move_uploaded_file($_FILES["FileName"]["tmp_name"], $saveName);
+                if (file_exists($saveName)) {
+                    //获取excel对象
+                    $spreadsheet = IOFactory::load($saveName);
+                    //数据转换为数组
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    //组装数据
+                    $data = [self::ComTemp];
+                    foreach ($sheetData as $k => $v) {
+                        if ($k > 1) {
+                            $brand = trim($v['A']) ?? '';
+                            $goods_number = trim($v['B']) ?? '';
+                            $competitor = trim($v['C']) ?? '';
+                            $info = [$brand, $goods_number, $competitor];
+                            if (!$brand || !$goods_number || !$competitor) {
+                                $info[] = '上传数据为空跳出';
+                                $data[] = $info;
+                                continue;
+                            }
+                            // 根据品牌和零件号查询零件信息
+                            $goods_number_info = Goods::find()->select('id')
+                                ->where(['goods_number' => $goods_number, 'material_code' => $brand])
+                                ->asArray([''])->one();
+                            if (empty($goods_number_info)) {
+                                $info[] = '零件查询为空跳出';
+                                $data[] = $info;
+                                continue;
+                            }
+                            //查询竞争对手信息
+                            $competitor_info = Competitor::find()->select('id')
+                                ->where(['name' => $competitor])
+                                ->asArray([''])->one();
+                            if (empty($competitor_info)) {
+                                $info[] = '竞争对手查询为空跳出';
+                                $data[] = $info;
+                                continue;
+                            }
+                            //查询数据
+                            $competitor_goods_info = CompetitorGoods::find()->select('price')
+                                ->where(['goods_id' => $goods_number_info['id'], 'competitor_id' => $competitor_info['id']])
+                                ->asArray()->all();
+                            if (empty($competitor_goods_info)) {
+                                $info[] = '';
+                                $data[] = $info;
+                                continue;
+                            }
+                            foreach ($competitor_goods_info as $item) {
+                                $info_copy = $info;
+                                $info_copy[] = $item['price'];
+                                $data[] = $info_copy;
+                            }
+                        }
+                    }
+                    if (count($data) > 1) {
+                        $cache->set($key_name, json_encode($data), 60);
+                    }
+                    unlink('./' . $saveName);
+                    return json_encode(['code' => 200, 'msg' => '数据生成成功'], JSON_UNESCAPED_UNICODE);
+                }
+                return json_encode(['code' => 500, 'msg' => "数据生成失败"], JSON_UNESCAPED_UNICODE);
             }
         }
     }
