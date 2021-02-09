@@ -353,7 +353,7 @@ class InquiryController extends BaseController
     public function actionDownloadInquiryTemp()
     {
         // 品牌，零件号，竞争对手名称  导出未税单价
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         $tableHeader = self::InquiryTemp;;
         $fileName = '询价记录模板' . date('ymd-His');
         Common::DownloadTemp($letter, $tableHeader, $fileName);
