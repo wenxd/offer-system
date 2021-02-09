@@ -33,7 +33,7 @@ $userId   = Yii::$app->user->identity->id;
 $Supertube = AuthAssignment::find()->where(['item_name' => '系统管理员'])->all();
 $Supertube_ids = ArrayHelper::getColumn($Supertube, 'user_id');
 if (in_array($userId, $Supertube_ids)) {
-    $control = '{create} {delete} {index} {updateall}';
+    $control = '{create} {delete} {index} {updateall} {download-inquiry-temp} {upload-inquiry-temp-check}';
 } else {
     $control = '{create} {delete} {index}';
 }
@@ -76,8 +76,20 @@ $html .= '</select></div></div><div class="form-group"><div class="col-sm-offset
                     ]);
                 },
                 'updateall' => function () {
-                    return Html::button('批量修改', ['class' => 'btn btn-primary btn-flat', 'onclick' => 'updateall()', ]);
-                }
+                    return Html::button('批量修改', ['class' => 'btn btn-warning btn-flat', 'onclick' => 'updateall()', ]);
+                },
+                'download-inquiry-temp' => function () {
+                    return Html::a('<i class="fa fa-download"></i> 询价记录模板', Url::to(['download-inquiry-temp']), [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-primary btn-flat',
+                    ]);
+                },
+                'upload-inquiry-temp-check' => function () {
+                    return Html::a('<i class="fa fa-upload"></i> 检测', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-flat upload-inquiry-temp-check',
+                    ]);
+                },
             ]
         ])?>
     </div>
@@ -422,6 +434,42 @@ $html .= '</select></div></div><div class="form-group"><div class="col-sm-offset
             }else{
                 //失败提示
                 layer.msg(data.msg,{icon:1});
+            }
+        }
+    });
+
+    // 上传询价记录模板
+    var comp_temp_check_url = '?r=inquiry/upload-inquiry-temp-check';
+    $('.upload-inquiry-temp-check').ajaxUploadPrompt({
+        //上传地址
+        url: comp_temp_check_url,
+        //上传文件类型
+        accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xls, .xlsx',
+        //上传前加载动画
+        beforeSend: function () {
+            layer.msg('上传中。。。', {
+                icon: 16, shade: 0.01
+            });
+        },
+        onprogress: function (e) {
+        },
+        error: function () {
+        },
+        success: function (data) {
+            console.log(data);
+            //关闭动画
+            window.top.layer.close(index);
+            //字符串转换json
+            var data = JSON.parse(data);
+            if (data.code == 200) {
+                window.location.href = comp_temp_check_url;
+                //导入成功
+                layer.msg(data.msg, {time: 5000}, function () {
+                    window.location.reload();
+                });
+            } else {
+                //失败提示
+                layer.msg(data.msg, {icon: 1});
             }
         }
     });
