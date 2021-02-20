@@ -56,6 +56,27 @@ $brandList = Brand::getList();
         <?= Html::a('<i class="fa fa-reply"></i> 返回', Url::to(['index']), [
             'class' => 'btn btn-default btn-flat',
         ])?>
+        <?php if (!($model->isNewRecord)){
+            $html = '';
+            if ($model->locking == 1) {
+                $html .= Html::button('<i class="fa fa-lock"></i> 已锁定', [
+                        'class' => 'btn btn-success btn-flat',
+                        'data-toggle' => 'tooltip',
+                        'title' => '点击解锁',
+                        'onclick' => 'locking(' . $model->id . ')',
+                        'name'  => 'submit-button']
+                );
+            } else {
+                $html .= Html::button('<i class="fa  fa-unlock"></i> 未锁定', [
+                        'class' => 'btn btn-danger btn-flat',
+                        'data-toggle' => 'tooltip',
+                        'title' => '点击锁定',
+                        'onclick' => 'locking(' . $model->id . ')',
+                        'name'  => 'submit-button']
+                );
+            }
+            echo $html;
+        }?>
     </div>
     <div class="box-body">
 
@@ -180,6 +201,7 @@ $brandList = Brand::getList();
 </div>
 
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     //实现商品编号唯一的验证跳转
     $('#goods-goods_number').blur(function () {
@@ -196,6 +218,24 @@ $brandList = Brand::getList();
             }
         })
     });
+
+    function locking(id) {
+        $.ajax({
+            type:"get",
+            url:'?r=goods/locking',
+            data:{id:id},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    window.location.reload();
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
+    }
 
     $('.add-device').click(function () {
         var html = '<div class="input-group">\n' +
