@@ -3,6 +3,7 @@
 
 namespace app\assets;
 
+use app\models\SystemNotice;
 use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -70,5 +71,21 @@ class Common
         $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
         exit;
+    }
+
+    /**
+     * 发送系统消息
+     */
+    public static function SendSystemMsg($admin_id, $content, $notice_at = false)
+    {
+        if (empty($admin_id) || empty($content)) {
+            throw new Exception('admin_id, content不能为空');
+        }
+        if (!$notice_at) $notice_at = date('Y-m-d H:i:s');
+        $systemNotice = new SystemNotice();
+        $systemNotice->admin_id = $admin_id;
+        $systemNotice->content = $content;
+        $systemNotice->notice_at = $notice_at;
+        $systemNotice->save();
     }
 }

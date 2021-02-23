@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\InquiryGoodsClarifySearch;
 use Yii;
 use app\models\InquiryGoods;
@@ -57,6 +58,9 @@ class InquiryGoodsController extends Controller
             $params = Yii::$app->request->post();
             $InquiryGoodsClarify = InquiryGoodsClarifySearch::findOne($params['id']);
             $InquiryGoodsClarify->clarify = $params['reason'];
+            // todo 2021-02-23 添加澄清回复系统通知
+            $msg = "询价单【{$InquiryGoodsClarify->inquiry_sn}】有新的澄清回复";
+            Common::SendSystemMsg($InquiryGoodsClarify->admin_id, $msg);
             if ($InquiryGoodsClarify->save()) {
                 return json_encode(['code' => 200, 'msg' => '成功']);
             } else {

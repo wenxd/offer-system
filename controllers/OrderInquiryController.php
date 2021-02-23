@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\Admin;
 use app\models\AuthAssignment;
 use app\models\Goods;
@@ -161,6 +162,7 @@ class OrderInquiryController extends BaseController
             $orderInquiry->goods_info = json_encode([], JSON_UNESCAPED_UNICODE);
             if ($orderInquiry->save()) {
                 $data = [];
+                $serials = [];
                 foreach ($params['goods_info'] as $goods) {
                     $row = [];
                     //批量数据
@@ -170,12 +172,22 @@ class OrderInquiryController extends BaseController
                     $row[] = $goods['goods_id'];
                     $row[] = $goods['number'];
                     $row[] = $goods['serial'];
+                    $serials[] = $goods['serial'];
                     $row[] = isset($goods['supplier_id']) ? $goods['supplier_id'] : 0;
                     $row[] = $goods['remark'];
                     $row[] = $goods['belong_to'];
                     $row[] = $level;
                     $data[] = $row;
                 }
+                // todo 2021-02-23 添加新的询价单系统通知
+                // 判断是不是新增
+                $res = InquiryGoods::find()->where(['inquiry_sn' => $params['inquiry_sn']])->asArray()->one();
+                if ($res) {
+                    $msg = "你的询价单【{$params['inquiry_sn']}】有新增项待询价，序号(" . implode('，', $serials) . ")";
+                } else {
+                    $msg = "你有新的询价单【{$params['inquiry_sn']}】待询价，序号(" . implode('，', $serials) . ")";
+                }
+                Common::SendSystemMsg($params['admin_id'], $msg);
                 self::insertInquiryGoods($data);
                 //是否全部派送询价员
                 $count = InquiryGoods::find()->select('id')->where(['order_id' => $params['order_id']])->count();
