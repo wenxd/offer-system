@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\AgreementGoods;
 use app\models\AgreementStock;
 use app\models\AuthAssignment;
@@ -160,7 +161,9 @@ class OrderPurchaseController extends BaseController
             $orderAgreement = OrderAgreement::findOne($params['order_agreement_id']);
             if ($open) {
                 $orderPurchase = OrderPurchase::findOne(['purchase_sn' => $params['purchase_sn']]);
+                $order_purchase_exist = true;
                 if (!$orderPurchase) {
+                    $order_purchase_exist = false;
                     $orderPurchase = new OrderPurchase();
                     $orderPurchase->purchase_sn = $params['purchase_sn'];
                     $orderPurchase->agreement_sn = $orderAgreement->agreement_sn;
@@ -174,6 +177,7 @@ class OrderPurchaseController extends BaseController
                 $orderPurchase->is_complete = 0;
                 if ($orderPurchase->save()) {
                     $agreement_goods_ids = [];
+                    $serials = [];
                     foreach ($params['goods_info'] as $item) {
                         $agreementGoods = AgreementGoods::findOne($item['agreement_goods_id']);
                         //处理保存使用库存记录
@@ -204,6 +208,7 @@ class OrderPurchaseController extends BaseController
                                 $purchaseGoods->order_purchase_id = $orderPurchase->primaryKey;
                                 $purchaseGoods->order_purchase_sn = $orderPurchase->purchase_sn;
                                 $purchaseGoods->serial = $agreementGoods->serial;
+                                $serials[] = $agreementGoods->serial;
                                 $purchaseGoods->goods_id = $agreementGoods->goods_id;
                                 $purchaseGoods->type = $agreementGoods->type;
                                 $purchaseGoods->relevance_id = $agreementGoods->relevance_id;
@@ -242,6 +247,16 @@ class OrderPurchaseController extends BaseController
 //                            $agreementStock->save();
                         }
                     }
+                    // todo 2021-02-23 添加采购订单系统通知
+                    if ($order_purchase_exist) {
+                        $msg = "你的采购订单【{$params['purchase_sn']}】有新增项";
+                    } else {
+                        $msg = "你有新的采购单【{$params['purchase_sn']}】待处理";
+                    }
+                    if (count($serials) > 0) {
+                        $msg .= "，序号(" . implode('，', $serials) . ")";
+                    }
+                    Common::SendSystemMsg($params['admin_id'], $msg);
                     AgreementGoods::updateAll(['is_deleted' => 1], ['id' => $agreement_goods_ids]);
                     //判断是否全部生成采购单
                     $agreementGoodsCount = AgreementGoods::find()->where([
