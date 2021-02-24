@@ -63,7 +63,7 @@ $model->final_sn = 'C' . date('ymd_') . $customer_name . '_' . $number;
                     <?php foreach ($orderGoods as $key => $item):?>
                     <tr class="goods_list">
                         <td class="serial" data-goods_id="<?=$item->goods_id?>"><?= $item->serial?></td>
-                        <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['inquiry/search', 'goods_id' => $item->goods_id, 'order_id' => ($_GET['id'] ?? ''), 'key' => ($_GET['key'] ?? '')]));?></td>
+                        <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/update', 'id' => $item->goods_id]));?></td>
                         <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->description?></td>
                         <td><?= $item->goods->description_en?></td>
