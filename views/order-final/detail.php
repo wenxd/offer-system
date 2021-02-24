@@ -112,7 +112,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td><?=$item->goods->unit?></td>
                 <td><?=$item->inquiry->supplier->name?></td>
                 <td class="ratio"><?=$tax?></td>
-                <td class="publish_price"><?=$item->goods->publish_price?></td>
+                <td style="background-color: #ffbeba" class="publish_price"><?=$item->goods->publish_price?></td>
                 <?php
                     $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
                 ?>
@@ -124,11 +124,11 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $tax/100), 2, '.', '') : 0;
                 ?>
                 <td><?=$competitorGoods ? $competitorGoods->competitor->name : ''?></td>
-                <td class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
+                <td style="background-color: #d3d0ff" class="competitor_tax_price" data-competitor_goods_id="<?=$competitorGoods ? $competitorGoods->id : 0?>"><?=$competitorGoodsTaxPrice?></td>
                 <td class="competitor_tax_price_all"><?=$competitorGoods ? $competitorGoodsTaxPrice * $item->number : 0?></td>
                 <td class="competitor_public_tax_price"><input type="text"  style="width: 100px;" value="<?=$item->goods->publish_price * (1 + $tax/100) * $competitor_ratio?>"></td>
                 <td class="competitor_public_tax_price_all"><?=$item->goods->publish_price * (1 + $tax/100) * $item->number * $competitor_ratio?></td>
-                <td class="price"><?=$item->price?></td>
+                <td style="background-color: #fbffbc" class="price"><?=$item->price?></td>
                 <td class="tax_price"><?=$item->tax_price?></td>
                 <td class="all_price"></td>
                 <td class="all_tax_price"></td>
