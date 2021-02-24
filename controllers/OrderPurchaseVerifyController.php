@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\Admin;
 use app\models\AgreementGoods;
 use app\models\AgreementStock;
@@ -332,6 +333,8 @@ class OrderPurchaseVerifyController extends BaseController
 //                $orderPurchase->is_complete = 1;
 //                $orderPurchase->save();
 //            }
+            $msg = "提交的【{$orderPayment->payment_sn}】支出合同审核通过";
+            Common::SendSystemMsg($orderPayment->admin_id, $msg);
             return json_encode(['code' => 200, 'msg' => '保存成功'], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             return json_encode(['code' => 500, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -370,11 +373,8 @@ class OrderPurchaseVerifyController extends BaseController
             $orderPurchase->save();
 
             //给采购员发通知
-            $systemNotice = new SystemNotice();
-            $systemNotice->admin_id  = $orderPayment->admin_id;
-            $systemNotice->content   = '你提交的支出申请被驳回,采购合同单号为' . $orderPurchase->purchase_sn;
-            $systemNotice->notice_at = date('Y-m-d H:i:s');
-            $systemNotice->save();
+            $msg = "提交的【{$orderPayment->payment_sn}】支出合同被驳回";
+            Common::SendSystemMsg($orderPayment->admin_id, $msg);
 
             $orderPayment->delete();
         } catch (\Exception $e) {
