@@ -77,7 +77,7 @@ $config = [
         ],
         'session'=>array(
             'class' => 'yii\web\Session',
-            'cookieParams' => ['lifetime' => 60 * 60]
+            'cookieParams' => ['lifetime' => 5 * 24 * 60 * 60]
         ),
         /*
         'urlManager' => [
