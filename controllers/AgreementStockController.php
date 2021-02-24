@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\assets\Common;
 use app\models\AgreementGoods;
 use app\models\AgreementGoodsData;
 use app\models\OrderAgreement;
@@ -188,6 +189,7 @@ class AgreementStockController extends Controller
         } elseif ($agreementStock->source == AgreementStock::PAYMENT) {
             // 支出合同
             $PurchaseGoods = PurchaseGoods::find()
+                ->with('orderPurchase')
                 ->where(['order_id' => $agreementStock->order_id,
                     'order_purchase_id' => $agreementStock->order_purchase_id,
                     'goods_id' => $agreementStock->goods_id])
@@ -196,6 +198,14 @@ class AgreementStockController extends Controller
             if (!$PurchaseGoods->save()) {
                 Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
                 return "<script>history.go(-1);</script>";
+            }
+            // todo 2021-02-23 添加采购订单系统通知
+            $purchase_sn = $PurchaseGoods->orderPurchase->purchase_sn ?? false;
+            $admin_id = $PurchaseGoods->orderPurchase->admin_id ?? false;
+            $serial = $PurchaseGoods->serial ?? false;
+            if ($purchase_sn && $admin_id && $serial) {
+                $msg = "你提交的【{$purchase_sn}】采购订单库存已确认完毕，序号({$serial})";
+                Common::SendSystemMsg($admin_id, $msg);
             }
         }
         $transaction->commit();
@@ -274,6 +284,7 @@ class AgreementStockController extends Controller
         } elseif ($agreementStock->source == AgreementStock::PAYMENT) {
             // 支出合同
             $PurchaseGoods = PurchaseGoods::find()
+                ->with('orderPurchase')
                 ->where(['order_id' => $agreementStock->order_id,
                     'order_purchase_id' => $agreementStock->order_purchase_id,
                     'goods_id' => $agreementStock->goods_id])
@@ -284,6 +295,14 @@ class AgreementStockController extends Controller
             if (!$PurchaseGoods->save()) {
                 Yii::$app->getSession()->setFlash('error', $PurchaseGoods->errors);
                 return "<script>history.go(-1);</script>";
+            }
+            // todo 2021-02-23 添加采购订单系统通知
+            $purchase_sn = $PurchaseGoods->orderPurchase->purchase_sn ?? false;
+            $admin_id = $PurchaseGoods->orderPurchase->admin_id ?? false;
+            $serial = $PurchaseGoods->serial ?? false;
+            if ($purchase_sn && $admin_id && $serial) {
+                $msg = "你提交的【{$purchase_sn}】采购订单库存被驳回，序号({$serial})";
+                Common::SendSystemMsg($admin_id, $msg);
             }
             // 如所有被驳回，更新成未点击报错使用库存
             if (!$count) {
