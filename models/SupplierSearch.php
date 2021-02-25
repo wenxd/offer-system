@@ -52,8 +52,9 @@ class SupplierSearch extends Supplier
         $adminIds  = ArrayHelper::getColumn($use_admin, 'user_id');
         $super = AuthAssignment::find()->where(['item_name' => '系统管理员'])->one();
         if (!in_array($userId, $adminIds)) {
-            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES])
-            ->andWhere(['admin_id' => $userId]);
+//            $query = Supplier::find()->where(['is_confirm' => self::IS_CONFIRM_YES])
+//            ->andWhere(['admin_id' => $userId]);
+            $query = Supplier::find()->andWhere(['admin_id' => $userId]);
         } else {
             $query = Supplier::find();
         }

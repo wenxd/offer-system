@@ -293,6 +293,15 @@ if (in_array($userId, $adminIds)) {
                                 ]);
                             }
 
+                        },
+                        'update' => function ($url, $model, $key) use ($userId, $admins_id) {
+                            if (in_array($userId, $admins_id)) {
+                                return Html::a('<i class="fa fa-reload"></i> 修改', Url::to(['update', 'id' => $model->id]), [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-warning btn-xs btn-flat',
+                                ]);
+                            }
+
                         }
                     ],
                 ],
