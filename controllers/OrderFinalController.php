@@ -64,13 +64,63 @@ class OrderFinalController extends BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id, $key = 0)
+    public function actionView($id, $key = 0, $download = false)
     {
         $orderFinal = $this->findModel($id);
         $where = ['order_id'       => $orderFinal->order_id, 'order_final_id' => $orderFinal->id];
         FinalGoods::updateAll(['key' => $key], $where);
         $finalGoods = FinalGoods::find()->where($where)->orderBy('serial')->all();
-
+        if ($download) {
+            $final_sn = $finalGoods[0]->final_sn ?? false;
+            $fileName = "成本单-{$final_sn}.csv";
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            $fp = fopen('php://output', 'a');//打开output流
+            $rowData = [
+                '序号', '零件号', '厂家号', '中文描述', '英文描述', '原厂家', '原厂家备注', '单位',
+                '数量', '供应商', '询价员', '税率', '发行含税单价', '发行含税总价', '未税单价',
+                '含税单价', '未税总价', '含税总价', '货期', '更新时间', '创建时间', '关联询价记录', '询价ID'];
+            mb_convert_variables('GBK', 'UTF-8', $rowData);
+            fputcsv($fp, $rowData);
+            foreach ($finalGoods as $item) {
+                $rowData = [];
+                $rowData[] = $item->serial;
+                $rowData[] = $item->goods->goods_number . ' ' . $item->goods->material_code;
+                $rowData[] = $item->goods->goods_number_b;
+                $rowData[] = $item->goods->description;
+                $rowData[] = $item->goods->description_en;
+                $rowData[] = $item->goods->original_company;
+                $rowData[] = $item->goods->original_company_remark;
+                $rowData[] = $item->goods->unit;
+                $rowData[] = $item->number;
+                $rowData[] = $item->inquiry->supplier->name;
+                $rowData[] = $item->inquiry->admin->username;
+                $rowData[] = $item->tax;
+                $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax/100), 2, '.', '');
+                $rowData[] = $publish_tax_price;
+                $rowData[] = $publish_tax_price * $item->number;
+                $rowData[] = $item->price;
+                $rowData[] = $item->tax_price;
+                $rowData[] = $item->number * $item->price;
+                $rowData[] = $item->number * $item->tax_price;
+                $rowData[] = $item->delivery_time;
+                $rowData[] = substr($item->goods->updated_at, 0 , 10);
+                $rowData[] = substr($item->goods->created_at, 0 , 10);
+                $rowData[] = $item->inquiry ? '是' : '否';
+                $rowData[] = $item->relevance_id;
+                mb_convert_variables('GBK', 'UTF-8', $rowData);
+                fputcsv($fp, $rowData);
+            }
+            unset($rowData);//释放变量的内存
+            ob_flush();
+            flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+            fclose($fp);
+            die;
+        }
 
         return $this->render('view2', [
             'model'      => $orderFinal,

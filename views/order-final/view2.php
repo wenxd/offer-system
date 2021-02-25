@@ -17,6 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'data-pjax' => '0',
                 'class'     => 'btn btn-primary btn-flat',
             ]);?>
+            <?= Html::a('<i class="fa fa-download"></i> 成本单导出', Url::to(['order-final/view', 'id' => $_GET['id'], 'key' => $_GET['key'], 'download' => true]), [
+                'data-pjax' => '0',
+                'class'     => 'btn btn-primary btn-flat',
+            ]);?>
         </div>
         <?php $form = ActiveForm::begin(); ?>
         <div class="box-body">
