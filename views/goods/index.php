@@ -139,7 +139,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'is_assembly',
                     'contentOptions' => ['style' => 'min-width: 80px;'],
                     'filter' => Goods::$assembly,
+                    'format' => 'raw',
                     'value' => function ($model, $key, $index, $column) {
+                        $is_assembly = Goods::$assembly[$model->is_assembly];
+                        if ($is_assembly == '是') {
+                            return "<span onclick='show_son({$key})'>{$is_assembly}</span>";
+                        }
 //                        if (!empty($model->sons)) {
 //                            $text = '';
 //                            foreach ($model->sons as $son) {
@@ -147,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                            }
 //                            return $text;
 //                        }
-                        return Goods::$assembly[$model->is_assembly];
+                        return $is_assembly;
                     }
                 ],
                 'id',
@@ -623,6 +628,17 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         }
     });
+    function show_son(id){
+        console.log(id);
+        layer.open({
+            type: 2,
+            title: '总成页',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '90%'],
+            content: '?r=goods/show-son&id=' + id //iframe的url
+        });
+    }
 
     //生成询价单
     $('.add_inquiry').click(function () {

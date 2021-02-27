@@ -76,6 +76,30 @@ class GoodsController extends BaseController
     }
 
     /**
+     * 零件总成显示
+     */
+    public function actionShowSon($id)
+    {
+        $info = GoodsRelation::getGoodsSonInfo($id);
+        $data = [];
+        foreach ($info as $item) {
+            $data[] = [
+                'id' => $item['id'],
+                'pid' => $item['p_goods_id'] != $id ? $item['p_goods_id'] : '',
+                'goods_number' => $item['goods_number'],
+                'description' => $item['description'],
+                'number' => $item['number'],
+                'material_code' => $item['material_code'],
+                'goods_number_b' => $item['goods_number_b'],
+                'description_en' => $item['description_en'],
+            ];
+        }
+//        var_dump($info);
+        $this->layout = 'layout-no-nav';
+        return $this->render('show-son', ['data' => json_encode($data)]);
+    }
+
+    /**
      * 生成采购策略
      */
     public function actionIndex2()
