@@ -36,7 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
             dataType: 'jsonp',
             columns: [
                 {field: 'id', title: '序号'},
-                {field: 'goods_number', title: '零件号'},
+                {
+                    field: 'goods_number', title: '零件号', cellStyle: {
+                        css: {"width": "20%"}
+                    }
+                },
                 {field: 'material_code', title: '品牌'},
                 {field: 'description', title: '中文描述'},
                 {field: 'description_en', title: '英文描述'},
@@ -46,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 // {field: 'pid', title: '所属上级'},
                 // { field: 'status',  title: '状态', sortable: true,  align: 'center', formatter: 'statusFormatter'  },
                 // { field: 'permissionValue', title: '权限值'  },
-                { field: 'operate', title: '操作', align: 'center', events : operateEvents, formatter: 'operateFormatter' },
+                // {field: 'operate', title: '操作', align: 'center', events: operateEvents, formatter: 'operateFormatter'},
             ],
 
             // bootstrap-table-treegrid.js 插件配置 -- start

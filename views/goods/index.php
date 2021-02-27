@@ -635,7 +635,7 @@ $this->params['breadcrumbs'][] = $this->title;
             title: '总成页',
             shadeClose: true,
             shade: 0.8,
-            area: ['60%', '90%'],
+            area: ['70%', '90%'],
             content: '?r=goods/show-son&id=' + id //iframe的url
         });
     }
