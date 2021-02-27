@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 {field: 'description', title: '中文描述'},
                 {field: 'description_en', title: '英文描述'},
                 {field: 'number', title: '上级总成需求数量'},
+                {field: 'original_company', title: '厂家'},
                 {field: 'goods_number_b', title: '厂家号'},
                 // {field: 'id', title: '编号', sortable: true, align: 'center'},
                 // {field: 'pid', title: '所属上级'},

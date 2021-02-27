@@ -92,6 +92,7 @@ class GoodsController extends BaseController
                 'material_code' => $item['material_code'],
                 'goods_number_b' => $item['goods_number_b'],
                 'description_en' => $item['description_en'],
+                'original_company' => $item['original_company'],
             ];
         }
 //        var_dump($info);
