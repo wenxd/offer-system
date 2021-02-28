@@ -143,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function ($model, $key, $index, $column) {
                         $is_assembly = Goods::$assembly[$model->is_assembly];
                         if ($is_assembly == '是') {
-                            return "<span onclick='show_son({$key})'>{$is_assembly}</span>";
+                            return "<span onclick='show_son({$key}), this'>{$is_assembly}</span>";
                         }
 //                        if (!empty($model->sons)) {
 //                            $text = '';
@@ -628,8 +628,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         }
     });
-    function show_son(id){
-        console.log(id);
+    function show_son(id, obj){
         layer.open({
             type: 2,
             title: '总成页',

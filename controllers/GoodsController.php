@@ -80,6 +80,9 @@ class GoodsController extends BaseController
      */
     public function actionShowSon($id)
     {
+        // 查询零件信息
+        $goods_info = Goods::find()->where(['id' => $id])->asArray()->one();
+        // 查询子零件信息
         $info = GoodsRelation::getGoodsSonInfo($id);
         $data = [];
         foreach ($info as $item) {
@@ -93,11 +96,12 @@ class GoodsController extends BaseController
                 'goods_number_b' => $item['goods_number_b'],
                 'description_en' => $item['description_en'],
                 'original_company' => $item['original_company'],
+                'relation_id' => $item['relation_id'],
             ];
         }
 //        var_dump($info);
         $this->layout = 'layout-no-nav';
-        return $this->render('show-son', ['data' => json_encode($data)]);
+        return $this->render('show-son', ['data' => json_encode($data), 'goods_info' => $goods_info]);
     }
 
     /**
@@ -658,16 +662,19 @@ class GoodsController extends BaseController
     //添加子零件页面
     public function actionAddson($id)
     {
+        $goods_info = Goods::find()->where(['id' => $id])->asArray()->one();
         $searchModel = new GoodsSearch();
         $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams());
         $data = [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'goods_info' => $goods_info,
         ];
+        $this->layout = 'layout-no-nav';
         return $this->render('addson', $data);
     }
 
-    //添加子零件的操作
+    //添加子零件的操作,批量操作（单一批量公用）
     public function actionDoAddson()
     {
         $params = Yii::$app->request->post();
@@ -704,10 +711,44 @@ class GoodsController extends BaseController
 
         //修改零件为总成
         $goods = Goods::findOne($pGoodsId);
-        $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
-        $goods->save();
+        if ($goods->is_assembly != Goods::IS_ASSEMBLY_YES) {
+            $goods->is_assembly = Goods::IS_ASSEMBLY_YES;
+            $goods->save();
+        }
+        return $this->success(200, '成功');
+    }
 
-        return $this->success(200, '添加成功');
+    //删除子零件的操作,批量操作（单一批量公用）
+    public function actionDelSon()
+    {
+        $ids = Yii::$app->request->post('ids');
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($ids as $id) {
+            $model = GoodsRelation::findOne($id);
+            if (!$model) {
+                return $this->error(500, '没有此关联关系');
+            }
+            // 查询上级是否存在子级零件
+            $p_goods_id = $model->p_goods_id;
+            $p_goods = GoodsRelation::find()->where(['p_goods_id' => $p_goods_id, 'is_deleted' => GoodsRelation::IS_DELETED_NO ])->count();
+            // 不存在则更新成非总成
+            if ($p_goods == 0) {
+                $goods = Goods::findOne($p_goods_id);
+                $goods->is_assembly = Goods::IS_ASSEMBLY_NO;
+                if (!$goods->save()) {
+                    $transaction->rollBack();
+                    return $this->error(500, '更新父级失败');
+                }
+            }
+            $model->is_deleted = GoodsRelation::IS_DELETED_YES;
+            $model->save();
+            if (!$model->save()) {
+                $transaction->rollBack();
+                return $this->error(500, '删除失败');
+            }
+        }
+        $transaction->commit();
+        return $this->success(200, '删除成功');
     }
 
     /**
@@ -747,7 +788,7 @@ class GoodsController extends BaseController
             $goodsRelation->save();
             // 计算是不是已经没有子零件了
             if (GoodsRelation::find()->where(['p_goods_id' => $pGoodsId, 'is_deleted' => GoodsRelation::IS_DELETED_NO,])->count() == 0) {
-                Goods::updateAll(['is_assembly' => 0], ['id' => $pGoodsId]);
+                Goods::updateAll(['is_assembly' => Goods::IS_ASSEMBLY_NO], ['id' => $pGoodsId]);
             }
             return $this->success(200, '删除成功');
         } else {

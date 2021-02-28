@@ -345,7 +345,7 @@ class GoodsRelation extends \yii\db\ActiveRecord
     {
         //查询子级
         $data = self::find()
-            ->select(['goods.*', 'goods_relation.number', 'goods_relation.p_goods_id'])
+            ->select(['goods.*', 'goods_relation.number', 'goods_relation.p_goods_id', 'goods_relation.id AS relation_id'])
             ->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $id])
             ->join('LEFT JOIN', Goods::tableName(), 'goods.id=goods_relation.goods_id')
             ->asArray()->all();

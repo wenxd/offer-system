@@ -26,7 +26,9 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<?= $content ?>
+<div style="padding: 1%">
+    <?= $content ?>
+</div>
 
 <?php $this->endBody() ?>
 </body>
