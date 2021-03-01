@@ -79,6 +79,7 @@ $is_show = in_array($userId, $adminIds);
             <?php foreach ($quoteGoods as $item): ?>
                 <tr class="order_final_list">
                     <td class="quote_id" style="display: none"><?= $item->id ?></td>
+                    <td class="goods_id" style="display: none"><?= $item->goods_id ?></td>
                     <td class="serial"><?= $item->serial ?></td>
                     <td><?= $item->goods->material_code ?></td>
                     <td><?= $is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
@@ -395,7 +396,38 @@ $is_show = in_array($userId, $adminIds);
         //保存
         $('.quote_save').click(function (e) {
             //防止双击
-            // $(".quote_save").attr("disabled", true).addClass("disabled");
+            $(".quote_save").attr("disabled", true).addClass("disabled");
+
+            // 计算相同零件号未税单价是否一致
+            var status = false;
+            $keys = [];
+            $('.goods_id').each(function (index, element) {
+                $(element).parent().css('backgroundColor', 'white');
+                var temp_goods_id = $(element).text();
+                var temp_quote_price = $(element).parent().find('.quote_price input').val();
+                if ($keys.hasOwnProperty(temp_goods_id)) {
+                    if ($keys[temp_goods_id] != temp_quote_price) {
+                        // 不同的做强提示
+                        $('.goods_id').each(function (index, element) {
+                            var temp_parent = $(element).parent();
+                            if (temp_goods_id == $(element).text()) {
+                                temp_parent.css('backgroundColor', '#ffbeba');
+                            } else {
+                                temp_parent.css('backgroundColor', 'white');
+                            }
+                        });
+                        layer.msg('多零件号未税单价不一致', {time:3000, icon:2});
+                        status = true;
+                        return false;
+                    }
+                } else {
+                    $keys[temp_goods_id] = temp_quote_price;
+                }
+            });
+            if (status) {
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
             var goods_info = [];
             var number_flag = false;
             $('.quote_id').each(function (index, element) {
