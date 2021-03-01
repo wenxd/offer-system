@@ -12,9 +12,16 @@ use kartik\daterange\DateRangePicker;
 /* @var $searchModel app\models\BrandSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '子零件';
+$this->title = '零件总成';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<h3>零件号：<?="{$goods_info['goods_number']}    （{$goods_info['material_code']}）"?>
+    <button type="button" class="RoleOfadd btn btn-success btn-xs" onclick="add(<?=$goods_info['id']?>)" style="margin-right:15px;">
+        <i class="fa fa-plus" ></i>
+    </button>
+</h3>
+
 <table id="table"></table>
 <br/>
 <!--<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
@@ -51,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 // {field: 'pid', title: '所属上级'},
                 // { field: 'status',  title: '状态', sortable: true,  align: 'center', formatter: 'statusFormatter'  },
                 // { field: 'permissionValue', title: '权限值'  },
-                // {field: 'operate', title: '操作', align: 'center', events: operateEvents, formatter: 'operateFormatter'},
+                {field: 'operate', title: '操作', align: 'center', events: operateEvents, formatter: 'operateFormatter'},
             ],
 
             // bootstrap-table-treegrid.js 插件配置 -- start
@@ -102,9 +109,8 @@ $this->params['breadcrumbs'][] = $this->title;
     // 格式化按钮
     function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="RoleOfadd btn-small  btn-primary" style="margin-right:15px;"><i class="fa fa-plus" ></i>&nbsp;新增</button>',
-            '<button type="button" class="RoleOfedit btn-small   btn-primary" style="margin-right:15px;"><i class="fa fa-pencil-square-o" ></i>&nbsp;修改</button>',
-            '<button type="button" class="RoleOfdelete btn-small   btn-primary" style="margin-right:15px;"><i class="fa fa-trash-o" ></i>&nbsp;删除</button>'
+            '<button type="button" class="RoleOfadd btn btn-success btn-xs" style="margin-right:15px;"><i class="fa fa-plus" ></i></button>',
+            '<button type="button" class="RoleOfdelete btn btn-danger btn-xs"><i class="fa fa-trash-o" ></i></button>'
         ].join('');
 
     }
@@ -138,13 +144,17 @@ $this->params['breadcrumbs'][] = $this->title;
             add(row.id);
         },
         'click .RoleOfdelete': function (e, value, row, index) {
-            del(row.id);
+            console.log();
+            del(row.relation_id);
         },
         'click .RoleOfedit': function (e, value, row, index) {
             update(row.id);
         }
     };
 </script>
+<?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script>
     /**
      * 选中父项时，同时选中子项
@@ -192,16 +202,37 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     function add(id) {
-        alert("add 方法 , id = " + id);
+        layer.open({
+            type: 2,
+            title: '添加子零件页',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: '?r=goods/addson&id=' + id, //iframe的url
+            end: function () {//无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。layer.open关闭事件
+                location.reload();　　//layer.open关闭刷新
+            }
+        });
     }
 
     function del(id) {
-        alert("del 方法 , id = " + id);
+        // alert("del 方法 , id = " + id);
+        var ids = [];
+        ids.push(id);
+        $.ajax({
+            type:"POST",
+            url:"?r=goods/del-son",
+            data:{ids:ids},
+            dataType:'JSON',
+            success:function(res){
+                if (res && res.code == 200){
+                    layer.msg(res.msg, {time:2000});
+                    location.reload();　　//layer.open关闭刷新
+                } else {
+                    layer.msg(res.msg, {time:2000});
+                    return false;
+                }
+            }
+        });
     }
-
-    function update(id) {
-        alert("update 方法 , id = " + id);
-    }
-
-
 </script>
