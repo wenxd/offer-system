@@ -58,7 +58,7 @@ $userId = Yii::$app->user->identity->id;
                     'visible' => !in_array($userId, $adminIds),
                     'value' => function ($model, $key, $index, $column) {
                         if ($model->orderFinal) {
-                            return Html::a($model->orderFinal->final_sn, Url::to(['order-final/view', 'id' => $model->order_final_id]));
+                            return Html::a($model->orderFinal->final_sn, Url::to(['order-final/view', 'id' => $model->order_final_id, 'key' => date('YmdHis') . rand(10, 99)]));
                         } else {
                             return '';
                         }
