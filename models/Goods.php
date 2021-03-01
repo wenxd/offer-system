@@ -279,7 +279,7 @@ class Goods extends ActiveRecord
         }
 
         $this->goods_number             = strtoupper($this->goods_number);
-        $this->goods_number_b           = strtoupper($this->goods_number_b);
+        $this->goods_number_b           = empty(strtoupper($this->goods_number_b)) ? $this->goods_number : strtoupper($this->goods_number_b);
         $this->description              = strtoupper($this->description);
         $this->description_en           = strtoupper($this->description_en);
         $this->original_company         = strtoupper($this->original_company);
