@@ -132,18 +132,17 @@ class InquiryController extends BaseController
     {
         $goods = Goods::findOne($goods_id);
 
+        $where = ['good_id' => $goods_id, 'is_deleted' => Inquiry::IS_DELETED_NO];
         //库存记录
-        $stockQuery = Stock::find()->andWhere(['good_id' => $goods_id])->orderBy('updated_at Desc')->one();
-
+        $stockQuery = Stock::find()->where($where)->orderBy('updated_at Desc')->one();
         //询价记录 价格最优
-        $inquiryPriceQuery  = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('price asc, Created_at Desc')->one();
+        $inquiryPriceQuery  = Inquiry::find()->where($where)->orderBy('price asc, Created_at Desc')->one();
         //同期最短(货期)
-        $inquiryTimeQuery   = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('delivery_time asc, Created_at Desc')->one();
+        $inquiryTimeQuery   = Inquiry::find()->where($where)->orderBy('delivery_time asc, Created_at Desc')->one();
         //最新报价
-        $inquiryNewQuery    = Inquiry::find()->where(['good_id' => $goods_id])->orderBy('Created_at Desc')->one();
+        $inquiryNewQuery    = Inquiry::find()->where($where)->orderBy('Created_at Desc')->one();
         //优选记录
-        $inquiryBetterQuery = Inquiry::find()->where(['good_id' => $goods_id, 'is_better' => Inquiry::IS_BETTER_YES, 'is_confirm_better' => 1])->orderBy('updated_at Desc')->one();
-
+        $inquiryBetterQuery = Inquiry::find()->where($where)->andWhere(['is_better' => Inquiry::IS_BETTER_YES, 'is_confirm_better' => 1])->orderBy('updated_at Desc')->one();
         //采购记录  最新采购
         $paymentNew   = PaymentGoods::find()->andWhere(['goods_id' => $goods_id])->orderBy('created_at Desc')->one();
         //价格最低采购
