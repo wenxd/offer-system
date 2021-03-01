@@ -495,7 +495,36 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 $(".quote_save").removeAttr("disabled").removeClass("disabled");
                 return false;
             }
-
+            // 计算相同零件号未税单价是否一致
+            var status = false;
+            $keys = [];
+            $('.select_id').each(function (index, element) {
+                $(element).parent().parent().css('backgroundColor', 'white');
+                var temp_goods_id = $(element).val();
+                var temp_quote_price = $(element).parent().parent().find('.quote_price input').val();
+                if ($keys.hasOwnProperty(temp_goods_id)) {
+                    if ($keys[temp_goods_id] != temp_quote_price) {
+                        // 不同的做强提示
+                        $('.select_id').each(function (index, element) {
+                            var temp_parent = $(element).parent().parent();
+                            if (temp_goods_id == $(element).val()) {
+                                temp_parent.css('backgroundColor', '#ffbeba');
+                            } else {
+                                temp_parent.css('backgroundColor', 'white');
+                            }
+                        });
+                        layer.msg('多零件号未税单价不一致', {time:3000, icon:2});
+                        status = true;
+                        return false;
+                    }
+                } else {
+                    $keys[temp_goods_id] = temp_quote_price;
+                }
+            });
+            if (status) {
+                $(".quote_save").removeAttr("disabled").removeClass("disabled");
+                return false;
+            }
             var goods_info = [];
             var number_flag = false;
             $('.select_id').each(function (index, element) {
