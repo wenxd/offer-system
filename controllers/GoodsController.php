@@ -87,6 +87,7 @@ class GoodsController extends BaseController
         $data = [];
         foreach ($info as $item) {
             $data[] = [
+                'relation_id' => $item['relation_id'],
                 'id' => $item['id'],
                 'pid' => $item['p_goods_id'] != $id ? $item['p_goods_id'] : '',
                 'goods_number' => $item['goods_number'],
@@ -96,10 +97,8 @@ class GoodsController extends BaseController
                 'goods_number_b' => $item['goods_number_b'],
                 'description_en' => $item['description_en'],
                 'original_company' => $item['original_company'],
-                'relation_id' => $item['relation_id'],
             ];
         }
-//        var_dump($info);
         $this->layout = 'layout-no-nav';
         return $this->render('show-son', ['data' => json_encode($data), 'goods_info' => $goods_info]);
     }

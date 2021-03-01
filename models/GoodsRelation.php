@@ -341,18 +341,32 @@ class GoodsRelation extends \yii\db\ActiveRecord
     /**
      * 获取子零件的所有等级的信息数据
      */
-    public static function getGoodsSonInfo($id, $info = [])
+    public static function getGoodsSonInfo($id, $info = [], $p_goods_id = '')
     {
         //查询子级
+        $select = [
+            'goods_number',
+            'description',
+            'material_code',
+            'goods_number_b',
+            'description_en',
+            'original_company',
+            'is_assembly',
+            'goods.id',
+            'goods_relation.number',
+            'goods_relation.p_goods_id',
+            'goods_relation.id AS relation_id'
+        ];
         $data = self::find()
-            ->select(['goods.*', 'goods_relation.number', 'goods_relation.p_goods_id', 'goods_relation.id AS relation_id'])
+            ->select($select)
             ->where(['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $id])
             ->join('LEFT JOIN', Goods::tableName(), 'goods.id=goods_relation.goods_id')
             ->asArray()->all();
         foreach ($data as $item) {
+            $item['p_goods_id'] = $p_goods_id;
             $info[] = $item;
             if ($item['is_assembly'] == Goods::IS_ASSEMBLY_YES) {
-                $info = self::getGoodsSonInfo($item['id'], $info);
+                $info = self::getGoodsSonInfo($item['id'], $info, $item['relation_id']);
             }
         }
         return $info;

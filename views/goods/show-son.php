@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $table.bootstrapTable({
             data: data,
-            idField: 'id',
+            idField: 'relation_id',
             dataType: 'jsonp',
             columns: [
                 {field: 'id', title: '序号'},
