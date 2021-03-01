@@ -17,8 +17,8 @@ use Yii;
  */
 class GoodsRelation extends \yii\db\ActiveRecord
 {
-    const IS_DELETED_NO    = '0';
-    const IS_DELETED_YES   = '1';
+    const IS_DELETED_NO = '0';
+    const IS_DELETED_YES = '1';
 
     /**
      * {@inheritdoc}
@@ -76,6 +76,9 @@ class GoodsRelation extends \yii\db\ActiveRecord
      */
     public static function goodsMutex($goods_id, $goods_mutex)
     {
+        if ($goods_id == $goods_mutex[0]) {
+            return true;
+        }
         //查询子级
         $data = self::find()->select(['goods_id'])->where(['is_deleted' => GoodsRelation::IS_DELETED_NO, 'p_goods_id' => $goods_id])->asArray()->all();
         if (empty($data)) {
