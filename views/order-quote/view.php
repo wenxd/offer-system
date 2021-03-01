@@ -101,7 +101,7 @@ $is_show = in_array($userId, $adminIds);
                     <?php endif; ?>
                     <td class="ratio"><?= $item->tax_rate ?></td>
                     <?php if (!$is_show) : ?>
-                        <td class="publish_price"><?= $item->goods->publish_price ?></td>
+                        <td style="background-color: #ffbeba" class="publish_price"><?= $item->goods->publish_price ?></td>
                         <?php
                         $publish_tax_price = number_format($item->goods->publish_price * (1 + $item->tax_rate / 100), 2, '.', '');
                         ?>
@@ -113,12 +113,12 @@ $is_show = in_array($userId, $adminIds);
                         $competitorGoodsTaxPrice = $competitorGoods ? number_format($competitorGoods->price * (1 + $item->tax_rate / 100), 2, '.', '') : 0;
                         ?>
                         <td><?= $competitorGoods ? $competitorGoods->competitor->name : '' ?></td>
-                        <td class="competitor_tax_price"
+                        <td style="background-color: #d3d0ff" class="competitor_tax_price"
                             data-competitor_goods_id="<?= $competitorGoods ? $competitorGoods->id : 0 ?>"><?= $item->competitor_goods_tax_price ?></td>
                         <td class="competitor_tax_price_all"><?= $item->competitor_goods_tax_price_all ?></td>
                         <td class="competitor_public_tax_price"><?= $item->competitor_goods_quote_tax_price ?></td>
                         <td class="competitor_public_tax_price_all"><?= $item->competitor_goods_quote_tax_price_all ?></td>
-                        <td class="price"><?= $item->price ?></td>
+                        <td style="background-color: #fbffbc" class="price"><?= $item->price ?></td>
                         <td class="tax_price"><?= $item->tax_price ?></td>
                         <td class="all_price"><?= $item->all_price ?></td>
                         <td class="all_tax_price"><?= $item->all_tax_price ?></td>
