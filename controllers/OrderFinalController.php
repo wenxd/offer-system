@@ -522,6 +522,10 @@ class OrderFinalController extends BaseController
         }
     }
 
+    /**
+     * 关联成本订单
+     * @return false|string
+     */
     public function actionRelevancePurchase()
     {
         $params = Yii::$app->request->post();
@@ -542,6 +546,21 @@ class OrderFinalController extends BaseController
         $finalGoods->relevance_id       = $inquiry->id;
 
         if ($finalGoods->save()) {
+            // todo  修改存在的报价单 成本单对应多个报价单
+            $where = [
+                'order_id' => $finalGoods->order_id,
+                'order_final_id' => $finalGoods->order_final_id,
+                'goods_id' => $finalGoods->goods_id
+            ];
+            $update_data = [
+                'price' => $finalGoods->price,
+                'tax_price' => $finalGoods->tax_price,
+                'all_price' => $finalGoods->all_price,
+                'all_tax_price' => $finalGoods->all_tax_price,
+                'delivery_time' => $finalGoods->delivery_time,
+                'relevance_id' => $finalGoods->relevance_id,
+            ];
+            QuoteGoods::updateAll($update_data, $where);
             return json_encode(['code' => 200, 'msg' => '保存成功']);
         }
     }
