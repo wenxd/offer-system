@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
     <div class="box-header">
         <?= Bar::widget([
-            'template' => '{create} {delete} {download} {upload} {inquiry} {download-son} {upload-son} {download-check} {upload-check} {download-check02} {upload-check02} {index}',
+            'template' => '{create} {delete} {download} {upload} {inquiry} {download-son} {upload-son} {download-check} {upload-check} {download-check02} {upload-check02} {index} {show-goods}',
             'buttons' => [
                 'download' => function () {
                     return Html::a('<i class="fa fa-download"></i> 下载模板', Url::to(['download']), [
@@ -82,7 +82,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-pjax' => '0',
                         'class' => 'btn btn-success btn-flat',
                     ]);
-                }
+                },
+                'show-goods' => function () {
+                    return Html::a('<i class="fa fa-search"></i> 查询', 'Javascript: void(0)', [
+                        'data-pjax' => '0',
+                        'class' => 'btn btn-info btn-flat show_goods',
+                    ]);
+                },
             ]
         ]) ?>
     </div>
@@ -639,7 +645,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
-    //生成询价单
+    // 生成询价单
     $('.add_inquiry').click(function () {
         var goods_ids = [];
         $("input[name='selection[]']").each(function (i, e) {
@@ -664,6 +670,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return false;
                 }
             }
+        });
+    });
+
+    // 查询零件库存页面
+    $('.show_goods').click(function () {
+        layer.open({
+            type: 2,
+            title: '零件库存搜索',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['80%', '90%'],
+            content: '?r=goods/show-stock' //iframe的url
         });
     });
 </script>

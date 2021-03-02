@@ -104,6 +104,68 @@ class GoodsController extends BaseController
     }
 
     /**
+     * 零件库存查询
+     */
+    public function actionShowStock()
+    {
+        $model = new Goods();
+        $goods_info = $superior_goods_info = $son_goods_info = null;
+        $assemble_number = 999999;
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post('Goods');
+            $id = $post['id'];
+            $model->id = $id;
+            // 查询零件信息
+            $goods_info = Goods::findOne($id);
+            /*<td><?=$goods_info->goods_number?></td>
+            <td><?=$goods_info->goods_number_b?></td>
+            <td style="width: 10%"><?=$goods_info->remark?></td>
+            <td><?=$goods_info->description?></td>
+            <td><?=$goods_info->description_en?></td>
+            <td><?=$goods_info->original_company?></td>
+            <td><?=$goods_info->unit?></td>
+            <td><?=$goods_info->stock->number ?? ''?></td>
+            <td><?=$goods_info->stock->position ?? ''?></td>*/
+            $select = ['goods.id', 'goods_number', 'goods_number_b', 'remark', 'description',
+                'description_en', 'original_company', 'unit', 'stock.number', 'position',];
+            $and_where = ['stock.is_deleted' => Stock::IS_DELETED_NO];
+            $goods_info = Goods::find()->where(['goods.id' => $id])
+                ->select($select)
+                ->join('LEFT JOIN', Stock::tableName(), 'stock.good_id=goods.id and stock.is_deleted = 0')
+                ->asArray()->one();
+            // 查询上级零件信息
+            $and_where = ['goods_relation.is_deleted' => GoodsRelation::IS_DELETED_NO];
+            $superior_goods_info = GoodsRelation::find()->where(['goods_relation.goods_id' => $id])
+                ->select($select)->andWhere($and_where)
+                ->join('LEFT JOIN', Goods::tableName(), 'goods_relation.p_goods_id=goods.id and goods_relation.is_deleted = 0')
+                ->join('LEFT JOIN', Stock::tableName(), 'stock.good_id=goods.id')
+                ->asArray()->all();
+            // 查询子级零件信息
+            $select[] = 'goods_relation.number as relation_number';
+            $son_goods_info = GoodsRelation::find()->where(['goods_relation.p_goods_id' => $id])
+                ->select($select)->andWhere($and_where)
+                ->join('LEFT JOIN', Goods::tableName(), 'goods_relation.goods_id=goods.id and goods_relation.is_deleted = 0')
+                ->join('LEFT JOIN', Stock::tableName(), 'stock.good_id=goods.id')
+                ->asArray()->all();
+            // 计算可组装数量
+            foreach ($son_goods_info as $son_goods) {
+                $son_mix_number = intval($son_goods['number'] / $son_goods['relation_number']);
+                if ($assemble_number > $son_mix_number) {
+                    $assemble_number = $son_mix_number;
+                }
+            }
+        }
+        $this->layout = 'layout-no-nav';
+        return $this->render('show-stock', [
+            'model' => $model,
+            'goods_info' => $goods_info,
+            'superior_goods_info' => $superior_goods_info,
+            'son_goods_info' => $son_goods_info,
+            'assemble_number' => $assemble_number,
+            ]);
+    }
+
+    /**
      * 生成采购策略
      */
     public function actionIndex2()
