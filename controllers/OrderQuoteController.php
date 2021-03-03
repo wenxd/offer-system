@@ -232,6 +232,7 @@ class OrderQuoteController extends Controller
                     $row[] = $item['competitor_goods_quote_tax_price_all'];
                     $row[] = $item['publish_tax_price'];
                     $row[] = $item['all_publish_tax_price'];
+                    $row[] = $item['bid_remarks'];
 
                     $data[] = $row;
                 }
@@ -304,7 +305,7 @@ class OrderQuoteController extends Controller
             'type', 'relevance_id', 'number', 'serial', 'tax_rate', 'price', 'tax_price', 'all_price', 'all_tax_price',
              'quote_price', 'quote_tax_price', 'quote_all_price', 'quote_all_tax_price', 'delivery_time', 'quote_delivery_time',
             'competitor_goods_id', 'competitor_goods_tax_price', 'competitor_goods_tax_price_all', 'competitor_goods_quote_tax_price',
-            'competitor_goods_quote_tax_price_all', 'publish_tax_price', 'publish_tax_price_all'];
+            'competitor_goods_quote_tax_price_all', 'publish_tax_price', 'publish_tax_price_all', 'bid_remarks'];
         $num = Yii::$app->db->createCommand()->batchInsert(QuoteGoods::tableName(), $feild, $data)->execute();
     }
 

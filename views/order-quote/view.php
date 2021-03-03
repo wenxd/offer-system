@@ -36,14 +36,11 @@ $is_show = in_array($userId, $adminIds);
                 <th>序号</th>
                 <th>品牌</th>
                 <th>零件号</th>
-                <?php if (!$is_show) : ?>
-                    <th>厂家号</th>
-                <?php endif; ?>
                 <th style="width: 200px;">中文描述</th>
                 <th style="width: 200px;">英文描述</th>
                 <?php if (!$is_show) : ?>
                     <th>原厂家</th>
-                    <th>原厂家备注</th>
+                    <th>厂家号</th>
                 <?php endif; ?>
                 <th>订单需求数量</th>
                 <th>库存数量</th>
@@ -73,6 +70,7 @@ $is_show = in_array($userId, $adminIds);
                 <th>报价未税总价</th>
                 <th>报价含税总价</th>
                 <th>报价货期(周)</th>
+                <th>投标申明</th>
             </tr>
             </thead>
             <tbody>
@@ -83,14 +81,11 @@ $is_show = in_array($userId, $adminIds);
                     <td class="serial"><?= $item->serial ?></td>
                     <td><?= $item->goods->material_code ?></td>
                     <td><?= $is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
-                    <?php if (!$is_show) : ?>
-                        <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
-                    <?php endif; ?>
                     <td><?= $item->goods->description ?></td>
                     <td><?= $item->goods->description_en ?></td>
                     <?php if (!$is_show) : ?>
                         <td><?= $item->goods->original_company ?></td>
-                        <td><?= $item->goods->original_company_remark ?></td>
+                        <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
                     <?php endif; ?>
                     <!--订单需求数量-->
                     <td class="afterNumber"><input type="text" class="number" value="<?= $item->number ?>"
@@ -128,12 +123,11 @@ $is_show = in_array($userId, $adminIds);
                     <!--报价未税单价	报价含税单价-->
                     <td class="quote_price"><input type="text" value="<?= $item->quote_price ?>" style="width: 120px;">
                     </td>
-                    <td class="quote_tax_price"><input type="text" value="<?= $item->quote_tax_price ?>"
-                                                       style="width: 120px;"></td>
+                    <td class="quote_tax_price"><input type="text" value="<?= $item->quote_tax_price ?>" style="width: 120px;"></td>
                     <td class="quote_all_price"><?= $item->quote_all_price ?></td>
                     <td class="quote_all_tax_price"><?= $item->quote_all_tax_price ?></td>
-                    <td class="quote_delivery_time"><input type="text" value="<?= $item->quote_delivery_time ?>"
-                                                           style="width: 60px;"></td>
+                    <td class="quote_delivery_time"><input type="text" value="<?= $item->quote_delivery_time ?>" style="width: 60px;"></td>
+                    <td class="bid_remarks"><input type="text" value="<?= $item->bid_remarks ?>" style="width: 60px;"></td>
                 </tr>
             <?php endforeach; ?>
             <tr style="background-color: #acccb9">
@@ -474,6 +468,7 @@ $is_show = in_array($userId, $adminIds);
                 item.quote_all_price     = elements.find('.quote_all_price').text();
                 item.quote_all_tax_price = elements.find('.quote_all_tax_price').text();
                 item.quote_delivery_time = elements.find('.quote_delivery_time input').val();
+                item.bid_remarks = elements.find('.bid_remarks input').val();
 
                 item.competitor_goods_id                    = elements.find('.competitor_tax_price').data('competitor_goods_id');
                 item.competitor_goods_tax_price             = parseFloat(elements.find('.competitor_tax_price').text());

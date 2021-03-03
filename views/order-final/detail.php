@@ -89,6 +89,7 @@ $tax = SystemConfig::find()->select('value')->where([
                 <th>报价未税总价</th>
                 <th>报价含税总价</th>
                 <th>报价货期(周)</th>
+                <th>投标申明</th>
                 <th>是否有报价单</th>
                 <th>报价单号</th>
             </tr>
@@ -138,6 +139,9 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                 <td class="quote_all_price"></td>
                 <td class="quote_all_tax_price"></td>
                 <td class="quote_delivery_time"><input type="text" style="width: 100px;"></td>
+                <td class="bid_remarks">
+                    <input type="text"  style="width: 100px;" >
+                </td>
                 <td><?=isset($quoteGoods[$item->goods_id]) ? '是' : '否'?></td>
                 <td><?=isset($quoteGoods[$item->goods_id]) ? $quoteGoods[$item->goods_id]->order_quote_sn : ''?></td>
             </tr>
@@ -579,6 +583,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     item.competitor_goods_quote_tax_price_all   = parseFloat($(element).parent().parent().find('.competitor_public_tax_price_all').text());
                     item.publish_tax_price       = parseFloat($(element).parent().parent().find('.publish_tax_price').text());
                     item.all_publish_tax_price   = parseFloat($(element).parent().parent().find('.all_publish_tax_price').text());
+                    item.bid_remarks   = $(element).parent().parent().find('.bid_remarks input').val();
 
                     goods_info.push(item);
                 }

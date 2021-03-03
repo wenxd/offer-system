@@ -29,11 +29,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr class="goods">
                     <th>序号</th>
                     <th>零件号</th>
-                    <th>厂家号</th>
                     <th style="width: 200px;">中文描述</th>
                     <th style="width: 200px;">英文描述</th>
                     <th>原厂家</th>
-                    <th>原厂家备注</th>
+                    <th>厂家号</th>
                     <th>单位</th>
                     <th>数量</th>
                     <th>供应商</th>
@@ -57,11 +56,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tr class="goods_list">
                         <td><?= $item->serial?></td>
                         <td><?= Html::a($item->goods->goods_number . ' ' . $item->goods->material_code, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number, 'type' => 1]));?></td>
-                        <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->description?></td>
                         <td><?= $item->goods->description_en?></td>
                         <td><?= $item->goods->original_company?></td>
-                        <td><?= $item->goods->original_company_remark?></td>
+                        <td><?= $item->goods->goods_number_b?></td>
                         <td><?= $item->goods->unit?></td>
                         <td class="number"><?=$item->number?></td>
                         <td><?= $item->inquiry->supplier->name?></td>
