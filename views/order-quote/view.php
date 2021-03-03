@@ -80,12 +80,12 @@ $is_show = in_array($userId, $adminIds);
                     <td class="goods_id" style="display: none"><?= $item->goods_id ?></td>
                     <td class="serial"><?= $item->serial ?></td>
                     <td><?= $item->goods->material_code ?></td>
-                    <td><?= $is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
+                    <td><?= $is_show ? $item->goods->goods_number : Html::a($item->goods->goods_number, Url::to(['goods/view', 'id' => $item->goods->id])) ?></td>
                     <td><?= $item->goods->description ?></td>
                     <td><?= $item->goods->description_en ?></td>
                     <?php if (!$is_show) : ?>
                         <td><?= $item->goods->original_company ?></td>
-                        <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'good_number' => $item->goods->goods_number])) ?></td>
+                        <td><?= Html::a($item->goods->goods_number_b, Url::to(['goods/search-result', 'goods_id' => $item->goods->id])) ?></td>
                     <?php endif; ?>
                     <!--订单需求数量-->
                     <td class="afterNumber"><input type="text" class="number" value="<?= $item->number ?>"
