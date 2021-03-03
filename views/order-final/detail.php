@@ -498,6 +498,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
             // 计算相同零件号未税单价是否一致
             var status = false;
             $keys = [];
+            $delivery_keys = [];
             $('.select_id').each(function (index, element) {
                 $(element).parent().parent().css('backgroundColor', 'white');
                 var temp_goods_id = $(element).val();
@@ -519,6 +520,26 @@ data-type={$item->type} data-relevance_id={$item->relevance_id}  value={$item->g
                     }
                 } else {
                     $keys[temp_goods_id] = temp_quote_price;
+                }
+                // 检测货期
+                var temp_quote_delivery_time = $(element).parent().parent().find('.quote_delivery_time input').val();
+                if ($delivery_keys.hasOwnProperty(temp_goods_id)) {
+                    if ($delivery_keys[temp_goods_id] != temp_quote_delivery_time) {
+                        // 不同的做强提示
+                        $('.select_id').each(function (index, element) {
+                            var temp_parent = $(element).parent().parent();
+                            if (temp_goods_id == $(element).val()) {
+                                temp_parent.css('backgroundColor', '#ffbeba');
+                            } else {
+                                temp_parent.css('backgroundColor', 'white');
+                            }
+                        });
+                        layer.msg('多零件号货期不一致', {time:3000, icon:2});
+                        status = true;
+                        return false;
+                    }
+                } else {
+                    $delivery_keys[temp_goods_id] = temp_quote_delivery_time;
                 }
             });
             if (status) {
