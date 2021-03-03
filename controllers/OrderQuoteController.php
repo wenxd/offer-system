@@ -481,9 +481,9 @@ class OrderQuoteController extends Controller
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel=$spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
         $tableHeader = ['序号', '零件号', '中文描述', '英文描述', '订单数量', '单位', '未税单价', '含税单价', '未税总价', '含税总价', '税率', '货期',
-             '库存数量'];
+             '库存数量', '投标申明'];
         for($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -507,6 +507,7 @@ class OrderQuoteController extends Controller
             $excel->setCellValue('K'.($key + 2), $value->tax_rate);
             $excel->setCellValue('L'.($key + 2), $value->quote_delivery_time);
             $excel->setCellValue('M'.($key + 2), $value->stockNumber ? $value->stockNumber->number : 0);
+            $excel->setCellValue('N'.($key + 2), $value->bid_remarks);
             $name = $value->order_quote_sn;
         }
 
