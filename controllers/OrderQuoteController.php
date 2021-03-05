@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Yii;
 use app\models\{AgreementGoodsBak,
+    AgreementGoodsData,
     Goods,
     Inquiry,
     InquiryGoods,
@@ -455,6 +456,52 @@ class OrderQuoteController extends Controller
         } else {
             return json_encode(['code' => 500, 'msg' => $orderAgreement->getErrors()]);
         }
+    }
+
+    /**
+     * 回撤收入合同
+     */
+    public function actionRetreat()
+    {
+        $id = Yii::$app->request->post('id');
+        $transaction = Yii::$app->db->beginTransaction();
+        // todo 查询收入合同
+        $order_agreement = OrderAgreement::findOne($id);
+        if (!$transaction) {
+            $transaction->rollBack();
+            return json_encode(['code' => 504, 'msg' => '收入合同未找到']);
+        }
+        // todo 查询合同关联零件，删除
+        AgreementGoods::deleteAll(['order_agreement_id' => $order_agreement->id]);
+        AgreementGoodsData::deleteAll(['order_agreement_id' => $order_agreement->id]);
+        // todo 一键恢复数据删除AgreementGoodsBak
+        AgreementGoodsBak::deleteAll(['order_agreement_id' => $order_agreement->id]);
+        // todo 更新其他的报价单为可生成收入合同 OrderQuote->quote_only_one = 1;
+        OrderQuote::updateAll(['quote_only_one' => OrderQuote::IS_QUOTE_YES], ['order_id' => $order_agreement->order_id]);
+        // todo 查询报价单
+        $orderQuote = OrderQuote::findOne($order_agreement->order_quote_id);
+        if (!$orderQuote) {
+            $transaction->rollBack();
+            return json_encode(['code' => 504, 'msg' => '报价单未找到']);
+        }
+        // todo 更新成本单为未生成收入合同 OrderFinal->is_agreement = OrderFinal::IS_AGREEMENT_NO;
+        $orderFinal = OrderFinal::findOne($orderQuote->order_final_id);
+        if (!$orderFinal) {
+            $transaction->rollBack();
+            return json_encode(['code' => 504, 'msg' => '成本单未找到']);
+        }
+        $orderFinal->is_agreement = OrderFinal::IS_AGREEMENT_NO;
+        if (!$orderFinal->save()) {
+            $transaction->rollBack();
+            return json_encode(['code' => 504, 'msg' => '更新成本单为未生成收入合同失败']);
+        }
+        // todo 收入合同删除
+        if (!$order_agreement->delete()) {
+            $transaction->rollBack();
+            return json_encode(['code' => 504, 'msg' => '收入合同删除失败']);
+        }
+        $transaction->commit();
+        return json_encode(['code' => 200, 'msg' => '收入合同回退至报价单成功']);
     }
 
     /**

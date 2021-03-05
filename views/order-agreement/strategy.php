@@ -325,7 +325,7 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
         //保存采购策略
         $('.purchase_save').click(function (e) {
             //防止双击
-            // $(".purchase_save").attr("disabled", true).addClass("disabled");
+            $(".purchase_save").attr("disabled", true).addClass("disabled");
             var goods_info = [];
             $('.select_id').each(function (index, element) {
                 if ($(element).prop("checked")) {

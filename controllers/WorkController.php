@@ -28,8 +28,19 @@ class WorkController extends BaseController
         }
         $this->layout = 'layout-no-nav';
         $data = json_decode(file_get_contents('work.php'), true);
+
         $titles = $data['titles'];
         $items = $data['items'];
-        return $this->render('add', ['items' => $items, 'titles' => $titles]);
+        $rows = 4;
+        foreach ($items as $item) {
+            foreach ($item as $value) {
+                $lines_arr = preg_split('/\n|\r/',$value);
+                $new_lines = count($lines_arr);
+                if ($rows < $new_lines) {
+                    $rows = $new_lines;
+                }
+            }
+        }
+        return $this->render('add', ['items' => $items, 'titles' => $titles, 'rows' => $rows]);
     }
 }

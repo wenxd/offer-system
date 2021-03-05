@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <tr v-for="(item, index) in items">
         <td>{{ 1+index }}</td>
         <td v-for="(item_1, index_1) in item">
-            <textarea class="form-control" v-model="items[index][index_1]"  rows="4"></textarea>
+            <textarea class="form-control" v-model="items[index][index_1]"  rows="<?=$rows?>"></textarea>
         </td>
         <td v-if="index == 0">
             <button title="添加一行" type="button"class="btn btn-success btn-sm" onclick="add_row()">

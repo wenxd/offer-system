@@ -41,6 +41,7 @@ $tax = SystemConfig::find()->select('value')->where([
         <table id="example2" class="table table-bordered table-hover" style="width: 2000px;">
             <thead class="data" data-order_quote_id="<?=$_GET['id']?>">
             <tr>
+                <th><input type="checkbox" name="select_all" class="select_all"></th>
                 <th>序号</th>
                 <th>零件号</th>
                 <?php if(!in_array($userId, $adminIds)):?>
@@ -70,6 +71,7 @@ $tax = SystemConfig::find()->select('value')->where([
             <tbody>
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_quote_list">
+                    <td><input type='checkbox' name='select_id' class='select_id'></td>
                     <td><?=$item->serial?></td>
                     <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php if(!in_array($userId, $adminIds)):?>
@@ -168,6 +170,19 @@ $tax = SystemConfig::find()->select('value')->where([
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        //全选
+        $('.select_all').click(function (e) {
+            $('.select_id').prop("checked", $(this).prop("checked"));
+        });
+
+        //子选择
+        $('.select_id').on('click', function (e) {
+            if ($('.select_id').length == $('.select_id:checked').length) {
+                $('.select_all').prop("checked", true);
+            } else {
+                $('.select_all').prop("checked", false);
+            }
+        });
         init();
         function init(){
             var sta_all_tax_price = 0;
@@ -265,24 +280,30 @@ $tax = SystemConfig::find()->select('value')->where([
 
         $('.quote_complete').click(function (e) {
             //防止双击
-            $(".quote_complete").attr("disabled", true).addClass("disabled");
+            // $(".quote_complete").attr("disabled", true).addClass("disabled");
             var goods_info = [];
-
-            $('.order_quote_list').each(function (i, ele) {
-                var item = {};
-                item.quote_goods_id   = $(ele).find('.goods_id').data('quote_goods_id');
-                item.goods_id         = $(ele).find('.goods_id').data('goods_id');
-                item.type             = $(ele).find('.goods_id').data('goods_type');
-                item.relevance_id     = $(ele).find('.goods_id').data('relevance_id');
-                item.number           = $(ele).find('.number').val();
-                item.price            = parseFloat($(ele).find('.change_price').val());
-                item.tax_price        = parseFloat($(ele).find('.change_tax_price').val());
-                item.delivery_time    = $(ele).find('.delivery_time input').val();
-                item.purchase_number  = $(ele).find('.number').val();
-                goods_info.push(item);
-
+            var select_status = true;
+            $('.select_id').each(function (i, ele) {
+                if ($(ele).prop("checked")) {
+                    var item = {};
+                    var ele_p = $(ele).parent().parent();
+                    item.quote_goods_id   = ele_p.find('.goods_id').data('quote_goods_id');
+                    item.goods_id         = ele_p.find('.goods_id').data('goods_id');
+                    item.type             = ele_p.find('.goods_id').data('goods_type');
+                    item.relevance_id     = ele_p.find('.goods_id').data('relevance_id');
+                    item.number           = ele_p.find('.number').val();
+                    item.price            = parseFloat(ele_p.find('.change_price').val());
+                    item.tax_price        = parseFloat(ele_p.find('.change_tax_price').val());
+                    item.delivery_time    = ele_p.find('.delivery_time input').val();
+                    item.purchase_number  = ele_p.find('.number').val();
+                    goods_info.push(item);
+                    select_status = false;
+                }
             });
-
+            if (select_status) {
+                layer.msg('请选择', {time: 2000});
+                return ;
+            }
             var expect_at = $('#orderagreement-expect_at').val();
             if (!expect_at) {
                 layer.msg('请输入预计收全款时间', {time:2000});

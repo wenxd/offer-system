@@ -243,6 +243,12 @@ $userId   = Yii::$app->user->identity->id;
                                 'data-pjax' => '0',
                                 'class' => 'btn btn-primary btn-xs btn-flat',
                             ]);
+                        } else {
+                            $html .= Html::button('<i class="fa fa-warning"></i> 回退', [
+                                    'class' => 'btn btn-warning btn-xs btn-flat retracement',
+                                    'name'  => 'submit-button',
+                                    'onclick'  => "retracement($key)",
+                            ]);
                         }
                         return $html;
                         if (!$model->is_all_stock) {
@@ -284,3 +290,32 @@ $userId   = Yii::$app->user->identity->id;
     <?php Pjax::end(); ?>
     </div>
 </div>
+<?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript">
+    function retracement(id) {
+        layer.confirm('危险操作，确定回退？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){  
+            layer.closeAll()
+            layer.load(0, {shade: false});
+            $.ajax({
+                type:"post",
+                url:'?r=order-quote/retreat',
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    if (res && res.code == 200){
+                        layer.msg(res.msg, {time:2000});
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.msg, {time:2000});
+                        return false;
+                    }
+                }
+            });
+        }, function(){
+            layer.msg('取消', {icon: 2});
+        });
+    }
+</script>
