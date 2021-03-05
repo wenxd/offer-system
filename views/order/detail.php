@@ -202,7 +202,7 @@ $is_order_agreement = count($orderAgreement);
                 <?php foreach ($orderFinal as $final): ?>
                     <tr>
                         <td><?= $final->order_id ?></td>
-                        <td><?= Html::a($final->final_sn, Url::to(['order-final/view', 'id' => $final->id])) ?></td>
+                        <td><?= Html::a($final->final_sn, Url::to(['order-final/view', 'id' => $final->id, 'key' => date('YmdHis') . rand(10, 99)])) ?></td>
                         <td><?= $final->admin ? $final->admin->username : '' ?></td>
                     </tr>
                 <?php endforeach; ?>

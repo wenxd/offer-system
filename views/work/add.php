@@ -19,10 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <table class="table table-bordered" id="items">
     <tr>
         <th>
-            <!--添加列-->
-            <button type="button" class="btn btn-success btn-sm" onclick="add_col()">
-                <i class="fa fa-plus" ></i>
-            </button>
+            序号
         </th>
         <th v-for="(title, index) in titles">
             <input type="text" class="form-control"  v-model="titles[index]" v-if="index < 1">
@@ -38,15 +35,22 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </th>
         <th>
-            <button type="button"class="btn btn-success btn-sm" onclick="add_row()">
-                <i class="fa fa-plus" > 行</i>
+            <!--添加列-->
+            <button type="button" class="btn btn-primary     btn-sm" onclick="add_col()">
+                <i class="fa fa-plus" > 列</i>
             </button>
         </th>
+
     </tr>
     <tr v-for="(item, index) in items">
         <td>{{ 1+index }}</td>
         <td v-for="(item_1, index_1) in item">
             <textarea class="form-control" v-model="items[index][index_1]"  rows="4"></textarea>
+        </td>
+        <td v-if="index == 0">
+            <button type="button"class="btn btn-success btn-sm" onclick="add_row()">
+                <i class="fa fa-plus" > 行</i>
+            </button>
         </td>
         <td v-if="index >= 1">
             <button type="button" style="width: 40%" class="btn btn-danger btn-sm"  @click.stop="del_row(index)">
