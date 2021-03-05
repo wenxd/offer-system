@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <input type="text" v-model="titles[index]" class="form-control">
                 </div>
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-danger btn-sm" @click.stop="del_col(index)">
+                    <button title="删除本列" type="button" class="btn btn-danger btn-sm" @click.stop="del_col(index)">
                         <i class="fa fa-trash" ></i>
                     </button>
                 </div>
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </th>
         <th>
             <!--添加列-->
-            <button type="button" class="btn btn-primary     btn-sm" onclick="add_col()">
+            <button title="添加一列" type="button" class="btn btn-primary     btn-sm" onclick="add_col()">
                 <i class="fa fa-plus" > 列</i>
             </button>
         </th>
@@ -48,12 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <textarea class="form-control" v-model="items[index][index_1]"  rows="4"></textarea>
         </td>
         <td v-if="index == 0">
-            <button type="button"class="btn btn-success btn-sm" onclick="add_row()">
+            <button title="添加一行" type="button"class="btn btn-success btn-sm" onclick="add_row()">
                 <i class="fa fa-plus" > 行</i>
             </button>
         </td>
         <td v-if="index >= 1">
-            <button type="button" style="width: 40%" class="btn btn-danger btn-sm"  @click.stop="del_row(index)">
+            <button title="删除本行" type="button" class="btn btn-danger btn-sm"  @click.stop="del_row(index)">
                 <i class="fa fa-trash" ></i>
             </button>
         </td>
