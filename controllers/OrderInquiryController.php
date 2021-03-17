@@ -491,9 +491,9 @@ class OrderInquiryController extends BaseController
         $spreadsheet->getActiveSheet()->getDefaultRowDimension()->setRowHeight(25);
         $excel = $spreadsheet->setActiveSheetIndex(0);
 
-        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
+        $letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
         $tableHeader = ['ID*', '询价单号*', '原厂家', '厂家号*', '技术备注', '中文描述', '英文描述', '询价数量*', '单位', '含税单价*（不带符号）',
-            '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由', '特殊说明'];
+            '货期(周)*', '税率*', '供应商准确名称*', '备注', '是否优选', '优选理由', '特殊说明', '批次', '时间'];
         for ($i = 0; $i < count($tableHeader); $i++) {
             $excel->getStyle($letter[$i])->getAlignment()->setVertical('center');
             $excel->getStyle($letter[$i])->getNumberFormat()->applyFromArray(['formatCode' => NumberFormat::FORMAT_TEXT]);
@@ -502,6 +502,7 @@ class OrderInquiryController extends BaseController
         }
         $tax = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_TAX])->scalar();
         $deliver = SystemConfig::find()->select('value')->where(['title' => SystemConfig::TITLE_DELIVERY_TIME])->scalar();
+        $batch = [];
         foreach ($inquiryGoods as $key => $inquiry) {
             for ($i = 0; $i < count($letter); $i++) {
                 //ID
@@ -534,6 +535,10 @@ class OrderInquiryController extends BaseController
                 $excel->setCellValue($letter[$i + 11] . ($key + 2), $tax);
                 //特殊说明
                 $excel->setCellValue($letter[$i + 16] . ($key + 2), $inquiry->remark);
+                $created_at = $inquiry->created_at;
+                if (!in_array($created_at, $batch)) $batch[] = $created_at;
+                $excel->setCellValue($letter[$i + 17] . ($key + 2), array_search($created_at, $batch) + 1);
+                $excel->setCellValue($letter[$i + 18] . ($key + 2), $created_at);
                 break;
             }
         }
