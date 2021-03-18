@@ -117,10 +117,24 @@ $userId   = Yii::$app->user->identity->id;
                 'maxView'   => 2,  //最大选择范围（年）
                 'minView'   => 2,  //最小选择范围（年）
             ]
-        ])->textInput(['readonly' => true]);?>
+        ]);?>
 
-        <?= $form->field($model, 'sign_date')->textInput(['readonly' => true]) ?>
-
+        <?= $form->field($model, 'sign_date')->widget(DateTimePicker::className(), [
+            'removeButton'  => false,
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd',
+                'startView' => 2,  //其实范围（0：日  1：天 2：年）
+                'maxView'   => 2,  //最大选择范围（年）
+                'minView'   => 2,  //最小选择范围（年）
+            ]
+        ]);?>
+        <div class="box-footer">
+            <?= Html::submitButton('保存时间', [
+                    'class' => 'btn btn-success',
+                    'name'  => 'submit-button']
+            )?>
+        </div>
     </div>
     <?php ActiveForm::end(); ?>
 </div>

@@ -68,6 +68,14 @@ class OrderAgreementController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post();
+            if ($model->load($post) && $model->save()) {
+                yii::$app->getSession()->setFlash('success', '修改时间成功');
+            } else {
+                yii::$app->getSession()->setFlash('error', $model->getErrors());
+            }
+        }
         $agreementGoods = AgreementGoodsData::find()->where(['order_agreement_id' => $id])->orderBy('serial ASC')->all();
         if (empty($agreementGoods)) {
             $agreementGoods = AgreementGoods::find()->where(['order_agreement_id' => $id])->orderBy('serial ASC')->all();
