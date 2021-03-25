@@ -96,7 +96,7 @@ $userId   = Yii::$app->user->identity->id;
 <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
 <script type="text/javascript">
     //零件A搜索
-    $("#stocklog-goods_number").bind('input propertychange', function (e) {
+    $("#stocklog-goods_number").blur(function () {
         var good_number = $('#stocklog-goods_number').val();
         if (good_number === '') {
             $('.box-search-goods_number').addClass('cancel-goods_number');
