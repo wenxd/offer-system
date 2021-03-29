@@ -100,20 +100,20 @@ class OrderController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        $date = date('ymd_');
-        $orderI = Order::find()->where(['like', 'order_sn', $date])
-            ->andWhere(['order_type' => order::ORDER_TYPE_PROJECT_YES])->orderBy('created_at Desc')->one();
-        if ($orderI) {
-            $num = strrpos($orderI->order_sn, '_');
-            $str = substr($orderI->order_sn, $num + 1);
-            if (is_numeric($str)) {
-                $number = sprintf("%02d", $str + 1);
-            } else {
-                $number = '01';
-            }
-        } else {
-            $number = '01';
-        }
+//        $date = date('ymd_');
+//        $orderI = Order::find()->where(['like', 'order_sn', $date])
+//            ->andWhere(['order_type' => order::ORDER_TYPE_PROJECT_YES])->orderBy('created_at Desc')->one();
+//        if ($orderI) {
+//            $num = strrpos($orderI->order_sn, '_');
+//            $str = substr($orderI->order_sn, $num + 1);
+//            if (is_numeric($str)) {
+//                $number = sprintf("%02d", $str + 1);
+//            } else {
+//                $number = '01';
+//            }
+//        } else {
+//            $number = '01';
+//        }
         return $this->render('create', [
             'model' => $model,
             'number' => $number
@@ -671,6 +671,8 @@ class OrderController extends BaseController
         $order->goods_ids = json_encode($goodsIds);
         $order->order_type = $params['order_type'];
         $order->created_at = $params['created_at'];
+        $order->first_party_id = $params['first_party_id'];
+        $order->project_name = $params['project_name'];
 
         if ($order->save()) {
             $data = [];

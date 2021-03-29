@@ -8,7 +8,11 @@
 namespace app\controllers;
 
 
+use app\models\Brand;
+use app\models\Customer;
+use app\models\FirstParty;
 use app\models\Goods;
+use app\models\Order;
 use app\models\OrderPurchase;
 use app\models\OrderQuote;
 use app\models\PaymentGoods;
@@ -270,5 +274,64 @@ class SearchController extends BaseController
             }
         }
         return json_encode(['code' => 200, 'msg' => '成功']);
+    }
+
+    // 获取客户下拉列表
+    public function actionGetCustomerList($q = '')
+    {
+        $out = ['results' => ['id' => '', 'text' => '']];
+        $data = [];
+        $list = Customer::find()->where(['like', 'name', $q])->all();
+        foreach ($list as $item) {
+            $data[] = [
+                'id' => $item->id,
+                'text' => $item->name,
+            ];
+        }
+        $out['results'] = array_values($data);
+        return json_encode($out);
+    }
+
+    // 获取甲方采办人下拉列表
+    public function actionGetFirstPartyList($q = '')
+    {
+        $out = ['results' => ['id' => '', 'text' => '']];
+        $data = [];
+        $list = FirstParty::find()->where(['like', 'name', $q])->all();
+        foreach ($list as $item) {
+            $data[] = [
+                'id' => $item->id,
+                'text' => $item->name,
+            ];
+        }
+        $out['results'] = array_values($data);
+        return json_encode($out);
+    }
+
+    // 获取甲方采办人下拉列表
+    public function actionGetBrandList($q = '')
+    {
+        $out = ['results' => ['id' => '', 'text' => '']];
+        $data = [];
+        $list = Brand::find()->where(['like', 'name', $q])->andWhere(['is_deleted' => Brand::IS_DELETED_NO])->all();
+        foreach ($list as $item) {
+            $data[] = [
+                'id' => $item->id,
+                'text' => $item->name,
+            ];
+        }
+        $out['results'] = array_values($data);
+        return json_encode($out);
+    }
+
+    // 获取甲方采办人下拉列表
+    public function actionShowOrderSn($order_sn)
+    {
+        $order = Order::find()->where(['order_sn' => $order_sn])->asArray()->one();
+        if (empty($order)) {
+            return json_encode(['code' => 500, 'msg' => '数据不存在']);
+        } else {
+            return json_encode(['code' => 200, 'msg' => '成功', 'data' => $order]);
+        }
     }
 }

@@ -8,6 +8,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Goods;
 use app\models\Brand;
 use app\models\SystemConfig;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Goods */
@@ -80,7 +81,31 @@ $brandList = Brand::getList();
     </div>
     <div class="box-body">
 
-        <?= $form->field($model, 'brand_id')->dropDownList($brandList)->label('品牌') ?>
+        <?= $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::className(), [
+//            'options' => ['placeholder' => '请输入客户名称/用途'],
+            'pluginOptions' => [
+                'id' => new JsExpression("function(rs) {
+                return rs.taskId;
+            }"),
+                'multiple' => false,
+                'allowClear' => true,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Waiting...'; }"),
+                ],
+                'ajax' => [
+                    'url' => Url::to(['search/get-brand-list']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression('function(params) {
+                return {q:params.term}; }')
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) {
+             return markup; }'),
+                'templateResult' => new JsExpression('function(res) {
+             return res.text; }'),
+                'templateSelection' => new JsExpression('function (res) {
+             return res.text; }'),
+            ]
+        ])->label('品牌') ?>
 
         <?= $form->field($model, 'goods_number')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>

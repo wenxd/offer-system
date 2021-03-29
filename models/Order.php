@@ -139,6 +139,8 @@ class Order extends ActiveRecord
             'order_type'      => '订单来源',
             'is_final'        => '是否生成成本单',
             'is_dispatch'     => '是否全部派送询价员',
+            'first_party_id'  => '甲方采办人',
+            'project_name'    => '项目名称'
         ];
     }
 
