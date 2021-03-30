@@ -67,12 +67,10 @@ if ($model->isNewRecord) {
                     <th>序号</th>
                     <th>品牌</th>
                     <th>零件号</th>
+                    <th>原厂家</th>
                     <th>厂家号</th>
-                    <th style="width: 200px;">推荐供应商</th>
-                    <th style="width: 200px;">特殊说明</th>
                     <th>中文描述</th>
                     <th>英文描述</th>
-                    <th>原厂家</th>
                     <th>原厂家备注</th>
                     <th>单位</th>
                     <th>数量</th>
@@ -89,6 +87,8 @@ if ($model->isNewRecord) {
                     <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
+                    <th style="width: 200px;">推荐供应商</th>
+                    <th style="width: 200px;">特殊说明</th>
                 </tr>
                 <tr id="w3-filters" class="filters">
                     <td>
@@ -102,15 +102,14 @@ if ($model->isNewRecord) {
                         <input type="text" class="form-control" name="goods_number" value="<?=$_GET['goods_number'] ?? ''?>">
                     </td>
                     <td>
+                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
+                    </td>
+                    <td>
                         <input type="text" class="form-control" name="goods_number_b" value="<?=$_GET['goods_number_b'] ?? ''?>">
                     </td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <input type="text" class="form-control" name="original_company" value="<?=$_GET['original_company'] ?? ''?>">
-                    </td>
+
                     <td></td>
                     <td></td>
                     <td></td>
@@ -171,6 +170,8 @@ if ($model->isNewRecord) {
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -193,18 +194,14 @@ if ($model->isNewRecord) {
                     <td class="serial"><?= $item->serial?></td>
                     <td><?= $item->goods->material_code?></td>
                     <td><?= Html::a($item->goods->goods_number,
-                            Url::to(['goods/search-result', 'goods_id' => $item->goods->id]),
+                            Url::to(['goods/update', 'id' => $item->goods->id]),
                             ['target' => 'blank'])?></td>
+                    <td><?= $item->goods->original_company?></td>
                     <td><?= $item->goods->goods_number_b?></td>
-                    <td class="supplier">
-                        <input type="text" style="width: 150px;">
-                    </td>
-                    <td class="remark">
-                        <input type="text" style="width: 150px;">
-                    </td>
+
                     <td><?= $item->goods->description?></td>
                     <td><?= $item->goods->description_en?></td>
-                    <td><?= $item->goods->original_company?></td>
+
                     <td><?= $item->goods->original_company_remark?></td>
                     <td><?= $item->goods->unit?></td>
                     <td class="number"><?= $item->number?></td>
@@ -242,6 +239,12 @@ if ($model->isNewRecord) {
                     <td><?=isset($stockList[$item->goods_id]) ? $stockList[$item->goods_id]->number : 0?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?= $open ? $item->inquiryGoods->inquiry_sn : ''?></td>
+                    <td class="supplier">
+                        <input type="text" style="width: 150px;">
+                    </td>
+                    <td class="remark">
+                        <input type="text" style="width: 150px;">
+                    </td>
                 </tr>
                 <?php endforeach;?>
             </tbody>
