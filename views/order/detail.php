@@ -72,7 +72,7 @@ $is_order_agreement = count($orderAgreement);
         ],
     ]) ?>
     <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
-        <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
+        <?= Html::jsFile('@web/js/jquery-3.2.1.min.js') ?>
         <script type="text/javascript" src="./js/layer.js"></script>
         <script type="text/javascript" src="./js/jquery.ajaxupload.js"></script>
         <div class="box-body">
@@ -88,7 +88,8 @@ $is_order_agreement = count($orderAgreement);
                         <label for="number">&nbsp;</label>
                         <?= $form->field($model, 'number')->textInput(['maxlength' => true])->label('数量') ?>
                         <?= $form->field($model, 'serial')->textInput(['maxlength' => true])->label('序号') ?>
-                        <button type="button" class="btn btn-primary" onclick="add_goods()" style="float: right">添加</button>
+                        <button type="button" class="btn btn-primary" onclick="add_goods()" style="float: right">添加
+                        </button>
                         <?php ActiveForm::end(); ?>
                     </div>
                     <script>
@@ -110,6 +111,10 @@ $is_order_agreement = count($orderAgreement);
                             console.log(number);
                             if (number <= 0 || isNaN(number)) {
                                 layer.msg('输入序号', {time: 2000});
+                                return false;
+                            }
+                            if (removalSerial(serialNumber)) {
+                                layer.msg('序号重复', {time: 2000});
                                 return false;
                             }
                             window.location.href = '/index.php?r=order/add-order-goods&order_id=' + order_id + '&goods_id=' + goods_id + '&number=' + number + '&serial=' + serialNumber;
@@ -147,7 +152,7 @@ $is_order_agreement = count($orderAgreement);
                 <tbody>
                 <?php foreach ($orderGoods as $key => $item): ?>
                     <tr>
-                        <td class="serial"><?= $item->serial ?></td>
+                        <td><input onblur="exitSerial(this, <?= $item['id'] ?>)" data-serial="<?= $item->serial ?>" class="serial" type="number" value="<?= $item->serial ?>"></td>
                         <td><?= $item->goods->material_code ?></td>
                         <td><?= $item->goods->goods_number ?></td>
                         <td><?= $item->goods->goods_number_b ?></td>
@@ -162,12 +167,12 @@ $is_order_agreement = count($orderAgreement);
                         <td class="addColor"><?= Goods::$nameplate[$item->goods->is_nameplate] ?></td>
                         <td><?= $item->goods->technique_remark ?></td>
                         <td>
-                        <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
-                            <?= Html::a('删除', Url::to(['order/del-order-goods', 'id' => $item->id]), [
+                            <?php if (in_array($userId, $admin_ids) && !$is_order_agreement): ?>
+                                <?= Html::a('删除', Url::to(['order/del-order-goods', 'id' => $item->id]), [
                                     'class' => 'btn btn-danger',
                                     'name' => 'submit-button'
                                 ]) ?>
-                        <?php endif; ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -358,5 +363,45 @@ $is_order_agreement = count($orderAgreement);
         </table>
     </div>
 </div>
+
+<script>
+    // 序号修改事件
+    function exitSerial(obj, key) {
+        var init_serial = $(obj).attr('data-serial');
+        var serial = $(obj).val();
+        if (init_serial == serial) {
+            return false;
+        }
+        if (removalSerial(serial)) {
+            $(obj).val(init_serial)
+            layer.msg('序号重复', {time: 2000});
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: '?r=search/update-order-goods-serial',
+            data: {serial: serial, id: key},
+            dataType: 'JSON',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res && res.code == 200){
+                    $(obj).attr('data-serial', serial)
+                }
+            }
+        });
+        console.log(init_serial, serial, key);
+    }
+
+    // 序号去重
+    function removalSerial(serial) {
+        var serialOpen = false;
+        $('.serial').each(function (index, element) {
+            if ($(element).attr('data-serial') == serial) {
+                serialOpen = true;
+            }
+        });
+        return serialOpen;
+    }
+</script>
 
 

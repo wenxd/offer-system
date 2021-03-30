@@ -13,6 +13,7 @@ use app\models\Customer;
 use app\models\FirstParty;
 use app\models\Goods;
 use app\models\Order;
+use app\models\OrderGoods;
 use app\models\OrderPurchase;
 use app\models\OrderQuote;
 use app\models\PaymentGoods;
@@ -332,6 +333,21 @@ class SearchController extends BaseController
             return json_encode(['code' => 500, 'msg' => '数据不存在']);
         } else {
             return json_encode(['code' => 200, 'msg' => '成功', 'data' => $order]);
+        }
+    }
+
+    /**
+     * 修改订单序号
+     */
+    public function actionUpdateOrderGoodsSerial()
+    {
+        $post = Yii::$app->request->post();
+        $order_goods = OrderGoods::findOne($post['id']);
+        $order_goods->serial = $post['serial'];
+        if ($order_goods->save()) {
+            return json_encode(['code' => 200, 'msg' => '成功']);
+        } else {
+            return json_encode(['code' => 500, 'msg' => '失败', 'data' => $order_goods->getErrors()]);
         }
     }
 }
