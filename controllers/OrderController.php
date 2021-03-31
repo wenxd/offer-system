@@ -225,7 +225,8 @@ class OrderController extends BaseController
             return $this->redirect(yii::$app->request->headers['referer']);
         }
 
-        $orderGoods = OrderGoods::find()->where(['order_id' => $id])->all();
+        $orderGoods = OrderGoods::find()->where(['order_id' => $id])
+            ->orderBy(['serial' => SORT_ASC, 'id' => SORT_DESC])->all();
         $orderInquiry = OrderInquiry::findAll(['order_id' => $id]);
         $orderFinal = OrderFinal::findAll(['order_id' => $id]);
         $orderQuote = OrderQuote::findAll(['order_id' => $id]);
