@@ -44,6 +44,9 @@ if ($model->isNewRecord) {
     }
 }
 $brandList = Brand::getList();
+$option = [
+    'template' => '<td style="text-align: right;width: 10%;vertical-align: middle;">{label}:</td><td>{input}{error}{hint}</td>'
+];
 ?>
 
 <div class="box">
@@ -136,15 +139,27 @@ $brandList = Brand::getList();
 
         <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_process')->radioList(Goods::$process, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_standard')->radioList(Goods::$standard, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_import')->radioList(Goods::$import, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_emerg')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_special')->radioList(Goods::$special, ['class' => 'radio']) ?>
-        <?= $form->field($model, 'is_nameplate')->radioList(Goods::$nameplate, ['class' => 'radio']) ?>
+<!--        --><?//= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
+        <label class="control-label has-star" for="goods-unit">标签</label>
+        <table class="table table-striped">
+            <tbody>
+            <tr>
+                <?= $form->field($model, 'is_process', $option)->dropDownList(Goods::$process) ?>
+                <?= $form->field($model, 'is_standard', $option)->dropDownList(Goods::$standard) ?>
+                <?= $form->field($model, 'is_import', $option)->dropDownList(Goods::$import) ?>
+            </tr>
+            <tr>
+                <?= $form->field($model, 'is_emerg', $option)->dropDownList(Goods::$emerg) ?>
+                <?= $form->field($model, 'is_special', $option)->dropDownList(Goods::$special) ?>
+                <?= $form->field($model, 'is_nameplate', $option)->dropDownList(Goods::$nameplate) ?>
+            </tr>
+            </tbody>
+        </table>
+
+
+<!--        --><?//= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
+        <?= $form->field($model, 'is_assembly')->dropDownList(Goods::$emerg) ?>
+
         <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [

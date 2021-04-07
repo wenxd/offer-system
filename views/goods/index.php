@@ -240,14 +240,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Goods::$process[$model->is_process];
                     }
                 ],
-                [
-                    'attribute' => 'is_tz',
-                    'contentOptions' => ['style' => 'min-width: 80px;'],
-                    'filter' => Goods::$tz,
-                    'value' => function ($model, $key, $index, $column) {
-                        return Goods::$tz[$model->is_tz];
-                    }
-                ],
+//                [
+//                    'attribute' => 'is_tz',
+//                    'contentOptions' => ['style' => 'min-width: 80px;'],
+//                    'filter' => Goods::$tz,
+//                    'value' => function ($model, $key, $index, $column) {
+//                        return Goods::$tz[$model->is_tz];
+//                    }
+//                ],
                 [
                     'attribute' => 'is_standard',
                     'contentOptions' => ['style' => 'min-width: 80px;'],
@@ -264,14 +264,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Goods::$import[$model->is_import];
                     }
                 ],
-                [
-                    'attribute' => 'is_repair',
-                    'contentOptions' => ['style' => 'min-width: 80px;'],
-                    'filter' => Goods::$repair,
-                    'value' => function ($model, $key, $index, $column) {
-                        return Goods::$repair[$model->is_repair];
-                    }
-                ],
+//                [
+//                    'attribute' => 'is_repair',
+//                    'contentOptions' => ['style' => 'min-width: 80px;'],
+//                    'filter' => Goods::$repair,
+//                    'value' => function ($model, $key, $index, $column) {
+//                        return Goods::$repair[$model->is_repair];
+//                    }
+//                ],
                 [
                     'attribute' => 'is_special',
                     'filter' => Goods::$special,
