@@ -143,19 +143,18 @@ $option = [
         <table class="table table-striped">
             <tbody>
             <tr>
-                <?= $form->field($model, 'is_process', $option)->dropDownList(Goods::$process) ?>
-                <?= $form->field($model, 'is_standard', $option)->dropDownList(Goods::$standard) ?>
-                <?= $form->field($model, 'is_import', $option)->dropDownList(Goods::$import) ?>
+                <?= $form->field($model, 'is_process', $option)->radioList(Goods::$process) ?>
+                <?= $form->field($model, 'is_standard', $option)->radioList(Goods::$standard) ?>
+                <?= $form->field($model, 'is_import', $option)->radioList(Goods::$import) ?>
             </tr>
             <tr>
-                <?= $form->field($model, 'is_emerg', $option)->dropDownList(Goods::$emerg) ?>
-                <?= $form->field($model, 'is_special', $option)->dropDownList(Goods::$special) ?>
-                <?= $form->field($model, 'is_nameplate', $option)->dropDownList(Goods::$nameplate) ?>
+                <?= $form->field($model, 'is_emerg', $option)->radioList(Goods::$emerg) ?>
+                <?= $form->field($model, 'is_special', $option)->radioList(Goods::$special) ?>
+                <?= $form->field($model, 'is_nameplate', $option)->radioList(Goods::$nameplate) ?>
             </tr>
             </tbody>
         </table>
-        <?= $form->field($model, 'is_assembly')->dropDownList(Goods::$emerg) ?>
-
+        <?= $form->field($model, 'is_assembly')->radioList(Goods::$emerg) ?>
         <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'img_id')->widget(FileInput::classname(), [
@@ -235,7 +234,6 @@ $option = [
     <?php ActiveForm::end(); ?>
 
 </div>
-
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
@@ -272,7 +270,20 @@ $option = [
             }
         });
     }
-
+    function radio() {
+        $('input:radio').each(function (index, element) {
+            var color = '#333333';
+            if ($(element).prop("checked") && $(element).val() == 1) {
+                var color = 'red';
+                $(element).addClass("highlight");
+            }
+            $(element).parent().css('color',color)
+        });
+    }
+    $('input:radio').click(function () {
+        radio();
+    });
+    radio();
     $('.add-device').click(function () {
         var html = '<div class="input-group">\n' +
             '            <span class="input-group-addon device-name">设备名称</span>\n' +
