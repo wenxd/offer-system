@@ -139,7 +139,6 @@ $option = [
 
         <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
-<!--        --><?//= $form->field($model, 'is_tz')->radioList(Goods::$tz, ['class' => 'radio']) ?>
         <label class="control-label has-star" for="goods-unit">标签</label>
         <table class="table table-striped">
             <tbody>
@@ -155,9 +154,6 @@ $option = [
             </tr>
             </tbody>
         </table>
-
-
-<!--        --><?//= $form->field($model, 'is_repair')->radioList(Goods::$repair, ['class' => 'radio']) ?>
         <?= $form->field($model, 'is_assembly')->dropDownList(Goods::$emerg) ?>
 
         <?= $form->field($model, 'part')->textInput(['maxlength' => true]) ?>
