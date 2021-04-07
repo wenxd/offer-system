@@ -77,4 +77,9 @@ class OrderGoodsBak extends \yii\db\ActiveRecord
     {
         return $this->hasOne(FinalGoods::className(), ['order_id' => 'order_id', 'goods_id' => 'goods_id', 'serial' => 'serial']);
     }
+
+    public function getGoodsClarify()
+    {
+        return $this->hasOne(InquiryGoodsClarify::className(), ['goods_id' => 'goods_id']);
+    }
 }

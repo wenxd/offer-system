@@ -87,6 +87,7 @@ if ($model->isNewRecord) {
                     <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
+                    <th>澄清</th>
                     <th style="width: 200px;">推荐供应商</th>
                     <th style="width: 200px;">特殊说明</th>
                 </tr>
@@ -172,6 +173,7 @@ if ($model->isNewRecord) {
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -239,6 +241,9 @@ if ($model->isNewRecord) {
                     <td><?=isset($stockList[$item->goods_id]) ? $stockList[$item->goods_id]->number : 0?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?= $open ? $item->inquiryGoods->inquiry_sn : ''?></td>
+                    <td><?= $item->goodsClarify ? Html::a('澄清记录', '?r=inquiry-goods/index&goods_id=' . $item->goods_id, ['class' => 'btn btn-info btn-xs']) : ''?></td>
+
+
                     <td class="supplier">
                         <input type="text" style="width: 150px;">
                     </td>

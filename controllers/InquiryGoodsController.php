@@ -51,7 +51,7 @@ class InquiryGoodsController extends Controller
      * Lists all InquiryGoods models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($goods_id = false)
     {
         // 更新澄清记录
         if (Yii::$app->request->isPost) {
@@ -76,6 +76,10 @@ class InquiryGoodsController extends Controller
         } else {
             Yii::$app->session['clarify_sql'] = json_encode($params);
         }
+        if ($goods_id){
+            $params['InquiryGoodsClarifySearch']['goods_id'] = $goods_id;
+        }
+
         $dataProvider = $searchModel->search($params);
         return $this->render('clarify', [
             'searchModel' => $searchModel,
