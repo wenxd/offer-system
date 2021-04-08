@@ -61,7 +61,7 @@ class InquiryGoodsController extends Controller
             // 获取询价零件
             $InquiryGoods = InquiryGoods::findOne($InquiryGoodsClarify->inquiry_goods_id);
             // todo 2021-02-23 添加澄清回复系统通知
-            $msg = "询价单【{$InquiryGoodsClarify->inquiry_sn} - {$InquiryGoods->serial}】有新的澄清回复";
+            $msg = "询价单【{$InquiryGoodsClarify->inquiry_sn} - {$InquiryGoods->serial} - {$params['reason']}】有新的澄清回复";
             Common::SendSystemMsg($InquiryGoodsClarify->admin_id, $msg);
             if ($InquiryGoodsClarify->save()) {
                 return json_encode(['code' => 200, 'msg' => '成功']);
