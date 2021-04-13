@@ -742,4 +742,36 @@ class OrderInquiryController extends BaseController
 
         return json_encode(['code' => 200, 'id' => $orderId], JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * 询价员批量从新分配
+     */
+    public function actionRedistributionAll()
+    {
+        $id = Yii::$app->request->post('id');
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            // 删除询价单零件
+            $InquiryGoods_res = InquiryGoods::deleteAll(['order_inquiry_id' => $id]);
+            // 删除询价单
+            $orderInquiry = OrderInquiry::findOne($id);
+            $orderInquiry_res = $orderInquiry->delete();
+            // 修改订单
+            $orderId = $orderInquiry->order_id;
+            $order = Order::findOne($orderId);
+            $order->is_dispatch = 0;
+            if ($InquiryGoods_res && $InquiryGoods_res && $order->save()) {
+                $transaction->commit();
+                return json_encode(['code' => 200, 'msg' => '成功'], JSON_UNESCAPED_UNICODE);
+            }
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => '失败'], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return json_encode(['code' => 500, 'msg' => $e->getErrors()], JSON_UNESCAPED_UNICODE);
+        }
+
+        return json_encode(['code' => 200, 'id' => $orderId], JSON_UNESCAPED_UNICODE);
+    }
 }

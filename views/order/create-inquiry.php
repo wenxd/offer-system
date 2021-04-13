@@ -303,7 +303,15 @@ if ($model->isNewRecord) {
                 success: function (res) {
                     console.log(res);
                     if (res && res.code == 200) {
-                        $('#orderinquiry-inquiry_sn').val(res.data.inquiry_sn);
+                        layer.confirm('订单存在该询价员询价单，是否合并？', {
+                            btn: ['是','否'] //按钮
+                        }, function(){
+                            $('#orderinquiry-inquiry_sn').val(res.data.inquiry_sn);
+                            layer.closeAll();
+                        }, function(){
+                            $('#orderinquiry-inquiry_sn').val(inquiry_sn);
+                            layer.closeAll();
+                        });
                     } else {
                         $('#orderinquiry-inquiry_sn').val(inquiry_sn);
                     }

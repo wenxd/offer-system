@@ -50,6 +50,11 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                         'name' => 'submit-button']
                 ) ?>
             <?php endif; ?>
+            <?= Html::button('批量退回', [
+                    'class' => 'btn btn-danger',
+                    'onclick' => "redistribution_all({$orderInquiry->id})",
+                    'name' => 'submit-button']
+            ) ?>
         </div>
 
         <div class="box-body">
@@ -464,6 +469,27 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
                     return false;
                 }
             }
+        });
+    }
+
+    function redistribution_all(id) {
+        layer.confirm('确认重新派送吗？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "post",
+                url: "?r=order-inquiry/redistribution-all",
+                data: {id: id},
+                dataType: 'JSON',
+                success: function (res) {
+                    layer.msg(res.msg, {time: 2000});
+                    if (res && res.code == 200) {
+                        window.location.href="javascript:history.go(-1)";
+                    }
+                }
+            });
+        }, function(){
+            layer.closeAll();
         });
     }
 
