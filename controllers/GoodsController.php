@@ -468,9 +468,9 @@ class GoodsController extends BaseController
                             //厂家号
                             if ($value['F'] && $locking) {
                                 $goods->goods_number_b = (string)trim($value['F']);
-                                if (empty($goods->goods_number_b)) {
-                                    $goods->goods_number_b = $goods->goods_number;
-                                }
+//                                if (empty($goods->goods_number_b)) {
+//                                    $goods->goods_number_b = $goods->goods_number;
+//                                }
                             }
                             //材质
                             if ($value['G']) {
