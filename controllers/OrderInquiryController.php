@@ -642,7 +642,7 @@ class OrderInquiryController extends BaseController
                             if ($key == 2) {
                                 $orderInquiry = OrderInquiry::find()->where(['inquiry_sn' => trim($value['B'])])->one();
                             }
-//                            if (trim($value['J']) && trim($value['K'])) {
+                            if (trim($value['J']) !== '' && trim($value['K']) !== '') {
                                 $inquiryGoods = InquiryGoods::findOne(trim($value['A']));
                                 $goods = Goods::findOne($inquiryGoods->goods_id);
                                 if ($goods) {
@@ -701,9 +701,9 @@ class OrderInquiryController extends BaseController
                                     $msg[] = '第' . $key . '行零件未找到';
                                     continue;
                                 }
-//                            } else {
-//                                $msg[] = '第' . $key . '行单价/货期为空';
-//                            }
+                            } else {
+                                $msg[] = '第' . $key . '行单价/货期为空';
+                            }
                         }
                     }
                 }
