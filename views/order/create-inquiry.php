@@ -87,6 +87,7 @@ if ($model->isNewRecord) {
                     <th>库存数量</th>
                     <th>技术备注</th>
                     <th>询价单号</th>
+                    <th>询价员</th>
                     <th style="width: 200px;">推荐供应商</th>
                     <th style="width: 200px;">特殊说明</th>
                 </tr>
@@ -172,6 +173,7 @@ if ($model->isNewRecord) {
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -240,7 +242,7 @@ if ($model->isNewRecord) {
                     <td><?=isset($stockList[$item->goods_id]) ? $stockList[$item->goods_id]->number : 0?></td>
                     <td><?= $item->goods->technique_remark?></td>
                     <td><?= $open ? $item->inquiryGoods->inquiry_sn : ''?></td>
-
+                    <td><?= $open ? $item->inquiryGoods->orderInquiry->admin->username ?? '' : ''?></td>
 
                     <td class="supplier">
                         <input type="text" style="width: 150px;">
@@ -286,7 +288,6 @@ if ($model->isNewRecord) {
 <?=Html::jsFile('@web/js/jquery-3.2.1.min.js')?>
 <script type="text/javascript" src="./js/layer.js"></script>
 <script type="text/javascript">
-    var level = <?=$level?>;
     $(document).ready(function () {
         var level = '<?=$_GET['level'] ?? 1?>';
         init();

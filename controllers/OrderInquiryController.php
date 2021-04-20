@@ -234,7 +234,15 @@ class OrderInquiryController extends BaseController
                 'i.order_id' => $orderInquiry->order_id,
                 'i.is_deleted' => InquiryGoods::IS_DELETED_NO,
                 'g.is_deleted' => Goods::IS_DELETED_NO,
-            ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('i.serial asc')->all();
+            ])->leftJoin('goods as g', 'g.id = i.goods_id')->orderBy('i.serial asc');
+        $InquiryGoods = Yii::$app->request->get('InquiryGoods');
+        $is_inquiry = $InquiryGoods['is_inquiry'] ?? false;
+        $model = new InquiryGoods();
+        if (isset($InquiryGoods['is_inquiry']) && $InquiryGoods['is_inquiry'] !== '') {
+            $model->is_inquiry = $is_inquiry;
+            $inquiryGoods->andWhere(['is_inquiry' => $is_inquiry]);
+        }
+        $inquiryGoods = $inquiryGoods->all();
         $goods_ids = ArrayHelper::getColumn($inquiryGoods, 'goods_id');
         $data['inquiryGoods'] = $inquiryGoods;
 //        $data['orderGoods']   = $orderGoods;
@@ -262,6 +270,7 @@ class OrderInquiryController extends BaseController
         ])->asArray()->all();
         $user_inquiry_count = ArrayHelper::index($user_inquiry_count, null, 'good_id');
         $data['user_inquiry_count'] = $user_inquiry_count;
+        $data['model'] = $model;
         return $this->render('view', $data);
     }
 

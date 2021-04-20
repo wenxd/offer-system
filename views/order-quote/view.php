@@ -27,6 +27,16 @@ $userId = Yii::$app->user->identity->id;
 $is_show = in_array($userId, $adminIds);
 ?>
 <div class="box table-responsive">
+    <div class="box-header">
+        <?php if ($model->quote_only_one == 1) :?>
+            <?= Html::button('复制报价单', [
+                    'class' => 'btn btn-info',
+                    'onclick' => "copy_quote({$model->id})",
+                    'name' => 'submit-button']
+            ) ?>
+        <?php endif;?>
+
+    </div>
     <?php $form = ActiveForm::begin(); ?>
     <div class="box-body">
         <table id="example2" class="table table-bordered table-hover"
@@ -387,6 +397,9 @@ $is_show = in_array($userId, $adminIds);
             }
             $('.most_quote_delivery_time').text(most_quote_delivery_time);
         });
+
+
+
         //保存
         $('.quote_save').click(function (e) {
             //防止双击
@@ -562,4 +575,24 @@ $is_show = in_array($userId, $adminIds);
         });
 
     });
+
+    // 复制报价单
+    function copy_quote(id) {
+        layer.confirm('确定复制报价单吗？', {
+            btn: ['确定','放弃'] //按钮
+        }, function(){
+            $.ajax({
+                type:"get",
+                url:'?r=order-quote/copy-quote',
+                data:{id:id},
+                dataType:'JSON',
+                success:function(res){
+                    layer.msg(res.msg, {time:2000});
+                }
+            });
+            // layer.closeAll();
+        }, function(){
+            layer.closeAll();
+        });
+    }
 </script>

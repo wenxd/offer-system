@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
 use app\models\AuthAssignment;
+use kartik\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\OrderInquiry */
@@ -30,33 +31,45 @@ $super_adminIds = ArrayHelper::getColumn($super_admin, 'user_id');
 <section class="content">
     <div class="box table-responsive">
         <div class="box-header">
-            <?= Html::a('<i class="fa fa-download"></i> 询价单导出', Url::to(['download', 'id' => $orderInquiry->id]), [
-                'data-pjax' => '0',
-                'class' => 'btn btn-primary btn-flat',
-            ]); ?>
-            <?= Html::button('询价导入', [
-                    'class' => 'btn btn-success upload',
+            <div class="col-md-6">
+                <?= Html::a('<i class="fa fa-download"></i> 询价单导出', Url::to(['download', 'id' => $orderInquiry->id]), [
+                    'data-pjax' => '0',
+                    'class' => 'btn btn-primary btn-flat',
+                ]); ?>
+                <?= Html::button('询价导入', [
+                        'class' => 'btn btn-success upload',
+                        'name' => 'submit-button']
+                ) ?>
+                <?php if (in_array($userId, $super_adminIds)): ?>
+                    <?= Html::button('批量确认询价', [
+                            'class' => 'btn btn-info all_confirm',
+                            'name' => 'submit-button']
+                    ) ?>
+                <?php else: ?>
+                    <?= Html::button('批量确认询价', [
+                            'class' => 'btn btn-info all_confirm_inquiry',
+                            'style' => 'display: none',
+                            'name' => 'submit-button']
+                    ) ?>
+                <?php endif; ?>
+                <?php if (!$orderInquiry->is_inquiry): ?>
+                    <?= Html::button('批量退回', [
+                            'class' => 'btn btn-danger',
+                            'onclick' => "redistribution_all({$orderInquiry->id})",
+                            'name' => 'submit-button']
+                    ) ?>
+                <?php endif; ?>
+            </div>
+
+            <?php $form = ActiveForm::begin(['method' => 'get']); ?>
+            <div class="col-md-2">
+                <?= $form->field($model, 'is_inquiry')->dropDownList([0 => '未询价', 1 => '已询价'], ['prompt' => '询价状态'])->label(false) ?>
+            </div>
+            <?= Html::submitButton('搜索', [
+                    'class' => 'btn btn-success',
                     'name' => 'submit-button']
-            ) ?>
-            <?php if (in_array($userId, $super_adminIds)): ?>
-                <?= Html::button('批量确认询价', [
-                        'class' => 'btn btn-info all_confirm',
-                        'name' => 'submit-button']
-                ) ?>
-            <?php else: ?>
-                <?= Html::button('批量确认询价', [
-                        'class' => 'btn btn-info all_confirm_inquiry',
-                        'style' => 'display: none',
-                        'name' => 'submit-button']
-                ) ?>
-            <?php endif; ?>
-            <?php if (!$orderInquiry->is_inquiry): ?>
-                <?= Html::button('批量退回', [
-                        'class' => 'btn btn-danger',
-                        'onclick' => "redistribution_all({$orderInquiry->id})",
-                        'name' => 'submit-button']
-                ) ?>
-            <?php endif; ?>
+            ); ?>
+            <?php ActiveForm::end(); ?>
         </div>
 
         <div class="box-body">
