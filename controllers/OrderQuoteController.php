@@ -132,6 +132,7 @@ class OrderQuoteController extends Controller
                         $v = $model->quote_sn;
                     }
                     if ($k == 'updated_at' || $k == 'created_at') $v = $date;
+                    if ($k == 'serial') $v = (string)$v;
                     $_goods_model->$k = $v;
                 }
             }
