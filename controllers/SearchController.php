@@ -208,7 +208,7 @@ class SearchController extends BaseController
      */
     public function actionGetPurchaseSn($order_id = 239, $admin_id = 28)
     {
-        $data = OrderPurchase::find()->where(['order_id' => $order_id, 'admin_id' => $admin_id])->asArray()->one();
+        $data = OrderPurchase::find()->where(['order_id' => $order_id, 'admin_id' => $admin_id])->orderBy(['id' => SORT_DESC])->asArray()->one();
         if (empty($data)) {
             return json_encode(['code' => 500,  'msg' => '数据未找到']);
         }
