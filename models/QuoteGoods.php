@@ -121,4 +121,9 @@ class QuoteGoods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Stock::className(), ['good_id' => 'goods_id']);
     }
+
+    public function getAgreementGoods()
+    {
+        return $this->hasOne(AgreementGoods::className(), ['order_quote_id' => 'order_quote_id', 'goods_id' => 'goods_id', 'serial' => 'serial']);
+    }
 }

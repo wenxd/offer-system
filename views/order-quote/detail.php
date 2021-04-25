@@ -71,7 +71,13 @@ $tax = SystemConfig::find()->select('value')->where([
             <tbody>
             <?php foreach ($quoteGoods as $item):?>
                 <tr class="order_quote_list">
-                    <td><input type='checkbox' name='select_id' class='select_id'></td>
+                    <td>
+                        <?php
+                        if (!$item->agreementGoods) {
+                            echo "<input type='checkbox' name='select_id' class='select_id'>";
+                        }
+                        ?>
+                    </td>
                     <td><?=$item->serial?></td>
                     <td><?=$item->goods->goods_number . ' ' . $item->goods->material_code?></td>
                     <?php if(!in_array($userId, $adminIds)):?>

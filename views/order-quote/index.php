@@ -170,10 +170,14 @@ $userId = Yii::$app->user->identity->id;
                                         'class' => 'btn btn-danger btn-xs btn-flat',
                                     ]);
                             } else {
-                                $html .= ' ' . Html::button('<i class="fa"></i> 已生成收入合同', [
+                                $html .= ' ' . Html::a('<i class="fa fa-eye"></i> 已生成收入合同', Url::to(['detail', 'id' => $model['id']]), [
                                         'data-pjax' => '0',
                                         'class' => 'btn btn-success btn-xs btn-flat',
                                     ]);
+//                                $html .= ' ' . Html::button('<i class="fa"></i> 已生成收入合同', [
+//                                        'data-pjax' => '0',
+//                                        'class' => 'btn btn-success btn-xs btn-flat',
+//                                    ]);
                             }
                         }
                         if ($model->is_mark === null) {
