@@ -438,7 +438,15 @@ data-type={$item->type} data-relevance_id={$item->relevance_id} data-agreement_g
                 success: function (res) {
                     console.log(res);
                     if (res && res.code == 200) {
-                        $('#orderagreement-purchase_sn').val(res.data.purchase_sn);
+                        layer.confirm('订单存在该采购员采购单，是否合并？', {
+                            btn: ['是','否'] //按钮
+                        }, function(){
+                            $('#orderagreement-purchase_sn').val(res.data.purchase_sn);
+                            layer.closeAll();
+                        }, function(){
+                            $('#orderagreement-purchase_sn').val(temporary_purchase_sn);
+                            layer.closeAll();
+                        });
                     } else {
                         $('#orderagreement-purchase_sn').val(temporary_purchase_sn);
                     }
