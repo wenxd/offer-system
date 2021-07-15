@@ -29,10 +29,10 @@ $payment_ratio = SystemConfig::find()->select('value')->where([
         'title' => SystemConfig::TITLE_PAYMENT_RATIO
 ])->scalar();
 
-if ($model->payment_ratio == '0.00') {
-    $model->payment_ratio = $payment_ratio;
-    $model->price         = $payment_ratio/100 * $orderPayment->payment_price;
-}
+//if ($model->payment_ratio == '0.00') {
+//    $model->payment_ratio = $payment_ratio;
+//    $model->price         = $payment_ratio/100 * $orderPayment->payment_price;
+//}
 ?>
 
 <div class="box table-responsive">
